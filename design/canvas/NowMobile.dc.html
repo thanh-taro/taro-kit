@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Now, mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--accent2Fg:#FFC48A;--tint2:#33240F;--chrome:#140F1EB8}
+.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--accent2Fg:#8F4705;--tint2:#FDEBD8;--chrome:#FFFFFFD1}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:12px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="position: relative; width: 390px; height: 1500px; box-sizing: border-box; overflow: hidden; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 22px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <header style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 4px 0 14px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+    <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 13px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+    <button type="button" aria-label="{{toggleLabel}}" data-copy="COPY-shell.themeToggle" style="margin-left: auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 10.5A6.5 6.5 0 017.5 3a6.5 6.5 0 107.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+    <nav aria-label="Main" style="display: contents"><button type="button" aria-expanded="false" data-copy="COPY-nav.menu" style="min-height: 44px; display: flex; align-items: center; padding: 0 12px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 600 13px Manrope, sans-serif">Menu</button></nav>
+  </header>
+  <main id="main" style="display: flex; flex-direction: column; gap: 26px">
+    <section aria-labelledby="mn-h" style="display: flex; flex-direction: column; gap: 12px">
+      <h1 id="mn-h" data-copy="COPY-now.title" style="margin: 0; font: 600 28px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">What I'm up to</h1>
+      <time datetime="{{iso}}" data-copy="COPY-now.updated" style="font: 500 13px 'JetBrains Mono', monospace; color: var(--muted)">Updated {{dateText}}</time>
+      <sc-if value="{{stale}}" hint-placeholder-val="{{false}}"><span data-copy="COPY-now.stale" style="align-self: flex-start; font: 700 12px Manrope, sans-serif; padding: 4px 10px; border-radius: 7px; background: var(--tint2); color: var(--accent2Fg)">I wrote this a while ago, so it may be out of date.</span></sc-if>
+      <p style="margin: 0; font-size: 15px; line-height: 1.65">I'm building TaroKit itself, the home you're looking at, and moving my older tools onto their own subdomains.</p>
+      <p style="margin: 0; font-size: 15px; line-height: 1.65">Next up is a clip maker for short videos. I'm also learning more about audio processing in the browser.</p>
+    </section>
+    <section aria-labelledby="mn-log" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="mn-log" data-copy="COPY-now.changelogTitle" style="margin: 0; font: 600 20px Unbounded, sans-serif">What I've shipped</h2>
+      <sc-for list="{{months}}" as="m" hint-placeholder-count="2">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h3 style="margin: 0; font: 600 12px 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted)">{{m.label}}</h3>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px">
+            <sc-for list="{{m.items}}" as="i" hint-placeholder-count="2">
+              <li data-copy="{{i.copy}}" style="display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px">
+                <span style="font: 700 12px Manrope, sans-serif; padding: 3px 8px; border-radius: 7px; background: var(--tint2); color: var(--accent2Fg)">{{i.kind}}</span>
+                <a href="#" style="font-weight: 600; font-size: 15px; text-decoration: none">{{i.tool}}</a>
+                <time datetime="{{i.iso}}" style="margin-left: auto; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">{{i.date}}</time>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"stale":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const add = (tool, date, iso) => ({ kind: 'Added', copy: 'COPY-now.changelogAdded', tool: tool, date: date, iso: iso });
+    const upd = (tool, date, iso) => ({ kind: 'Improved', copy: 'COPY-now.changelogUpdated', tool: tool, date: date, iso: iso });
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      stale: this.props.stale ?? false,
+      iso: (this.props.stale ?? false) ? '2026-05-02' : '2026-10-01',
+      dateText: (this.props.stale ?? false) ? 'May 2, 2026' : 'Oct 1, 2026',
+      toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
+      months: [
+        { label: 'October 2026', items: [add('Color Picker', 'Oct 10', '2026-10-10'), upd('JSON Formatter', 'Oct 2', '2026-10-02')] },
+        { label: 'September 2026', items: [add('Regex Tester', 'Sep 28', '2026-09-28'), add('JSON Formatter', 'Sep 3', '2026-09-03')] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

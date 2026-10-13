@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Catalog, desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--accent2:#FFB870;--tint:#251A3C;--chrome:#140F1EB8;--catVioletBg:#251A3C;--catVioletFg:#C4A6FF;--catMangoBg:#33240F;--catMangoFg:#FFC48A;--catSkyBg:#0F2738;--catSkyFg:#8CCBFF;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--accent2:#B85E08;--tint:#EEE7FE;--chrome:#FFFFFFD1;--catVioletBg:#EEE7FE;--catVioletFg:#5B2FCC;--catMangoBg:#FDEBD8;--catMangoFg:#8F4705;--catSkyBg:#E0F0FD;--catSkyFg:#0B5A94;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:16px}
+.stretch::after{content:"";position:absolute;inset:0;border-radius:12px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="position: relative; box-sizing: border-box; min-height: 1500px; background: radial-gradient(70% 30% at 85% 0%, var(--glow) 0%, var(--bg) 70%); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 16px 24px 48px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+      <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 2px; font-size: 14px">
+        <sc-for list="{{navs}}" as="n" hint-placeholder-count="5">
+          <a href="#" aria-current="{{n.cur}}" data-copy="{{n.copy}}" style="color: {{n.color}}; background: {{n.bg}}; font-weight: {{n.weight}}; text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">{{n.label}}</a>
+        </sc-for>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 4px">
+        <button type="button" style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 6px 0 12px; background: var(--surface); color: var(--muted); border: 1px solid var(--lineStrong); border-radius: 10px; font: 500 13px Manrope, sans-serif; width: 240px"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg><span data-copy="COPY-palette.placeholder">What are you looking for?</span><span style="margin-left: auto; font: 500 12px 'JetBrains Mono', monospace; color: var(--fg); background: var(--surface2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; padding: 1px 6px">⌘K</span></button>
+        <button type="button" aria-label="{{toggleLabel}}" data-copy="COPY-shell.themeToggle" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 10.5A6.5 6.5 0 017.5 3a6.5 6.5 0 107.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+        <a href="#" aria-label="Settings" data-copy="COPY-nav.settings" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--muted); border-radius: 10px"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></a>
+      </div>
+    </header>
+
+    <main id="main" style="display: flex; flex-direction: column; gap: 28px; padding: 0 8px">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding-top: 16px">
+        <h1 data-copy="COPY-catalog.title" style="margin: 0; font: 600 44px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">My tools</h1>
+        <div style="display: flex; align-items: center; gap: 10px; width: 360px; max-width: 100%; min-height: 48px; padding: 0 14px; background: var(--surface); border: 1px solid var(--lineStrong); border-radius: 12px">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="color: var(--muted)"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          <label for="cat-q" class="sr" data-copy="COPY-catalog.searchPlaceholder">Filter my tools</label>
+          <input id="cat-q" type="search" placeholder="Filter my tools" style="flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: none; color: var(--fg); font: 500 15px Manrope, sans-serif">
+        </div>
+      </div>
+      <p aria-live="polite" data-copy="COPY-category.toolCount" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">9 tools</p>
+      <nav aria-label="Categories" data-copy="COPY-category.navLabel" style="display: flex; flex-wrap: wrap; gap: 8px">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+          <a href="#" aria-label="{{c.name}}, {{c.countText}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 6px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; background: var(--surface); border: 1px solid var(--line)"><span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 999px; background: {{c.bg}}; color: {{c.fg}}; display: flex; align-items: center; justify-content: center; font: 700 12px 'JetBrains Mono', monospace">{{c.icon}}</span>{{c.name}}<span data-copy="{{c.countCopy}}" style="color: var(--muted); font-weight: 500">{{c.countText}}</span></a>
+        </sc-for>
+      </nav>
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+        <section aria-labelledby="{{c.id}}" style="display: flex; flex-direction: column; gap: 12px">
+          <h2 id="{{c.id}}" style="margin: 0; display: flex; align-items: center; gap: 10px; font: 600 20px Unbounded, sans-serif; letter-spacing: -0.01em"><span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 10px; background: {{c.bg}}; color: {{c.fg}}; display: flex; align-items: center; justify-content: center; font: 700 12px 'JetBrains Mono', monospace">{{c.icon}}</span><a href="#" style="text-decoration: none; min-height: 44px; display: inline-flex; align-items: center">{{c.name}} <span aria-hidden="true" style="color: var(--muted); margin-left: 6px">›</span></a></h2>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+            <sc-for list="{{c.tools}}" as="t" hint-placeholder-count="3">
+              <div style="position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+                <span style="width: 34px; height: 34px; flex: none; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 13px 'JetBrains Mono', monospace">{{t.icon}}</span>
+                <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; padding-right: 36px">
+                  <a href="#" class="stretch" style="text-decoration: none; font-weight: 700; font-size: 15px">{{t.name}}<span class="sr" data-copy="COPY-tool.opensNewTab">{{t.sr}}</span></a>
+                  <span style="font-size: 13px; color: var(--muted); line-height: 1.45">{{t.summary}}</span>
+                  <span aria-hidden="true" style="font-size: 12px; color: var(--muted)">{{t.ext}}</span>
+                </div>
+                <button type="button" aria-label="{{t.favLabel}}" aria-pressed="{{t.fav}}" style="position: absolute; z-index: 1; top: 6px; right: 6px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: {{t.starColor}}"><svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2l2 4.3 4.7.5-3.5 3.1 1 4.6L9 12.2l-4.2 2.3 1-4.6L2.3 6.8 7 6.3z" fill="{{t.fill}}" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+    </main>
+    <p style="margin: 0; padding: 0 8px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Sample catalog entries.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const nav = (label, copy, cur) => ({ label: label, copy: copy, cur: cur ? 'page' : 'false', color: cur ? 'var(--fg)' : 'var(--muted)', bg: cur ? 'var(--surface2)' : 'transparent', weight: cur ? '600' : '500' });
+    const tool = (icon, name, summary, fav, linked) => ({
+      icon: icon, name: name, summary: summary, fav: fav ? 'true' : 'false',
+      favLabel: fav ? 'Remove from favorites' : 'Add to favorites', starColor: fav ? 'var(--accent2)' : 'var(--muted)', fill: fav ? 'currentColor' : 'none',
+      ext: linked ? 'Opens in a new tab ↗' : '', sr: linked ? ' (opens in a new tab)' : ''
+    });
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
+      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools', true), nav('Projects', 'COPY-nav.projects'), nav('About me', 'COPY-nav.about'), nav('Now', 'COPY-nav.now')],
+      cats: [
+        { id: 'c-dev', name: 'Developer tools', icon: '</>', bg: 'var(--catVioletBg)', fg: 'var(--catVioletFg)', n: '3', countText: '3 tools', countCopy: 'COPY-category.toolCount', tools: [
+          tool('64', 'Base64', 'Encode and decode Base64 text and files.'),
+          tool('{ }', 'JSON Formatter', 'Pretty-print, validate and minify JSON.', true),
+          tool('.*', 'Regex Tester', 'Live matches with explanations.') ] },
+        { id: 'c-media', name: 'Media tools', icon: '▶', bg: 'var(--catMangoBg)', fg: 'var(--catMangoFg)', n: '2', countText: '2 tools', countCopy: 'COPY-category.toolCount', tools: [
+          tool('♪', 'Audio Trimmer', 'Cut and fade audio clips.'),
+          tool('▣', 'Clip Maker', 'Turn videos into short social clips.') ] },
+        { id: 'c-conv', name: 'Converters & calculators', icon: '⇄', bg: 'var(--catSkyBg)', fg: 'var(--catSkyFg)', n: '3', countText: '3 tools', countCopy: 'COPY-category.toolCount', tools: [
+          tool('◉', 'Color Picker', 'Pick, convert and check contrast.', true),
+          tool('%', 'Loan Calculator', 'Monthly payment and full schedule.', false, true),
+          tool('⇄', 'Unit Converter', 'Length, weight, temperature and more.', true) ] },
+        { id: 'c-prod', name: 'Productivity & relax', icon: '✓', bg: 'var(--catMintBg)', fg: 'var(--catMintFg)', n: '1', countText: '1 tool', countCopy: 'COPY-category.toolCountOne', tools: [
+          tool('◷', 'Focus Timer', 'Pomodoro sessions with gentle sounds.', true) ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

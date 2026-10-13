@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings, desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--tint:#251A3C;--danger:#FF8595;--success:#5BD6A0;--chrome:#140F1EB8;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--tint:#EEE7FE;--danger:#C0243B;--success:#13744C;--chrome:#FFFFFFD1;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:16px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="position: relative; box-sizing: border-box; min-height: 1300px; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 16px 24px 48px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+      <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 2px; font-size: 14px">
+        <sc-for list="{{navs}}" as="n" hint-placeholder-count="5">
+          <a href="#" data-copy="{{n.copy}}" style="color: var(--muted); text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">{{n.label}}</a>
+        </sc-for>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 4px">
+        <a href="#" aria-current="page" aria-label="Settings" data-copy="COPY-nav.settings" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--fg); background: var(--surface2); border-radius: 10px"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></a>
+      </div>
+    </header>
+    <main id="main" style="display: flex; flex-direction: column; gap: 24px; max-width: 760px; padding: 16px 8px 0">
+      <h1 data-copy="COPY-settings.title" style="margin: 0; font: 600 44px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Settings</h1>
+
+      <section aria-labelledby="s-app" style="display: flex; flex-direction: column; gap: 14px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+        <h2 id="s-app" data-copy="COPY-settings.appearance" style="margin: 0; font: 600 17px Unbounded, sans-serif">Appearance</h2>
+        <fieldset data-copy="COPY-settings.theme" style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 10px">
+          <legend style="font-size: 14px; color: var(--muted); padding: 0; margin-bottom: 10px">Theme</legend>
+          <div role="radiogroup" style="display: inline-flex; padding: 4px; gap: 4px; background: var(--bg); border: 1px solid var(--lineStrong); border-radius: 12px; align-self: flex-start">
+            <sc-for list="{{themes}}" as="o" hint-placeholder-count="3">
+              <span role="radio" aria-checked="{{o.checked}}" tabindex="{{o.tab}}" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 10px; font-weight: 700; font-size: 14px; background: {{o.bg}}; color: {{o.fg}}">{{o.label}}</span>
+            </sc-for>
+          </div>
+        </fieldset>
+      </section>
+
+      <section aria-labelledby="s-data" style="display: flex; flex-direction: column; gap: 18px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+        <h2 id="s-data" data-copy="COPY-settings.yourData" style="margin: 0; font: 600 17px Unbounded, sans-serif">Your data</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span data-copy="COPY-settings.daysUsed" style="font-size: 15px; font-weight: 600">You've used TaroKit on 9 of the last 14 days</span>
+          </div>
+          <div aria-hidden="true" style="display: flex; gap: 6px">
+            <sc-for list="{{days}}" as="d" hint-placeholder-count="14"><span style="width: 22px; height: 22px; border-radius: 7px; background: {{d.bg}}; border: 1px solid var(--line)"></span></sc-for>
+          </div>
+        </div>
+        <div style="height: 1px; background: var(--line)"></div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+          <button type="button" data-copy="COPY-settings.export" style="min-height: 44px; padding: 0 18px; background: var(--accent); color: var(--onAccent); border: 0; border-radius: 10px; font: 700 14px Manrope, sans-serif">Export your data</button>
+          <button type="button" data-copy="COPY-settings.import" style="min-height: 44px; padding: 0 18px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 14px Manrope, sans-serif">Import from file</button>
+        </div>
+        <p data-copy="COPY-settings.backupScope" style="margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5">Your backup holds your favorites, recents, theme and days used. Each tool keeps its own data.</p>
+        <div style="height: 1px; background: var(--line)"></div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+          <button type="button" data-copy="COPY-settings.clearRecents" style="min-height: 44px; padding: 0 18px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 14px Manrope, sans-serif">Clear recent tools</button>
+          <button type="button" data-copy="COPY-settings.erase" style="min-height: 44px; padding: 0 18px; background: transparent; color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; font: 700 14px Manrope, sans-serif">Erase your data</button>
+        </div>
+      </section>
+
+      <section aria-labelledby="s-priv" style="display: flex; align-items: flex-start; gap: 14px; padding: 22px; background: var(--tint); border-radius: 12px">
+        <span aria-hidden="true" style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--surface); color: var(--accent); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1.8l5.5 2.2v4.3c0 3.6-2.4 6.4-5.5 7.9-3.1-1.5-5.5-4.3-5.5-7.9V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></span>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 id="s-priv" data-copy="COPY-settings.privacyTitle" style="margin: 0; font: 600 15px Unbounded, sans-serif">Privacy</h2>
+          <p data-copy="COPY-settings.privacy" style="margin: 0; font-size: 15px; line-height: 1.5">No accounts, no tracking. Everything you do here stays in your browser, and I never see it.</p>
+        </div>
+      </section>
+      <p style="margin: 0; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Confirmation dialogs and the import error are designed in D4.</p>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["system","dark","light"],"default":"system"},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'system';
+    const opt = (label, checked) => ({ label: label, checked: checked ? 'true' : 'false', tab: checked ? '0' : '-1', bg: checked ? 'var(--accent)' : 'transparent', fg: checked ? 'var(--onAccent)' : 'var(--fg)' });
+    const used = [1,1,0,1,1,1,0,0,1,1,0,1,0,1];
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      navs: [{ label: 'Home', copy: 'COPY-nav.home' }, { label: 'Tools', copy: 'COPY-nav.tools' }, { label: 'Projects', copy: 'COPY-nav.projects' }, { label: 'About me', copy: 'COPY-nav.about' }, { label: 'Now', copy: 'COPY-nav.now' }],
+      themes: [opt('System', theme === 'system'), opt('Light', theme === 'light'), opt('Dark', theme === 'dark')],
+      days: used.map((u) => ({ bg: u ? 'var(--accent)' : 'var(--surface2)' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

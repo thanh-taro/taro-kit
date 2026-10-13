@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home, mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--accent2:#FFB870;--accent2Fg:#FFC48A;--tint:#251A3C;--tint2:#33240F;--chrome:#140F1EB8}
+.tk-dark{--catVioletBg:#251A3C;--catVioletFg:#C4A6FF;--catMangoBg:#33240F;--catMangoFg:#FFC48A;--catSkyBg:#0F2738;--catSkyFg:#8CCBFF;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--catVioletBg:#EEE7FE;--catVioletFg:#5B2FCC;--catMangoBg:#FDEBD8;--catMangoFg:#8F4705;--catSkyBg:#E0F0FD;--catSkyFg:#0B5A94;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--accent2:#B85E08;--accent2Fg:#8F4705;--tint:#EEE7FE;--tint2:#FDEBD8;--chrome:#FFFFFFD1}
+.stretch::after{content:"";position:absolute;inset:0;border-radius:12px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:12px}
+a{color:inherit}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="position: relative; width: 390px; height: 1900px; box-sizing: border-box; overflow: hidden; background: radial-gradient(120% 30% at 90% 0%, var(--glow) 0%, var(--bg) 70%); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 28px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <header style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 4px 0 14px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+    <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 13px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+    <button type="button" aria-label="{{toggleLabel}}" data-copy="COPY-shell.themeToggle" style="margin-left: auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 10.5A6.5 6.5 0 017.5 3a6.5 6.5 0 107.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+    <nav aria-label="Main" style="display: contents"><button type="button" aria-expanded="false" aria-controls="main-menu" data-copy="COPY-nav.menu" style="min-height: 44px; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 600 13px Manrope, sans-serif"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>Menu</button></nav>
+  </header>
+  <main id="main" style="display: flex; flex-direction: column; gap: 28px">
+  <section aria-labelledby="m-greet" style="display: flex; flex-direction: column; gap: 12px; padding-top: 12px">
+    <span style="font: 500 12px 'JetBrains Mono', monospace; color: var(--muted)">Tue, 13 Oct · 08:42</span>
+    <h1 id="m-greet" data-copy="COPY-home.greetingMorning" style="margin: 0; font: 600 28px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Good morning</h1>
+    <p data-copy="COPY-home.intro" style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted)">I'm <span style="color: var(--accent); font-weight: 700">Taro</span>. Full-stack developer. I build small tools for work and life, and they all live here.</p>
+    <a href="#" data-copy="COPY-nav.about" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--accent); font-weight: 700; font-size: 15px; text-decoration: none">About me <span aria-hidden="true">→</span></a>
+    <button type="button" style="margin-top: 8px; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 16px; background: var(--surface); color: var(--muted); border: 1px solid var(--lineStrong); border-radius: 12px; font: 500 15px Manrope, sans-serif; text-align: left">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      <span data-copy="COPY-palette.placeholder">What are you looking for?</span>
+    </button>
+  </section>
+  <section aria-labelledby="m-fav" style="display: flex; flex-direction: column; gap: 10px">
+    <h2 id="m-fav" data-copy="COPY-home.favorites" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Your favorites</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{favorites}}" as="c" hint-placeholder-count="4">
+        <div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+          <span style="width: 34px; height: 34px; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 13px 'JetBrains Mono', monospace">{{c.icon}}</span>
+          <a href="#" class="stretch" style="text-decoration: none; font-weight: 700; font-size: 14px">{{c.name}}</a>
+          <button type="button" aria-label="Remove from favorites" aria-pressed="true" data-copy="COPY-fav.remove" style="position: absolute; z-index: 1; top: 2px; right: 2px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--accent2)"><svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2l2 4.3 4.7.5-3.5 3.1 1 4.6L9 12.2l-4.2 2.3 1-4.6L2.3 6.8 7 6.3z" fill="currentColor"></path></svg></button>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  <section aria-labelledby="m-rec" style="display: flex; flex-direction: column; gap: 10px">
+    <h2 id="m-rec" data-copy="COPY-home.recents" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Recently used</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{recents}}" as="c" hint-placeholder-count="3">
+        <div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+          <span style="width: 34px; height: 34px; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 13px 'JetBrains Mono', monospace">{{c.icon}}</span>
+          <a href="#" class="stretch" style="text-decoration: none; font-weight: 700; font-size: 14px">{{c.name}}<span aria-hidden="true" style="font-weight: 400; color: var(--muted)">{{c.ext}}</span><span class="sr" data-copy="COPY-tool.opensNewTab">{{c.sr}}</span></a>
+          <button type="button" aria-label="Add to favorites" aria-pressed="false" data-copy="COPY-fav.add" style="position: absolute; z-index: 1; top: 2px; right: 2px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 2l2 4.3 4.7.5-3.5 3.1 1 4.6L9 12.2l-4.2 2.3 1-4.6L2.3 6.8 7 6.3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  <section aria-labelledby="m-cat" style="display: flex; flex-direction: column; gap: 10px">
+    <h2 id="m-cat" data-copy="COPY-home.categories" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Browse by category</h2>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+        <a href="#" aria-label="{{c.name}}, {{c.count}}" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-decoration: none">
+          <span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: {{c.bg}}; color: {{c.fg}}; display: flex; align-items: center; justify-content: center; font: 700 13px 'JetBrains Mono', monospace">{{c.icon}}</span>
+          <span style="font-weight: 700; font-size: 15px">{{c.name}}</span>
+          <span data-copy="{{c.countCopy}}" style="margin-left: auto; font-size: 13px; color: var(--muted)">{{c.count}}</span>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+  <section aria-labelledby="m-new" style="display: flex; flex-direction: column; gap: 10px">
+    <h2 id="m-new" data-copy="COPY-home.whatsNew" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Fresh from my workbench</h2>
+    <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+      <sc-for list="{{news}}" as="n" hint-placeholder-count="3">
+        <li style="position: relative; display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px">
+          <div style="display: flex; align-items: center; gap: 8px"><span data-copy="{{n.copy}}" style="font: 700 12px Manrope, sans-serif; padding: 3px 8px; border-radius: 7px; background: var(--tint2); color: var(--accent2Fg)">{{n.kind}}</span><a href="#" class="stretch" style="text-decoration: none; font-weight: 700; font-size: 15px">{{n.name}}</a><span style="margin-left: auto; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">{{n.when}}</span></div>
+          <span style="font-size: 13px; color: var(--muted)">{{n.summary}}</span>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+  </main>
+  <p style="margin: 0; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Sample content.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":390,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
+      favorites: [
+        { icon: '{ }', name: 'JSON Formatter' }, { icon: '⇄', name: 'Unit Converter' },
+        { icon: '◷', name: 'Focus Timer' }, { icon: '◉', name: 'Color Picker' }
+      ],
+      recents: [
+        { icon: '64', name: 'Base64', ext: '', sr: '' }, { icon: '%', name: 'Loan Calculator', ext: ' ↗', sr: ' (opens in a new tab)' }, { icon: '.*', name: 'Regex Tester', ext: '', sr: '' }
+      ],
+      cats: [
+        { name: 'Developer tools', icon: '</>', bg: 'var(--catVioletBg)', fg: 'var(--catVioletFg)', count: '3 tools', countCopy: 'COPY-category.toolCount' },
+        { name: 'Media tools', icon: '▶', bg: 'var(--catMangoBg)', fg: 'var(--catMangoFg)', count: '2 tools', countCopy: 'COPY-category.toolCount' },
+        { name: 'Converters & calculators', icon: '⇄', bg: 'var(--catSkyBg)', fg: 'var(--catSkyFg)', count: '3 tools', countCopy: 'COPY-category.toolCount' },
+        { name: 'Productivity & relax', icon: '✓', bg: 'var(--catMintBg)', fg: 'var(--catMintFg)', count: '1 tool', countCopy: 'COPY-category.toolCountOne' }
+      ],
+      news: [
+        { kind: 'Added', copy: 'COPY-now.changelogAdded', name: 'Color Picker', summary: 'Pick, convert and check contrast.', when: '3d' },
+        { kind: 'Improved', copy: 'COPY-now.changelogUpdated', name: 'JSON Formatter', summary: 'Now sorts keys.', when: 'Oct 2' },
+        { kind: 'Added', copy: 'COPY-now.changelogAdded', name: 'Regex Tester', summary: 'Live matches with explanations.', when: 'Sep 28' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

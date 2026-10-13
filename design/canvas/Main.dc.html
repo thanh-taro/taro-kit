@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Night Market tokens</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--accent2:#FFB870;--accent2Fg:#FFC48A;--tint:#251A3C;--tint2:#33240F;--sel:#2A1D47;--selLine:#4A3580;--danger:#FF8595;--success:#5BD6A0}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--accent2:#B85E08;--accent2Fg:#8F4705;--tint:#EEE7FE;--tint2:#FDEBD8;--sel:#F0EAFE;--selLine:#CDBBF8;--danger:#C0243B;--success:#13744C}
+</style>
+</helmet>
+<div style="width: 1360px; height: 1240px; box-sizing: border-box; padding: 48px; background: #0B0810; color: #EFEAF8; font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column; gap: 28px">
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #9C92B0">specs/30-experience/tokens.json · style.md · D-019</div>
+    <h1 style="margin: 0; font: 600 44px/1.1 Unbounded, sans-serif; letter-spacing: -0.02em">Night Market</h1>
+    <p style="margin: 0; max-width: 760px; color: #9C92B0; font-size: 15px; line-height: 1.55">Dark first, light equal. Glow only on hero areas, the palette and the selected row. Mango marks only favorites and new items. Every text pair passes WCAG AA in both themes.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+      <div class="{{t.cls}}" style="background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <span style="font: 600 17px Unbounded, sans-serif">{{t.name}}</span>
+          <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">color.{{t.key}}.*</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+          <sc-for list="{{t.swatches}}" as="s" hint-placeholder-count="18">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0">
+              <div style="width: 36px; height: 36px; flex: none; border-radius: 9px; border: 1px solid var(--line); background: {{s.hex}}"></div>
+              <div style="display: flex; flex-direction: column; min-width: 0">
+                <span style="font-size: 13px; font-weight: 600">{{s.role}}</span>
+                <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">{{s.hex}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid var(--line)">
+          <span style="font: 600 24px/1.15 Unbounded, sans-serif; letter-spacing: -0.02em">Good evening</span>
+          <span style="font-size: 15px; line-height: 1.55">I'm <span style="color: var(--accent); font-weight: 700">Taro</span>. Body · Manrope 15/1.55. I talk to you in the first person.</span>
+          <span style="font-size: 13px; color: var(--muted)">Muted · Manrope 13 — secondary text and labels.</span>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+            <span style="font: 500 12px 'JetBrains Mono', monospace; background: var(--surface2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; padding: 2px 8px">⌘K</span>
+            <span style="font: 500 12px 'JetBrains Mono', monospace; background: var(--surface2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; padding: 2px 8px">↑↓</span>
+            <span style="font: 500 12px 'JetBrains Mono', monospace; background: var(--surface2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; padding: 2px 8px">esc</span>
+            <span style="font: 600 12px Manrope, sans-serif; padding: 2px 8px; border-radius: 8px; background: var(--tint2); color: var(--accent2Fg)">Added</span>
+            <a href="#" style="color: var(--accent); font-weight: 600; font-size: 14px">Link text</a>
+            <button type="button" style="font: 600 14px Manrope, sans-serif; background: var(--accent); color: var(--onAccent); border: 0; border-radius: 10px; padding: 10px 16px; min-height: 44px">Primary</button>
+            <button type="button" style="font: 600 14px Manrope, sans-serif; background: var(--surface); color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; padding: 10px 16px; min-height: 44px; outline: 2px solid var(--accent); outline-offset: 2px">Focused</button>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; color: #EFEAF8">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #9C92B0">Radius</span>
+      <div style="display: flex; gap: 14px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 56px; height: 56px; border: 1.5px solid #A47BFF; border-radius: 7px"></div><span style="font: 400 12px 'JetBrains Mono', monospace; color: #9C92B0">sm 7</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 56px; height: 56px; border: 1.5px solid #A47BFF; border-radius: 10px"></div><span style="font: 400 12px 'JetBrains Mono', monospace; color: #9C92B0">md 10</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 56px; height: 56px; border: 1.5px solid #A47BFF; border-radius: 12px"></div><span style="font: 400 12px 'JetBrains Mono', monospace; color: #9C92B0">lg 12</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 56px; height: 56px; border: 1.5px solid #A47BFF; border-radius: 14px"></div><span style="font: 400 12px 'JetBrains Mono', monospace; color: #9C92B0">xl 14</span></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #9C92B0">Spacing · 4-pt</span>
+      <div style="display: flex; gap: 10px; align-items: flex-end">
+        <sc-for list="{{spaces}}" as="sp" hint-placeholder-count="8">
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 14px; height: {{sp.px}}; background: #A47BFF; border-radius: 3px"></div><span style="font: 400 12px 'JetBrains Mono', monospace; color: #9C92B0">{{sp.n}}</span></div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #9C92B0">Motion · size</span>
+      <span style="font-size: 14px; line-height: 1.6; color: #EFEAF8">fast 120 ms · base 180 ms · slow 260 ms<br>easing standard (.2,.8,.2,1)<br>touch target 44 · palette 640 · content 1120</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const roles = ['bg','glow','surface','surface2','line','lineStrong','fg','muted','accent','onAccent','accent2','accent2Fg','tint','tint2','sel','selLine','danger','success'];
+    const dark = ['#0F0B16','#2A1850','#18121F','#221A2F','#2D2440','#6F6290','#EFEAF8','#9C92B0','#A47BFF','#0F0B16','#FFB870','#FFC48A','#251A3C','#33240F','#2A1D47','#4A3580','#FF8595','#5BD6A0'];
+    const light = ['#FBFAFE','#F4F0FF','#FFFFFF','#F1EDFA','#E2DCF0','#8C82A2','#16111F','#5E566F','#6837E0','#FFFFFF','#B85E08','#8F4705','#EEE7FE','#FDEBD8','#F0EAFE','#CDBBF8','#C0243B','#13744C'];
+    const sw = (hexes) => roles.map((role, i) => ({ role: role, hex: hexes[i] }));
+    return {
+      themes: [
+        { cls: 'tk-dark', name: 'Dark (default)', key: 'dark', swatches: sw(dark) },
+        { cls: 'tk-light', name: 'Light', key: 'light', swatches: sw(light) }
+      ],
+      spaces: [4, 8, 12, 16, 20, 24, 32, 48].map((n) => ({ n: n, px: n + 'px' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

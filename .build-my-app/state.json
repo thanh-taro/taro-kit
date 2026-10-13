@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "2.4 D3 drafted (14 artboards); audit round 1",
+      "step": "2.4 D3 round-1 fixes published (canvas v36); NEXT: re-audit D3 round 2 (verify), user D3 review, then D4 edge states; open user items: SP-2 Firefox local run, Cloudflare setup for tarokit.app",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1042,9 +1042,13 @@
     {
       "at": "2026-10-13T05:30:24+00:00",
       "event": "design step: 2.4 D3 drafted (14 artboards); audit round 1"
+    },
+    {
+      "at": "2026-10-13T05:36:04+00:00",
+      "event": "design step: 2.4 D3 round-1 fixes published (canvas v36); NEXT: re-audit D3 round 2 (verify), user D3 review, then D4 edge states; open user items: SP-2 Firefox local run, Cloudflare setup for tarokit.app"
     }
   ],
-  "updated": "2026-10-13T05:30:24+00:00",
+  "updated": "2026-10-13T05:36:04+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

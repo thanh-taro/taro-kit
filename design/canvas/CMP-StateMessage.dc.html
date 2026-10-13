@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>State message variants</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--tint:#251A3C}
+.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--tint:#EEE7FE}
+</style>
+</helmet>
+<div style="width: 1360px; height: 1260px; box-sizing: border-box; padding: 48px; background: #0B0810; color: #EFEAF8; font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <div style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #9C92B0">Component · PRN-05 · Taro speaks (PRN-04)</div>
+    <h1 style="margin: 0; font: 600 28px/1.15 Unbounded, sans-serif; letter-spacing: -0.02em">CMP-StateMessage</h1>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+      <div class="{{t.cls}}" style="background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 12px">
+        <span style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted)">{{t.name}}</span>
+        <sc-for list="{{states}}" as="s" hint-placeholder-count="5">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-StateMessage / {{s.variant}} / {{t.key}}</span>
+            <div role="status" style="display: flex; align-items: flex-start; gap: 14px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+              <span style="width: 40px; height: 40px; flex: none; border-radius: 11px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 15px 'JetBrains Mono', monospace">{{s.icon}}</span>
+              <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+                <span data-copy="{{s.copyTitle}}" style="font-weight: 700; font-size: 15px; line-height: 1.35">{{s.title}}</span>
+                <sc-if value="{{s.hasBody}}" hint-placeholder-val="{{true}}"><span data-copy="{{s.copyBody}}" style="font-size: 14px; color: var(--muted); line-height: 1.5">{{s.body}}</span></sc-if>
+                <sc-if value="{{s.hasAction}}" hint-placeholder-val="{{true}}"><a href="#" data-copy="{{s.copyAction}}" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; margin-top: 2px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none">{{s.action}}</a></sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1260}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = (variant, icon, copyTitle, title, copyBody, body, copyAction, action) => ({
+      variant: variant, icon: icon, copyTitle: copyTitle, title: title,
+      copyBody: copyBody || '', body: body || '', hasBody: !!body,
+      copyAction: copyAction || '', action: action || '', hasAction: !!action
+    });
+    return {
+      themes: [
+        { cls: 'tk-dark', name: 'Dark (default)', key: 'dark' },
+        { cls: 'tk-light', name: 'Light', key: 'light' }
+      ],
+      states: [
+        s('empty', '◌', 'COPY-catalog.empty', "I'm still building my first tools. Check back soon."),
+        s('no-results', '?', 'COPY-catalog.noResults', 'I don\'t have anything matching "pdf" yet.', '', '', 'COPY-catalog.clear', 'Clear search'),
+        s('offline', '⌁', 'COPY-tool.offline', "Focus Timer needs the internet. I'll load it as soon as you're back online."),
+        s('info (linked)', '↗', 'COPY-tool.linkedNote', 'Loan Calculator lives on its own site. Open it there.', '', '', 'COPY-tool.openNewTab', 'Open in new tab'),
+        s('not-found', '404', 'COPY-notFound.title', "I can't find that page", 'COPY-notFound.body', 'It may have moved, or I took it down.', 'COPY-notFound.toCatalog', 'Browse my tools')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

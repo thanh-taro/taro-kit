@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Category tile variants</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--catVioletBg:#251A3C;--catVioletFg:#C4A6FF;--catMangoBg:#33240F;--catMangoFg:#FFC48A;--catSkyBg:#0F2738;--catSkyFg:#8CCBFF;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--catVioletBg:#EEE7FE;--catVioletFg:#5B2FCC;--catMangoBg:#FDEBD8;--catMangoFg:#8F4705;--catSkyBg:#E0F0FD;--catSkyFg:#0B5A94;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+a{color:inherit}
+</style>
+</helmet>
+<div style="width: 1360px; height: 900px; box-sizing: border-box; padding: 48px; background: #0B0810; color: #EFEAF8; font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <div style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #9C92B0">Component · F-007.R7 · F-016 · RULE-14 · tool counts are sample values</div>
+    <h1 style="margin: 0; font: 600 28px/1.15 Unbounded, sans-serif; letter-spacing: -0.02em">CMP-CategoryTile</h1>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+      <div class="{{t.cls}}" style="background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px">
+        <span style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted)">{{t.name}}</span>
+        <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-CategoryTile / regular / {{t.key}}: home row</span>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+            <a href="#" aria-label="{{c.name}}, {{c.count}}" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-decoration: none">
+              <span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: {{c.bg}}; color: {{c.fg}}; display: flex; align-items: center; justify-content: center; font: 700 14px 'JetBrains Mono', monospace">{{c.icon}}</span>
+              <span style="display: flex; flex-direction: column; min-width: 0">
+                <span style="font-weight: 700; font-size: 15px">{{c.name}}</span>
+                <span data-copy="{{c.countCopy}}" style="font-size: 13px; color: var(--muted)">{{c.count}}</span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+        <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-CategoryTile / regular hover · regular focus / {{t.key}}</span>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <a href="#" aria-label="Developer tools, 3 tools" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 14px; background: var(--surface2); border: 1px solid var(--lineStrong); border-radius: 12px; text-decoration: none; transform: translateY(-1px)"><span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: var(--catVioletBg); color: var(--catVioletFg); display: flex; align-items: center; justify-content: center; font: 700 14px 'JetBrains Mono', monospace">&lt;/&gt;</span><span style="display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 15px">Developer tools</span><span style="font-size: 13px; color: var(--muted)">hover · lifts 1 px</span></span></a>
+          <a href="#" aria-label="Media tools, 2 tools" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-decoration: none; outline: 2px solid var(--accent); outline-offset: 2px"><span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: var(--catMangoBg); color: var(--catMangoFg); display: flex; align-items: center; justify-content: center; font: 700 14px 'JetBrains Mono', monospace">▶</span><span style="display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 15px">Media tools</span><span style="font-size: 13px; color: var(--muted)">keyboard focus · 2 px ring</span></span></a>
+        </div>
+        <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-CategoryTile / compact · current · focus / {{t.key}}: category navigation</span>
+        <nav aria-label="Categories" data-copy="COPY-category.navLabel" style="display: flex; flex-wrap: wrap; gap: 8px">
+          <a href="#" aria-current="page" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 6px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 14px; background: var(--catMangoBg); color: var(--catMangoFg); box-shadow: inset 0 0 0 1px var(--catMangoFg)"><span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 999px; background: var(--surface); display: flex; align-items: center; justify-content: center; font: 700 12px 'JetBrains Mono', monospace">▶</span>Media tools</a>
+          <a href="#" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 6px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; background: var(--surface); border: 1px solid var(--line)"><span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 999px; background: var(--catVioletBg); color: var(--catVioletFg); display: flex; align-items: center; justify-content: center; font: 700 12px 'JetBrains Mono', monospace">&lt;/&gt;</span>Developer tools</a>
+          <a href="#" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 6px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; background: var(--surface); border: 1px solid var(--line); outline: 2px solid var(--accent); outline-offset: 2px"><span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 999px; background: var(--catSkyBg); color: var(--catSkyFg); display: flex; align-items: center; justify-content: center; font: 700 12px 'JetBrains Mono', monospace">⇄</span>Converters &amp; calculators</a>
+          <a href="#" data-copy="COPY-category.allTools" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--accent)">All my tools</a>
+        </nav>
+        <span style="font-size: 12px; color: var(--muted)">Current: tinted fill with aria-current. Focus: 2 px accent ring (shown on Converters). The tint is decorative; names always show.</span>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      themes: [
+        { cls: 'tk-dark', name: 'Dark (default)', key: 'dark' },
+        { cls: 'tk-light', name: 'Light', key: 'light' }
+      ],
+      cats: [
+        { name: 'Developer tools', icon: '</>', bg: 'var(--catVioletBg)', fg: 'var(--catVioletFg)', count: '3 tools', countCopy: 'COPY-category.toolCount' },
+        { name: 'Media tools', icon: '▶', bg: 'var(--catMangoBg)', fg: 'var(--catMangoFg)', count: '2 tools', countCopy: 'COPY-category.toolCount' },
+        { name: 'Converters & calculators', icon: '⇄', bg: 'var(--catSkyBg)', fg: 'var(--catSkyFg)', count: '3 tools', countCopy: 'COPY-category.toolCount' },
+        { name: 'Productivity & relax', icon: '✓', bg: 'var(--catMintBg)', fg: 'var(--catMintFg)', count: '1 tool', countCopy: 'COPY-category.toolCountOne' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

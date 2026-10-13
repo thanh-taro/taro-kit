@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tool header variants</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--accent2:#FFB870;--tint:#251A3C;--sel:#2A1D47;--selLine:#4A3580}
+.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--accent2:#B85E08;--tint:#EEE7FE;--sel:#F0EAFE;--selLine:#CDBBF8}
+</style>
+</helmet>
+<div style="width: 1360px; height: 640px; box-sizing: border-box; padding: 48px; background: #0B0810; color: #EFEAF8; font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <div style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #9C92B0">Component · F-003.R2 · F-003.R5 · RULE-11</div>
+    <h1 style="margin: 0; font: 600 28px/1.15 Unbounded, sans-serif; letter-spacing: -0.02em">CMP-ToolHeader</h1>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+      <div class="{{t.cls}}" style="background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px">
+        <span style="font: 500 12px 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted)">{{t.name}}</span>
+        <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-ToolHeader / default / {{t.key}}</span>
+        <div role="toolbar" aria-label="JSON Formatter tool" style="display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px">
+          <a href="#" data-copy="COPY-tool.back" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 10px; color: var(--muted); text-decoration: none; font-size: 14px; border-radius: 10px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Back</a>
+          <span style="width: 1px; height: 24px; background: var(--line)"></span>
+          <span style="width: 26px; height: 26px; border-radius: 7px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 12px 'JetBrains Mono', monospace">{ }</span>
+          <h2 style="margin: 0; font: 600 15px Manrope, sans-serif">JSON Formatter</h2>
+          <button type="button" aria-label="Remove from favorites" aria-pressed="true" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--accent2)"><svg width="17" height="17" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 2l2 4.3 4.7.5-3.5 3.1 1 4.6L9 12.2l-4.2 2.3 1-4.6L2.3 6.8 7 6.3z" fill="currentColor"></path></svg></button>
+          <a href="#" data-copy="COPY-tool.openNewTab" style="margin-left: auto; display: flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; padding: 0 14px; color: var(--fg); text-decoration: none; font-size: 14px; font-weight: 600; background: var(--surface2); border: 1px solid var(--lineStrong); border-radius: 10px">Open in new tab<svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4 2h6v6M10 2L3 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></a>
+        </div>
+        <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-ToolHeader / slow / {{t.key}} — after 10 s (RULE-11)</span>
+        <div role="toolbar" aria-label="JSON Formatter tool" style="display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden">
+          <div style="display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 6px">
+            <a href="#" data-copy="COPY-tool.back" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 10px; color: var(--muted); text-decoration: none; font-size: 14px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Back</a>
+            <span style="width: 1px; height: 24px; background: var(--line)"></span>
+            <span style="width: 26px; height: 26px; border-radius: 7px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 12px 'JetBrains Mono', monospace">{ }</span>
+            <h2 style="margin: 0; font: 600 15px Manrope, sans-serif">JSON Formatter</h2>
+            <button type="button" aria-label="Add to favorites" aria-pressed="false" data-copy="COPY-fav.add" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 2l2 4.3 4.7.5-3.5 3.1 1 4.6L9 12.2l-4.2 2.3 1-4.6L2.3 6.8 7 6.3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button>
+            <a href="#" data-copy="COPY-tool.openNewTab" style="margin-left: auto; display: flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; padding: 0 14px; color: var(--onAccent); text-decoration: none; font-size: 14px; font-weight: 700; background: var(--accent); border-radius: 10px">Open in new tab<svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4 2h6v6M10 2L3 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></a>
+          </div>
+          <div role="status" data-copy="COPY-tool.slow" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--sel); border-top: 1px solid var(--selLine); font-size: 14px">
+            <span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--selLine); border-top-color: var(--accent)"></span>
+            JSON Formatter is taking its time. You can open it in a new tab instead.
+          </div>
+        </div>
+        <span style="font-size: 12px; color: var(--muted)">Open-in-new-tab is always visible. In the slow variant it becomes the primary button.</span>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      themes: [
+        { cls: 'tk-dark', name: 'Dark (default)', key: 'dark' },
+        { cls: 'tk-light', name: 'Light', key: 'light' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

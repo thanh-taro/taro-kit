@@ -1,0 +1,351 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-13T11:20:00Z"
+  },
+  "title": "TaroKit Designs",
+  "launch": {
+    "view": "canvas",
+    "page": "screens"
+  },
+  "pages": [
+    {
+      "id": "components",
+      "name": "D1 · Components"
+    },
+    {
+      "id": "flow",
+      "name": "D2 · Primary flow"
+    },
+    {
+      "id": "screens",
+      "name": "D3 · Screens"
+    },
+    {
+      "id": "states",
+      "name": "D4 · Edge states"
+    }
+  ],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1360,
+      "h": 1240,
+      "title": "Night Market · Tokens",
+      "page": "components"
+    },
+    "CMP-AppShell.dc.html": {
+      "x": 1440,
+      "y": 0,
+      "w": 1360,
+      "h": 1560,
+      "title": "CMP-AppShell",
+      "page": "components"
+    },
+    "CMP-ToolCard.dc.html": {
+      "x": 0,
+      "y": 1680,
+      "w": 1360,
+      "h": 1320,
+      "title": "CMP-ToolCard",
+      "page": "components"
+    },
+    "CMP-ToolHeader.dc.html": {
+      "x": 1440,
+      "y": 1680,
+      "w": 1360,
+      "h": 640,
+      "title": "CMP-ToolHeader",
+      "page": "components"
+    },
+    "CMP-CommandPalette.dc.html": {
+      "x": 0,
+      "y": 3120,
+      "w": 1360,
+      "h": 2040,
+      "title": "CMP-CommandPalette",
+      "page": "components"
+    },
+    "CMP-FavoriteToggle.dc.html": {
+      "x": 1440,
+      "y": 3120,
+      "w": 1360,
+      "h": 560,
+      "title": "CMP-FavoriteToggle",
+      "page": "components"
+    },
+    "CMP-ProjectCard.dc.html": {
+      "x": 0,
+      "y": 5280,
+      "w": 1360,
+      "h": 840,
+      "title": "CMP-ProjectCard",
+      "page": "components"
+    },
+    "CMP-StateMessage.dc.html": {
+      "x": 1440,
+      "y": 5280,
+      "w": 1360,
+      "h": 1260,
+      "title": "CMP-StateMessage",
+      "page": "components"
+    },
+    "HomeDesktop.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1360,
+      "title": "SCR-Home / default / desktop",
+      "page": "flow",
+      "expand": "fill"
+    },
+    "PaletteDesktop.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1200,
+      "title": "CMP-CommandPalette over SCR-Home / results / desktop",
+      "page": "flow",
+      "expand": "fill"
+    },
+    "ToolDesktop.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 960,
+      "title": "SCR-ToolView / embedded / desktop",
+      "page": "flow",
+      "expand": "fill"
+    },
+    "LinkedDesktop.dc.html": {
+      "x": 0,
+      "y": 1480,
+      "w": 1440,
+      "h": 760,
+      "title": "SCR-ToolView / linked / desktop",
+      "page": "flow",
+      "expand": "fill"
+    },
+    "HomeMobile.dc.html": {
+      "x": 1520,
+      "y": 1480,
+      "w": 390,
+      "h": 1900,
+      "title": "SCR-Home / default / mobile",
+      "page": "flow"
+    },
+    "PaletteMobile.dc.html": {
+      "x": 1990,
+      "y": 1480,
+      "w": 390,
+      "h": 844,
+      "title": "CMP-CommandPalette / results / mobile",
+      "page": "flow"
+    },
+    "ToolMobile.dc.html": {
+      "x": 2460,
+      "y": 1480,
+      "w": 390,
+      "h": 844,
+      "title": "SCR-ToolView / embedded / mobile",
+      "page": "flow"
+    },
+    "CMP-CategoryTile.dc.html": {
+      "x": 0,
+      "y": 6660,
+      "w": 1360,
+      "h": 900,
+      "title": "CMP-CategoryTile",
+      "page": "components"
+    },
+    "CatalogDesktop.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "SCR-Catalog / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "CategoryDesktop.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "SCR-Category / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "AboutDesktop.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "SCR-About / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "ProjectsDesktop.dc.html": {
+      "x": 0,
+      "y": 1620,
+      "w": 1440,
+      "h": 1300,
+      "title": "SCR-Projects / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "NowDesktop.dc.html": {
+      "x": 1520,
+      "y": 1620,
+      "w": 1440,
+      "h": 1300,
+      "title": "SCR-Now / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "SettingsDesktop.dc.html": {
+      "x": 3040,
+      "y": 1620,
+      "w": 1440,
+      "h": 1300,
+      "title": "SCR-Settings / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "NotFoundDesktop.dc.html": {
+      "x": 0,
+      "y": 3040,
+      "w": 1440,
+      "h": 760,
+      "title": "SCR-NotFound / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "CatalogMobile.dc.html": {
+      "x": 1520,
+      "y": 3040,
+      "w": 390,
+      "h": 1700,
+      "title": "SCR-Catalog / default / mobile",
+      "page": "screens"
+    },
+    "CategoryMobile.dc.html": {
+      "x": 1990,
+      "y": 3040,
+      "w": 390,
+      "h": 1400,
+      "title": "SCR-Category / default / mobile",
+      "page": "screens"
+    },
+    "AboutMobile.dc.html": {
+      "x": 2460,
+      "y": 3040,
+      "w": 390,
+      "h": 1400,
+      "title": "SCR-About / default / mobile",
+      "page": "screens"
+    },
+    "ProjectsMobile.dc.html": {
+      "x": 2930,
+      "y": 3040,
+      "w": 390,
+      "h": 1600,
+      "title": "SCR-Projects / default / mobile",
+      "page": "screens"
+    },
+    "NowMobile.dc.html": {
+      "x": 3400,
+      "y": 3040,
+      "w": 390,
+      "h": 1500,
+      "title": "SCR-Now / default / mobile",
+      "page": "screens"
+    },
+    "SettingsMobile.dc.html": {
+      "x": 3870,
+      "y": 3040,
+      "w": 390,
+      "h": 1700,
+      "title": "SCR-Settings / default / mobile",
+      "page": "screens"
+    },
+    "NotFoundMobile.dc.html": {
+      "x": 4340,
+      "y": 3040,
+      "w": 390,
+      "h": 844,
+      "title": "SCR-NotFound / default / mobile",
+      "page": "screens"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "CMP-AppShell.dc.html",
+    "CMP-ToolCard.dc.html",
+    "CMP-ToolHeader.dc.html",
+    "CMP-CommandPalette.dc.html",
+    "CMP-FavoriteToggle.dc.html",
+    "CMP-ProjectCard.dc.html",
+    "CMP-StateMessage.dc.html",
+    "HomeDesktop.dc.html",
+    "PaletteDesktop.dc.html",
+    "ToolDesktop.dc.html",
+    "LinkedDesktop.dc.html",
+    "HomeMobile.dc.html",
+    "PaletteMobile.dc.html",
+    "ToolMobile.dc.html",
+    "CMP-CategoryTile.dc.html",
+    "CatalogDesktop.dc.html",
+    "CategoryDesktop.dc.html",
+    "AboutDesktop.dc.html",
+    "ProjectsDesktop.dc.html",
+    "NowDesktop.dc.html",
+    "SettingsDesktop.dc.html",
+    "NotFoundDesktop.dc.html",
+    "CatalogMobile.dc.html",
+    "CategoryMobile.dc.html",
+    "AboutMobile.dc.html",
+    "ProjectsMobile.dc.html",
+    "NowMobile.dc.html",
+    "SettingsMobile.dc.html",
+    "NotFoundMobile.dc.html"
+  ],
+  "notes": {
+    "d1title": {
+      "x": 0,
+      "y": -300,
+      "text": "D1 · Components — Night Market",
+      "kind": "title1",
+      "maxW": 2800,
+      "page": "components"
+    },
+    "d2title": {
+      "x": 0,
+      "y": -300,
+      "text": "D2 · FLOW-01 — launch a tool from the keyboard",
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "flow"
+    },
+    "d2scope": {
+      "x": 3040,
+      "y": 1480,
+      "w": 420,
+      "text": "FLOW-01 exits and edge states (Home empty and storage error, tool offline, slow, not found) are designed in D4 · Edge states. Palette screens: switch State (empty query / results) and Theme in the Tweaks panel.",
+      "page": "flow",
+      "fill": "purple",
+      "size": "m"
+    },
+    "d3title": {
+      "x": 0,
+      "y": -300,
+      "text": "D3 · Screens — every remaining screen, default state",
+      "kind": "title1",
+      "maxW": 4730,
+      "page": "screens"
+    }
+  },
+  "designSystems": []
+}

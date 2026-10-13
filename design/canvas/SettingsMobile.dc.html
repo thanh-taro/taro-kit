@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings, mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--danger:#FF8595;--chrome:#140F1EB8;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--danger:#C0243B;--chrome:#FFFFFFD1;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:12px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="position: relative; width: 390px; height: 1700px; box-sizing: border-box; overflow: hidden; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 20px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <header style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 4px 0 14px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+    <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 13px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+    <nav aria-label="Main" style="margin-left: auto; display: contents"><button type="button" aria-expanded="false" data-copy="COPY-nav.menu" style="margin-left: auto; min-height: 44px; display: flex; align-items: center; padding: 0 12px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 600 13px Manrope, sans-serif">Menu</button></nav>
+  </header>
+  <main id="main" style="display: flex; flex-direction: column; gap: 16px">
+    <h1 data-copy="COPY-settings.title" style="margin: 0; font: 600 28px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Settings</h1>
+    <section aria-labelledby="ms-app" style="display: flex; flex-direction: column; gap: 12px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+      <h2 id="ms-app" data-copy="COPY-settings.appearance" style="margin: 0; font: 600 15px Unbounded, sans-serif">Appearance</h2>
+      <fieldset data-copy="COPY-settings.theme" style="margin: 0; padding: 0; border: 0">
+        <legend style="font-size: 14px; color: var(--muted); padding: 0; margin-bottom: 8px">Theme</legend>
+        <div role="radiogroup" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; gap: 4px; background: var(--bg); border: 1px solid var(--lineStrong); border-radius: 12px">
+          <sc-for list="{{themes}}" as="o" hint-placeholder-count="3">
+            <span role="radio" aria-checked="{{o.checked}}" tabindex="{{o.tab}}" style="display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 10px; font-weight: 700; font-size: 14px; background: {{o.bg}}; color: {{o.fg}}">{{o.label}}</span>
+          </sc-for>
+        </div>
+      </fieldset>
+    </section>
+    <section aria-labelledby="ms-data" style="display: flex; flex-direction: column; gap: 14px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+      <h2 id="ms-data" data-copy="COPY-settings.yourData" style="margin: 0; font: 600 15px Unbounded, sans-serif">Your data</h2>
+      <span data-copy="COPY-settings.daysUsed" style="font-size: 15px; font-weight: 600">You've used TaroKit on 9 of the last 14 days</span>
+      <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: 4px">
+        <sc-for list="{{days}}" as="d" hint-placeholder-count="14"><span style="aspect-ratio: 1; border-radius: 7px; background: {{d.bg}}; border: 1px solid var(--line)"></span></sc-for>
+      </div>
+      <div style="height: 1px; background: var(--line)"></div>
+      <button type="button" data-copy="COPY-settings.export" style="min-height: 48px; background: var(--accent); color: var(--onAccent); border: 0; border-radius: 10px; font: 700 15px Manrope, sans-serif">Export your data</button>
+      <button type="button" data-copy="COPY-settings.import" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">Import from file</button>
+      <p data-copy="COPY-settings.backupScope" style="margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5">Your backup holds your favorites, recents, theme and days used. Each tool keeps its own data.</p>
+      <div style="height: 1px; background: var(--line)"></div>
+      <button type="button" data-copy="COPY-settings.clearRecents" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">Clear recent tools</button>
+      <button type="button" data-copy="COPY-settings.erase" style="min-height: 48px; background: transparent; color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; font: 700 15px Manrope, sans-serif">Erase your data</button>
+    </section>
+    <section aria-labelledby="ms-priv" style="display: flex; flex-direction: column; gap: 6px; padding: 18px; background: var(--tint); border-radius: 12px">
+      <h2 id="ms-priv" data-copy="COPY-settings.privacyTitle" style="margin: 0; font: 600 15px Unbounded, sans-serif">Privacy</h2>
+      <p data-copy="COPY-settings.privacy" style="margin: 0; font-size: 15px; line-height: 1.5">No accounts, no tracking. Everything you do here stays in your browser, and I never see it.</p>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["system","dark","light"],"default":"system"},"$preview":{"width":390,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'system';
+    const opt = (label, checked) => ({ label: label, checked: checked ? 'true' : 'false', tab: checked ? '0' : '-1', bg: checked ? 'var(--accent)' : 'transparent', fg: checked ? 'var(--onAccent)' : 'var(--fg)' });
+    const used = [1,1,0,1,1,1,0,0,1,1,0,1,0,1];
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      themes: [opt('System', theme === 'system'), opt('Light', theme === 'light'), opt('Dark', theme === 'dark')],
+      days: used.map((u) => ({ bg: u ? 'var(--accent)' : 'var(--surface2)' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

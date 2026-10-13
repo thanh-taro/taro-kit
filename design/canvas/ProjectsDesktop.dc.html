@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Projects, desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--tint:#251A3C;--chrome:#140F1EB8}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--tint:#EEE7FE;--chrome:#FFFFFFD1}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:16px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="position: relative; box-sizing: border-box; min-height: 1300px; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 16px 24px 48px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+      <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 2px; font-size: 14px">
+        <sc-for list="{{navs}}" as="n" hint-placeholder-count="5">
+          <a href="#" aria-current="{{n.cur}}" data-copy="{{n.copy}}" style="color: {{n.color}}; background: {{n.bg}}; font-weight: {{n.weight}}; text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">{{n.label}}</a>
+        </sc-for>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 4px">
+        <button type="button" aria-label="{{toggleLabel}}" data-copy="COPY-shell.themeToggle" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 10.5A6.5 6.5 0 017.5 3a6.5 6.5 0 107.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+        <a href="#" aria-label="Settings" data-copy="COPY-nav.settings" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--muted); border-radius: 10px"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></a>
+      </div>
+    </header>
+    <main id="main" style="display: flex; flex-direction: column; gap: 28px; padding: 16px 8px 0">
+      <h1 data-copy="COPY-projects.title" style="margin: 0; font: 600 44px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Things I've built</h1>
+      <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <sc-for list="{{projects}}" as="p" hint-placeholder-count="4">
+          <li id="{{p.id}}">
+            <article style="display: flex; flex-direction: column; height: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: {{p.ring}}">
+              <div aria-hidden="true" style="height: 170px; background: {{p.cover}}; display: flex; align-items: center; justify-content: center; font: 600 44px Unbounded, sans-serif; color: var(--accent); letter-spacing: -0.04em">{{p.mono}}</div>
+              <div style="display: flex; flex-direction: column; gap: 8px; padding: 18px">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px"><h2 style="margin: 0; font: 600 17px Unbounded, sans-serif; letter-spacing: -0.01em">{{p.name}}</h2><span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">{{p.year}}</span></div>
+                <p style="margin: 0; font-size: 15px; line-height: 1.5">{{p.summary}}</p>
+                <p style="margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted)">{{p.description}}</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{p.tags}}" as="tg" hint-placeholder-count="2"><span style="font-size: 12px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted)">{{tg}}</span></sc-for></div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px">
+                  <sc-for list="{{p.links}}" as="l" hint-placeholder-count="2">
+                    <a href="#" style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; background: {{l.bg}}; color: {{l.fg}}; border: {{l.border}}">{{l.label}}<span class="sr" data-copy="COPY-tool.opensNewTab"> (opens in a new tab)</span><span aria-hidden="true">↗</span></a>
+                  </sc-for>
+                </div>
+              </div>
+            </article>
+          </li>
+        </sc-for>
+      </ul>
+      <p style="margin: 0; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Sample projects. The second card shows how a project looks when opened from its own address (F-009.R4): focused, with the accent ring.</p>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const nav = (label, copy, cur) => ({ label: label, copy: copy, cur: cur ? 'page' : 'false', color: cur ? 'var(--fg)' : 'var(--muted)', bg: cur ? 'var(--surface2)' : 'transparent', weight: cur ? '600' : '500' });
+    const primary = (label) => ({ label: label, bg: 'var(--tint)', fg: 'var(--accent)', border: '0' });
+    const secondary = (label) => ({ label: label, bg: 'transparent', fg: 'var(--fg)', border: '1px solid var(--lineStrong)' });
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
+      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools'), nav('Projects', 'COPY-nav.projects', true), nav('About me', 'COPY-nav.about'), nav('Now', 'COPY-nav.now')],
+      projects: [
+        { id: 'pocket-budget', name: 'Pocket Budget', year: '2026', mono: 'PB', cover: 'linear-gradient(135deg, var(--tint), var(--glow))', ring: 'none',
+          summary: 'A tiny offline budget app I built to track my monthly spending.', description: 'Local-first, works offline, and syncs between my phone and laptop through a file.',
+          tags: ['mobile', 'finance'], links: [primary('Live site'), secondary('Source')] },
+        { id: 'jsoncrack-clone', name: 'JsonCrack Clone', year: '2025', mono: 'JC', cover: 'var(--surface2)', ring: '0 0 0 2px var(--accent)',
+          summary: 'A graph viewer for big JSON files.', description: 'I rebuilt it to learn canvas rendering. It handles 50 MB files in the browser.',
+          tags: ['web', 'visualization'], links: [primary('Try it'), secondary('Source')] },
+        { id: 'study-buddy', name: 'Study Buddy Bot', year: '2024', mono: 'SB', cover: 'var(--surface2)', ring: 'none',
+          summary: 'A chat bot that quizzes my friends before exams.', description: 'Built over a weekend for a study group; it is still in use.',
+          tags: ['bot'], links: [secondary('Source')] },
+        { id: 'unity-game', name: 'Unity Game Jam', year: '2024', mono: 'UG', cover: 'var(--surface2)', ring: 'none',
+          summary: 'A 48-hour puzzle game I made with two friends.', description: 'I did the level design and the audio.',
+          tags: ['game'], links: [primary('Play it')] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
