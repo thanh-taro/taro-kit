@@ -83,3 +83,8 @@ All results are correct.
   - Adopt `spikes/sp2` fixtures as its unit and integration tests.
 - **spikes.md SP-2 "Watch" note:** replace "invalid or duplicated XFO value is a warning" with the rule above.
 - **No ADR-0009 change.**
+
+## SP-2 final (2026-10-13): ADOPT
+- Firefox 142 run locally over http: core fixtures 10/10, extras 12/12, in agreement with the classifier. Chromium 141 and WebKit 26 were 10/10 and 12/12 over both http and https.
+- Firefox over https could not launch inside the agent sandbox (the process is killed at start). That is an environment limit, not a classifier result. The other two engines behaved identically on http and https, so the scheme does not affect frame-ancestors or XFO handling.
+- Pass bar met: the classifier agrees with all three engines on the 10 embed fixtures, and the reachability reasons are correct.

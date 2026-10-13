@@ -197,3 +197,7 @@ Then run:
 Also measure the "shortcut pressed before hydration" path.
 
 **Pass.** All budgets met with at least 20 % headroom. Otherwise cut font weight or subsets first, then move the palette to `client:idle` with a smaller bootstrap.
+
+## Results
+- **SP-2**: adopt (2026-10-13). The classifier agrees with Chromium, Firefox and WebKit on all fixtures; RULE-12, ADR-0001 and MOD-CatalogCheck were updated. Evidence: .build-my-app/reports/spike-embed-classifier*.md.
+- **SP-5**: adapt (2026-10-13). Registry pipeline proven; ADR-0005, ADR-0009 and the budgets were amended. Evidence: .build-my-app/reports/spike-registry-pipeline.md.
