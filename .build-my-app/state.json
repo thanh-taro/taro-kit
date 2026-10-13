@@ -615,7 +615,7 @@
       "ended": "2026-10-13T08:32:25+00:00"
     },
     "design-D4": {
-      "round": 1,
+      "round": 2,
       "max": 3,
       "active": true,
       "started": "2026-10-13T13:36:33+00:00",
@@ -1142,9 +1142,13 @@
     {
       "at": "2026-10-13T13:36:33+00:00",
       "event": "design step: 2.4 D4 drafted (8 boards, state tweaks); audit round 1"
+    },
+    {
+      "at": "2026-10-13T13:40:27+00:00",
+      "event": "loop design-D4 round 2"
     }
   ],
-  "updated": "2026-10-13T13:36:33+00:00",
+  "updated": "2026-10-13T13:40:27+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

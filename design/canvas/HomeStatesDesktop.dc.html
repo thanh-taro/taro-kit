@@ -17,9 +17,11 @@ a{color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .stretch::after{content:"";position:absolute;inset:0;border-radius:12px}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:12px}
 </style>
 </helmet>
 <div class="{{themeCls}}" style="position: relative; box-sizing: border-box; min-height: 1300px; background: radial-gradient(70% 45% at 85% 0%, var(--glow) 0%, var(--bg) 70%); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 16px 24px 48px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
   <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
     <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
       <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
@@ -55,6 +57,7 @@ a{color:inherit}
         <span style="font: 500 13px 'JetBrains Mono', monospace; color: var(--muted)">Tue, 13 Oct · 08:42</span>
         <h1 data-copy="COPY-home.greetingMorning" style="margin: 0; font: 600 44px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Good morning</h1>
         <p data-copy="COPY-home.intro" style="margin: 0; max-width: 620px; font-size: 17px; line-height: 1.5; color: var(--muted)">I'm <span style="color: var(--accent); font-weight: 700">Taro</span>. Full-stack developer. I build small tools for work and life, and they all live here.</p>
+        <a href="#" data-copy="COPY-nav.about" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--accent); font-weight: 700; font-size: 15px; text-decoration: none">About me <span aria-hidden="true">→</span></a>
         <button type="button" style="margin-top: 8px; display: flex; align-items: center; gap: 12px; max-width: 640px; min-height: 56px; padding: 0 10px 0 18px; background: var(--surface); color: var(--muted); border: 1px solid var(--lineStrong); border-radius: 12px; font: 500 15px Manrope, sans-serif; text-align: left"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg><span data-copy="COPY-palette.placeholder">What are you looking for?</span><span style="margin-left: auto; font: 500 12px 'JetBrains Mono', monospace; color: var(--fg); background: var(--surface2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; padding: 2px 8px">⌘K</span></button>
       </section>
       <sc-if value="{{firstVisit}}" hint-placeholder-val="{{false}}">

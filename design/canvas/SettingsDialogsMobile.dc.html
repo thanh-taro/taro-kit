@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Settings erase confirmation, mobile</title>
+<title>Settings dialogs, mobile</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -13,29 +13,60 @@
 body{margin:0}
 .tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--danger:#FF8595;--chrome:#140F1EB8;--scrim:#07050BB3}
 .tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--danger:#C0243B;--chrome:#FFFFFFD1;--scrim:#16111F66}
+a{color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:12px}
 </style>
 </helmet>
-<div class="{{themeCls}}" style="position: relative; width: 390px; height: 844px; box-sizing: border-box; overflow: hidden; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px">
-  <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 16px">
-    <div style="height: 56px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px"></div>
-    <span style="font: 600 28px/1.1 Unbounded, sans-serif">Settings</span>
-    <div style="height: 120px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px"></div>
-    <div style="height: 320px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px"></div>
-  </div>
-  <div aria-hidden="true" style="position: absolute; inset: 0; background: var(--scrim)"></div>
-  <div role="alertdialog" aria-modal="true" aria-labelledby="m-dlg" style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 20px 28px; background: var(--surface); border-top: 1px solid var(--line); border-radius: 14px 14px 0 0">
-    <h2 id="m-dlg" data-copy="COPY-settings.eraseConfirm" style="margin: 0; font: 600 20px/1.35 Unbounded, sans-serif">Erase all your TaroKit data on this device? This can't be undone.</h2>
-    <button type="button" data-copy="COPY-common.confirm" style="min-height: 52px; background: var(--danger); color: var(--bg); border: 0; border-radius: 12px; font: 700 15px Manrope, sans-serif">Confirm</button>
-    <button type="button" data-copy="COPY-common.cancel" style="min-height: 52px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 12px; font: 700 15px Manrope, sans-serif; outline: 2px solid var(--accent); outline-offset: 2px">Cancel</button>
-  </div>
+<div class="{{themeCls}}" style="position: relative; width: 390px; height: 844px; box-sizing: border-box; overflow: hidden; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px; display: flex; flex-direction: column; gap: 16px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <header style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 4px 0 14px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+    <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 13px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+    <nav aria-label="Main" style="margin-left: auto; display: contents"><button type="button" aria-expanded="false" data-copy="COPY-nav.menu" style="margin-left: auto; min-height: 44px; display: flex; align-items: center; padding: 0 12px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 600 13px Manrope, sans-serif">Menu</button></nav>
+  </header>
+  <main id="main" style="display: flex; flex-direction: column; gap: 14px">
+    <h1 data-copy="COPY-settings.title" style="margin: 0; font: 600 28px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Settings</h1>
+    <section style="display: flex; flex-direction: column; gap: 12px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+      <h2 data-copy="COPY-settings.yourData" style="margin: 0; font: 600 17px Unbounded, sans-serif">Your data</h2>
+      <button type="button" data-copy="COPY-settings.export" style="min-height: 48px; background: var(--accent); color: var(--onAccent); border: 0; border-radius: 10px; font: 700 15px Manrope, sans-serif">Export your data</button>
+      <button type="button" data-copy="COPY-settings.import" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">Import from file</button>
+      <sc-if value="{{importError}}" hint-placeholder-val="{{false}}">
+        <div role="alert" style="padding: 12px 14px; border: 1px solid var(--danger); border-radius: 10px; font-size: 14px; line-height: 1.5"><span data-copy="COPY-settings.importInvalid">I couldn't import that file because <span data-copy="COPY-import.damaged">it's damaged or incomplete</span>. Nothing changed.</span></div>
+      </sc-if>
+      <button type="button" data-copy="COPY-settings.clearRecents" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">Clear recent tools</button>
+      <button type="button" data-copy="COPY-settings.erase" style="min-height: 48px; background: transparent; color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; font: 700 15px Manrope, sans-serif">Erase your data</button>
+    </section>
+  </main>
+  <sc-if value="{{dialog}}" hint-placeholder-val="{{true}}">
+    <div aria-hidden="true" style="position: absolute; inset: 0; background: var(--scrim)"></div>
+    <div role="alertdialog" aria-modal="true" aria-labelledby="m-dlg" style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 14px; padding: 24px 20px 28px; background: var(--surface); border-top: 1px solid var(--line); border-radius: 14px 14px 0 0">
+      <h2 id="m-dlg" data-copy="{{dlgCopy}}" style="margin: 0; font: 600 20px/1.35 Unbounded, sans-serif">{{dlgText}}</h2>
+      <sc-if value="{{showFile}}" hint-placeholder-val="{{false}}"><span style="font: 400 13px 'JetBrains Mono', monospace; color: var(--muted)">tarokit-backup-2026-10-13.json (sample file name)</span></sc-if>
+      <button type="button" data-copy="COPY-common.confirm" style="min-height: 52px; background: {{confirmBg}}; color: {{confirmFg}}; border: 0; border-radius: 12px; font: 700 15px Manrope, sans-serif">Confirm</button>
+      <button type="button" data-copy="COPY-common.cancel" style="min-height: 52px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 12px; font: 700 15px Manrope, sans-serif; outline: 2px solid var(--accent); outline-offset: 2px">Cancel</button>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"state":{"editor":"enum","options":["import error","import confirm","clear recents confirm","erase confirm"],"default":"erase confirm"},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   renderVals() {
     const theme = this.props.theme ?? 'dark';
-    return { themeCls: theme === 'light' ? 'tk-light' : 'tk-dark' };
+    const state = this.props.state ?? 'erase confirm';
+    const d = {
+      'import confirm': ['COPY-settings.importConfirm', 'Replace your favorites, recents, theme and days used with the ones in this file?', false],
+      'clear recents confirm': ['COPY-settings.clearRecentsConfirm', 'Clear your recent tools?', false],
+      'erase confirm': ['COPY-settings.eraseConfirm', "Erase all your TaroKit data on this device? This can't be undone.", true]
+    }[state];
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      importError: state === 'import error',
+      dialog: !!d,
+      dlgCopy: d ? d[0] : '', dlgText: d ? d[1] : '',
+      showFile: state === 'import confirm',
+      confirmBg: d && d[2] ? 'var(--danger)' : 'var(--accent)',
+      confirmFg: d && d[2] ? 'var(--bg)' : 'var(--onAccent)'
+    };
   }
 }
 </script>

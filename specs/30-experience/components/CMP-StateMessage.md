@@ -15,6 +15,7 @@ Icon; title; body; optional primary action.
 | Variant / state | Description |
 |---|---|
 | empty, no-results, offline, info, not-found | the icon and tone vary |
+| page | whole-page empty or blocking states (catalog empty or no results, tool offline): centered, with a larger icon tile and the title as a heading in the display face |
 
 ## Behavior
 Always offers the next best action when there is one.
