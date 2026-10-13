@@ -32,18 +32,18 @@
     },
     "design": {
       "title": "2 Design",
-      "status": "gate",
+      "status": "done",
       "step": "2.4 D4 drafted (8 boards, state tweaks); audit round 1",
       "gate": {
-        "status": "pending",
-        "at": null,
-        "note": null
+        "status": "passed",
+        "at": "2026-10-13T13:43:09+00:00",
+        "note": "38 boards D1-D4 approved; Night Market; canvas v49; design/canvas snapshot"
       }
     },
     "architecture": {
       "title": "3 Architecture & spikes",
       "status": "in_progress",
-      "step": null,
+      "step": "3 architecture: waiting on SP-1/SP-3 (live lab), then accept ADRs, scaffold, CI → G3",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1155,9 +1155,17 @@
     {
       "at": "2026-10-13T13:41:57+00:00",
       "event": "phase design -> gate"
+    },
+    {
+      "at": "2026-10-13T13:43:09+00:00",
+      "event": "gate design passed: 38 boards D1-D4 approved; Night Market; canvas v49; design/canvas snapshot"
+    },
+    {
+      "at": "2026-10-13T13:43:09+00:00",
+      "event": "architecture step: 3 architecture: waiting on SP-1/SP-3 (live lab), then accept ADRs, scaffold, CI → G3"
     }
   ],
-  "updated": "2026-10-13T13:41:57+00:00",
+  "updated": "2026-10-13T13:43:09+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
