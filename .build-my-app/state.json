@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "2.4 category change: adding CMP-CategoryTile (D1) and home category row (D2)",
+      "step": "2.4 categories in designs (CMP-CategoryTile, home row); next: user review of D2 → D3 (incl. SCR-Category) → D4",
       "gate": {
         "status": "pending",
         "at": null,
@@ -994,9 +994,13 @@
     {
       "at": "2026-10-13T04:46:53+00:00",
       "event": "design step: 2.4 category change: adding CMP-CategoryTile (D1) and home category row (D2)"
+    },
+    {
+      "at": "2026-10-13T04:48:24+00:00",
+      "event": "design step: 2.4 categories in designs (CMP-CategoryTile, home row); next: user review of D2 → D3 (incl. SCR-Category) → D4"
     }
   ],
-  "updated": "2026-10-13T04:46:53+00:00",
+  "updated": "2026-10-13T04:48:24+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
