@@ -18,6 +18,7 @@ Search field (COPY-palette.placeholder); result groups with headings (COPY-palet
 | results | grouped results, with the first one highlighted |
 | no results | COPY-palette.noResults with a browse-catalog action (COPY-palette.browseAll) |
 | copied | COPY-palette.copied after the copy-address action |
+| touch sheet | on touch-only or narrow screens: a full-screen sheet with the search field on top and a cancel button (COPY-common.cancel); no key hints |
 
 ## Behavior
 Up and down keys move through results across groups, and Enter runs one. Actions: COPY-palette.actionTheme, COPY-palette.actionExport, COPY-palette.actionCopy. Escape or a click outside closes the palette and focus returns where it was.
