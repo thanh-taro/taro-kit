@@ -17,3 +17,4 @@ status: draft
 - User approved the category change. F-002, F-007, F-015 and F-016 set to ready by Claude on the user's instruction. F-001.AC9 and F-011.AC8 added (clarifications to ready features).
 - F-003.R8, AC3 and AC11 narrowed (user decision, from spikes SP-1/SP-3): the shared-data promise covers local key-value storage only, and clipboard refusal is tested where the browser can restrict it. F-003 stays ready.
 - F-003.R8/AC11 conditioned on browsers that do not partition embedded storage (real-Safari result, user decision D-038). ADR-0001 accepted.
+- Change request from the JSON Formatter (its D-008): F-012 now tells embedded tools the theme showing — R5/R6, AC5–AC7, scope updated; MOD-Theme/MOD-ToolHost updated; ADR-0011 (proposed) theme handoff. Catalog: json-formatter entry added, hidden until deployed.

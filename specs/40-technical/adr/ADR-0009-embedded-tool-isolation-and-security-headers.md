@@ -19,7 +19,7 @@ At the same time, an own tool must keep its own storage whether it is embedded o
 The portal must also make no third-party requests (NFR-05). Browser enforcement differs by engine: Permissions Policy delegation is complete in Chromium and partial in Gecko and WebKit.
 
 ## Decision
-- **Frame:** each embedded tool is an `<iframe src="<tool url>" title="<name> tool">`, built by MOD-ToolHost.
+- **Frame:** each embedded tool is an `<iframe src="<tool url>" title="<name> tool">`, built by MOD-ToolHost (the `src` also carries `?theme=`, ADR-0011).
   - The base sandbox is `sandbox="allow-scripts allow-same-origin allow-forms"`.
   - The frame **never** gets `allow-top-navigation`, `allow-top-navigation-by-user-activation`, `allow-modals` or `allow-storage-access-by-user-activation`.
   - `credentialless` is never set, because it would partition the tool's storage.

@@ -13,7 +13,7 @@ MOD-Theme resolves and applies the theme (RULE-03).
 ## Not responsible for
 - Color values (MOD-DesignSystem tokens).
 - Where the controls are placed (MOD-Shell, MOD-Pages settings, MOD-Palette action).
-- Passing a theme to tools, which never happens.
+- Delivering the theme to embedded tools (MOD-ToolHost does it; it reads `shownTheme`).
 
 ## Public surface
 - `themeInlineScript`, the build-time source string, so Astro can hash it.

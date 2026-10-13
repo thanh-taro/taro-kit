@@ -2,7 +2,7 @@
 id: SCR-ToolView
 title: Tool view
 status: draft
-features: [F-003, F-005, F-011]
+features: [F-003, F-005, F-011, F-012]
 components: [CMP-AppShell, CMP-ToolHeader, CMP-StateMessage]
 ---
 
