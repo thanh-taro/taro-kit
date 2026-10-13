@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "7 change request: categories — specs written, review round 1",
+      "step": "2.4 category change: adding CMP-CategoryTile (D1) and home category row (D2)",
       "gate": {
         "status": "pending",
         "at": null,
@@ -511,6 +511,18 @@
       "answer": "Icon + subtle tint",
       "asked": "2026-10-13T04:44:27+00:00",
       "answered": "2026-10-13T04:44:27+00:00"
+    },
+    {
+      "id": "D-031",
+      "question": "Approve category change",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Approved; features ready",
+      "asked": "2026-10-13T04:46:53+00:00",
+      "answered": "2026-10-13T04:46:53+00:00"
     }
   ],
   "loops": {
@@ -970,9 +982,21 @@
     {
       "at": "2026-10-13T04:46:21+00:00",
       "event": "loop category-change-review ended: converged after round 1 fixes"
+    },
+    {
+      "at": "2026-10-13T04:46:53+00:00",
+      "event": "decision D-031 opened: Approve category change"
+    },
+    {
+      "at": "2026-10-13T04:46:53+00:00",
+      "event": "decision D-031 answered: Approved; features ready"
+    },
+    {
+      "at": "2026-10-13T04:46:53+00:00",
+      "event": "design step: 2.4 category change: adding CMP-CategoryTile (D1) and home category row (D2)"
     }
   ],
-  "updated": "2026-10-13T04:46:21+00:00",
+  "updated": "2026-10-13T04:46:53+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

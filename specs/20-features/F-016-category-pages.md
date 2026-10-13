@@ -1,7 +1,7 @@
 ---
 id: F-016
 title: Browse a category
-status: draft
+status: ready
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]

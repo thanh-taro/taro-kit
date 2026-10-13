@@ -8,12 +8,12 @@ status: draft
 | ID | Title | Milestone | Priority | Status |
 |---|---|---|---|---|
 | F-001 | Maintain the catalog | M-1 | P0 | ready |
-| F-002 | Browse the catalog | M-1 | P0 | draft |
+| F-002 | Browse the catalog | M-1 | P0 | ready |
 | F-003 | Open a tool | M-1 | P0 | ready |
 | F-004 | Search with the command palette | M-1 | P0 | ready |
 | F-005 | Pin favorite tools | M-1 | P0 | ready |
 | F-006 | Track recent tools | M-1 | P0 | ready |
-| F-007 | Home dashboard | M-1 | P0 | draft |
+| F-007 | Home dashboard | M-1 | P0 | ready |
 | F-008 | About the Owner | M-1 | P0 | ready |
 | F-009 | Showcase projects | M-1 | P1 | ready |
 | F-010 | Now and changelog | M-1 | P1 | ready |
@@ -21,8 +21,8 @@ status: draft
 | F-012 | Choose a theme | M-1 | P1 | ready |
 | F-013 | Export and import personal data | M-1 | P1 | ready |
 | F-014 | Check the catalog before publishing | M-1 | P1 | ready |
-| F-015 | Share rich link previews | M-1 | P2 | draft |
-| F-016 | Browse a category | M-1 | P0 | draft |
+| F-015 | Share rich link previews | M-1 | P2 | ready |
+| F-016 | Browse a category | M-1 | P0 | ready |
 
 ## Dependency order (M-1)
 F-001 → (F-002, F-003, F-008, F-009, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013.
