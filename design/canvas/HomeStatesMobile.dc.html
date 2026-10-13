@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home edge states, mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--tint:#251A3C;--chrome:#140F1EB8;--catVioletBg:#251A3C;--catVioletFg:#C4A6FF;--catMangoBg:#33240F;--catMangoFg:#FFC48A;--catSkyBg:#0F2738;--catSkyFg:#8CCBFF;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--tint:#EEE7FE;--chrome:#FFFFFFD1;--catVioletBg:#EEE7FE;--catVioletFg:#5B2FCC;--catMangoBg:#FDEBD8;--catMangoFg:#8F4705;--catSkyBg:#E0F0FD;--catSkyFg:#0B5A94;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stretch::after{content:"";position:absolute;inset:0;border-radius:12px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="width: 390px; height: 1500px; box-sizing: border-box; overflow: hidden; background: radial-gradient(120% 30% at 90% 0%, var(--glow) 0%, var(--bg) 70%); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 22px">
+  <header style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 4px 0 14px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+    <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 13px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+    <nav aria-label="Main" style="margin-left: auto; display: contents"><button type="button" aria-expanded="false" data-copy="COPY-nav.menu" style="margin-left: auto; min-height: 44px; display: flex; align-items: center; padding: 0 12px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 600 13px Manrope, sans-serif">Menu</button></nav>
+  </header>
+  <sc-if value="{{offline}}" hint-placeholder-val="{{false}}">
+    <span role="status" data-copy="COPY-shell.offline" style="font-size: 13px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px">You're offline. Tools that need the internet are paused.</span>
+  </sc-if>
+  <main id="main" style="display: flex; flex-direction: column; gap: 22px">
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h1 data-copy="COPY-home.greetingMorning" style="margin: 0; font: 600 28px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Good morning</h1>
+      <p data-copy="COPY-home.intro" style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted)">I'm <span style="color: var(--accent); font-weight: 700">Taro</span>. I build small tools for work and life.</p>
+      <button type="button" style="display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 16px; background: var(--surface); color: var(--muted); border: 1px solid var(--lineStrong); border-radius: 12px; font: 500 15px Manrope, sans-serif; text-align: left"><span data-copy="COPY-palette.placeholder">What are you looking for?</span></button>
+    </section>
+    <sc-if value="{{firstVisit}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="display: flex; flex-direction: column; gap: 12px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+        <span data-copy="COPY-home.firstVisitTouch" style="font-size: 15px; line-height: 1.5">New here? These are the tools I've built for work and life. Browse them, or tap search and I'll find anything for you.</span>
+        <a href="#" data-copy="COPY-notFound.toCatalog" style="display: flex; align-items: center; justify-content: center; min-height: 48px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; text-decoration: none">Browse my tools</a>
+      </div>
+    </sc-if>
+    <sc-if value="{{offline}}" hint-placeholder-val="{{false}}">
+      <section style="display: flex; flex-direction: column; gap: 10px">
+        <h2 data-copy="COPY-home.favorites" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Your favorites</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <sc-for list="{{favorites}}" as="c" hint-placeholder-count="4">
+            <div style="position: relative; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: var(--surface); border: {{c.border}}; border-radius: 12px">
+              <span style="width: 34px; height: 34px; border-radius: 10px; background: {{c.iconBg}}; color: {{c.iconFg}}; display: flex; align-items: center; justify-content: center; font: 600 13px 'JetBrains Mono', monospace">{{c.icon}}</span>
+              <a href="#" class="stretch" style="text-decoration: none; font-weight: 700; font-size: 14px; color: {{c.nameColor}}">{{c.name}}</a>
+              <sc-if value="{{c.unavailable}}" hint-placeholder-val="{{false}}"><span data-copy="COPY-tool.unavailable" style="font-size: 12px; color: var(--muted)">Needs the internet</span></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+    <section style="display: flex; flex-direction: column; gap: 10px">
+      <h2 data-copy="COPY-home.categories" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Browse by category</h2>
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+        <a href="#" aria-label="{{c.name}}, {{c.count}}" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-decoration: none"><span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: {{c.bg}}; color: {{c.fg}}; display: flex; align-items: center; justify-content: center; font: 700 13px 'JetBrains Mono', monospace">{{c.icon}}</span><span style="font-weight: 700; font-size: 15px">{{c.name}}</span><span style="margin-left: auto; font-size: 13px; color: var(--muted)">{{c.count}}</span></a>
+      </sc-for>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"state":{"editor":"enum","options":["first visit (touch)","offline"],"default":"first visit (touch)"},"$preview":{"width":390,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const state = this.props.state ?? 'first visit (touch)';
+    const offline = state === 'offline';
+    const fav = (icon, name, needsNet) => ({ icon: icon, name: name, unavailable: needsNet,
+      border: needsNet ? '1px dashed var(--lineStrong)' : '1px solid var(--line)',
+      iconBg: needsNet ? 'var(--surface2)' : 'var(--tint)', iconFg: needsNet ? 'var(--muted)' : 'var(--accent)', nameColor: needsNet ? 'var(--muted)' : 'var(--fg)' });
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      offline: offline, firstVisit: !offline,
+      favorites: [fav('{ }', 'JSON Formatter', false), fav('⇄', 'Unit Converter', false), fav('◷', 'Focus Timer', true), fav('%', 'Loan Calculator ↗', true)],
+      cats: [
+        { name: 'Developer tools', icon: '</>', bg: 'var(--catVioletBg)', fg: 'var(--catVioletFg)', count: '3 tools' },
+        { name: 'Media tools', icon: '▶', bg: 'var(--catMangoBg)', fg: 'var(--catMangoFg)', count: '2 tools' },
+        { name: 'Converters & calculators', icon: '⇄', bg: 'var(--catSkyBg)', fg: 'var(--catSkyFg)', count: '3 tools' },
+        { name: 'Productivity & relax', icon: '✓', bg: 'var(--catMintBg)', fg: 'var(--catMintFg)', count: '1 tool' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

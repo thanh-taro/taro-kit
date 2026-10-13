@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "2.4 D3 approved; next D4 edge states; doing Cloudflare zone settings via Chrome",
+      "step": "2.4 D4 drafted (8 boards, state tweaks); audit round 1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -613,6 +613,13 @@
       "started": "2026-10-13T05:30:24+00:00",
       "outcome": "converged",
       "ended": "2026-10-13T08:32:25+00:00"
+    },
+    "design-D4": {
+      "round": 1,
+      "max": 3,
+      "active": true,
+      "started": "2026-10-13T13:36:33+00:00",
+      "outcome": null
     }
   },
   "log": [
@@ -1127,9 +1134,17 @@
     {
       "at": "2026-10-13T08:52:57+00:00",
       "event": "Cloudflare zone configured (D-035); wrangler logged in to user's personal account"
+    },
+    {
+      "at": "2026-10-13T13:36:33+00:00",
+      "event": "loop design-D4 started (max 3)"
+    },
+    {
+      "at": "2026-10-13T13:36:33+00:00",
+      "event": "design step: 2.4 D4 drafted (8 boards, state tweaks); audit round 1"
     }
   ],
-  "updated": "2026-10-13T08:52:57+00:00",
+  "updated": "2026-10-13T13:36:33+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

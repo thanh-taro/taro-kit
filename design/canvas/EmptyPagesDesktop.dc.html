@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Empty Projects and Now, desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--tint:#251A3C;--chrome:#140F1EB8}
+.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--tint:#EEE7FE;--chrome:#FFFFFFD1}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="box-sizing: border-box; min-height: 900px; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 16px 24px 48px">
+  <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px">
+    <header style="display: flex; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+      <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+      <nav aria-label="Main" style="display: flex; gap: 2px; font-size: 14px">
+        <sc-for list="{{navs}}" as="n" hint-placeholder-count="5">
+          <a href="#" aria-current="{{n.cur}}" data-copy="{{n.copy}}" style="color: {{n.color}}; background: {{n.bg}}; text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">{{n.label}}</a>
+        </sc-for>
+      </nav>
+    </header>
+    <main id="main" style="display: flex; flex-direction: column; gap: 24px; padding: 16px 8px 0">
+      <h1 data-copy="{{titleCopy}}" style="margin: 0; font: 600 44px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">{{title}}</h1>
+      <div role="status" style="align-self: flex-start; display: flex; align-items: flex-start; gap: 14px; max-width: 620px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+        <span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 15px 'JetBrains Mono', monospace">◌</span>
+        <p data-copy="{{emptyCopy}}" style="margin: 0; font-size: 17px; line-height: 1.5; padding-top: 8px">{{empty}}</p>
+      </div>
+    </main>
+    <p style="margin: 0; padding: 0 8px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Page: {{page}} (switch in Tweaks). Now is empty only when there is no Now note and no visible tools; otherwise the changelog still shows (F-010.R4).</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"page":{"editor":"enum","options":["projects empty","now empty"],"default":"projects empty"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const page = this.props.page ?? 'projects empty';
+    const proj = page === 'projects empty';
+    const nav = (label, copy, cur) => ({ label: label, copy: copy, cur: cur ? 'page' : 'false', color: cur ? 'var(--fg)' : 'var(--muted)', bg: cur ? 'var(--surface2)' : 'transparent' });
+    return {
+      page: page,
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools'), nav('Projects', 'COPY-nav.projects', proj), nav('About me', 'COPY-nav.about'), nav('Now', 'COPY-nav.now', !proj)],
+      titleCopy: proj ? 'COPY-projects.title' : 'COPY-now.title',
+      title: proj ? "Things I've built" : "What I'm up to",
+      emptyCopy: proj ? 'COPY-projects.empty' : 'COPY-now.empty',
+      empty: proj ? "I'm putting my projects together. Check back soon." : 'Nothing to share yet. Check back soon.'
+    };
+  }
+}
+</script>
+</body>
+</html>

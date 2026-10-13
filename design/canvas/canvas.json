@@ -7,7 +7,7 @@
   "title": "TaroKit Designs",
   "launch": {
     "view": "canvas",
-    "page": "screens"
+    "page": "states"
   },
   "pages": [
     {
@@ -278,6 +278,75 @@
       "h": 844,
       "title": "SCR-NotFound / default / mobile",
       "page": "screens"
+    },
+    "HomeStatesDesktop.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "SCR-Home / first visit · storage error · offline · update ready / desktop",
+      "page": "states",
+      "expand": "fill"
+    },
+    "CatalogStatesDesktop.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1000,
+      "title": "SCR-Catalog / empty · no results / desktop",
+      "page": "states",
+      "expand": "fill"
+    },
+    "ToolStatesDesktop.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "SCR-ToolView / loading · slow · offline / desktop",
+      "page": "states",
+      "expand": "fill"
+    },
+    "EmptyPagesDesktop.dc.html": {
+      "x": 0,
+      "y": 1420,
+      "w": 1440,
+      "h": 900,
+      "title": "SCR-Projects empty · SCR-Now empty / desktop",
+      "page": "states",
+      "expand": "fill"
+    },
+    "SettingsDialogsDesktop.dc.html": {
+      "x": 1520,
+      "y": 1420,
+      "w": 1440,
+      "h": 1100,
+      "title": "SCR-Settings / import error · confirmations / desktop",
+      "page": "states",
+      "expand": "fill"
+    },
+    "HomeStatesMobile.dc.html": {
+      "x": 3040,
+      "y": 1420,
+      "w": 390,
+      "h": 1500,
+      "title": "SCR-Home / first visit · offline / mobile",
+      "page": "states"
+    },
+    "ToolStatesMobile.dc.html": {
+      "x": 3510,
+      "y": 1420,
+      "w": 390,
+      "h": 844,
+      "title": "SCR-ToolView / offline · slow / mobile",
+      "page": "states"
+    },
+    "SettingsDialogsMobile.dc.html": {
+      "x": 3980,
+      "y": 1420,
+      "w": 390,
+      "h": 844,
+      "title": "SCR-Settings / erase confirmation / mobile",
+      "page": "states"
     }
   },
   "order": [
@@ -310,7 +379,15 @@
     "ProjectsMobile.dc.html",
     "NowMobile.dc.html",
     "SettingsMobile.dc.html",
-    "NotFoundMobile.dc.html"
+    "NotFoundMobile.dc.html",
+    "HomeStatesDesktop.dc.html",
+    "CatalogStatesDesktop.dc.html",
+    "ToolStatesDesktop.dc.html",
+    "EmptyPagesDesktop.dc.html",
+    "SettingsDialogsDesktop.dc.html",
+    "HomeStatesMobile.dc.html",
+    "ToolStatesMobile.dc.html",
+    "SettingsDialogsMobile.dc.html"
   ],
   "notes": {
     "d1title": {
@@ -345,6 +422,14 @@
       "kind": "title1",
       "maxW": 4730,
       "page": "screens"
+    },
+    "d4title": {
+      "x": 0,
+      "y": -300,
+      "text": "D4 · Edge states — switch State in the Tweaks panel",
+      "kind": "title1",
+      "maxW": 4370,
+      "page": "states"
     }
   },
   "designSystems": []

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home edge states, desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--accent2:#FFB870;--accent2Fg:#FFC48A;--tint:#251A3C;--tint2:#33240F;--sel:#2A1D47;--selLine:#4A3580;--chrome:#140F1EB8;--catVioletBg:#251A3C;--catVioletFg:#C4A6FF;--catMangoBg:#33240F;--catMangoFg:#FFC48A;--catSkyBg:#0F2738;--catSkyFg:#8CCBFF;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--accent2:#B85E08;--accent2Fg:#8F4705;--tint:#EEE7FE;--tint2:#FDEBD8;--sel:#F0EAFE;--selLine:#CDBBF8;--chrome:#FFFFFFD1;--catVioletBg:#EEE7FE;--catVioletFg:#5B2FCC;--catMangoBg:#FDEBD8;--catMangoFg:#8F4705;--catSkyBg:#E0F0FD;--catSkyFg:#0B5A94;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.stretch::after{content:"";position:absolute;inset:0;border-radius:12px}
+</style>
+</helmet>
+<div class="{{themeCls}}" style="position: relative; box-sizing: border-box; min-height: 1300px; background: radial-gradient(70% 45% at 85% 0%, var(--glow) 0%, var(--bg) 70%); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 16px 24px 48px">
+  <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+      <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
+      <nav aria-label="Main" style="display: flex; gap: 2px; font-size: 14px">
+        <a href="#" aria-current="page" data-copy="COPY-nav.home" style="background: var(--surface2); text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px; font-weight: 600">Home</a>
+        <a href="#" data-copy="COPY-nav.tools" style="color: var(--muted); text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">Tools</a>
+        <a href="#" data-copy="COPY-nav.projects" style="color: var(--muted); text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">Projects</a>
+        <a href="#" data-copy="COPY-nav.about" style="color: var(--muted); text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">About me</a>
+        <a href="#" data-copy="COPY-nav.now" style="color: var(--muted); text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">Now</a>
+      </nav>
+      <sc-if value="{{offline}}" hint-placeholder-val="{{false}}">
+        <span role="status" data-copy="COPY-shell.offline" style="margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; background: var(--surface2); border: 1px solid var(--line); border-radius: 7px; padding: 6px 10px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 5.5a9 9 0 0112 0M4.3 8.2a5.6 5.6 0 017.4 0M6.7 10.8a2.2 2.2 0 012.6 0M2 2l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>You're offline. Tools that need the internet are paused.</span>
+      </sc-if>
+      <div style="margin-left: {{rightMargin}}; display: flex; align-items: center; gap: 4px">
+        <button type="button" aria-label="{{toggleLabel}}" data-copy="COPY-shell.themeToggle" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 10.5A6.5 6.5 0 017.5 3a6.5 6.5 0 107.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+        <a href="#" aria-label="Settings" data-copy="COPY-nav.settings" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></a>
+      </div>
+    </header>
+    <sc-if value="{{update}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 8px 6px 16px; background: var(--sel); border: 1px solid var(--selLine); border-radius: 12px">
+        <span data-copy="COPY-shell.updateReady" style="font-size: 15px; font-weight: 600">I've shipped an update to TaroKit.</span>
+        <button type="button" data-copy="COPY-shell.refresh" style="margin-left: auto; min-height: 44px; padding: 0 16px; background: var(--accent); color: var(--onAccent); border: 0; border-radius: 10px; font: 700 14px Manrope, sans-serif">Refresh</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{storage}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; background: var(--tint2); color: var(--accent2Fg); border-radius: 12px">
+        <span aria-hidden="true" style="font: 700 15px 'JetBrains Mono', monospace">!</span>
+        <span data-copy="COPY-storage.unavailable" style="font-size: 15px; font-weight: 600; line-height: 1.5">Your browser isn't letting me save anything right now, so I'll forget your favorites and recents when you leave.</span>
+      </div>
+    </sc-if>
+    <main id="main" style="display: flex; flex-direction: column; gap: 32px; padding: 0 8px">
+      <section style="display: flex; flex-direction: column; gap: 12px; padding-top: 16px">
+        <span style="font: 500 13px 'JetBrains Mono', monospace; color: var(--muted)">Tue, 13 Oct · 08:42</span>
+        <h1 data-copy="COPY-home.greetingMorning" style="margin: 0; font: 600 44px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Good morning</h1>
+        <p data-copy="COPY-home.intro" style="margin: 0; max-width: 620px; font-size: 17px; line-height: 1.5; color: var(--muted)">I'm <span style="color: var(--accent); font-weight: 700">Taro</span>. Full-stack developer. I build small tools for work and life, and they all live here.</p>
+        <button type="button" style="margin-top: 8px; display: flex; align-items: center; gap: 12px; max-width: 640px; min-height: 56px; padding: 0 10px 0 18px; background: var(--surface); color: var(--muted); border: 1px solid var(--lineStrong); border-radius: 12px; font: 500 15px Manrope, sans-serif; text-align: left"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg><span data-copy="COPY-palette.placeholder">What are you looking for?</span><span style="margin-left: auto; font: 500 12px 'JetBrains Mono', monospace; color: var(--fg); background: var(--surface2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; padding: 2px 8px">⌘K</span></button>
+      </section>
+      <sc-if value="{{firstVisit}}" hint-placeholder-val="{{false}}">
+        <div role="status" style="display: flex; align-items: flex-start; gap: 14px; max-width: 760px; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+          <span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 700 17px Unbounded, sans-serif">T</span>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <span data-copy="COPY-home.firstVisit" style="font-size: 17px; line-height: 1.5">New here? These are the tools I've built for work and life. Browse them, or press <span style="font: 500 12px 'JetBrains Mono', monospace; background: var(--surface2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 7px; padding: 1px 6px">⌘K</span> and I'll find anything for you.</span>
+            <a href="#" data-copy="COPY-notFound.toCatalog" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; text-decoration: none">Browse my tools</a>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{hasFavorites}}" hint-placeholder-val="{{true}}">
+        <section style="display: flex; flex-direction: column; gap: 12px">
+          <h2 data-copy="COPY-home.favorites" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Your favorites</h2>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+            <sc-for list="{{favorites}}" as="c" hint-placeholder-count="3">
+              <div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--surface); border: {{c.border}}; border-radius: 12px">
+                <span style="width: 34px; height: 34px; border-radius: 10px; background: {{c.iconBg}}; color: {{c.iconFg}}; display: flex; align-items: center; justify-content: center; font: 600 13px 'JetBrains Mono', monospace">{{c.icon}}</span>
+                <a href="#" class="stretch" style="text-decoration: none; font-weight: 700; font-size: 15px; color: {{c.nameColor}}">{{c.name}}</a>
+                <sc-if value="{{c.unavailable}}" hint-placeholder-val="{{false}}"><span data-copy="COPY-tool.unavailable" style="font-size: 13px; color: var(--muted)">Needs the internet</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <h2 data-copy="COPY-home.categories" style="margin: 0; font: 700 14px Manrope, sans-serif; color: var(--muted)">Browse by category</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+            <a href="#" aria-label="{{c.name}}, {{c.count}}" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-decoration: none"><span aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: {{c.bg}}; color: {{c.fg}}; display: flex; align-items: center; justify-content: center; font: 700 14px 'JetBrains Mono', monospace">{{c.icon}}</span><span style="display: flex; flex-direction: column"><span style="font-weight: 700; font-size: 15px">{{c.name}}</span><span style="font-size: 13px; color: var(--muted)">{{c.count}}</span></span></a>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+    <p style="margin: 0; padding: 0 8px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">State: {{state}} (switch in Tweaks). Sample content.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"state":{"editor":"enum","options":["first visit","storage unavailable","offline","update ready"],"default":"first visit"},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const state = this.props.state ?? 'first visit';
+    const offline = state === 'offline';
+    const fav = (icon, name, needsNet) => {
+      const un = offline && needsNet;
+      return { icon: icon, name: name, unavailable: un,
+        border: un ? '1px dashed var(--lineStrong)' : '1px solid var(--line)',
+        iconBg: un ? 'var(--surface2)' : 'var(--tint)', iconFg: un ? 'var(--muted)' : 'var(--accent)', nameColor: un ? 'var(--muted)' : 'var(--fg)' };
+    };
+    const favs = state === 'storage unavailable'
+      ? [fav('{ }', 'JSON Formatter', false), fav('⇄', 'Unit Converter', false)]
+      : [fav('{ }', 'JSON Formatter', false), fav('⇄', 'Unit Converter', false), fav('◷', 'Focus Timer', true), fav('%', 'Loan Calculator ↗', true)];
+    return {
+      state: state,
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
+      offline: offline, update: state === 'update ready', storage: state === 'storage unavailable',
+      firstVisit: state === 'first visit', hasFavorites: state !== 'first visit',
+      rightMargin: offline ? '0' : 'auto',
+      favorites: favs,
+      cats: [
+        { name: 'Developer tools', icon: '</>', bg: 'var(--catVioletBg)', fg: 'var(--catVioletFg)', count: '3 tools' },
+        { name: 'Media tools', icon: '▶', bg: 'var(--catMangoBg)', fg: 'var(--catMangoFg)', count: '2 tools' },
+        { name: 'Converters & calculators', icon: '⇄', bg: 'var(--catSkyBg)', fg: 'var(--catSkyFg)', count: '3 tools' },
+        { name: 'Productivity & relax', icon: '✓', bg: 'var(--catMintBg)', fg: 'var(--catMintFg)', count: '1 tool' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
