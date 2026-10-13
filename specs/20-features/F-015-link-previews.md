@@ -1,11 +1,11 @@
 ---
 id: F-015
 title: Share rich link previews
-status: ready
+status: draft
 milestone: M-1
 priority: P2
 personas: [PER-02]
-entities: [ENT-Profile, ENT-Tool, ENT-Project]
+entities: [ENT-Profile, ENT-Tool, ENT-Project, ENT-Category]
 rules: [RULE-06]
 screens: []
 components: []
@@ -24,14 +24,16 @@ When a portal link is shared in chat or social media, the preview looks intentio
 ## Requirements
 - **R1** Every public portal page declares a title, a one-sentence description and the shared preview image (COPY-meta.homeTitle, COPY-meta.homeDescription, COPY-meta.aboutTitle, COPY-meta.aboutDescription, COPY-meta.toolsTitle, COPY-meta.toolsDescription, COPY-meta.projectsTitle, COPY-meta.projectsDescription, COPY-meta.nowTitle, COPY-meta.nowDescription).
 - **R2** A tool's portal address declares the tool's name in its title (COPY-meta.toolTitle), its summary as the description, and the shared preview image.
-- **R3** The portal publishes a site index listing its public pages and the portal addresses of visible tools, leaving out hidden entries (RULE-06).
+- **R3** The portal publishes a site index listing its public pages, visible category pages and the portal addresses of visible tools, leaving out hidden entries and empty categories (RULE-06).
 - **R4** A hidden or unknown tool's portal address declares the not-found title (COPY-notFound.title) and nothing about the tool.
+- **R5** A category page declares the category name in its title (COPY-meta.categoryTitle) and its intro as the description.
 
 ## Acceptance criteria
 - **AC1** Given the About page, when its preview data is read, then the title, description and image match COPY-meta.aboutTitle, COPY-meta.aboutDescription and the shared image. (R1)
 - **AC2** Given the tool "json", when its portal address's preview data is read, then the title contains the tool's name and the description is its summary. (R2)
 - **AC3** Given one hidden tool, when the site index is read, then it does not contain that tool, and every listed tool entry is a portal address. (R3)
 - **AC4** Given a hidden tool, when its portal address's preview data is read, then it shows the not-found title and not the tool's name. (R4)
+- **AC5** Given the Media tools category, when its page's preview data is read, then the title contains \"Media tools\" and the description is the category intro. (R5)
 
 ## UX notes
 Meets NFR-12.

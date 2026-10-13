@@ -37,7 +37,19 @@ A catalog entry of kind `project`, shown in the projects showcase. Additional fi
 - **year**.
 
 ### ENT-Category — Category
-A named group of tools, with an id, a name, a display order and an optional short description. M-1 categories: Developer, Converters, Calculators, Productivity, Creative, Everyday. Categories with no visible tools are not shown (RULE-06).
+A named group of tools. Every tool belongs to exactly one category (INV-07). Fields:
+- **id** (slug), **name**, **display order**;
+- **intro**: one or two sentences in Taro's first-person voice (PRN-04), shown on the category page;
+- **icon**: a bundled icon;
+- **tint**: one of the category tints (RULE-14).
+
+M-1 categories (D-027), in display order:
+1. **Developer tools** (`developer`, tint violet)
+2. **Media tools** (`media`, tint mango)
+3. **Converters & calculators** (`converters`, tint sky)
+4. **Productivity & relax** (`productivity`, tint mint)
+
+Categories with no visible tools are not shown (RULE-06).
 
 ### ENT-Profile — Profile
 The Owner's identity:
@@ -70,3 +82,4 @@ The theme: `system`, `light` or `dark` (RULE-03).
 - **INV-04** Favorites and recents may hold ids of tools that are unknown or hidden. Such entries are never shown to the user. They stay in storage until the RULE-01 or RULE-02 limits remove them, and while stored they reappear if the tool becomes visible again.
 - **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network.
 - **INV-06** Every catalog entry has an `added` date. If it has an `updated` date, that date is on or after `added`.
+- **INV-07** Every tool belongs to exactly one category, and that category exists. Category ids are unique, stable slugs, like entry ids (INV-01).

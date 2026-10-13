@@ -27,12 +27,12 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-home.favorites** | Your favorites | section heading |
 | **COPY-home.recents** | Recently used | section heading |
 | **COPY-home.intro** | I'm {nickname}. {headline} | home introduction (F-007.R5); falls back to the full name |
+| **COPY-home.categories** | Browse by category | section heading |
 | **COPY-home.whatsNew** | Fresh from my workbench | section heading |
 | **COPY-home.firstVisit** | New here? These are the tools I've built for work and life. Browse them, or press {shortcut} and I'll find anything for you. | first-visit invitation, keyboard devices |
 | **COPY-home.firstVisitTouch** | New here? These are the tools I've built for work and life. Browse them, or tap search and I'll find anything for you. | first-visit invitation, touch-only devices |
 | **COPY-catalog.title** | My tools | page heading |
 | **COPY-catalog.searchPlaceholder** | Filter my tools | search field |
-| **COPY-catalog.all** | All | category filter |
 | **COPY-catalog.empty** | I'm still building my first tools. Check back soon. | empty state |
 | **COPY-catalog.noResults** | I don't have anything matching "{query}" yet. | no-results state |
 | **COPY-catalog.clear** | Clear search | action |
@@ -66,6 +66,10 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.copied** | Link copied | confirmation |
 | **COPY-about.links** | Find me | section heading |
 | **COPY-about.more** | See what I've built and what I'm up to now. | pointer to Projects and Now |
+| **COPY-category.toolCount** | {count} tools | count on tiles and category pages; singular form is COPY-category.toolCountOne |
+| **COPY-category.toolCountOne** | 1 tool | singular of COPY-category.toolCount |
+| **COPY-category.allTools** | All my tools | link from a category page back to the catalog |
+| **COPY-category.navLabel** | Categories | accessible name of the category navigation |
 | **COPY-projects.title** | Things I've built | page heading |
 | **COPY-projects.empty** | I'm putting my projects together. Check back soon. | empty state |
 | **COPY-now.updated** | Updated {date} | Now note date |
@@ -99,6 +103,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-meta.homeDescription** | Hi, I'm Taro. These are the tools I build for work and life, and a bit about me. | home preview description |
 | **COPY-meta.toolsTitle** | Tools — TaroKit | catalog preview title |
 | **COPY-meta.toolsDescription** | Every tool I've built, by category. | catalog preview description |
+| **COPY-meta.categoryTitle** | {category} — TaroKit | category preview title; the description is the category intro |
 | **COPY-meta.toolTitle** | {tool} — TaroKit | tool preview title |
 | **COPY-meta.aboutTitle** | About me — TaroKit | About preview title |
 | **COPY-meta.aboutDescription** | Who I am, what I do, and how to reach me. | About preview description |

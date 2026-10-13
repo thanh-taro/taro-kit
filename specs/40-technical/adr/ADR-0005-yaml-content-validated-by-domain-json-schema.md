@@ -43,3 +43,11 @@ The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project
 - A schema change in `specs/10-domain` regenerates the types. Type errors then show every consumer that must change.
 - `json-schema-to-typescript` ignores `if`/`then`, so the generated types are looser than the schema for RULE-07. The registry's normalized types (in code) are strict.
 - The authoring guide warns that ids never change (INV-01), because the build cannot detect a rename.
+
+## Amendments from spike SP-5 (2026-10-13, ADR still proposed)
+- The domain schema sets `unevaluatedProperties: false` on tool and project, so a typo such as `opnMode` fails the build instead of silently defaulting.
+- Rule-bearing subschemas carry a `$comment` with their rule ID, so error messages don't depend on positional paths like `allOf/1`.
+- Type generation uses json-schema-to-typescript with `maxItems: -1` and `customName`; code composes `EntryBase & Tool`; the generated `Date` alias is renamed to avoid shadowing the built-in.
+- MOD-Content's error contract is `file:line › entry › rule: message`, one line per error, all errors reported at once.
+- Measured: validating 500 entries takes 95 ms cold; the browser-side backup validator is 4.7 KB gzip and runs under strict CSP with no eval.
+

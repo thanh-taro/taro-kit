@@ -84,7 +84,7 @@ These are targets that implementation must meet. Measurement rigs are in ADR-000
 |---|---|---|
 | HTML (including inline scripts, inline SVG icons, CSP meta) | ≤ 20 KB | Content page, about 8 cards |
 | CSS (tokens + base + components) | ≤ 15 KB | Scoped CSS, no framework |
-| JS: island runtime + Preact + signals | ≤ 10 KB | preact about 4.5 KB, signals about 2.5 KB, astro-island about 1 KB |
+| JS: island runtime + Preact + signals | ≤ 12 KB | measured in SP-5: 9.6 KB (preact about 4.5 KB, signals 3.7 KB, astro-island about 1 KB); 11.6 KB including inline scripts |
 | JS: home islands (lists, clock) + shell islands | ≤ 15 KB | |
 | JS: palette island (idle prefetch) | ≤ 12 KB | |
 | Catalog data file | ≤ 10 KB for 50 entries; about 35 KB for 500 | About 300 B raw per entry |

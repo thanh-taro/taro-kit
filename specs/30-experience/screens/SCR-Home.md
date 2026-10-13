@@ -3,7 +3,7 @@ id: SCR-Home
 title: Home
 status: draft
 features: [F-007, F-005, F-006, F-004]
-components: [CMP-AppShell, CMP-ToolCard, CMP-CommandPalette, CMP-StateMessage]
+components: [CMP-AppShell, CMP-ToolCard, CMP-CommandPalette, CMP-StateMessage, CMP-CategoryTile]
 ---
 
 ## Purpose
@@ -15,7 +15,8 @@ Launch pad for the Owner and front door for visitors.
 3. Search entry that opens CMP-CommandPalette (COPY-palette.placeholder).
 4. Favorites (CMP-ToolCard list), shown when not empty (COPY-home.favorites).
 5. Recents (at most 8, favorites left out), shown when not empty (COPY-home.recents).
-6. What's new, shown when not empty (COPY-home.whatsNew).
+6. Browse by category (COPY-home.categories): CMP-CategoryTile per visible category.
+7. What's new, shown when not empty (COPY-home.whatsNew).
 
 ## States
 | State | When | What the user sees |

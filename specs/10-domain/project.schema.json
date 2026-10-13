@@ -195,7 +195,8 @@
         "sourceUrl": {
           "$ref": "#/$defs/secureUrl"
         }
-      }
+      },
+      "unevaluatedProperties": false
     },
     "project": {
       "allOf": [
@@ -230,14 +231,18 @@
           "type": "integer",
           "minimum": 2000
         }
-      }
+      },
+      "unevaluatedProperties": false
     },
     "category": {
       "type": "object",
       "required": [
         "id",
         "name",
-        "order"
+        "order",
+        "intro",
+        "icon",
+        "tint"
       ],
       "properties": {
         "id": {
@@ -250,9 +255,21 @@
         "order": {
           "type": "integer"
         },
-        "description": {
+        "intro": {
           "type": "string",
-          "maxLength": 120
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "icon": {
+          "$ref": "#/$defs/assetPath"
+        },
+        "tint": {
+          "enum": [
+            "violet",
+            "mango",
+            "sky",
+            "mint"
+          ]
         }
       },
       "additionalProperties": false

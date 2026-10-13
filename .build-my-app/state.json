@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "2.4 D2 round-1 fixes published; awaiting user D2 review. SP-2 adapt (Firefox needs local run); SP-5 running",
+      "step": "7 change request: categories — specs written, review round 1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -463,6 +463,54 @@
       "answer": "Approved",
       "asked": "2026-10-13T04:18:07+00:00",
       "answered": "2026-10-13T04:18:07+00:00"
+    },
+    {
+      "id": "D-027",
+      "question": "Category set",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Developer tools, Media tools, Converters & calculators, Productivity & relax",
+      "asked": "2026-10-13T04:44:26+00:00",
+      "answered": "2026-10-13T04:44:26+00:00"
+    },
+    {
+      "id": "D-028",
+      "question": "Category membership",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Exactly one per tool",
+      "asked": "2026-10-13T04:44:26+00:00",
+      "answered": "2026-10-13T04:44:26+00:00"
+    },
+    {
+      "id": "D-029",
+      "question": "Category visibility",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Category pages + browse-by-category row on home",
+      "asked": "2026-10-13T04:44:26+00:00",
+      "answered": "2026-10-13T04:44:27+00:00"
+    },
+    {
+      "id": "D-030",
+      "question": "Category identity",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Icon + subtle tint",
+      "asked": "2026-10-13T04:44:27+00:00",
+      "answered": "2026-10-13T04:44:27+00:00"
     }
   ],
   "loops": {
@@ -487,6 +535,13 @@
       "max": 3,
       "active": true,
       "started": "2026-10-13T04:23:39+00:00",
+      "outcome": null
+    },
+    "category-change-review": {
+      "round": 1,
+      "max": 2,
+      "active": true,
+      "started": "2026-10-13T04:44:27+00:00",
       "outcome": null
     }
   },
@@ -870,9 +925,49 @@
     {
       "at": "2026-10-13T04:28:57+00:00",
       "event": "design step: 2.4 D2 round-1 fixes published; awaiting user D2 review. SP-2 adapt (Firefox needs local run); SP-5 running"
+    },
+    {
+      "at": "2026-10-13T04:44:26+00:00",
+      "event": "decision D-027 opened: Category set"
+    },
+    {
+      "at": "2026-10-13T04:44:26+00:00",
+      "event": "decision D-027 answered: Developer tools, Media tools, Converters & calculators, Productivity & relax"
+    },
+    {
+      "at": "2026-10-13T04:44:26+00:00",
+      "event": "decision D-028 opened: Category membership"
+    },
+    {
+      "at": "2026-10-13T04:44:26+00:00",
+      "event": "decision D-028 answered: Exactly one per tool"
+    },
+    {
+      "at": "2026-10-13T04:44:26+00:00",
+      "event": "decision D-029 opened: Category visibility"
+    },
+    {
+      "at": "2026-10-13T04:44:27+00:00",
+      "event": "decision D-029 answered: Category pages + browse-by-category row on home"
+    },
+    {
+      "at": "2026-10-13T04:44:27+00:00",
+      "event": "decision D-030 opened: Category identity"
+    },
+    {
+      "at": "2026-10-13T04:44:27+00:00",
+      "event": "decision D-030 answered: Icon + subtle tint"
+    },
+    {
+      "at": "2026-10-13T04:44:27+00:00",
+      "event": "loop category-change-review started (max 2)"
+    },
+    {
+      "at": "2026-10-13T04:44:27+00:00",
+      "event": "design step: 7 change request: categories — specs written, review round 1"
     }
   ],
-  "updated": "2026-10-13T04:28:57+00:00",
+  "updated": "2026-10-13T04:44:27+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

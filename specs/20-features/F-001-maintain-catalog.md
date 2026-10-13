@@ -23,13 +23,13 @@ The Owner adds a new tool or project by writing one catalog entry, and every par
 
 ## Requirements
 - **R1** The Owner can add, change or hide a tool or project by editing its catalog entry, and add or change a category by editing the category list, with no other change needed for it to appear everywhere it belongs.
-- **R2** Building the portal fails, naming the file, the entry and the broken rule, when any content breaks the data schema or INV-01, INV-02, INV-03 or INV-06.
+- **R2** Building the portal fails, naming the file, the entry and the broken rule, when any content breaks the data schema or INV-01, INV-02, INV-03, INV-06 or INV-07.
 - **R3** An own tool with no open mode opens embedded. An external tool declared as embedded is a build error (RULE-07).
 - **R4** Hidden entries are left out of the catalog, search, palette, home, changelog, projects showcase and site index (RULE-06).
 - **R5** A tool whose category does not exist is a build error.
 
 ## Acceptance criteria
-- **AC1** Given a valid new tool entry with today's date as `added`, when the portal is built, then the tool appears in the catalog, search, palette, home "what's new", changelog and site index, and has a tool view, with no other edits. (R1)
+- **AC1** Given a valid new tool entry with today's date as `added`, when the portal is built, then the tool appears in the catalog, its category page, search, palette, home "what's new", changelog and site index, and has a tool view, with no other edits. (R1)
 - **AC2** Given two entries with the same id, when the portal is built, then the build fails and names both entries and the duplicated id. (R2)
 - **AC3** Given a tool whose address is not secure, when the portal is built, then the build fails and names the entry. (R2)
 - **AC4** Given an own tool with no open mode, when the portal is built, then it opens embedded. (R3)

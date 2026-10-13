@@ -2,8 +2,8 @@
 id: SCR-Catalog
 title: Catalog
 status: draft
-features: [F-002, F-005]
-components: [CMP-AppShell, CMP-ToolCard, CMP-StateMessage]
+features: [F-002, F-005, F-016]
+components: [CMP-AppShell, CMP-ToolCard, CMP-StateMessage, CMP-CategoryTile]
 ---
 
 ## Purpose
@@ -12,8 +12,8 @@ See and filter every available tool.
 ## Layout regions
 1. Shell header.
 2. Title (COPY-catalog.title) and search field (COPY-catalog.searchPlaceholder).
-3. Category filter, with "All" first (COPY-catalog.all).
-4. Tool groups by category, each a heading followed by CMP-ToolCard items.
+3. Category navigation (COPY-category.navLabel): compact CMP-CategoryTile per visible category, linking to category pages.
+4. Tool groups by category, each heading a link to its category page, followed by CMP-ToolCard items.
 
 ## States
 | State | When | What the user sees |
@@ -28,4 +28,4 @@ See and filter every available tool.
 - Exits to: SCR-ToolView, or a tool's own address (linked tools).
 
 ## Accessibility
-The result count is announced politely after filtering. The category filter is a single-select group operable with arrow keys.
+The result count is announced politely after filtering. The category navigation is a nav landmark of links.

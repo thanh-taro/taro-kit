@@ -12,7 +12,8 @@ status: draft
 | Catalog | The set of all tool entries the portal knows about, maintained by the Owner. |
 | Catalog entry | One record in the catalog describing a tool or a project. |
 | Project | A portfolio item that is not a tool, shown in the projects showcase. |
-| Category | A named group of tools, for example Developer, Converters, Calculators, Productivity. |
+| Category | The one group a tool belongs to: Developer tools, Media tools, Converters & calculators, or Productivity & relax. |
+| Category page | The portal page for one category, with Taro's intro and the category's tools. |
 | Open mode | How a tool opens: **embedded** inside the portal, or **linked** in a new browser tab. |
 | Embedded | A tool shown inside the portal's tool view, isolated from the portal. |
 | Linked | A tool opened at its own address in a new browser tab. |

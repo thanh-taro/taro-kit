@@ -13,3 +13,4 @@ status: draft
 - Gate G1 approved by the user. F-001–F-015 set to `ready` by Claude on the user's explicit instruction.
 - Voice changed (user request): TaroKit speaks as Taro in the first person to the user (PRN-04 rewritten; copy.md rewritten; COPY-home.intro added; F-007.R5 references it). Behavior unchanged.
 - Phase 3 decisions applied: RULE-10 (own forms allowed; best-effort enforcement), INV-03 (embedded tool never on the portal's own address), F-003.R8 (installed-app storage exemption). F-003 was ready; behavior clarified, not expanded.
+- Change request (user, 2026-10-13): categories made first-class. Four categories (D-027), exactly one per tool (INV-07), category pages (new F-016, SCR-Category), browse-by-category row on home (F-007.R7, CMP-CategoryTile), category tints (RULE-14, tokens). F-002.R3/R4 changed from filtering to navigating to category pages; F-015 adds category previews. F-002, F-007 and F-015 are back to draft pending review.
