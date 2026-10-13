@@ -16,3 +16,4 @@ status: draft
 - Change request (user, 2026-10-13): categories made first-class. Four categories (D-027), exactly one per tool (INV-07), category pages (new F-016, SCR-Category), browse-by-category row on home (F-007.R7, CMP-CategoryTile), category tints (RULE-14, tokens). F-002.R3/R4 changed from filtering to navigating to category pages; F-015 adds category previews. F-002, F-007 and F-015 are back to draft pending review.
 - User approved the category change. F-002, F-007, F-015 and F-016 set to ready by Claude on the user's instruction. F-001.AC9 and F-011.AC8 added (clarifications to ready features).
 - F-003.R8, AC3 and AC11 narrowed (user decision, from spikes SP-1/SP-3): the shared-data promise covers local key-value storage only, and clipboard refusal is tested where the browser can restrict it. F-003 stays ready.
+- F-003.R8/AC11 conditioned on browsers that do not partition embedded storage (real-Safari result, user decision D-038). ADR-0001 accepted.

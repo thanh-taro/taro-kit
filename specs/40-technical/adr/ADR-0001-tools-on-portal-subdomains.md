@@ -1,7 +1,7 @@
 ---
 id: ADR-0001
 title: Tools live on subdomains of the portal's site
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---
@@ -27,3 +27,10 @@ The portal is served from the apex domain, and each own tool is served from a su
 - WebKit 26 (Playwright): localStorage and cookies are shared; IndexedDB and the service worker are not, because WebKit keys them by top-level origin. Playwright WebKit does not reproduce Safari's partitioning, so **one real-Safari run decides acceptance** (`node tests/sp1-safari.mjs`, with Safari's Allow Remote Automation on).
 - Firefox 142: one default run passed; Strict ETP could not run in the sandbox.
 - Status stays **proposed** until the Safari run.
+
+## Acceptance (2026-10-13, decision D-038)
+Accepted after the real-Safari check (Safari 27, macOS):
+- Embedded at lab.tarokit.app, the tool on labtool.tarokit.app saw **no** localStorage or IndexedDB from direct use. Cookies were shared.
+- `document.requestStorageAccess()` was granted (hasStorageAccess true), but it unlocked only cookies; local storage stayed partitioned.
+- Subdomains remain the right layout: they give isolation (INV-03) and full sharing in Chromium and Gecko. The Safari partitioning is accepted and documented (F-003.R8). Tools treat embedded data as separate in WebKit browsers.
+

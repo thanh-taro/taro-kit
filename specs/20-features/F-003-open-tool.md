@@ -29,7 +29,7 @@ Every tool has a stable address in the portal. Opening it either shows the tool 
 - **R5** While an embedded tool loads, a loading state is shown (COPY-tool.loading). After the slow-load threshold (RULE-11), a hint suggests opening it in a new tab (COPY-tool.slow) and the tool keeps loading.
 - **R6** When the device is offline and the tool is not offline-capable, the tool view shows an offline state instead of the tool (COPY-tool.offline). When the connection returns, the tool loads with no manual reload.
 - **R7** An unknown or hidden tool id shows the not-found state with a link back to the catalog (RULE-06).
-- **R8** In a browser, an own embedded tool sees the same locally stored data (its local key-value storage) whether it is opened inside the portal or at its own address (ADR-0001). Other storage kinds, such as databases and the tool's own offline worker, may differ by browser, so tools keep user data in local key-value storage. The installed portal on platforms that keep the installed app's storage separate is exempt.
+- **R8** In browsers that do not partition an embedded page's storage by the top-level page, an own embedded tool sees the same locally stored data (its local key-value storage) whether it is opened inside the portal or at its own address (ADR-0001). Browsers that partition it keep separate data for the two (a known limitation; cookies stay shared). Other storage kinds, such as databases and the tool's own offline worker, may differ by browser, so tools keep user data in local key-value storage. The installed portal on platforms that keep the installed app's storage separate is exempt.
 
 ## Acceptance criteria
 - **AC1** Given an embedded tool "json", when the user visits its portal address, then the tool is shown inside the tool view under its header. (R1, R2)
@@ -42,7 +42,7 @@ Every tool has a stable address in the portal. Opening it either shows the tool 
 - **AC8** Given an embedded tool that has not loaded after the slow-load threshold, when the threshold passes, then the slow hint with open-in-new-tab is shown and the tool keeps loading. (R5)
 - **AC9** Given the device is offline and the tool is not offline-capable, when the user opens it, then the offline state is shown; when the connection returns, the tool loads without a manual reload. (R6)
 - **AC10** Given the id "does-not-exist", when the user visits its portal address, then the not-found state is shown with a link to the catalog. (R7)
-- **AC11** Given an own embedded tool saved a value in its local key-value storage while open at its own address, when the user opens the same tool inside the portal, then the tool shows that value. (R8)
+- **AC11** Given a browser that does not partition embedded storage, and an own embedded tool that saved a value in its local key-value storage while open at its own address, when the user opens the same tool inside the portal, then the tool shows that value. (R8)
 
 ## UX notes
 SCR-ToolView with CMP-ToolHeader. States use CMP-StateMessage. Not-found is SCR-NotFound (COPY-notFound.title, COPY-notFound.body, COPY-notFound.toCatalog). Isolation is a security requirement (NFR-08).

@@ -583,6 +583,30 @@
       "answer": "Narrow both",
       "asked": "2026-10-13T13:52:29+00:00",
       "answered": "2026-10-13T13:52:29+00:00"
+    },
+    {
+      "id": "D-037",
+      "question": "Disable Cloudflare RUM / Web Analytics beacon on tarokit.app",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "architecture",
+      "status": "answered",
+      "answer": "Disabled with user approval (RUM 'Disable completely'); verified Bot Fight Mode off and Rocket Loader off visually. Correction: earlier claim that these were already off was unverified.",
+      "asked": "2026-10-13T13:55:05+00:00",
+      "answered": "2026-10-13T13:55:05+00:00"
+    },
+    {
+      "id": "D-038",
+      "question": "Safari partitions embedded tool storage",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "architecture",
+      "status": "answered",
+      "answer": "Accept and document; ADR-0001 accepted",
+      "asked": "2026-10-13T14:06:55+00:00",
+      "answered": "2026-10-13T14:06:55+00:00"
     }
   ],
   "loops": {
@@ -1183,9 +1207,29 @@
     {
       "at": "2026-10-13T13:52:29+00:00",
       "event": "decision D-036 answered: Narrow both"
+    },
+    {
+      "at": "2026-10-13T13:55:05+00:00",
+      "event": "decision D-037 opened: Disable Cloudflare RUM / Web Analytics beacon on tarokit.app"
+    },
+    {
+      "at": "2026-10-13T13:55:05+00:00",
+      "event": "decision D-037 answered: Disabled with user approval (RUM 'Disable completely'); verified Bot Fight Mode off and Rocket Loader off visually. Correction: earlier claim that these were already off was unverified."
+    },
+    {
+      "at": "2026-10-13T13:55:06+00:00",
+      "event": "Cloudflare: RUM disabled (D-037); Bot Fight Mode and Rocket Loader verified off"
+    },
+    {
+      "at": "2026-10-13T14:06:55+00:00",
+      "event": "decision D-038 opened: Safari partitions embedded tool storage"
+    },
+    {
+      "at": "2026-10-13T14:06:55+00:00",
+      "event": "decision D-038 answered: Accept and document; ADR-0001 accepted"
     }
   ],
-  "updated": "2026-10-13T13:52:29+00:00",
+  "updated": "2026-10-13T14:06:55+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
