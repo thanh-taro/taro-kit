@@ -103,3 +103,4 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-39** | workerd | via DEP-28 | Local Workers runtime for preview | dev | Apache-2.0 | candidate | ADR-0007 |
 | **DEP-40** | pnpm | 11.x | Package manager | dev | MIT | candidate | ADR-0002 |
 
+Note (SP-6): DEP-33 to DEP-35 are source fonts only. The shipped files are fonttools subsets made at build (ADR-0003); fonttools is a build tool under the MIT license, to be registered when the build is scaffolded.

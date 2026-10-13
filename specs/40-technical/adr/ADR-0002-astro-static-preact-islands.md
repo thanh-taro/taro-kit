@@ -35,3 +35,7 @@ The portal is a static site with no backend (D-001), served from free static hos
 - Values relative to the current date (what's new, the stale Now label, greeting, time) are computed in the browser, never at build time (rules.md preamble).
 - Adding an island means checking it against the home budget in CI (ADR-0006).
 - Astro is MIT and stewarded by Cloudflare since January 2026. The license and the multi-host stance are unchanged. Nothing in this design depends on Cloudflare-specific Astro features.
+
+## Amendments from spike SP-6 (2026-10-13)
+- The palette island hydrates `client:idle`. A tiny inline bootstrap plus a static `<dialog>` catches the shortcut before hydration (open in 25–53 ms; results within about 0.5 s on the reference profile). The catalog index is prefetched on hydrate.
+- Astro's CSP does not hash `is:inline` scripts, and hashes added after `<head>` are dropped. Inline scripts are therefore hashed in the layout frontmatter (see ADR-0009).

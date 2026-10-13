@@ -30,3 +30,8 @@ MOD-Palette provides the command palette (CMP-CommandPalette).
 
 ## Implements
 F-004 (all requirements) and F-007.R2. It is the main owner of NFR-02, and contributes to NFR-04.
+
+## Normative from spike SP-6
+- The empty-query view shows Favorites, Recents and Pages only (F-004.R2). With 32 rows the open took 70–110 ms; with the designed empty state it takes about 20 ms.
+- At most 8 results per group and 4 groups; multi-token matching (every token must match).
+- Measured: open 19–34 ms, keystroke median 4–5 ms and p95 under 30 ms, with 500 entries.

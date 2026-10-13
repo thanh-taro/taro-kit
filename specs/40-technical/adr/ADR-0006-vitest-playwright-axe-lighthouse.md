@@ -43,3 +43,6 @@ supersedes: []
 
 ## Notes from spike SP-4
 - Playwright WebKit's offline emulation blocks requests before the service worker sees them, so offline tests on WebKit use a stopped server, not `setOffline`. Playwright WebKit screenshots can trigger false CSP reports, so the tests ignore reports during screenshots.
+
+## Notes from spike SP-6
+- NFR-01 and NFR-02 are gated on the Playwright rig (CDP 4× CPU, the reference network, median of 5, cross-checked with Event Timing p75). Lighthouse simulated metrics are advisory and run on Linux CI only; devtools throttling on macOS was bimodal (0.46–2.6 s) and unusable.

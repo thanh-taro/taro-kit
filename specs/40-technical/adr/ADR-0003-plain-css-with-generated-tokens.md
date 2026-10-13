@@ -31,3 +31,13 @@ The design phase will deliver W3C DTCG tokens in `specs/30-experience/tokens.jso
 - Each theme is verified by the automated accessibility audit (ADR-0006).
 - No utility classes means styles live next to their components. Shared patterns become components (MOD-DesignSystem), not class soup.
 - The font family is a design-phase choice. It must be OFL or another permissive license and be registered in `dependencies.md` before use.
+
+## Amendments from spike SP-6 (2026-10-13): font subsetting
+Shipping Fontsource subsets as-is fails the NFR-11 headroom: the home page is 193 KB with Vietnamese text, because the latin-ext and Vietnamese ranges overlap. Fonts are subset at build time with fonttools:
+- **Manrope**: variable, weights 400–700, Latin core + Vietnamese.
+- **Unbounded**: static 600, Latin core + Vietnamese (headings may contain Vietnamese).
+- **JetBrains Mono**: 400–600, ASCII only, code ligatures off.
+- No latin-ext. A CI check rejects any other font file in `dist/`.
+- Loading: `font-display: swap`, and preload Manrope Latin only.
+
+Measured on the reference profile: home transfer 74 KB (EN) and 87 KB (VI), of which fonts are 39–52 KB, JS 15 KB, CSS 3 KB and the catalog 12 KB at 500 entries.
