@@ -26,7 +26,7 @@ The usual axe accessibility engine is also MPL-2.0. Browserslist data (`caniuse-
   - Icons must be ISC or MIT (Lucide, or Tabler or Phosphor as alternates).
   - Images and preview images must be the Owner's own work, or CC0. CC-BY is allowed with attribution on the About page.
 - **Enforcement:**
-  - CI runs `pnpm licenses list --json` and fails on any license that is not on the allowed lists for its scope. Runtime scope comes from the production dependency tree, and dev scope from the full tree.
+  - CI runs `pnpm licenses list --json` and fails on any license that is not on the allowed lists for its scope. Scope comes from the registry's Scope column, not from the production tree: astro is a production dependency, yet lightningcss, sharp, libvips and caniuse-lite never ship. Build-only packages are allowlisted by name (D-023). A second check scans `dist/` for third-party code and fonts, and fails on anything that is not in the registry with runtime scope.
   - The build emits `/third-party-notices.txt`, listing the licenses of shipped runtime code and assets, which satisfies MIT, ISC and BSD notice terms.
   - **Supply chain:** pnpm's default block on dependency lifecycle scripts stays on, and only approved packages may run build scripts (`sharp`, `workerd`). `minimumReleaseAge` delays brand-new releases by 3 days. The lockfile is committed, and Renovate or Dependabot updates are reviewed, not auto-merged.
 

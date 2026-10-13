@@ -47,8 +47,8 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 |---|---|---|---|---|---|---|---|
 | **DEP-14** | style-dictionary | ^5.6 | Compile DTCG tokens to CSS custom properties | dev | Apache-2.0 | candidate | ADR-0003 |
 | **DEP-15** | lucide-static | ^1.55 | SVG icon set, inlined at build | runtime (asset) | ISC | candidate | ADR-0003 |
-| **DEP-16** | UI typeface, a Fontsource variable package (family chosen in design, e.g. `@fontsource-variable/inter`) | ^5 | Self-hosted WOFF2 subsets (Latin, Latin Extended, Vietnamese) | runtime (asset) | OFL-1.1 | candidate | ADR-0003 |
-| **DEP-17** | TaroKit brand assets (app icons, maskable icon, preview image 1200 × 630, favicon) | n/a | Install icons and link previews | runtime (asset) | Owner's own work | candidate | ADR-0004 |
+| **DEP-16** | ~~UI typeface placeholder~~, replaced by DEP-33 to DEP-35 once the style was chosen (D-019) | n/a | n/a | n/a | n/a | removed | D-019 |
+| **DEP-17** | TaroKit brand assets (app icons, maskable icon, preview image 1200 × 630, favicon) | n/a | Install icons and link previews | runtime (asset) | Owner's own work. Provenance: created for TaroKit by the Owner or generated from the Night Market tokens; source files kept in `assets/brand/` | candidate | ADR-0004 |
 
 ## Testing and quality
 
@@ -89,3 +89,17 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | fuse.js | Fuzzy scoring conflicts with the deterministic RULE-05 ranking (MOD-Search) |
 | zod / valibot | Would restate the domain schema (ADR-0005) |
 | any IT-Tools code | GPL-3.0 (ADR-0008) |
+
+## Added after license audit 1 (2026-10-13)
+
+| ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
+|---|---|---|---|---|---|---|---|
+| **DEP-33** | @fontsource-variable/unbounded | ^5 | Display face, self-hosted (style.md) | runtime (asset) | OFL-1.1 (text in notices) | candidate | D-019 |
+| **DEP-34** | @fontsource-variable/manrope | ^5 | Body face, self-hosted | runtime (asset) | OFL-1.1 (text in notices) | candidate | D-019 |
+| **DEP-35** | @fontsource-variable/jetbrains-mono | ^5 | Mono face, self-hosted | runtime (asset) | OFL-1.1 (text in notices) | candidate | D-019 |
+| **DEP-36** | @preact/signals-core | transitive of DEP-04 | Signals runtime | runtime | MIT (notice) | candidate | ADR-0002 |
+| **DEP-37** | fast-uri | transitive of DEP-08 | URI parsing in Ajv (build only, unless Ajv ships) | build | BSD-3-Clause | candidate | ADR-0005 |
+| **DEP-38** | Playwright browser binaries (Chromium, Firefox, WebKit) | via DEP-19 | E2E engines | dev | Chromium BSD; Firefox MPL-2.0; WebKit LGPL-2.1 (test-only, D-023) | candidate | ADR-0006 |
+| **DEP-39** | workerd | via DEP-28 | Local Workers runtime for preview | dev | Apache-2.0 | candidate | ADR-0007 |
+| **DEP-40** | pnpm | 11.x | Package manager | dev | MIT | candidate | ADR-0002 |
+
