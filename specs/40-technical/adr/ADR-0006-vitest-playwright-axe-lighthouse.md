@@ -46,3 +46,6 @@ supersedes: []
 
 ## Notes from spike SP-6
 - NFR-01 and NFR-02 are gated on the Playwright rig (CDP 4× CPU, the reference network, median of 5, cross-checked with Event Timing p75). Lighthouse simulated metrics are advisory and run on Linux CI only; devtools throttling on macOS was bimodal (0.46–2.6 s) and unusable.
+
+## Notes from spike SP-1
+- Playwright Chromium does not partition third-party storage by default. Storage-sharing tests re-enable partitioning through launch flags, so they match real Chrome.

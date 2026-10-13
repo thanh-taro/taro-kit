@@ -21,3 +21,9 @@ The portal is served from the apex domain, and each own tool is served from a su
 - A custom domain is required (a money and account hard stop, phase 6).
 - Spike SP-1 must confirm shared storage across the supported browser engines before this ADR is accepted.
 - F-014 checks that each embedded tool allows the portal's site.
+
+## Spike SP-1 results (2026-10-13, live lab)
+- Chromium 141 and Chrome 155: localStorage, IndexedDB, cookies and service-worker control are all shared between embedded and direct visits, including with third-party cookies blocked. A cross-site control confirmed that partitioning was active.
+- WebKit 26 (Playwright): localStorage and cookies are shared; IndexedDB and the service worker are not, because WebKit keys them by top-level origin. Playwright WebKit does not reproduce Safari's partitioning, so **one real-Safari run decides acceptance** (`node tests/sp1-safari.mjs`, with Safari's Allow Remote Automation on).
+- Firefox 142: one default run passed; Strict ETP could not run in the sandbox.
+- Status stays **proposed** until the Safari run.

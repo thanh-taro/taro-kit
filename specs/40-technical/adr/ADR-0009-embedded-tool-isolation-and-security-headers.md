@@ -67,3 +67,10 @@ The portal must also make no third-party requests (NFR-05). Browser enforcement 
 - Per-page CSP: the layout inserts `frame-src` with only that page's tool origin, and `'none'` elsewhere. `worker-src 'self'` and `manifest-src 'self'` are set. Service-worker-served pages keep both the meta and the header policy, with zero violations measured (U-4 closed).
 - When the connection returns, the tool view reloads a paused (offline-state) frame itself, so F-003.R6 needs no manual reload.
 - WebKit: a tool's own service worker registered on a direct visit does **not** control the same tool while embedded, although localStorage is shared. An embedded offline-capable tool works offline only after it has been opened inside the portal while online.
+
+## Amendments from spike SP-3 (2026-10-13, live on lab.tarokit.app)
+- **Permissions-Policy allowlists must include `self`**: `feature=(self "https://tool.tarokit.app")`. With only the tool origin (`feature=("origin")`), Chromium denied every delegated feature, even in granted frames. With `self`, each granted capability works and every other is refused; the baseline frame refuses clipboard-write.
+- Per engine: Chromium enforces clipboard-read/write, fullscreen, camera and microphone delegation. WebKit cannot withhold clipboard-write. No engine can withhold file input (`file-pick` is documentation only). Downloads and popups follow the sandbox tokens.
+- **Popups**: they open, but `window.open` returns null because of the portal's COOP (`same-origin`). Tools must not depend on the opener reference.
+- **`allow-forms` stays in the base sandbox**: without it Chromium never fires `submit` at all.
+- **Cloudflare zone**: the zone injects the Web Analytics beacon into HTML unless Web Analytics automatic setup is off. Pages also send `Cache-Control: no-transform` as a second guard (NFR-05).
