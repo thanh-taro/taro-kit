@@ -62,3 +62,8 @@ The portal must also make no third-party requests (NFR-05). Browser enforcement 
 - **The `allow-forms` base token** is a technical reading of "can run its own code". It needs confirmation as a RULE-10 clarification.
 - **The build guard** for an embedded tool on the portal's own origin is a new validation. It should be added to INV-03 or RULE-10 by a spec change.
 - **Hashes and CSP derivation run at build**, so adding a tool regenerates both automatically (F-001.R1).
+
+## Amendments from spike SP-4 (2026-10-13)
+- Per-page CSP: the layout inserts `frame-src` with only that page's tool origin, and `'none'` elsewhere. `worker-src 'self'` and `manifest-src 'self'` are set. Service-worker-served pages keep both the meta and the header policy, with zero violations measured (U-4 closed).
+- When the connection returns, the tool view reloads a paused (offline-state) frame itself, so F-003.R6 needs no manual reload.
+- WebKit: a tool's own service worker registered on a direct visit does **not** control the same tool while embedded, although localStorage is shared. An embedded offline-capable tool works offline only after it has been opened inside the portal while online.

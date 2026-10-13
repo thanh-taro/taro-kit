@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "2.4 D3 converged (canvas v37); awaiting user D3 review → then D4",
+      "step": "2.4 D3 approved; next D4 edge states; doing Cloudflare zone settings via Chrome",
       "gate": {
         "status": "pending",
         "at": null,
@@ -547,6 +547,30 @@
       "answer": "Approved: lab pages only (noindex, temporary); no placeholder on apex",
       "asked": "2026-10-13T08:47:49+00:00",
       "answered": "2026-10-13T08:47:50+00:00"
+    },
+    {
+      "id": "D-034",
+      "question": "Approve D3 screens",
+      "options": [],
+      "recommendation": null,
+      "kind": "design",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Approved",
+      "asked": "2026-10-13T08:50:14+00:00",
+      "answered": "2026-10-13T08:50:14+00:00"
+    },
+    {
+      "id": "D-035",
+      "question": "Cloudflare zone settings for tarokit.app",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Applied with user approval: SSL Full (strict), Always Use HTTPS on, Email Address Obfuscation off (Bot Fight Mode, Rocket Loader, Web Analytics already off)",
+      "asked": "2026-10-13T08:52:56+00:00",
+      "answered": "2026-10-13T08:52:57+00:00"
     }
   ],
   "loops": {
@@ -1079,9 +1103,33 @@
     {
       "at": "2026-10-13T08:47:50+00:00",
       "event": "decision D-033 answered: Approved: lab pages only (noindex, temporary); no placeholder on apex"
+    },
+    {
+      "at": "2026-10-13T08:50:14+00:00",
+      "event": "decision D-034 opened: Approve D3 screens"
+    },
+    {
+      "at": "2026-10-13T08:50:14+00:00",
+      "event": "decision D-034 answered: Approved"
+    },
+    {
+      "at": "2026-10-13T08:50:15+00:00",
+      "event": "design step: 2.4 D3 approved; next D4 edge states; doing Cloudflare zone settings via Chrome"
+    },
+    {
+      "at": "2026-10-13T08:52:56+00:00",
+      "event": "decision D-035 opened: Cloudflare zone settings for tarokit.app"
+    },
+    {
+      "at": "2026-10-13T08:52:57+00:00",
+      "event": "decision D-035 answered: Applied with user approval: SSL Full (strict), Always Use HTTPS on, Email Address Obfuscation off (Bot Fight Mode, Rocket Loader, Web Analytics already off)"
+    },
+    {
+      "at": "2026-10-13T08:52:57+00:00",
+      "event": "Cloudflare zone configured (D-035); wrangler logged in to user's personal account"
     }
   ],
-  "updated": "2026-10-13T08:47:50+00:00",
+  "updated": "2026-10-13T08:52:57+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

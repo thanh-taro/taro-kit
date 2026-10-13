@@ -39,3 +39,10 @@ Astro emits HTML only at the end of its build, so a service worker's precache li
 - Every generated tool page is precached. Precache size grows with the catalog: about 5 KB compressed per tool page, so 500 tools is about 2.5 MB. Spike SP-4 measures this. If it is too large, tool pages switch to a precached generic tool shell that renders from the catalog data file, while per-tool static HTML is kept for link previews.
 - The offline state of non-offline-capable tools is decided by the tool view from `navigator.onLine` and the `online` event (F-003.R6). The SW doesn't decide it.
 - Workbox must be checked for maintenance at each dependency review. The registry records it as a candidate (`dependencies.md`).
+
+## Amendments from spike SP-4 (2026-10-13, ADR still proposed)
+- **Parallel precache install**: precache with 6 concurrent fetches instead of Workbox's sequential default. On slow 4G, first install drops from 84–86 s to 28 s on Chromium and 16 s on WebKit.
+- **Navigation routing**: same-origin navigations use network-first with a precache fallback, and an explicit route serves the precached `404.html` for unknown paths offline. Without it the 404 fallback never fires.
+- **Measured**: the precache for 500 tools is 728 KB gzip (1.69 MB raw). "Update ready" appears 0.3–2.6 s after a deploy, never auto-reloads, and refresh reloads exactly once.
+- **Static page per tool stays.** The generic-shell fallback is dropped, because one static shell cannot carry a per-tool `frame-src`.
+- **Known cost (inferred)**: a layout change invalidates every page, so about 0.75 MB is downloaded before the update message.

@@ -40,3 +40,6 @@ supersedes: []
 - Playwright's WebKit is not Safari. Storage partitioning, install and clipboard behavior on real Safari (macOS and iOS) are verified by hand in spikes SP-1, SP-3 and SP-4, and in the release checklist.
 - CI time grows with three engines. Unit tests and Chromium e2e gate every PR. The full engine matrix and Lighthouse gate publishing.
 - Test names carry AC IDs, so `spec_lint.py --coverage tests/` reports any gap.
+
+## Notes from spike SP-4
+- Playwright WebKit's offline emulation blocks requests before the service worker sees them, so offline tests on WebKit use a stopped server, not `setOffline`. Playwright WebKit screenshots can trigger false CSP reports, so the tests ignore reports during screenshots.
