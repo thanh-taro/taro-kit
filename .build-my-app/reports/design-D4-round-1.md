@@ -16,3 +16,9 @@
 ## Open (minor)
 - Home favorite cards in the edge states have no favorite toggle. They are summarized cards, and the toggle is covered by D1/D2.
 - No mobile frames for the catalog and empty-page states; they are the same component at phone width.
+
+## Round 2 (verification)
+- Correction: round 1 said every board had the full header. ToolStatesDesktop did not. It now uses the CMP-AppShell **compact** variant approved in D2 (logo, search, theme toggle, plus the offline pill), and a mechanical check confirms balanced markup and toggleLabel in use.
+- ToolStatesMobile has no shell header, by design: on narrow screens the tool header replaces it (SCR-ToolView).
+- Minors left open: decorative glyphs (logo "T", ⌘K) without data-copy; sample values (file name, date) are labeled but have no marker attribute.
+- Verdict: converged.
