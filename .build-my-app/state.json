@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "2.4 categories in designs (CMP-CategoryTile, home row); next: user review of D2 → D3 (incl. SCR-Category) → D4",
+      "step": "2.4 D3 drafted (14 artboards); audit round 1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -523,6 +523,18 @@
       "answer": "Approved; features ready",
       "asked": "2026-10-13T04:46:53+00:00",
       "answered": "2026-10-13T04:46:53+00:00"
+    },
+    {
+      "id": "D-032",
+      "question": "Approve D2 primary flow",
+      "options": [],
+      "recommendation": null,
+      "kind": "design",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Approved",
+      "asked": "2026-10-13T05:22:01+00:00",
+      "answered": "2026-10-13T05:22:01+00:00"
     }
   ],
   "loops": {
@@ -545,9 +557,10 @@
     "design-D2": {
       "round": 1,
       "max": 3,
-      "active": true,
+      "active": false,
       "started": "2026-10-13T04:23:39+00:00",
-      "outcome": null
+      "outcome": "converged; user approved D2",
+      "ended": "2026-10-13T05:22:00+00:00"
     },
     "category-change-review": {
       "round": 1,
@@ -556,6 +569,13 @@
       "started": "2026-10-13T04:44:27+00:00",
       "outcome": "converged after round 1 fixes",
       "ended": "2026-10-13T04:46:21+00:00"
+    },
+    "design-D3": {
+      "round": 1,
+      "max": 3,
+      "active": true,
+      "started": "2026-10-13T05:30:24+00:00",
+      "outcome": null
     }
   },
   "log": [
@@ -998,9 +1018,33 @@
     {
       "at": "2026-10-13T04:48:24+00:00",
       "event": "design step: 2.4 categories in designs (CMP-CategoryTile, home row); next: user review of D2 → D3 (incl. SCR-Category) → D4"
+    },
+    {
+      "at": "2026-10-13T05:22:00+00:00",
+      "event": "loop design-D2 ended: converged; user approved D2"
+    },
+    {
+      "at": "2026-10-13T05:22:01+00:00",
+      "event": "decision D-032 opened: Approve D2 primary flow"
+    },
+    {
+      "at": "2026-10-13T05:22:01+00:00",
+      "event": "decision D-032 answered: Approved"
+    },
+    {
+      "at": "2026-10-13T05:22:01+00:00",
+      "event": "design step: 2.4 D3 remaining screens: drafting"
+    },
+    {
+      "at": "2026-10-13T05:30:24+00:00",
+      "event": "loop design-D3 started (max 3)"
+    },
+    {
+      "at": "2026-10-13T05:30:24+00:00",
+      "event": "design step: 2.4 D3 drafted (14 artboards); audit round 1"
     }
   ],
-  "updated": "2026-10-13T04:48:24+00:00",
+  "updated": "2026-10-13T05:30:24+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

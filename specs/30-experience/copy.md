@@ -72,12 +72,17 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-category.navLabel** | Categories | accessible name of the category navigation |
 | **COPY-projects.title** | Things I've built | page heading |
 | **COPY-projects.empty** | I'm putting my projects together. Check back soon. | empty state |
+| **COPY-now.title** | What I'm up to | Now section heading |
 | **COPY-now.updated** | Updated {date} | Now note date |
 | **COPY-now.stale** | I wrote this a while ago, so it may be out of date. | when older than 90 days |
 | **COPY-now.changelogTitle** | What I've shipped | section heading |
 | **COPY-now.changelogAdded** | Added {tool} | changelog item |
 | **COPY-now.changelogUpdated** | Improved {tool} | changelog item |
 | **COPY-now.empty** | Nothing to share yet. Check back soon. | no note and no tools |
+| **COPY-settings.title** | Settings | page heading |
+| **COPY-settings.appearance** | Appearance | section heading |
+| **COPY-settings.yourData** | Your data | section heading |
+| **COPY-settings.privacyTitle** | Privacy | section heading |
 | **COPY-settings.theme** | Theme: System, Light, Dark | setting label and options |
 | **COPY-settings.export** | Export your data | button |
 | **COPY-settings.import** | Import from file | button |

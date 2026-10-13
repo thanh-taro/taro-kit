@@ -11,9 +11,10 @@ Theme, backup and privacy controls.
 
 ## Layout regions
 1. Shell header.
-2. Appearance: theme choice (COPY-settings.theme).
-3. Your data: export (COPY-settings.export) with the backup scope note (COPY-settings.backupScope), import (COPY-settings.import), days used (COPY-settings.daysUsed), clear recents (COPY-settings.clearRecents), erase all (COPY-settings.erase).
-4. Privacy statement (COPY-settings.privacy).
+1b. Page heading (COPY-settings.title).
+2. Appearance (COPY-settings.appearance): theme choice (COPY-settings.theme).
+3. Your data (COPY-settings.yourData): export (COPY-settings.export) with the backup scope note (COPY-settings.backupScope), import (COPY-settings.import), days used (COPY-settings.daysUsed), clear recents (COPY-settings.clearRecents), erase all (COPY-settings.erase).
+4. Privacy (COPY-settings.privacyTitle): statement (COPY-settings.privacy).
 
 ## States
 | State | When | What the user sees |

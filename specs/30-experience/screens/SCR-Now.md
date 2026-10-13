@@ -11,7 +11,7 @@ See what Taro is focused on and what's new in the toolkit.
 
 ## Layout regions
 1. Shell header.
-2. Now section: note body and last updated date (COPY-now.updated), plus the stale label when applicable (COPY-now.stale).
+2. Now section (COPY-now.title): note body and last updated date (COPY-now.updated), plus the stale label when applicable (COPY-now.stale).
 3. Changelog section (COPY-now.changelogTitle): month groups of "added" (COPY-now.changelogAdded) and "updated" (COPY-now.changelogUpdated) items linking to tools.
 
 ## States
