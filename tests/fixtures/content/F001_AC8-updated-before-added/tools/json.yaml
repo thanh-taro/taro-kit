@@ -1,0 +1,10 @@
+# F-001.AC8: updated is before added (INV-06).
+id: json
+kind: tool
+name: JSON Formatter
+summary: Fixture tool updated before it was added.
+category: developer
+url: https://json.tarokit.app/
+origin: own
+added: 2026-02-01
+updated: 2026-01-02

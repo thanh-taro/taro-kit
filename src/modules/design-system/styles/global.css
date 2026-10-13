@@ -1,0 +1,106 @@
+/* MOD-DesignSystem foundation (ADR-0003): the cascade-layer stack, tokens, fonts, reset and base.
+   Every value comes from a generated --tk-* token (specs/30-experience/tokens.json). */
+@layer reset, tokens, base, components, utilities;
+
+@import '../../../generated/tokens.css';
+@import './fonts.css';
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body,
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+  button,
+  input {
+    font: inherit;
+    color: inherit;
+  }
+  svg {
+    display: block;
+    flex: none;
+  }
+}
+
+@layer base {
+  body {
+    min-block-size: 100vh;
+    background:
+      radial-gradient(70% 45% at 85% 0%, var(--tk-color-bg-glow) 0%, var(--tk-color-bg) 70%) no-repeat,
+      var(--tk-color-bg);
+    color: var(--tk-color-fg);
+    font-family: var(--tk-font-family-body);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-regular);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  h1,
+  h2 {
+    font-family: var(--tk-font-family-display);
+    font-weight: var(--tk-font-weight-semibold);
+    line-height: var(--tk-font-line-height-tight);
+  }
+  a {
+    color: var(--tk-color-accent);
+  }
+  :focus-visible {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0s !important;
+      animation-duration: 0s !important;
+    }
+  }
+}
+
+@layer components {
+  /* Icon-only control; 44 px touch target (NFR-09). */
+  .tk-iconbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--tk-size-touch-target);
+    block-size: var(--tk-size-touch-target);
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: var(--tk-radius-md);
+    color: var(--tk-color-muted);
+    cursor: pointer;
+    transition: background-color var(--tk-motion-duration-fast) var(--tk-motion-easing-standard);
+  }
+  .tk-iconbtn:hover {
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+  }
+  .tk-icon {
+    inline-size: var(--tk-size-icon-md);
+    block-size: var(--tk-size-icon-md);
+  }
+}
+
+@layer utilities {
+  .tk-visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

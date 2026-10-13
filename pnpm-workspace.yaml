@@ -1,0 +1,6 @@
+# pnpm 11 settings (ADR-0008 supply chain).
+# Dependency lifecycle scripts stay blocked except for the packages listed here.
+allowBuilds:
+  esbuild: true
+# Delay brand-new releases by 3 days (value in minutes).
+minimumReleaseAge: 4320

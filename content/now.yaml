@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=./schemas/now.json
+# ENT-NowNote. SAMPLE text to replace before launch.
+body: |
+  Sample Now note. I'm setting up TaroKit, the home for the tools I build.
+updated: 2026-10-13
