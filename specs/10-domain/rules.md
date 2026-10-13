@@ -1,0 +1,24 @@
+---
+title: Business rules and limits
+status: draft
+---
+
+# Rules and limits
+
+Relative dates ("last 30 days", "more than 90 days old") are always measured from the viewer's current local date when the page is shown, never from the date the portal was built.
+
+| ID | Rule |
+|---|---|
+| **RULE-01** | Recents keep at most **20** visits, newest first. Opening a tool that is already in recents updates its time and moves it to the top; it is never duplicated. Entries for unknown or hidden tools still count toward the 20. When the list is full, the oldest entry is removed. Lists of recents shown to the user (home and the palette's empty query) show at most **8**, and leave out tools that are favorites. |
+| **RULE-02** | At most **24** favorites can be visible, shown in the order they were pinned (oldest first). Favorites for unknown or hidden tools do not count toward the limit. Storage holds at most 24 favorites in total: when pinning would exceed that, the oldest stored favorite for an unknown or hidden tool is dropped first. Pinning a 25th visible tool is refused. |
+| **RULE-03** | The default theme is `system`, which follows the device's light/dark setting and updates live when it changes. The quick toggle switches to the opposite of the theme currently shown (light ↔ dark) and stores that choice explicitly. |
+| **RULE-04** | "What's new" lists visible tools whose latest date (`updated` if present, otherwise `added`) is within the last **30 days**. There is one item per tool, labeled added or updated according to which date is the latest, newest first, at most **6**. The changelog lists, for every visible tool, at most one added item and one updated item, newest first, grouped by month. |
+| **RULE-05** | Search ranking, for both the palette and catalog search: exact name match, then name prefix, then name contains, then tag match, then summary contains. Ties are broken by favorites first, then by name alphabetically. Matching ignores case and diacritics. The palette shows at most **8** results per group. |
+| **RULE-06** | Hidden entries never appear in the catalog, search, palette, home, changelog, projects showcase, site index or link previews. A category with no visible tools is not shown. |
+| **RULE-07** | Open mode defaults: an `own` tool with no open mode is `embedded`. An `external` tool is always `linked`, and declaring it `embedded` is an error. |
+| **RULE-08** | A backup file holds personal data plus a schema version and export time. Import validates the whole file first. A file is invalid if it is not a backup file, is damaged, comes from a newer schema version, holds duplicate tool ids in favorites or recents, or exceeds the RULE-01, RULE-02 or RULE-13 limits. An invalid file is rejected with no change. The M-1 schema version is **1**. Migration, for files from an older version or with missing optional parts, fills what is missing with defaults (empty favorites, recents and days used; theme system), then validates. A valid file **replaces** the current personal data, but only after the user confirms. |
+| **RULE-09** | The Now note always shows its last updated date. If that date is more than **90 days** old, it is labeled as possibly out of date. |
+| **RULE-10** | Allowed permissions for embedded tools: `clipboard-read`, `clipboard-write`, `downloads`, `file-pick`, `popups`, `fullscreen`, `camera`, `microphone`. The default is none: the tool can run its own code and submit its own forms, but has no extra capabilities. Permissions are enforced where the browser can restrict them; capabilities that a browser cannot withhold from an embedded page are documented as such. An embedded tool can never read or change the portal's content or personal data, never navigate the portal page, and cannot navigate its own area to an address outside its own site. |
+| **RULE-11** | If an embedded tool hasn't finished loading after **10 seconds**, the tool view keeps waiting but suggests opening it in a new tab. |
+| **RULE-12** | The catalog check (F-014) treats an address as reachable when its final response succeeds after at most 5 redirects within 10 seconds, allowing one retry. It treats an embedded tool as embeddable when the tool's site declares no embedding restriction, or explicitly allows the portal's site. Tool failures block publishing. Unreachable project or profile links are reported as warnings and do not block. Schema and invariant validation belongs to F-001. |
+| **RULE-13** | Days used: the device records each distinct local date on which the portal was opened, keeping the latest **60** dates. "Days used in the last 14 days" counts the recorded dates within the last 14 days, including today. |

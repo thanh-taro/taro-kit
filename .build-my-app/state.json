@@ -1,0 +1,877 @@
+{
+  "version": 1,
+  "created": "2026-10-13T03:12:20+00:00",
+  "autonomy": "balanced",
+  "profile": {
+    "goal": "personal",
+    "experience": "experienced",
+    "budget": "flexible"
+  },
+  "stack": null,
+  "design_tool": "claude-design-canvas",
+  "phases": {
+    "setup": {
+      "title": "0 Setup & discovery",
+      "status": "done",
+      "step": null,
+      "gate": {
+        "status": "passed",
+        "at": "2026-10-13T03:14:10+00:00",
+        "note": "Greenfield; personal/experienced/flexible/balanced; web-capable env"
+      }
+    },
+    "product-spec": {
+      "title": "1 Product & spec",
+      "status": "done",
+      "step": "1.3 spec review round 2 (verification)",
+      "gate": {
+        "status": "passed",
+        "at": "2026-10-13T03:44:58+00:00",
+        "note": "15 M-1 features ready; 2 review rounds converged; D-001..D-018"
+      }
+    },
+    "design": {
+      "title": "2 Design",
+      "status": "in_progress",
+      "step": "2.4 D1 round-1 fixes published; awaiting user review of D1 + user hard stop (domain, Cloudflare account). Architecture 3.1 drafts done (ADR-0002..0010 proposed); next: license-auditor on DEP-01..32, spikes SP-2/4/5/6 locally (need initial commit for worktrees)",
+      "gate": {
+        "status": "pending",
+        "at": null,
+        "note": null
+      }
+    },
+    "architecture": {
+      "title": "3 Architecture & spikes",
+      "status": "in_progress",
+      "step": null,
+      "gate": {
+        "status": "pending",
+        "at": null,
+        "note": null
+      }
+    },
+    "build": {
+      "title": "4 Implementation",
+      "status": "pending",
+      "step": null,
+      "gate": {
+        "status": "pending",
+        "at": null,
+        "note": null
+      }
+    },
+    "qa": {
+      "title": "5 QA & hardening",
+      "status": "pending",
+      "step": null,
+      "gate": {
+        "status": "pending",
+        "at": null,
+        "note": null
+      }
+    },
+    "release": {
+      "title": "6 Release",
+      "status": "pending",
+      "step": null,
+      "gate": {
+        "status": "pending",
+        "at": null,
+        "note": null
+      }
+    },
+    "iterate": {
+      "title": "7 Iterate",
+      "status": "pending",
+      "step": null,
+      "gate": {
+        "status": "pending",
+        "at": null,
+        "note": null
+      }
+    }
+  },
+  "decisions": [
+    {
+      "id": "D-001",
+      "question": "Platform",
+      "options": [
+        "Web+PWA",
+        "Web only",
+        "Desktop"
+      ],
+      "recommendation": "Web+PWA",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Web app + PWA",
+      "asked": "2026-10-13T03:23:04+00:00",
+      "answered": "2026-10-13T03:23:04+00:00"
+    },
+    {
+      "id": "D-002",
+      "question": "Scope of this project",
+      "options": [
+        "Shell+12 tools",
+        "Shell+25",
+        "Creator first"
+      ],
+      "recommendation": "Shell+12 tools",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Portal/portfolio only; each tool is a separate project in another dir",
+      "asked": "2026-10-13T03:23:04+00:00",
+      "answered": "2026-10-13T03:23:04+00:00"
+    },
+    {
+      "id": "D-003",
+      "question": "Data storage",
+      "options": [
+        "Local-only+export",
+        "Local now sync later",
+        "Cloud"
+      ],
+      "recommendation": "Local-only+export",
+      "kind": "legal",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Local-only with JSON export/import",
+      "asked": "2026-10-13T03:23:05+00:00",
+      "answered": "2026-10-13T03:23:05+00:00"
+    },
+    {
+      "id": "D-004",
+      "question": "Currency converter",
+      "options": [
+        "Frankfurter",
+        "Skip",
+        "Paid"
+      ],
+      "recommendation": "Frankfurter",
+      "kind": "legal",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Skip in M-1 (moot: tools are separate projects)",
+      "asked": "2026-10-13T03:23:05+00:00",
+      "answered": "2026-10-13T03:23:05+00:00"
+    },
+    {
+      "id": "D-005",
+      "question": "Analytics",
+      "options": [
+        "None",
+        "Privacy-friendly"
+      ],
+      "recommendation": "None",
+      "kind": "legal",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "None",
+      "asked": "2026-10-13T03:23:06+00:00",
+      "answered": "2026-10-13T03:23:06+00:00"
+    },
+    {
+      "id": "D-006",
+      "question": "Tool integration",
+      "options": [
+        "Hybrid embed/link",
+        "Link only",
+        "Micro-frontends"
+      ],
+      "recommendation": "Hybrid embed/link",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Hybrid: per-tool mode embed (sandboxed iframe) or link",
+      "asked": "2026-10-13T03:23:06+00:00",
+      "answered": "2026-10-13T03:23:06+00:00"
+    },
+    {
+      "id": "D-007",
+      "question": "Tool registry",
+      "options": [
+        "Registry file here",
+        "Per-tool manifests",
+        "Build-time fetch"
+      ],
+      "recommendation": "Registry file here",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Typed registry file in this repo",
+      "asked": "2026-10-13T03:23:06+00:00",
+      "answered": "2026-10-13T03:23:07+00:00"
+    },
+    {
+      "id": "D-008",
+      "question": "Shared runtime UX",
+      "options": [
+        "Light contract",
+        "Nothing",
+        "Design system pkg"
+      ],
+      "recommendation": "Light contract",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Nothing shared",
+      "asked": "2026-10-13T03:23:07+00:00",
+      "answered": "2026-10-13T03:23:07+00:00"
+    },
+    {
+      "id": "D-009",
+      "question": "Portfolio content",
+      "options": [
+        "Bio+links",
+        "Projects",
+        "Now/changelog",
+        "Blog"
+      ],
+      "recommendation": "",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Bio+links, Projects showcase, Tool changelog/now (no blog)",
+      "asked": "2026-10-13T03:23:07+00:00",
+      "answered": "2026-10-13T03:23:07+00:00"
+    },
+    {
+      "id": "D-010",
+      "question": "Domain layout",
+      "options": [
+        "Apex+subdomains",
+        "Unrelated hosts",
+        "Same-origin paths"
+      ],
+      "recommendation": "Apex+subdomains",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Apex + tool subdomains (same site)",
+      "asked": "2026-10-13T03:25:57+00:00",
+      "answered": "2026-10-13T03:25:57+00:00"
+    },
+    {
+      "id": "D-011",
+      "question": "Home page",
+      "options": [
+        "Lean dashboard",
+        "Full dashboard",
+        "Portfolio-first"
+      ],
+      "recommendation": "Lean dashboard",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Lean dashboard",
+      "asked": "2026-10-13T03:25:58+00:00",
+      "answered": "2026-10-13T03:25:58+00:00"
+    },
+    {
+      "id": "D-012",
+      "question": "Pilot tools at launch",
+      "options": [
+        "Real tools",
+        "Placeholders",
+        "3rd-party"
+      ],
+      "recommendation": "Real tools",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Seed with placeholder/hidden entries; real tools added as deployed",
+      "asked": "2026-10-13T03:25:58+00:00",
+      "answered": "2026-10-13T03:25:58+00:00"
+    },
+    {
+      "id": "D-013",
+      "question": "Now/changelog",
+      "options": [
+        "Auto+manual Now",
+        "Both manual",
+        "Changelog only"
+      ],
+      "recommendation": "Auto+manual Now",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Changelog auto from registry dates; Now manual with last-updated",
+      "asked": "2026-10-13T03:25:58+00:00",
+      "answered": "2026-10-13T03:25:58+00:00"
+    },
+    {
+      "id": "D-014",
+      "question": "Approve vision brief v2",
+      "options": [
+        "Approve",
+        "Changes"
+      ],
+      "recommendation": "Approve",
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Approved",
+      "asked": "2026-10-13T03:26:22+00:00",
+      "answered": "2026-10-13T03:27:14+00:00"
+    },
+    {
+      "id": "D-015",
+      "question": "Small behavior defaults bundle (shortcut, hidden favs, project address, linked direct visit, home caps, backup migrate, install prompt, update, touch copy, date fmt, theme toggle)",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Accept all 11 defaults (Mod+K; hidden favs not counted, dropped oldest-first; project anchor address; linked direct visit shows note; 8 recents excl favorites; migrate old backups; browser-native install; update message only; touch first-visit copy; device locale; quick-toggle flips light/dark)",
+      "asked": "2026-10-13T03:35:27+00:00",
+      "answered": "2026-10-13T03:37:39+00:00"
+    },
+    {
+      "id": "D-016",
+      "question": "M-1 success measure",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Local distinct-days-used counter; done = 10 of 14 days",
+      "asked": "2026-10-13T03:35:27+00:00",
+      "answered": "2026-10-13T03:37:40+00:00"
+    },
+    {
+      "id": "D-017",
+      "question": "External tools in M-1",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "External tools allowed in M-1, linked only; label in M-2",
+      "asked": "2026-10-13T03:35:27+00:00",
+      "answered": "2026-10-13T03:37:40+00:00"
+    },
+    {
+      "id": "D-018",
+      "question": "Catalog check scope for project/profile links",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "product-spec",
+      "status": "answered",
+      "answer": "Project/profile links checked as non-blocking warnings",
+      "asked": "2026-10-13T03:35:27+00:00",
+      "answered": "2026-10-13T03:37:40+00:00"
+    },
+    {
+      "id": "D-019",
+      "question": "Style direction",
+      "options": [
+        "A Taro Milk Tea",
+        "B Night Market",
+        "C Taro Sticker",
+        "Mix"
+      ],
+      "recommendation": null,
+      "kind": "design",
+      "phase": "design",
+      "status": "answered",
+      "answer": "B · Night Market",
+      "asked": "2026-10-13T03:50:55+00:00",
+      "answered": "2026-10-13T03:53:47+00:00"
+    },
+    {
+      "id": "D-020",
+      "question": "Design tool",
+      "options": [],
+      "recommendation": null,
+      "kind": "design",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Claude Design canvas",
+      "asked": "2026-10-13T03:54:28+00:00",
+      "answered": "2026-10-13T03:54:28+00:00"
+    },
+    {
+      "id": "D-021",
+      "question": "Domain + hosting account",
+      "options": [],
+      "recommendation": null,
+      "kind": "money",
+      "phase": "design",
+      "status": "answered",
+      "answer": "User will buy a domain and create a Cloudflare account (hard stop, user-owned); spikes needing a real domain wait",
+      "asked": "2026-10-13T04:07:39+00:00",
+      "answered": "2026-10-13T04:07:39+00:00"
+    },
+    {
+      "id": "D-022",
+      "question": "Repo visibility",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Private GitHub repo",
+      "asked": "2026-10-13T04:07:39+00:00",
+      "answered": "2026-10-13T04:07:39+00:00"
+    },
+    {
+      "id": "D-023",
+      "question": "Build-only copyleft exceptions (MPL-2.0 lightningcss/axe-core, LGPL sharp binaries)",
+      "options": [],
+      "recommendation": null,
+      "kind": "legal",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Allowed for build/test only, never shipped",
+      "asked": "2026-10-13T04:07:39+00:00",
+      "answered": "2026-10-13T04:07:39+00:00"
+    },
+    {
+      "id": "D-024",
+      "question": "Architect spec changes (RULE-10 allow-forms + best-effort, INV-03 own origin, F-003.R8 iOS installed exception)",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "design",
+      "status": "answered",
+      "answer": "Apply all three",
+      "asked": "2026-10-13T04:07:39+00:00",
+      "answered": "2026-10-13T04:07:40+00:00"
+    },
+    {
+      "id": "D-025",
+      "question": "Portal domain",
+      "options": [],
+      "recommendation": null,
+      "kind": "money",
+      "phase": "design",
+      "status": "answered",
+      "answer": "tarokit.app (bought by user 2026-10-13)",
+      "asked": "2026-10-13T04:16:41+00:00",
+      "answered": "2026-10-13T04:16:41+00:00"
+    }
+  ],
+  "loops": {
+    "spec-review": {
+      "round": 2,
+      "max": 3,
+      "active": false,
+      "started": "2026-10-13T03:32:56+00:00",
+      "outcome": "converged",
+      "ended": "2026-10-13T03:43:26+00:00"
+    },
+    "design-D1": {
+      "round": 1,
+      "max": 3,
+      "active": true,
+      "started": "2026-10-13T04:01:33+00:00",
+      "outcome": null
+    }
+  },
+  "log": [
+    {
+      "at": "2026-10-13T03:12:20+00:00",
+      "event": "initialized (autonomy=balanced)"
+    },
+    {
+      "at": "2026-10-13T03:12:20+00:00",
+      "event": "phase setup -> in_progress"
+    },
+    {
+      "at": "2026-10-13T03:13:18+00:00",
+      "event": "set profile"
+    },
+    {
+      "at": "2026-10-13T03:13:18+00:00",
+      "event": "set autonomy"
+    },
+    {
+      "at": "2026-10-13T03:13:18+00:00",
+      "event": "set environment"
+    },
+    {
+      "at": "2026-10-13T03:13:27+00:00",
+      "event": "phase setup -> gate"
+    },
+    {
+      "at": "2026-10-13T03:14:10+00:00",
+      "event": "gate setup passed: Greenfield; personal/experienced/flexible/balanced; web-capable env"
+    },
+    {
+      "at": "2026-10-13T03:14:10+00:00",
+      "event": "set idea"
+    },
+    {
+      "at": "2026-10-13T03:14:15+00:00",
+      "event": "phase product-spec -> in_progress"
+    },
+    {
+      "at": "2026-10-13T03:14:29+00:00",
+      "event": "product-spec step: 1.1 brainstorm: problem round + market research (bg)"
+    },
+    {
+      "at": "2026-10-13T03:17:23+00:00",
+      "event": "market research saved; user wants all categories incl. creator (clip maker) + relaxing tools; platform web+PWA; identity = about page + dashboard home"
+    },
+    {
+      "at": "2026-10-13T03:17:23+00:00",
+      "event": "product-spec step: 1.1 positioning + MVP scope round"
+    },
+    {
+      "at": "2026-10-13T03:23:04+00:00",
+      "event": "decision D-001 opened: Platform"
+    },
+    {
+      "at": "2026-10-13T03:23:04+00:00",
+      "event": "decision D-001 answered: Web app + PWA"
+    },
+    {
+      "at": "2026-10-13T03:23:04+00:00",
+      "event": "decision D-002 opened: Scope of this project"
+    },
+    {
+      "at": "2026-10-13T03:23:04+00:00",
+      "event": "decision D-002 answered: Portal/portfolio only; each tool is a separate project in another dir"
+    },
+    {
+      "at": "2026-10-13T03:23:05+00:00",
+      "event": "decision D-003 opened: Data storage"
+    },
+    {
+      "at": "2026-10-13T03:23:05+00:00",
+      "event": "decision D-003 answered: Local-only with JSON export/import"
+    },
+    {
+      "at": "2026-10-13T03:23:05+00:00",
+      "event": "decision D-004 opened: Currency converter"
+    },
+    {
+      "at": "2026-10-13T03:23:05+00:00",
+      "event": "decision D-004 answered: Skip in M-1 (moot: tools are separate projects)"
+    },
+    {
+      "at": "2026-10-13T03:23:06+00:00",
+      "event": "decision D-005 opened: Analytics"
+    },
+    {
+      "at": "2026-10-13T03:23:06+00:00",
+      "event": "decision D-005 answered: None"
+    },
+    {
+      "at": "2026-10-13T03:23:06+00:00",
+      "event": "decision D-006 opened: Tool integration"
+    },
+    {
+      "at": "2026-10-13T03:23:06+00:00",
+      "event": "decision D-006 answered: Hybrid: per-tool mode embed (sandboxed iframe) or link"
+    },
+    {
+      "at": "2026-10-13T03:23:06+00:00",
+      "event": "decision D-007 opened: Tool registry"
+    },
+    {
+      "at": "2026-10-13T03:23:07+00:00",
+      "event": "decision D-007 answered: Typed registry file in this repo"
+    },
+    {
+      "at": "2026-10-13T03:23:07+00:00",
+      "event": "decision D-008 opened: Shared runtime UX"
+    },
+    {
+      "at": "2026-10-13T03:23:07+00:00",
+      "event": "decision D-008 answered: Nothing shared"
+    },
+    {
+      "at": "2026-10-13T03:23:07+00:00",
+      "event": "decision D-009 opened: Portfolio content"
+    },
+    {
+      "at": "2026-10-13T03:23:07+00:00",
+      "event": "decision D-009 answered: Bio+links, Projects showcase, Tool changelog/now (no blog)"
+    },
+    {
+      "at": "2026-10-13T03:23:36+00:00",
+      "event": "product-spec step: 1.1 vision brief draft v1 written; product-strategist challenge running"
+    },
+    {
+      "at": "2026-10-13T03:25:57+00:00",
+      "event": "decision D-010 opened: Domain layout"
+    },
+    {
+      "at": "2026-10-13T03:25:57+00:00",
+      "event": "decision D-010 answered: Apex + tool subdomains (same site)"
+    },
+    {
+      "at": "2026-10-13T03:25:58+00:00",
+      "event": "decision D-011 opened: Home page"
+    },
+    {
+      "at": "2026-10-13T03:25:58+00:00",
+      "event": "decision D-011 answered: Lean dashboard"
+    },
+    {
+      "at": "2026-10-13T03:25:58+00:00",
+      "event": "decision D-012 opened: Pilot tools at launch"
+    },
+    {
+      "at": "2026-10-13T03:25:58+00:00",
+      "event": "decision D-012 answered: Seed with placeholder/hidden entries; real tools added as deployed"
+    },
+    {
+      "at": "2026-10-13T03:25:58+00:00",
+      "event": "decision D-013 opened: Now/changelog"
+    },
+    {
+      "at": "2026-10-13T03:25:58+00:00",
+      "event": "decision D-013 answered: Changelog auto from registry dates; Now manual with last-updated"
+    },
+    {
+      "at": "2026-10-13T03:25:59+00:00",
+      "event": "set spike_candidates"
+    },
+    {
+      "at": "2026-10-13T03:26:22+00:00",
+      "event": "decision D-014 opened: Approve vision brief v2"
+    },
+    {
+      "at": "2026-10-13T03:26:22+00:00",
+      "event": "product-spec step: 1.1 vision brief v2 awaiting user approval"
+    },
+    {
+      "at": "2026-10-13T03:27:14+00:00",
+      "event": "decision D-014 answered: Approved"
+    },
+    {
+      "at": "2026-10-13T03:27:15+00:00",
+      "event": "product-spec step: 1.2 idea → spec: writing specs"
+    },
+    {
+      "at": "2026-10-13T03:32:49+00:00",
+      "event": "product-spec step: 1.3 spec review loop round 1"
+    },
+    {
+      "at": "2026-10-13T03:32:56+00:00",
+      "event": "loop spec-review started (max 3)"
+    },
+    {
+      "at": "2026-10-13T03:35:26+00:00",
+      "event": "product-spec step: 1.3 round 1 merged; asking product decisions batch"
+    },
+    {
+      "at": "2026-10-13T03:35:27+00:00",
+      "event": "decision D-015 opened: Small behavior defaults bundle (shortcut, hidden favs, project address, linked direct visit, home caps, backup migrate, install prompt, update, touch copy, date fmt, theme toggle)"
+    },
+    {
+      "at": "2026-10-13T03:35:27+00:00",
+      "event": "decision D-016 opened: M-1 success measure"
+    },
+    {
+      "at": "2026-10-13T03:35:27+00:00",
+      "event": "decision D-017 opened: External tools in M-1"
+    },
+    {
+      "at": "2026-10-13T03:35:27+00:00",
+      "event": "decision D-018 opened: Catalog check scope for project/profile links"
+    },
+    {
+      "at": "2026-10-13T03:37:39+00:00",
+      "event": "decision D-015 answered: Accept all 11 defaults (Mod+K; hidden favs not counted, dropped oldest-first; project anchor address; linked direct visit shows note; 8 recents excl favorites; migrate old backups; browser-native install; update message only; touch first-visit copy; device locale; quick-toggle flips light/dark)"
+    },
+    {
+      "at": "2026-10-13T03:37:40+00:00",
+      "event": "decision D-016 answered: Local distinct-days-used counter; done = 10 of 14 days"
+    },
+    {
+      "at": "2026-10-13T03:37:40+00:00",
+      "event": "decision D-017 answered: External tools allowed in M-1, linked only; label in M-2"
+    },
+    {
+      "at": "2026-10-13T03:37:40+00:00",
+      "event": "decision D-018 answered: Project/profile links checked as non-blocking warnings"
+    },
+    {
+      "at": "2026-10-13T03:41:03+00:00",
+      "event": "loop spec-review round 2"
+    },
+    {
+      "at": "2026-10-13T03:41:04+00:00",
+      "event": "product-spec step: 1.3 spec review round 2 (verification)"
+    },
+    {
+      "at": "2026-10-13T03:43:26+00:00",
+      "event": "loop spec-review ended: converged"
+    },
+    {
+      "at": "2026-10-13T03:43:31+00:00",
+      "event": "phase product-spec -> gate"
+    },
+    {
+      "at": "2026-10-13T03:44:58+00:00",
+      "event": "gate product-spec passed: 15 M-1 features ready; 2 review rounds converged; D-001..D-018"
+    },
+    {
+      "at": "2026-10-13T03:45:17+00:00",
+      "event": "phase design -> in_progress"
+    },
+    {
+      "at": "2026-10-13T03:45:17+00:00",
+      "event": "phase architecture -> in_progress"
+    },
+    {
+      "at": "2026-10-13T03:45:17+00:00",
+      "event": "design step: 3.1 architect agent proposing stack (background)"
+    },
+    {
+      "at": "2026-10-13T03:45:34+00:00",
+      "event": "design step: 2.1 style builder: discovery round"
+    },
+    {
+      "at": "2026-10-13T03:45:35+00:00",
+      "event": "architecture 3.1 delegated to architect agent in background; design step 1 with user in foreground"
+    },
+    {
+      "at": "2026-10-13T03:50:54+00:00",
+      "event": "design step: 2.1 style directions A/B/C published (artifact EKEvVa7wvuW9Qb81qNPc4p); awaiting user pick"
+    },
+    {
+      "at": "2026-10-13T03:50:55+00:00",
+      "event": "decision D-019 opened: Style direction"
+    },
+    {
+      "at": "2026-10-13T03:53:47+00:00",
+      "event": "decision D-019 answered: B · Night Market"
+    },
+    {
+      "at": "2026-10-13T03:53:48+00:00",
+      "event": "design step: 2.2 tool selection & setup"
+    },
+    {
+      "at": "2026-10-13T03:54:28+00:00",
+      "event": "set design_tool"
+    },
+    {
+      "at": "2026-10-13T03:54:28+00:00",
+      "event": "decision D-020 opened: Design tool"
+    },
+    {
+      "at": "2026-10-13T03:54:28+00:00",
+      "event": "decision D-020 answered: Claude Design canvas"
+    },
+    {
+      "at": "2026-10-13T03:54:43+00:00",
+      "event": "design step: 2.4 design loop D1 components: creating canvas"
+    },
+    {
+      "at": "2026-10-13T04:01:33+00:00",
+      "event": "design step: 2.4 D1 components drafted on canvas 64r5hyDPKT37fo6TDZ5ptV; audit round 1"
+    },
+    {
+      "at": "2026-10-13T04:01:33+00:00",
+      "event": "loop design-D1 started (max 3)"
+    },
+    {
+      "at": "2026-10-13T04:07:39+00:00",
+      "event": "decision D-021 opened: Domain + hosting account"
+    },
+    {
+      "at": "2026-10-13T04:07:39+00:00",
+      "event": "decision D-021 answered: User will buy a domain and create a Cloudflare account (hard stop, user-owned); spikes needing a real domain wait"
+    },
+    {
+      "at": "2026-10-13T04:07:39+00:00",
+      "event": "decision D-022 opened: Repo visibility"
+    },
+    {
+      "at": "2026-10-13T04:07:39+00:00",
+      "event": "decision D-022 answered: Private GitHub repo"
+    },
+    {
+      "at": "2026-10-13T04:07:39+00:00",
+      "event": "decision D-023 opened: Build-only copyleft exceptions (MPL-2.0 lightningcss/axe-core, LGPL sharp binaries)"
+    },
+    {
+      "at": "2026-10-13T04:07:39+00:00",
+      "event": "decision D-023 answered: Allowed for build/test only, never shipped"
+    },
+    {
+      "at": "2026-10-13T04:07:39+00:00",
+      "event": "decision D-024 opened: Architect spec changes (RULE-10 allow-forms + best-effort, INV-03 own origin, F-003.R8 iOS installed exception)"
+    },
+    {
+      "at": "2026-10-13T04:07:40+00:00",
+      "event": "decision D-024 answered: Apply all three"
+    },
+    {
+      "at": "2026-10-13T04:10:42+00:00",
+      "event": "design step: 2.4 D1 round-1 fixes published; awaiting user review of D1 + user hard stop (domain, Cloudflare account). Architecture 3.1 drafts done (ADR-0002..0010 proposed); next: license-auditor on DEP-01..32, spikes SP-2/4/5/6 locally (need initial commit for worktrees)"
+    },
+    {
+      "at": "2026-10-13T04:10:42+00:00",
+      "event": "D1 components designed + audited round 1; architecture drafts in; D-021..D-024 recorded"
+    },
+    {
+      "at": "2026-10-13T04:16:41+00:00",
+      "event": "decision D-025 opened: Portal domain"
+    },
+    {
+      "at": "2026-10-13T04:16:41+00:00",
+      "event": "decision D-025 answered: tarokit.app (bought by user 2026-10-13)"
+    },
+    {
+      "at": "2026-10-13T04:16:41+00:00",
+      "event": "set domain"
+    },
+    {
+      "at": "2026-10-13T04:16:42+00:00",
+      "event": "domain tarokit.app recorded; Cloudflare account still pending"
+    }
+  ],
+  "updated": "2026-10-13T04:16:42+00:00",
+  "environment": {
+    "git": "2.54.0",
+    "node": "24.19.0",
+    "npm": "11.17.0",
+    "pnpm": "11.25.0",
+    "python": "3.14.7",
+    "xcode": null,
+    "android_sdk": null,
+    "gh": "2.101.0",
+    "connectors": [
+      "claude-in-chrome",
+      "Figma MCP",
+      "Claude Docs",
+      "Artifacts"
+    ]
+  },
+  "idea": "Create TaroKit, a personal hub of useful tools for work and everyday life. It brings together productivity utilities, developer tools, calculators, converters, and other handy resources in one clean, modern, and user-friendly interface. The platform should reflect a strong personal identity while remaining flexible and extensible for future tools and features.",
+  "spike_candidates": [
+    {
+      "id": "SP-1",
+      "q": "Embedded at apex vs opened on subdomain: same localStorage in Chrome/Safari/Firefox?",
+      "box": "3h"
+    },
+    {
+      "id": "SP-2",
+      "q": "CI header-check script classifies embeddability (XFO/CSP frame-ancestors) correctly on 5 good + 5 bad URLs?",
+      "box": "2h"
+    },
+    {
+      "id": "SP-3",
+      "q": "With per-tool sandbox/allow, do clipboard-write, download, file input work in Chrome & Safari?",
+      "box": "2h"
+    },
+    {
+      "id": "SP-4",
+      "q": "Installed PWA opens /t/:id offline, shows offline state for non-offline tool, runs offline-capable embedded tool?",
+      "box": "3h"
+    },
+    {
+      "id": "SP-5",
+      "q": "One typed registry drives palette, catalog, changelog, sitemap; build fails on invalid entry?",
+      "box": "2h"
+    }
+  ],
+  "domain": "tarokit.app"
+}

@@ -1,0 +1,33 @@
+---
+id: SCR-Settings
+title: Settings
+status: draft
+features: [F-012, F-013, F-006]
+components: [CMP-AppShell]
+---
+
+## Purpose
+Theme, backup and privacy controls.
+
+## Layout regions
+1. Shell header.
+2. Appearance: theme choice (COPY-settings.theme).
+3. Your data: export (COPY-settings.export) with the backup scope note (COPY-settings.backupScope), import (COPY-settings.import), days used (COPY-settings.daysUsed), clear recents (COPY-settings.clearRecents), erase all (COPY-settings.erase).
+4. Privacy statement (COPY-settings.privacy).
+
+## States
+| State | When | What the user sees |
+|---|---|---|
+| default | | controls |
+| empty | n/a | — |
+| loading | importing | progress on the import control |
+| error | invalid import | COPY-settings.importInvalid |
+
+Confirmations: COPY-settings.importConfirm, COPY-settings.clearRecentsConfirm, COPY-settings.eraseConfirm, each with COPY-common.confirm and COPY-common.cancel. Import reasons: COPY-import.notBackup, COPY-import.damaged, COPY-import.newerVersion, COPY-import.tooLarge.
+
+## Entry & exit
+- Entered from: shell navigation, the palette, FLOW-03.
+- Exits to: anywhere.
+
+## Accessibility
+Destructive actions need a confirmation step that is reachable by keyboard, with focus moving into it.

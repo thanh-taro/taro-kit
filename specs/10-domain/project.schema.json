@@ -1,0 +1,419 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tarokit.schema.json",
+  "title": "TaroKit data model",
+  "description": "Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Project, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.",
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 48
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "secureUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "link": {
+      "type": "object",
+      "required": [
+        "label",
+        "url"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^(https://|mailto:)"
+        },
+        "kind": {
+          "enum": [
+            "email",
+            "social",
+            "website",
+            "code",
+            "other"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "entryBase": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "summary",
+        "added"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "kind": {
+          "enum": [
+            "tool",
+            "project"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "icon": {
+          "$ref": "#/$defs/assetPath"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 24
+          },
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "added": {
+          "$ref": "#/$defs/date"
+        },
+        "updated": {
+          "$ref": "#/$defs/date"
+        },
+        "hidden": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "tool": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/entryBase"
+        },
+        {
+          "if": {
+            "properties": {
+              "openMode": {
+                "const": "embedded"
+              }
+            },
+            "required": [
+              "openMode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "origin": {
+                "const": "own"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "external"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "openMode": {
+                "const": "linked"
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "category",
+        "url",
+        "origin"
+      ],
+      "properties": {
+        "kind": {
+          "const": "tool"
+        },
+        "category": {
+          "$ref": "#/$defs/slug"
+        },
+        "url": {
+          "$ref": "#/$defs/secureUrl"
+        },
+        "origin": {
+          "enum": [
+            "own",
+            "external"
+          ]
+        },
+        "openMode": {
+          "enum": [
+            "embedded",
+            "linked"
+          ]
+        },
+        "permissions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "clipboard-read",
+              "clipboard-write",
+              "downloads",
+              "file-pick",
+              "popups",
+              "fullscreen",
+              "camera",
+              "microphone"
+            ]
+          },
+          "default": []
+        },
+        "offline": {
+          "type": "boolean",
+          "default": false
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/secureUrl"
+        }
+      }
+    },
+    "project": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/entryBase"
+        }
+      ],
+      "required": [
+        "description",
+        "links",
+        "year"
+      ],
+      "properties": {
+        "kind": {
+          "const": "project"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "image": {
+          "$ref": "#/$defs/assetPath"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/link"
+          },
+          "maxItems": 4
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 2000
+        }
+      }
+    },
+    "category": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "order"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 24
+        },
+        "order": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 120
+        }
+      },
+      "additionalProperties": false
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "name",
+        "headline",
+        "bio",
+        "links"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "headline": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "avatar": {
+          "$ref": "#/$defs/assetPath"
+        },
+        "bio": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "location": {
+          "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/link"
+          },
+          "maxItems": 10
+        },
+        "nickname": {
+          "type": "string",
+          "maxLength": 24
+        }
+      }
+    },
+    "nowNote": {
+      "type": "object",
+      "required": [
+        "body",
+        "updated"
+      ],
+      "properties": {
+        "body": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "updated": {
+          "$ref": "#/$defs/date"
+        }
+      }
+    },
+    "personalData": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "favorites",
+        "recents",
+        "preferences",
+        "daysUsed"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "favorites": {
+          "type": "array",
+          "maxItems": 24,
+          "items": {
+            "type": "object",
+            "required": [
+              "toolId",
+              "pinnedAt"
+            ],
+            "properties": {
+              "toolId": {
+                "$ref": "#/$defs/slug"
+              },
+              "pinnedAt": {
+                "$ref": "#/$defs/timestamp"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "recents": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "toolId",
+              "openedAt"
+            ],
+            "properties": {
+              "toolId": {
+                "$ref": "#/$defs/slug"
+              },
+              "openedAt": {
+                "$ref": "#/$defs/timestamp"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "preferences": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "enum": [
+                "system",
+                "light",
+                "dark"
+              ],
+              "default": "system"
+            }
+          },
+          "additionalProperties": false
+        },
+        "daysUsed": {
+          "type": "array",
+          "maxItems": 60,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/date"
+          },
+          "description": "RULE-13"
+        }
+      }
+    },
+    "backupFile": {
+      "type": "object",
+      "required": [
+        "format",
+        "exportedAt",
+        "data"
+      ],
+      "properties": {
+        "format": {
+          "const": "tarokit-backup"
+        },
+        "exportedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "data": {
+          "$ref": "#/$defs/personalData"
+        }
+      }
+    },
+    "assetPath": {
+      "type": "string",
+      "pattern": "^/?[A-Za-z0-9_./-]+$",
+      "description": "Relative path of an asset bundled with the portal; never a remote address (NFR-05)."
+    }
+  }
+}

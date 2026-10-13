@@ -1,0 +1,31 @@
+---
+id: SCR-Catalog
+title: Catalog
+status: draft
+features: [F-002, F-005]
+components: [CMP-AppShell, CMP-ToolCard, CMP-StateMessage]
+---
+
+## Purpose
+See and filter every available tool.
+
+## Layout regions
+1. Shell header.
+2. Title (COPY-catalog.title) and search field (COPY-catalog.searchPlaceholder).
+3. Category filter, with "All" first (COPY-catalog.all).
+4. Tool groups by category, each a heading followed by CMP-ToolCard items.
+
+## States
+| State | When | What the user sees |
+|---|---|---|
+| default | visible tools exist | grouped tools |
+| empty | no visible tools | CMP-StateMessage with COPY-catalog.empty |
+| loading | n/a | local content |
+| error | search has no matches | CMP-StateMessage with COPY-catalog.noResults and a clear action (COPY-catalog.clear) |
+
+## Entry & exit
+- Entered from: shell navigation, the palette, the home invitation, SCR-NotFound.
+- Exits to: SCR-ToolView, or a tool's own address (linked tools).
+
+## Accessibility
+The result count is announced politely after filtering. The category filter is a single-select group operable with arrow keys.

@@ -1,0 +1,345 @@
+<title>TaroKit Style Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=Unbounded:wght@500;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
+<style>
+/* Layout: a review sheet. Page chrome stays quiet; each direction is a full-width band with its tokens, then a live Home + ⌘K mock. */
+:root{
+  --bg:#F6F4F8; --fg:#1E1A22; --muted:#665E6C; --line:#E2DDE7; --panel:#FFFFFF; --accent:#6A40C4;
+  --f-ui:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141117;--fg:#EEEAF1;--muted:#A39BAA;--line:#2B2631;--panel:#1B171F;--accent:#B99BF2;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141117;--fg:#EEEAF1;--muted:#A39BAA;--line:#2B2631;--panel:#1B171F;--accent:#B99BF2;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-ui);padding-inline:16px;padding-block:28px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:40px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.eyebrow{font:500 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header.top{display:grid;gap:14px}
+header.top h1{font:700 clamp(28px,4vw,40px)/1.1 "Bricolage Grotesque",var(--f-ui)}
+header.top p{max-width:68ch;color:var(--muted)}
+.brief{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 10px;font-size:13px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:4px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+.seg button{font:600 13px var(--f-ui);color:var(--fg);background:transparent;border:0;padding:8px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+section.dir{display:grid;gap:20px;border-top:1px solid var(--line);padding-top:28px}
+.dir-head{display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}
+.dir-head h2{font-size:clamp(24px,3vw,30px);line-height:1.15}
+.dir-head .why{max-width:72ch;color:var(--muted)}
+.specs{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.spec{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
+.swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sw{display:grid;gap:4px;min-width:0}
+.sw i{display:block;height:36px;border-radius:8px;border:1px solid rgba(127,127,127,.25)}
+.sw span{font:400 11px/1.3 var(--f-mono);color:var(--muted);overflow-wrap:anywhere}
+.type-row{display:grid;gap:2px}
+.type-row small{font:400 11px var(--f-mono);color:var(--muted)}
+.shape-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.shape{width:44px;height:44px;border:1.5px solid var(--fg);opacity:.75}
+
+/* ---------- Mock stage: direction tokens are scoped per direction + mode ---------- */
+.stage{display:grid;gap:16px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:start}
+@media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}}
+.mock{background:var(--m-bg);color:var(--m-fg);font-family:var(--m-body);border-radius:var(--m-r-win);overflow:hidden;border:var(--m-bw) solid var(--m-line);box-shadow:var(--m-win-shadow);min-width:0}
+.bar{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--m-line);background:var(--m-chrome)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--m-line)}
+.logo{font:var(--m-logo);letter-spacing:var(--m-logo-track);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.logo b{width:22px;height:22px;border-radius:var(--m-r-s);background:var(--m-accent);display:inline-grid;place-items:center;color:var(--m-on-accent);font:700 12px var(--m-display)}
+.nav{display:flex;gap:4px;font-size:13px;color:var(--m-muted);min-width:0;overflow:hidden}
+.nav span{padding:4px 8px;border-radius:var(--m-r-s);white-space:nowrap}
+.nav span.on{color:var(--m-fg);background:var(--m-surface2)}
+.bar .kbtn{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--m-muted);border:1px solid var(--m-line);border-radius:var(--m-r-pill);padding:4px 6px 4px 10px;white-space:nowrap}
+@media (max-width:620px){.nav{display:none}}
+kbd{font:500 11px var(--m-mono);background:var(--m-surface2);color:var(--m-fg);border:1px solid var(--m-line);border-bottom-width:2px;border-radius:6px;padding:1px 6px}
+.home{padding:28px 24px 26px;display:grid;gap:22px}
+.greet{display:grid;gap:4px}
+.greet .when{font:500 12px var(--m-mono);color:var(--m-muted)}
+.greet h3{font:var(--m-h1);letter-spacing:var(--m-h1-track)}
+.greet h3 em{font-style:normal;color:var(--m-accent)}
+.greet p{color:var(--m-muted);font-size:14px}
+.search{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--m-surface);border:var(--m-bw) solid var(--m-line);border-radius:var(--m-r-ctl);box-shadow:var(--m-card-shadow);color:var(--m-muted);font-size:14px}
+.search svg{flex:none}
+.search kbd{margin-left:auto}
+.sec{display:grid;gap:10px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;font:600 13px var(--m-body);color:var(--m-muted);letter-spacing:.02em}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.tile{background:var(--m-surface);border:var(--m-bw) solid var(--m-line);border-radius:var(--m-r-card);padding:12px;display:grid;gap:10px;box-shadow:var(--m-card-shadow);position:relative;min-width:0}
+.tile .ic{width:34px;height:34px;border-radius:var(--m-r-s);display:grid;place-items:center;font:600 13px var(--m-mono);background:var(--m-tint);color:var(--m-accent)}
+.tile .nm{font-weight:600;font-size:14px;line-height:1.25}
+.tile .star{position:absolute;top:10px;right:10px;color:var(--m-accent2);font-size:14px}
+.tile.ext .nm::after{content:" ↗";color:var(--m-muted);font-weight:400}
+.news{display:grid;gap:6px}
+.new{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:var(--m-r-ctl);background:var(--m-surface);border:var(--m-bw) solid var(--m-line);font-size:14px;min-width:0}
+.pill{font:600 11px var(--m-body);padding:2px 8px;border-radius:var(--m-r-pill);background:var(--m-tint2);color:var(--m-accent2-ink);white-space:nowrap}
+.new .d{margin-left:auto;color:var(--m-muted);font:400 12px var(--m-mono);white-space:nowrap}
+.new span.t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.pal{background:var(--m-surface);color:var(--m-fg);font-family:var(--m-body);border:var(--m-bw) solid var(--m-line);border-radius:var(--m-r-win);box-shadow:var(--m-pal-shadow);overflow:hidden;min-width:0}
+.pal-in{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--m-line);font-size:15px}
+.pal-in .q{color:var(--m-fg)}.pal-in .caret{width:2px;height:18px;background:var(--m-accent);display:inline-block;margin-left:-6px}
+.grp{padding:8px 8px 4px}
+.grp-h{font:600 11px var(--m-body);letter-spacing:.08em;text-transform:uppercase;color:var(--m-muted);padding:6px 8px}
+.row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--m-r-s);font-size:14px;min-width:0}
+.row .ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:600 11px var(--m-mono);background:var(--m-tint);color:var(--m-accent);flex:none}
+.row.sel{background:var(--m-sel);box-shadow:inset 0 0 0 1px var(--m-sel-line)}
+.row .hint{margin-left:auto;font:400 12px var(--m-mono);color:var(--m-muted);white-space:nowrap}
+.row mark{background:none;color:var(--m-accent);font-weight:700}
+.pal-ft{display:flex;flex-wrap:wrap;gap:12px;padding:10px 16px;border-top:1px solid var(--m-line);font-size:12px;color:var(--m-muted)}
+.pal-cap{font:400 12px var(--f-mono);color:var(--muted);margin-top:8px}
+
+/* ----- Direction A · Taro Milk Tea ----- */
+.A{--m-display:"Bricolage Grotesque",var(--f-ui);--m-body:"Figtree",var(--f-ui);--m-mono:var(--f-mono);
+  --m-h1:700 34px/1.1 var(--m-display);--m-h1-track:-.01em;--m-logo:700 16px var(--m-display);--m-logo-track:0;
+  --m-r-win:20px;--m-r-card:18px;--m-r-ctl:14px;--m-r-s:10px;--m-r-pill:999px;--m-bw:1px}
+.A[data-mode="dark"]{--m-bg:#1C1820;--m-chrome:#211C26;--m-surface:#27212C;--m-surface2:#322B38;--m-line:#3A3242;--m-fg:#F4EFF7;--m-muted:#AFA4B6;
+  --m-accent:#C9AEF7;--m-on-accent:#211630;--m-accent2:#F0C39C;--m-accent2-ink:#F6D3B4;--m-tint:#352A44;--m-tint2:#3F3127;--m-sel:#352A44;--m-sel-line:#4B3B61;
+  --m-card-shadow:0 1px 0 rgba(255,255,255,.04) inset;--m-win-shadow:0 24px 60px -24px rgba(0,0,0,.6);--m-pal-shadow:0 30px 70px -20px rgba(0,0,0,.7)}
+.A[data-mode="light"]{--m-bg:#F7F3F8;--m-chrome:#FBF8FC;--m-surface:#FFFFFF;--m-surface2:#EFE8F2;--m-line:#E3D9E8;--m-fg:#231B28;--m-muted:#6C6173;
+  --m-accent:#7442CC;--m-on-accent:#FFFFFF;--m-accent2:#B8743F;--m-accent2-ink:#8A4F20;--m-tint:#EFE6FB;--m-tint2:#F8E9DC;--m-sel:#F1E9FC;--m-sel-line:#DCC8F7;
+  --m-card-shadow:0 1px 2px rgba(60,30,80,.06),0 4px 14px -6px rgba(60,30,80,.10);--m-win-shadow:0 24px 60px -28px rgba(70,40,90,.35);--m-pal-shadow:0 30px 70px -24px rgba(70,40,90,.40)}
+
+/* ----- Direction B · Night Market ----- */
+.B{--m-display:"Unbounded",var(--f-ui);--m-body:"Manrope",var(--f-ui);--m-mono:var(--f-mono);
+  --m-h1:600 28px/1.15 var(--m-display);--m-h1-track:-.02em;--m-logo:600 14px var(--m-display);--m-logo-track:.02em;
+  --m-r-win:14px;--m-r-card:12px;--m-r-ctl:10px;--m-r-s:7px;--m-r-pill:8px;--m-bw:1px}
+.B[data-mode="dark"]{--m-bg:radial-gradient(120% 80% at 85% -10%,#2A1850 0%,#0F0B16 55%);--m-chrome:rgba(20,15,30,.7);--m-surface:#18121F;--m-surface2:#221A2F;--m-line:#2D2440;--m-fg:#EFEAF8;--m-muted:#9C92B0;
+  --m-accent:#A47BFF;--m-on-accent:#0F0B16;--m-accent2:#FFB870;--m-accent2-ink:#FFC48A;--m-tint:#251A3C;--m-tint2:#33240F;--m-sel:linear-gradient(90deg,#2A1D47,#1F1733);--m-sel-line:#4A3580;
+  --m-card-shadow:none;--m-win-shadow:0 0 0 1px rgba(164,123,255,.08),0 30px 80px -30px rgba(120,70,255,.45);--m-pal-shadow:0 0 0 1px rgba(164,123,255,.12),0 30px 90px -20px rgba(120,70,255,.5)}
+.B[data-mode="light"]{--m-bg:linear-gradient(180deg,#F4F0FF 0%,#FBFAFE 40%);--m-chrome:rgba(255,255,255,.8);--m-surface:#FFFFFF;--m-surface2:#F1EDFA;--m-line:#E2DCF0;--m-fg:#16111F;--m-muted:#625A73;
+  --m-accent:#6837E0;--m-on-accent:#FFFFFF;--m-accent2:#C2650C;--m-accent2-ink:#9A4E06;--m-tint:#EEE7FE;--m-tint2:#FDEBD8;--m-sel:#F0EAFE;--m-sel-line:#CDBBF8;
+  --m-card-shadow:0 1px 2px rgba(40,20,90,.05);--m-win-shadow:0 30px 70px -30px rgba(80,40,200,.30);--m-pal-shadow:0 30px 80px -24px rgba(80,40,200,.35)}
+
+/* ----- Direction C · Taro Sticker ----- */
+.C{--m-display:"Fredoka",var(--f-ui);--m-body:"DM Sans",var(--f-ui);--m-mono:var(--f-mono);
+  --m-h1:600 34px/1.05 var(--m-display);--m-h1-track:0;--m-logo:600 18px var(--m-display);--m-logo-track:0;
+  --m-r-win:18px;--m-r-card:16px;--m-r-ctl:14px;--m-r-s:10px;--m-r-pill:999px;--m-bw:2px}
+.C[data-mode="dark"]{--m-bg:#1B1623;--m-chrome:#1B1623;--m-surface:#251E30;--m-surface2:#30273D;--m-line:#54456B;--m-fg:#FFF7FC;--m-muted:#BCAECB;
+  --m-accent:#BE93FF;--m-on-accent:#1B1623;--m-accent2:#7FE3B8;--m-accent2-ink:#8FEBC3;--m-tint:#3A2C52;--m-tint2:#1F3A31;--m-sel:#3A2C52;--m-sel-line:#BE93FF;
+  --m-card-shadow:4px 4px 0 #0D0A12;--m-win-shadow:6px 6px 0 #0D0A12;--m-pal-shadow:8px 8px 0 #0D0A12}
+.C[data-mode="light"]{--m-bg:#FAF6FF;--m-chrome:#FAF6FF;--m-surface:#FFFFFF;--m-surface2:#F1E9FB;--m-line:#2B2235;--m-fg:#2B2235;--m-muted:#695D78;
+  --m-accent:#7E45E0;--m-on-accent:#FFFFFF;--m-accent2:#0F8A5F;--m-accent2-ink:#0B6B49;--m-tint:#EEE3FD;--m-tint2:#DDF5EA;--m-sel:#EEE3FD;--m-sel-line:#7E45E0;
+  --m-card-shadow:3px 3px 0 #2B2235;--m-win-shadow:6px 6px 0 #2B2235;--m-pal-shadow:7px 7px 0 #2B2235}
+.C .tile:hover{transform:translate(-1px,-1px)}
+.C .greet h3 em{background:var(--m-tint);border-radius:12px;padding:0 8px}
+
+.pick{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:6px}
+.pick strong{font-size:14px}
+.pick ul{margin:0;padding-left:18px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.tile{transition:transform .15s ease}}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px}
+footer p{max-width:72ch}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">TaroKit · Phase 2 · Style builder</span>
+    <h1>Three ways TaroKit could look</h1>
+    <p>Each direction applies your brief to the real Home screen (SCR-Home) and the ⌘K palette (CMP-CommandPalette), using copy from the specs. Tool names are sample catalog entries. Pick one, or mix them: for example, one direction's palette with another's shapes.</p>
+    <div class="brief" aria-label="Your brief">
+      <span class="chip">Playful &amp; warm</span><span class="chip">Taro purple / lilac</span><span class="chip">Dark-first, light equally polished</span><span class="chip">Raycast / Linear</span><span class="chip">Apple / macOS</span>
+    </div>
+    <div class="controls">
+      <span class="eyebrow">Preview mocks in</span>
+      <div class="seg" role="group" aria-label="Mock theme">
+        <button type="button" id="mode-dark" aria-pressed="true">Dark</button>
+        <button type="button" id="mode-light" aria-pressed="false">Light</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== A ===================== -->
+  <section class="dir" aria-labelledby="a-h">
+    <div class="dir-head">
+      <span class="eyebrow">Direction A</span>
+      <h2 id="a-h" style="font-family:'Bricolage Grotesque',var(--f-ui)">Taro Milk Tea</h2>
+      <p class="why">Soft and cozy. Rounded corners, gentle depth and macOS-like calm. The lilac comes from taro, and a milk-tea beige marks favorites and "new". The warmth comes from shape and color, so the chrome can stay quiet.</p>
+    </div>
+    <div class="specs">
+      <div class="spec"><span class="eyebrow">Color roles (dark)</span>
+        <div class="swatches">
+          <div class="sw"><i style="background:#1C1820"></i><span>bg #1C1820</span></div>
+          <div class="sw"><i style="background:#27212C"></i><span>surface #27212C</span></div>
+          <div class="sw"><i style="background:#C9AEF7"></i><span>accent #C9AEF7</span></div>
+          <div class="sw"><i style="background:#F0C39C"></i><span>accent-2 #F0C39C</span></div>
+        </div></div>
+      <div class="spec"><span class="eyebrow">Type</span>
+        <div class="type-row"><span style="font:700 26px/1.1 'Bricolage Grotesque'">Good evening, Taro</span><small>Display · Bricolage Grotesque 700</small></div>
+        <div class="type-row"><span style="font:400 15px 'Figtree'">Filter tools, open favorites.</span><small>Body · Figtree 400/600</small></div></div>
+      <div class="spec"><span class="eyebrow">Shape &amp; depth</span>
+        <div class="shape-row"><span class="shape" style="border-radius:18px"></span><span class="shape" style="border-radius:14px"></span><span class="shape" style="border-radius:999px"></span></div>
+        <p style="color:var(--muted);font-size:13px">Radius 18 / 14 / pill. Soft, layered shadows in light; inner highlights in dark. Spacing on a 4-pt grid.</p></div>
+    </div>
+    <div class="stage">
+      <div class="mock A" data-mode="dark" data-mock>
+        <div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="logo"><b>T</b>TaroKit</div>
+          <div class="nav"><span class="on">Home</span><span>Tools</span><span>Projects</span><span>About</span><span>Now</span></div>
+          <span class="kbtn">Search <kbd>⌘K</kbd></span></div>
+        <div class="home">
+          <div class="greet"><span class="when">Tue, Oct 13 · 08:42</span><h3>Good morning, <em>Taro</em></h3><p>Full-stack developer. I build small tools for work and life.</p></div>
+          <div class="search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Search tools, projects, pages…<kbd>⌘K</kbd></div>
+          <div class="sec"><div class="sec-h"><span>Favorites</span></div>
+            <div class="tiles"><div class="tile"><span class="ic">{ }</span><span class="nm">JSON Formatter</span><span class="star">★</span></div><div class="tile"><span class="ic">⇄</span><span class="nm">Unit Converter</span><span class="star">★</span></div><div class="tile"><span class="ic">◷</span><span class="nm">Focus Timer</span><span class="star">★</span></div></div></div>
+          <div class="sec"><div class="sec-h"><span>Recent</span></div>
+            <div class="tiles"><div class="tile"><span class="ic">64</span><span class="nm">Base64</span></div><div class="tile ext"><span class="ic">%</span><span class="nm">Loan Calculator</span></div></div></div>
+          <div class="sec"><div class="sec-h"><span>What's new</span></div>
+            <div class="news"><div class="new"><span class="pill">Added</span><span class="t">Color Picker</span><span class="d">3 days ago</span></div><div class="new"><span class="pill">Updated</span><span class="t">JSON Formatter</span><span class="d">Oct 2</span></div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="pal A" data-mode="dark" data-mock>
+          <div class="pal-in"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="q">json</span><span class="caret"></span></div>
+          <div class="grp"><div class="grp-h">Tools</div>
+            <div class="row sel"><span class="ic">{ }</span><span><mark>JSON</mark> Formatter</span><span class="hint">↵ Open</span></div>
+            <div class="row"><span class="ic">⇆</span><span><mark>JSON</mark> to YAML</span></div></div>
+          <div class="grp"><div class="grp-h">Projects</div><div class="row"><span class="ic">P</span><span><mark>Json</mark>Crack Clone</span><span class="hint">2025</span></div></div>
+          <div class="grp"><div class="grp-h">Actions</div><div class="row"><span class="ic">◐</span><span>Toggle light/dark theme</span></div></div>
+          <div class="pal-ft"><span>↑↓ to move</span><span>Enter to open</span><span>Esc to close</span></div>
+        </div>
+        <p class="pal-cap">CMP-CommandPalette · results state</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== B ===================== -->
+  <section class="dir" aria-labelledby="b-h">
+    <div class="dir-head">
+      <span class="eyebrow">Direction B</span>
+      <h2 id="b-h" style="font-family:'Unbounded',var(--f-ui);font-weight:600">Night Market</h2>
+      <p class="why">Built for the keyboard, with a little glow. Close to Raycast and Linear: crisp edges, tight radii, a violet glow on the selection, and monospace key caps everywhere. Playfulness comes from the wide display face and a mango accent, like taro boba with mango at a night market.</p>
+    </div>
+    <div class="specs">
+      <div class="spec"><span class="eyebrow">Color roles (dark)</span>
+        <div class="swatches">
+          <div class="sw"><i style="background:#0F0B16"></i><span>bg #0F0B16</span></div>
+          <div class="sw"><i style="background:#18121F"></i><span>surface #18121F</span></div>
+          <div class="sw"><i style="background:#A47BFF"></i><span>accent #A47BFF</span></div>
+          <div class="sw"><i style="background:#FFB870"></i><span>accent-2 #FFB870</span></div>
+        </div></div>
+      <div class="spec"><span class="eyebrow">Type</span>
+        <div class="type-row"><span style="font:600 22px/1.15 'Unbounded';letter-spacing:-.02em">Good evening, Taro</span><small>Display · Unbounded 600, headings only</small></div>
+        <div class="type-row"><span style="font:400 15px 'Manrope'">Filter tools, open favorites.</span><small>Body · Manrope 400/600 · keys: JetBrains Mono</small></div></div>
+      <div class="spec"><span class="eyebrow">Shape &amp; depth</span>
+        <div class="shape-row"><span class="shape" style="border-radius:12px"></span><span class="shape" style="border-radius:10px"></span><span class="shape" style="border-radius:7px"></span></div>
+        <p style="color:var(--muted);font-size:13px">Radius 12 / 10 / 7. Depth comes from glow and hairlines rather than shadows. Denser 4-pt spacing.</p></div>
+    </div>
+    <div class="stage">
+      <div class="mock B" data-mode="dark" data-mock>
+        <div class="bar"><div class="logo"><b>T</b>TAROKIT</div>
+          <div class="nav"><span class="on">Home</span><span>Tools</span><span>Projects</span><span>About</span><span>Now</span></div>
+          <span class="kbtn">Search <kbd>⌘K</kbd></span></div>
+        <div class="home">
+          <div class="greet"><span class="when">TUE 13 OCT · 08:42</span><h3>Good morning, <em>Taro</em></h3><p>Full-stack developer. I build small tools for work and life.</p></div>
+          <div class="search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Search tools, projects, pages…<kbd>⌘K</kbd></div>
+          <div class="sec"><div class="sec-h"><span>Favorites</span><span style="font:400 12px var(--f-mono)">3</span></div>
+            <div class="tiles"><div class="tile"><span class="ic">{ }</span><span class="nm">JSON Formatter</span><span class="star">★</span></div><div class="tile"><span class="ic">⇄</span><span class="nm">Unit Converter</span><span class="star">★</span></div><div class="tile"><span class="ic">◷</span><span class="nm">Focus Timer</span><span class="star">★</span></div></div></div>
+          <div class="sec"><div class="sec-h"><span>Recent</span><span style="font:400 12px var(--f-mono)">2</span></div>
+            <div class="tiles"><div class="tile"><span class="ic">64</span><span class="nm">Base64</span></div><div class="tile ext"><span class="ic">%</span><span class="nm">Loan Calculator</span></div></div></div>
+          <div class="sec"><div class="sec-h"><span>What's new</span></div>
+            <div class="news"><div class="new"><span class="pill">Added</span><span class="t">Color Picker</span><span class="d">3d</span></div><div class="new"><span class="pill">Updated</span><span class="t">JSON Formatter</span><span class="d">Oct 02</span></div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="pal B" data-mode="dark" data-mock>
+          <div class="pal-in"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="q">json</span><span class="caret"></span></div>
+          <div class="grp"><div class="grp-h">Tools</div>
+            <div class="row sel"><span class="ic">{ }</span><span><mark>JSON</mark> Formatter</span><span class="hint">↵</span></div>
+            <div class="row"><span class="ic">⇆</span><span><mark>JSON</mark> to YAML</span></div></div>
+          <div class="grp"><div class="grp-h">Projects</div><div class="row"><span class="ic">P</span><span><mark>Json</mark>Crack Clone</span><span class="hint">2025</span></div></div>
+          <div class="grp"><div class="grp-h">Actions</div><div class="row"><span class="ic">◐</span><span>Toggle light/dark theme</span></div></div>
+          <div class="pal-ft"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+        </div>
+        <p class="pal-cap">CMP-CommandPalette · results state</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== C ===================== -->
+  <section class="dir" aria-labelledby="c-h">
+    <div class="dir-head">
+      <span class="eyebrow">Direction C</span>
+      <h2 id="c-h" style="font-family:'Fredoka',var(--f-ui);font-weight:600">Taro Sticker</h2>
+      <p class="why">Tactile and cheeky. Thick outlines, hard offset shadows like stickers on a laptop, a rounded display face, and a pandan-mint second accent. It's the most personal and memorable of the three, and the furthest from Linear's polish.</p>
+    </div>
+    <div class="specs">
+      <div class="spec"><span class="eyebrow">Color roles (dark)</span>
+        <div class="swatches">
+          <div class="sw"><i style="background:#1B1623"></i><span>bg #1B1623</span></div>
+          <div class="sw"><i style="background:#251E30"></i><span>surface #251E30</span></div>
+          <div class="sw"><i style="background:#BE93FF"></i><span>accent #BE93FF</span></div>
+          <div class="sw"><i style="background:#7FE3B8"></i><span>accent-2 #7FE3B8</span></div>
+        </div></div>
+      <div class="spec"><span class="eyebrow">Type</span>
+        <div class="type-row"><span style="font:600 26px/1.05 'Fredoka'">Good evening, Taro</span><small>Display · Fredoka 600</small></div>
+        <div class="type-row"><span style="font:400 15px 'DM Sans'">Filter tools, open favorites.</span><small>Body · DM Sans 400/700</small></div></div>
+      <div class="spec"><span class="eyebrow">Shape &amp; depth</span>
+        <div class="shape-row"><span class="shape" style="border-radius:16px;border-width:2px;box-shadow:3px 3px 0 var(--fg)"></span><span class="shape" style="border-radius:14px;border-width:2px"></span><span class="shape" style="border-radius:999px;border-width:2px"></span></div>
+        <p style="color:var(--muted);font-size:13px">Radius 16 / 14 / pill with 2-px outlines. Hard offset shadows, and cards lift on hover. Roomier 8-pt spacing.</p></div>
+    </div>
+    <div class="stage">
+      <div class="mock C" data-mode="dark" data-mock>
+        <div class="bar"><div class="logo"><b>T</b>TaroKit</div>
+          <div class="nav"><span class="on">Home</span><span>Tools</span><span>Projects</span><span>About</span><span>Now</span></div>
+          <span class="kbtn">Search <kbd>⌘K</kbd></span></div>
+        <div class="home">
+          <div class="greet"><span class="when">Tue, Oct 13 · 08:42</span><h3>Good morning, <em>Taro</em></h3><p>Full-stack developer. I build small tools for work and life.</p></div>
+          <div class="search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Search tools, projects, pages…<kbd>⌘K</kbd></div>
+          <div class="sec"><div class="sec-h"><span>Favorites</span></div>
+            <div class="tiles"><div class="tile"><span class="ic">{ }</span><span class="nm">JSON Formatter</span><span class="star">★</span></div><div class="tile"><span class="ic">⇄</span><span class="nm">Unit Converter</span><span class="star">★</span></div><div class="tile"><span class="ic">◷</span><span class="nm">Focus Timer</span><span class="star">★</span></div></div></div>
+          <div class="sec"><div class="sec-h"><span>Recent</span></div>
+            <div class="tiles"><div class="tile"><span class="ic">64</span><span class="nm">Base64</span></div><div class="tile ext"><span class="ic">%</span><span class="nm">Loan Calculator</span></div></div></div>
+          <div class="sec"><div class="sec-h"><span>What's new</span></div>
+            <div class="news"><div class="new"><span class="pill">Added</span><span class="t">Color Picker</span><span class="d">3 days ago</span></div><div class="new"><span class="pill">Updated</span><span class="t">JSON Formatter</span><span class="d">Oct 2</span></div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="pal C" data-mode="dark" data-mock>
+          <div class="pal-in"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="q">json</span><span class="caret"></span></div>
+          <div class="grp"><div class="grp-h">Tools</div>
+            <div class="row sel"><span class="ic">{ }</span><span><mark>JSON</mark> Formatter</span><span class="hint">↵ Open</span></div>
+            <div class="row"><span class="ic">⇆</span><span><mark>JSON</mark> to YAML</span></div></div>
+          <div class="grp"><div class="grp-h">Projects</div><div class="row"><span class="ic">P</span><span><mark>Json</mark>Crack Clone</span><span class="hint">2025</span></div></div>
+          <div class="grp"><div class="grp-h">Actions</div><div class="row"><span class="ic">◐</span><span>Toggle light/dark theme</span></div></div>
+          <div class="pal-ft"><span>↑↓ to move</span><span>Enter to open</span><span>Esc to close</span></div>
+        </div>
+        <p class="pal-cap">CMP-CommandPalette · results state</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dir" aria-labelledby="pick-h" style="gap:14px">
+    <h2 id="pick-h" style="font-size:22px">How to choose</h2>
+    <div class="specs">
+      <div class="pick"><strong>A · Taro Milk Tea</strong><ul><li>Calmest for daily use</li><li>Closest to macOS</li><li>Warmth comes through softly</li></ul></div>
+      <div class="pick"><strong>B · Night Market</strong><ul><li>Fastest-feeling, keyboard-first</li><li>Closest to Raycast and Linear</li><li>Playful only in the details</li></ul></div>
+      <div class="pick"><strong>C · Taro Sticker</strong><ul><li>Most personal and memorable for visitors</li><li>Boldest of the three</li><li>Can feel busy for a daily launcher</li></ul></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Next, the chosen direction becomes design tokens (specs/30-experience/tokens.json). Every text/background pair gets a contrast check against WCAG AA in both themes, then the full screens are designed.</p>
+    <p>All fonts shown are open-licensed (SIL OFL). The real app will host them itself, so no requests go to third parties (NFR-05).</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var dark=document.getElementById('mode-dark'), light=document.getElementById('mode-light');
+  function set(mode){
+    document.querySelectorAll('[data-mock]').forEach(function(el){el.setAttribute('data-mode',mode)});
+    dark.setAttribute('aria-pressed',String(mode==='dark'));
+    light.setAttribute('aria-pressed',String(mode==='light'));
+    try{localStorage.setItem('tk-style-mode',mode)}catch(e){}
+  }
+  dark.addEventListener('click',function(){set('dark')});
+  light.addEventListener('click',function(){set('light')});
+  try{var m=localStorage.getItem('tk-style-mode'); if(m==='light'||m==='dark') set(m);}catch(e){}
+})();
+</script>
