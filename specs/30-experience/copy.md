@@ -61,6 +61,8 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.actionTheme** | Toggle light/dark theme | action name |
 | **COPY-palette.actionExport** | Export your data | action name |
 | **COPY-palette.actionCopy** | Copy link to this page | action name |
+| **COPY-palette.dialogLabel** | Search TaroKit | accessible name of the palette dialog |
+| **COPY-palette.close** | Cancel | closes the touch sheet |
 | **COPY-palette.copied** | Link copied | confirmation |
 | **COPY-about.links** | Find me | section heading |
 | **COPY-about.more** | See what I've built and what I'm up to now. | pointer to Projects and Now |

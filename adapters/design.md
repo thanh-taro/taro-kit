@@ -3,7 +3,7 @@
 Tool: a Claude Design artifact (live artboards on a canvas), decision D-020. The canvas is a derived artifact: the specs stay the source of truth.
 
 ## Naming
-- Screen artboards: `<SCR-ID> / <state> / <theme>`, e.g. `SCR-Home / empty / dark`. The states are the rows of the screen spec's States table.
+- Screen artboards: one per screen state (or flow step) and viewport, titled `<SCR-ID> / <state> / <viewport>`. Theme, and where useful the state, are **tweaks** on the artboard (Tweaks panel). State × theme coverage counts a tweak value as a frame.
 - Components: one artboard per component (`CMP-<Name>.dc.html`), holding every row of its "Variants & states" table for both themes. Each cell is labeled `<CMP-ID> / <variant> / <theme>`.
 - Flows: `<FLOW-ID> / step <n>`.
 - Viewports: desktop 1440 wide; mobile 390 wide for every screen's default state (NFR-07).

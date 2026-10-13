@@ -10,7 +10,7 @@ supersedes: []
 Tools are separate projects. Embedded tools run isolated inside the portal (F-003.R3). Browsers partition an embedded page's storage by the top-level site, and some evict storage of pages that are only ever seen embedded. If a tool lives on an unrelated site, the same tool would keep two separate sets of data, one embedded and one opened directly, which breaks F-003.R8. The user chose this layout in phase 1 (decision D-010).
 
 ## Decision
-The portal is served from the apex domain, and each own tool is served from a subdomain of that same site. Each own embedded tool allows the portal's site to embed it.
+The portal is served from the apex domain, and each own tool is served from a subdomain of that same site. Each own embedded tool allows the portal's origin to embed it by sending `Content-Security-Policy: frame-ancestors https://tarokit.app`. It must not rely on `X-Frame-Options: SAMEORIGIN`, which blocks the portal because the tool's subdomain is a different origin (SP-2).
 
 ## Alternatives considered
 - Unrelated hosts (for example free hosting subdomains of different sites): zero setup, but storage would be split and could be evicted.

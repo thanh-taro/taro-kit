@@ -30,3 +30,12 @@ MOD-CatalogCheck is a Node 24 CLI (`pnpm catalog:check`) that runs in CI before 
 
 ## Implements
 F-014 (all requirements).
+
+## Rules confirmed by spike SP-2
+- `classifyEmbedding(headers, portalOrigin, toolOrigin)`: the tool origin is needed to resolve `'self'`.
+- A CSP `frame-ancestors` overrides `X-Frame-Options`. Repeated CSP headers are split on commas, and every policy must allow the portal.
+- Conflicting or repeated `X-Frame-Options` values block. Only unrecognized values produce a warning.
+- Source matching: default ports are implied, a `*.` wildcard excludes the apex itself, `'none'` counts only when it is alone, and the first duplicate directive wins.
+- Report-only CSP is ignored.
+- Retry only after a timeout, network error or 5xx, never after a 4xx. The 10 s limit applies per attempt, so the worst case is about 20 s per address.
+
