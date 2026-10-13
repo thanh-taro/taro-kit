@@ -8,7 +8,7 @@ status: draft
 Spikes are time-boxed experiments in the chosen stack: Astro 7 with Preact islands (ADR-0002), Workbox (ADR-0004), Ajv (ADR-0005), Cloudflare static assets (ADR-0007) and the iframe policy (ADR-0009). Spike code is throwaway. It lives in `spikes/` and is never merged into `src/`. What survives is a short result note appended to this file, a decision (accepting or amending an ADR), and any regression test worth keeping.
 
 ## Shared rigs
-- **Lab domain:** `lab.<apex>` as the portal and `tool.lab.<apex>` as the tool, both deployed as Cloudflare static-assets projects with `_headers`. Both are on the same registrable domain, so they are same-site but cross-origin, exactly as in ADR-0001. This needs the real domain (an open user decision).
+- **Lab domain:** `lab.tarokit.app` as the portal and `labtool.tarokit.app` as the tool (one level deep, so Cloudflare's free Universal SSL `*.tarokit.app` certificate covers both), both deployed as Cloudflare static-assets projects with `_headers`. Both are on the same registrable domain, so they are same-site but cross-origin, exactly as in ADR-0001. This needs the real domain (an open user decision).
   - **Desktop-only fallback until the domain exists:** `/etc/hosts` entries for `portal.test` and `tool.portal.test`, with locally trusted TLS certificates from mkcert, a dev tool that is not a dependency. Mobile engines can't be covered this way.
 - **Skeleton:** a minimal Astro 7 + `@astrojs/preact` project with `output: "static"` and `security.csp` on. It is used by SP-4, SP-5 and SP-6.
 
@@ -20,7 +20,7 @@ Order: SP-5, then SP-4, then SP-6 (each builds on the skeleton). SP-2 can run an
 **Question.** Does an own tool on `tool.<site>` see the same localStorage (and IndexedDB and service worker) when it is embedded in the portal at `<site>` as when it is opened directly, in Chromium, Gecko and WebKit? This decides whether ADR-0001 is accepted, and whether F-003.AC11 can pass.
 
 **Experiment.**
-1. **Tool page** on `tool.lab.<apex>`. On load, it shows:
+1. **Tool page** on `labtool.tarokit.app`. On load, it shows:
    - `localStorage["probe"]`;
    - an IndexedDB value;
    - a `SameSite=Lax` cookie;
@@ -28,7 +28,7 @@ Order: SP-5, then SP-4, then SP-6 (each builds on the skeleton). SP-2 can run an
    - whether its own service worker is controlling.
 
    Buttons write a new timestamp to each store.
-2. **Portal page** on `lab.<apex>`. It embeds the tool with the exact production attributes, `sandbox="allow-scripts allow-same-origin allow-forms"`, plus the production CSP `frame-src` and `_headers`.
+2. **Portal page** on `lab.tarokit.app`. It embeds the tool with the exact production attributes, `sandbox="allow-scripts allow-same-origin allow-forms"`, plus the production CSP `frame-src` and `_headers`.
 3. **Steps per engine:**
    1. Open the tool directly and write A.
    2. Open the portal and check that the frame shows A.
@@ -82,7 +82,7 @@ Order: SP-5, then SP-4, then SP-6 (each builds on the skeleton). SP-2 can run an
 **Question.** With the ADR-0009 mapping, do clipboard-write, downloads and file-pick, plus clipboard-read, popups, fullscreen, camera and microphone, work when granted and fail when not, in Chrome and Safari (and, for the record, Firefox)?
 
 **Experiment.**
-1. **Capabilities page** on `tool.lab.<apex>`, with one button per capability:
+1. **Capabilities page** on `labtool.tarokit.app`, with one button per capability:
    - `clipboard.writeText` and `readText`;
    - a Blob `<a download>`;
    - `<input type=file>`;
@@ -91,7 +91,7 @@ Order: SP-5, then SP-4, then SP-6 (each builds on the skeleton). SP-2 can run an
    - `getUserMedia` for video and for audio;
    - a same-origin form submit;
    - `alert()`, as a control, which should always be blocked.
-2. **Portal page** on `lab.<apex>`. It renders one baseline iframe with no permissions, plus one iframe per single permission. Each iframe's attributes come from the `frameAttributesFor()` prototype, and the portal's `Permissions-Policy` comes from the `_headers` generator.
+2. **Portal page** on `lab.tarokit.app`. It renders one baseline iframe with no permissions, plus one iframe per single permission. Each iframe's attributes come from the `frameAttributesFor()` prototype, and the portal's `Permissions-Policy` comes from the `_headers` generator.
 3. **Matrix:** Chrome desktop and Android, Safari macOS and iOS, and Firefox desktop, filled in by hand, recording granted and denied outcomes. Automate the Chromium column with Playwright as a regression test (F-003.AC3).
 
 **Pass.** Every granted capability works in Chrome and Safari, and the baseline refuses clipboard-write in Chrome.
@@ -112,11 +112,11 @@ Order: SP-5, then SP-4, then SP-6 (each builds on the skeleton). SP-2 can run an
 
 **Experiment.**
 1. **Skeleton** (after SP-5), with three fixture tools:
-   - `offline-tool`: embedded and offline-capable, with its own SW on `tool.lab.<apex>`;
+   - `offline-tool`: embedded and offline-capable, with its own SW on `labtool.tarokit.app`;
    - `online-tool`: embedded;
    - `linked-tool`.
 
-   It has routes `/`, `/tools/` and `/t/[id]/` and a `404.html`. The MOD-Offline prototype consists of `src/sw/sw.ts` with Workbox modules, a `workbox-build injectManifest` post-build step, and `workbox-window` in prompt mode. It is deployed to `lab.<apex>` with `_headers` (no-cache for `sw.js`).
+   It has routes `/`, `/tools/` and `/t/[id]/` and a `404.html`. The MOD-Offline prototype consists of `src/sw/sw.ts` with Workbox modules, a `workbox-build injectManifest` post-build step, and `workbox-window` in prompt mode. It is deployed to `lab.tarokit.app` with `_headers` (no-cache for `sw.js`).
 2. Visit once online, then install on Chrome desktop, Android Chrome, iOS (Add to Home Screen) and macOS Safari (Add to Dock).
 3. **Go offline**, using airplane mode or the DevTools offline setting.
    - `/t/offline-tool/` must run. Test both cases: the tool visited first top-level, and visited only inside the frame.
