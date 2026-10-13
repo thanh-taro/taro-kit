@@ -1,0 +1,38 @@
+---
+// Placeholder home (scaffold). SCR-Home itself is built by F-007; until then this page says, in Taro's
+// voice, that the tools are on their way. Every string is a COPY id.
+import { t } from '../modules/copy/index.ts';
+import BaseLayout from '../modules/shell/BaseLayout.astro';
+---
+
+<BaseLayout title={t('COPY-meta.homeTitle')} description={t('COPY-meta.homeDescription')} path="/">
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title">{t('COPY-meta.homeTitle')}</h1>
+    <p class="lead">{t('COPY-meta.homeDescription')}</p>
+    <p class="note">{t('COPY-catalog.empty')}</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-4);
+    padding-block-start: var(--tk-space-8);
+    max-inline-size: var(--tk-size-palette-width);
+  }
+  h1 {
+    font-size: clamp(var(--tk-font-size-3xl), 6vw, var(--tk-font-size-5xl));
+    letter-spacing: -0.03em;
+  }
+  .lead {
+    font-size: var(--tk-font-size-lg);
+    color: var(--tk-color-fg);
+  }
+  .note {
+    padding: var(--tk-space-4);
+    border: var(--tk-border-width-hairline) dashed var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-lg);
+    color: var(--tk-color-muted);
+  }
+</style>

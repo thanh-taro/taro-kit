@@ -1,0 +1,12 @@
+---
+// MOD-DesignSystem <Icon name>: an inline SVG from the icon set (ADR-0003).
+import { iconSvg, type IconSize } from './icons.ts';
+
+interface Props {
+  name: string;
+  size?: IconSize;
+}
+const { name, size = 20 } = Astro.props;
+---
+
+<Fragment set:html={iconSvg(name, size)} />

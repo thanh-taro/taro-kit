@@ -1,0 +1,86 @@
+---
+// MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
+// Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
+// the single font preload (ADR-0003). Body: skip link first, banner, main.
+import '../design-system/styles/global.css';
+import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
+import { t } from '../copy/index.ts';
+import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts';
+import { themeInlineScript } from '../theme/inline.ts';
+import AppShell from './AppShell.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Current route path, e.g. "/". */
+  path: string;
+  /** Set only on /t/<id>/ for an embedded tool: the page's frame-src becomes that tool's origin. */
+  embeddedToolUrl?: string;
+}
+const { title, description, path, embeddedToolUrl } = Astro.props;
+
+// The CSP meta renders with <head>, so inline-script hashes and the page's frame-src go in here (SP-6).
+if (!Astro.csp) throw new Error('security.csp must be enabled (ADR-0009)');
+Astro.csp.insertScriptHash(inlineScriptHash(themeInlineScript));
+Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Blocking head script (platform-mapping, F-012.R4). Astro emits its CSP meta later in <head>. */}
+    <script is:inline set:html={themeInlineScript} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
+  </head>
+  <body>
+    <a href="#main" class="skip">
+      {t('COPY-shell.skip')}
+    </a>
+    <div class="frame">
+      <AppShell path={path} />
+      <main id="main" tabindex="-1">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    inset-inline-start: var(--tk-space-4);
+    inset-block-start: calc(-1 * var(--tk-space-16));
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-4);
+    background: var(--tk-color-accent);
+    color: var(--tk-color-on-accent);
+    border-radius: var(--tk-radius-md);
+    font-weight: var(--tk-font-weight-bold);
+    font-size: var(--tk-font-size-md);
+    text-decoration: none;
+  }
+  .skip:focus {
+    inset-block-start: var(--tk-space-4);
+  }
+  .frame {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-10);
+    max-inline-size: var(--tk-size-content-max);
+    margin-inline: auto;
+    padding: var(--tk-space-4) var(--tk-size-gutter) var(--tk-space-12);
+  }
+  main {
+    padding-inline: var(--tk-space-2);
+  }
+  main:focus {
+    outline: none;
+  }
+</style>
