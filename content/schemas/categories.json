@@ -1,0 +1,6 @@
+{
+  "$comment": "Editor hint only: points at the canonical domain schema, restates nothing (ADR-0005).",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": { "$ref": "../../specs/10-domain/project.schema.json#/$defs/category" }
+}

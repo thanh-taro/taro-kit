@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../schemas/tool.json
+# SAMPLE placeholder (D-012), hidden: shows the shape of a third-party tool, which is always linked (RULE-07).
+id: sample-external
+kind: tool
+name: Sample external tool
+summary: Sample entry. A third-party tool opens on its own site.
+category: productivity
+url: https://example.com/
+origin: external
+tags: [sample]
+added: 2026-10-13
+hidden: true
