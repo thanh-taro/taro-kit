@@ -32,7 +32,7 @@
     },
     "design": {
       "title": "2 Design",
-      "status": "in_progress",
+      "status": "gate",
       "step": "2.4 D4 drafted (8 boards, state tweaks); audit round 1",
       "gate": {
         "status": "pending",
@@ -1151,9 +1151,13 @@
     {
       "at": "2026-10-13T13:41:47+00:00",
       "event": "loop design-D4 ended: converged"
+    },
+    {
+      "at": "2026-10-13T13:41:57+00:00",
+      "event": "phase design -> gate"
     }
   ],
-  "updated": "2026-10-13T13:41:47+00:00",
+  "updated": "2026-10-13T13:41:57+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

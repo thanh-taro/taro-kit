@@ -28,7 +28,7 @@ body{margin:0}
           <div style="display: flex; flex-direction: column; gap: 6px">
             <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-StateMessage / {{s.variant}} / {{t.key}}</span>
             <div role="status" style="display: flex; align-items: flex-start; gap: 14px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
-              <span style="width: 40px; height: 40px; flex: none; border-radius: 11px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 15px 'JetBrains Mono', monospace">{{s.icon}}</span>
+              <span style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 15px 'JetBrains Mono', monospace">{{s.icon}}</span>
               <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
                 <span data-copy="{{s.copyTitle}}" style="font-weight: 700; font-size: 15px; line-height: 1.35">{{s.title}}</span>
                 <sc-if value="{{s.hasBody}}" hint-placeholder-val="{{true}}"><span data-copy="{{s.copyBody}}" style="font-size: 14px; color: var(--muted); line-height: 1.5">{{s.body}}</span></sc-if>
