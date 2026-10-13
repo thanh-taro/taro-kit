@@ -1,0 +1,5 @@
+# F-001.AC9: two categories share the tint "mango" (RULE-14).
+- { id: developer, name: Developer tools, order: 1, intro: Fixture intro., icon: icons/code.svg, tint: violet }
+- { id: media, name: Media tools, order: 2, intro: Fixture intro., icon: icons/code.svg, tint: mango }
+- { id: converters, name: Converters, order: 3, intro: Fixture intro., icon: icons/code.svg, tint: mango }
+- { id: productivity, name: Productivity, order: 4, intro: Fixture intro., icon: icons/code.svg, tint: mint }

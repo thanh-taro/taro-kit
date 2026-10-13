@@ -1,0 +1,10 @@
+# Two errors in two files must both be reported (ADR-0005: all errors, not only the first).
+id: units
+kind: tool
+name: Units
+summary: Fixture tool with an http address.
+category: converters
+url: http://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02

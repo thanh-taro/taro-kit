@@ -1,0 +1,9 @@
+# F-001.AC2: a second entry reuses the id "json" (INV-01).
+id: json
+kind: tool
+name: JSON Copy
+summary: Same id as tools/json.yaml.
+category: developer
+url: https://json-copy.tarokit.app/
+origin: own
+added: 2026-02-05

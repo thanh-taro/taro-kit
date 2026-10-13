@@ -1,0 +1,10 @@
+# F-001.AC5: an external tool declared as embedded (RULE-07).
+id: excalidraw
+kind: tool
+name: Excalidraw
+summary: Fixture external tool declared embedded.
+category: productivity
+url: https://excalidraw.com/
+origin: external
+openMode: embedded
+added: 2026-02-03
