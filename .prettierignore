@@ -1,0 +1,18 @@
+dist/
+.astro/
+node_modules/
+spikes/
+.venv/
+src/generated/
+public/third-party-notices.txt
+pnpm-lock.yaml
+playwright-report/
+test-results/
+# Sources of truth with their own conventions; formatted by hand.
+specs/
+adapters/
+design/
+tools/
+.build-my-app/
+.idea/
+CLAUDE.md

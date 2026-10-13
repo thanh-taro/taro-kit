@@ -104,3 +104,12 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-40** | pnpm | 11.x | Package manager | dev | MIT | candidate | ADR-0002 |
 
 Note (SP-6): DEP-33 to DEP-35 are source fonts only. The shipped files are fonttools subsets made at build (ADR-0003); fonttools is a build tool under the MIT license, to be registered when the build is scaffolded.
+
+## Added when the build was scaffolded (2026-10-13)
+
+| ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
+|---|---|---|---|---|---|---|---|
+| **DEP-41** | @types/node | ^24 | Node type definitions for build scripts, the content loader and tests (`astro check`) | dev | MIT | candidate | ADR-0002 |
+| **DEP-42** | fonttools (Python, `requirements-build.txt`) | 4.66.x | Build-time font subsetting (`scripts/subset-fonts.py`) | build | MIT | candidate | ADR-0003 |
+| **DEP-43** | brotli (Python, `requirements-build.txt`) | 1.2.x | WOFF2 compression for fonttools | build | MIT | candidate | ADR-0003 |
+| **DEP-44** | Lucide icons copied into `content/assets/icons/` (category icons) | from DEP-15 | Bundled category icons (ENT-Category) | runtime (asset) | ISC (notice via DEP-15) | candidate | ADR-0003 |

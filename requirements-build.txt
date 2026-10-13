@@ -1,0 +1,4 @@
+# Python build tools (registered in specs/40-technical/dependencies.md, DEP-42 and DEP-43).
+# Used only by scripts/subset-fonts.py at build time; nothing here ships to browsers.
+fonttools==4.66.1
+brotli==1.2.0
