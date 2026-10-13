@@ -1,6 +1,6 @@
-# Spike SP-5 registry-pipeline 2h: 
+# Spike SP-6 perf-budget 2h: 
 
-- Question, experiment and pass bar: specs/40-technical/spikes.md § SP-5 registry-pipeline 2h.
+- Question, experiment and pass bar: specs/40-technical/spikes.md § SP-6 perf-budget 2h.
 - Time box:  of agent work.
-- Not built: anything outside the spike's question. No production code under src/. The code lives in a worktree under spikes/.
-- Outcome: adopt / adapt / reject, recorded as an ADR update and a result note in spikes.md.
+- Built on the SP-5 skeleton (branch worktree-agent-abc6d3a9ebed4752f, spikes/sp5).
+- Not built: production code. Local only (localhost), since the real domain is not live yet.
