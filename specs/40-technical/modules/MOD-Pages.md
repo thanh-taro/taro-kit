@@ -11,7 +11,8 @@ MOD-Pages owns the Astro routes and screen composition. Each page is pre-rendere
 | Route | Screen | Notes |
 |---|---|---|
 | `/` | SCR-Home | Greeting and time are set by an inline script at parse time, then updated each minute by an island (F-007.R1). Favorites, recents and what's new come from an island (`client:load`). What's new applies the 30-day window from RULE-04 in the browser. |
-| `/tools/` | SCR-Catalog | The full grouped list is in static HTML. The island adds filtering, search and favorite toggles. The category is in the query string (`?category=<id>`), and an unknown value falls back to all (F-002.R3). |
+| `/tools/` | SCR-Catalog | The full grouped list is in static HTML. The island adds search and favorite toggles. Category headings and the category navigation link to category pages (F-002.R3). |
+| `/tools/<category-id>/` | SCR-Category | One static page per visible category: hero with tint, intro and count, category navigation, and the tool list (F-016). Unknown or empty categories have no page, so the 404 content is served (F-016.R5). |
 | `/t/<id>/` | SCR-ToolView | One page per visible tool (MOD-ToolHost). |
 | `/projects/` | SCR-Projects | A `#<id>` anchor scrolls to the card and focuses it on load and on `hashchange` (F-009.R4). |
 | `/about/` | SCR-About | Static, with no island. |
@@ -28,4 +29,4 @@ MOD-Pages owns the Astro routes and screen composition. Each page is pre-rendere
 Routes only. Nothing is imported by other modules.
 
 ## Implements
-F-002, F-007 (except R2, which is shared with MOD-Palette), F-008, F-009, F-010, F-003.R7, the settings UI for F-006.R4, F-006.R6, F-012.R2 and F-013.R4 to F-013.R6, and F-011.AC2 and F-011.AC4 (with MOD-Offline). It contributes to NFR-01 and NFR-11.
+F-002, F-016, F-007 (except R2, which is shared with MOD-Palette), F-008, F-009, F-010, F-003.R7, the settings UI for F-006.R4, F-006.R6, F-012.R2 and F-013.R4 to F-013.R6, and F-011.AC2 and F-011.AC4 (with MOD-Offline). It contributes to NFR-01 and NFR-11.

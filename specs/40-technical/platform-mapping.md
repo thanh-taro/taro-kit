@@ -14,7 +14,7 @@ The neutral layers (00 to 30, 50) describe behavior without naming technology. T
 | Portal's site / tool's site (ADR-0001) | Registrable domain (eTLD+1, per the Public Suffix List). Portal at `https://<apex>/`, own tools at `https://<tool>.<apex>/` | ADR-0001, ADR-0007 |
 | Stable portal address of a tool (F-003.R1) | `/t/<id>/`, a pre-rendered static page | MOD-Pages, MOD-ToolHost |
 | Page address (Home, Tools, Projects, About, Now, Settings) | `/`, `/tools/`, `/projects/`, `/about/`, `/now/`, `/settings/` | MOD-Pages |
-| Chosen category is part of the page address (F-002.R3) | Query string `?category=<id>`. `history.replaceState` on change. An unknown value is ignored. | MOD-Pages |
+| Category page address (F-016.R1) | A static route `/tools/<category-id>/` per visible category, generated from the registry. Unknown or empty categories get no page, so the host serves 404 content (F-016.R5). | MOD-Pages |
 | Project's address on the projects page (F-009.R4) | Fragment `/projects/#<id>`. On load and `hashchange`: `scrollIntoView` then `focus()` (cards get `tabindex="-1"`) | MOD-Pages |
 | Not-found state (F-003.R7) | `404.html` with HTTP 404 (host `not_found_handling`). Offline, the service worker falls back to the precached `404.html`. | MOD-Pages, MOD-Offline |
 | Opens in a new tab | `<a target="_blank" rel="noopener noreferrer">`, or `window.open(url, "_blank", "noopener,noreferrer")` from the palette | MOD-ToolHost |

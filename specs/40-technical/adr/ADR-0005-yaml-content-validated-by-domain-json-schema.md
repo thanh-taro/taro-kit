@@ -7,7 +7,7 @@ supersedes: []
 ---
 
 ## Context
-The Owner authors catalog entries, categories, the profile and the Now note as files in the repo (F-001, D-007). The build must fail and name the file, the entry and the broken rule when content breaks the schema or INV-01, INV-02, INV-03, INV-06, RULE-07 or a category reference (F-001.R2, F-001.R3, F-001.R5).
+The Owner authors catalog entries, categories, the profile and the Now note as files in the repo (F-001, D-007). The build must fail and name the file, the entry and the broken rule when content breaks the schema or INV-01, INV-02, INV-03, INV-06, INV-07, RULE-07, RULE-14 or a category reference (F-001.R2, F-001.R3, F-001.R5).
 
 The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project.schema.json`. The rule "one fact, one place" (specs/README.md) means code must not restate it in a second schema language. The same schema also describes backup files, which are validated in the browser at import (RULE-08).
 

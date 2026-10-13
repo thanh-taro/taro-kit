@@ -540,9 +540,10 @@
     "category-change-review": {
       "round": 1,
       "max": 2,
-      "active": true,
+      "active": false,
       "started": "2026-10-13T04:44:27+00:00",
-      "outcome": null
+      "outcome": "converged after round 1 fixes",
+      "ended": "2026-10-13T04:46:21+00:00"
     }
   },
   "log": [
@@ -965,9 +966,13 @@
     {
       "at": "2026-10-13T04:44:27+00:00",
       "event": "design step: 7 change request: categories — specs written, review round 1"
+    },
+    {
+      "at": "2026-10-13T04:46:21+00:00",
+      "event": "loop category-change-review ended: converged after round 1 fixes"
     }
   ],
-  "updated": "2026-10-13T04:44:27+00:00",
+  "updated": "2026-10-13T04:46:21+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

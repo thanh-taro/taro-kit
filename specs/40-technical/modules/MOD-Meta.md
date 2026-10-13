@@ -14,7 +14,7 @@ MOD-Meta produces each page's head metadata:
 
 Tool pages use the tool's name in COPY-meta.toolTitle and its summary as the description (F-015.R2). The not-found page declares COPY-notFound.title, `noindex`, and nothing about any tool (F-015.R4).
 
-It also generates `sitemap.xml` from the registry (public pages plus visible tool addresses, F-015.R3) and `robots.txt`. A build check fails on titles or descriptions that are too long.
+It also generates `sitemap.xml` from the registry (public pages, visible category pages and visible tool addresses, F-015.R3, F-015.R5) and `robots.txt`. A build check fails on titles or descriptions that are too long.
 
 ## Not responsible for
 - Per-tool preview images (not planned in this scope).

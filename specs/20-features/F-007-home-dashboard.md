@@ -28,7 +28,7 @@ Home is the launch pad for the Owner and the front door for visitors. It is lean
 - **R4** Home shows "what's new" per RULE-04, only when it has items.
 - **R5** Home shows a short first-person introduction from the Owner (nickname if set, otherwise full name, plus headline; COPY-home.intro) linking to the About page.
 - **R6** With no favorites and no recents, home invites the user to explore the catalog, mentioning the shortcut on devices with a keyboard (COPY-home.firstVisit) and not on touch-only devices (COPY-home.firstVisitTouch).
-- **R7** Home shows a "browse by category" row (COPY-home.categories) with one tile per visible category, in category order: icon, tint, name and number of visible tools (RULE-14, COPY-category.toolCount). Each tile opens the category page (F-016).
+- **R7** Home shows a "browse by category" row (COPY-home.categories) with one tile per visible category, in category order: icon, tint, name and number of visible tools (RULE-14, COPY-category.toolCount, COPY-category.toolCountOne). Each tile opens the category page (F-016).
 
 ## Acceptance criteria
 - **AC1** Given the local time is 08:30, when home opens, then the morning greeting and the current date and time are shown. (R1)

@@ -20,7 +20,7 @@ MOD-Search holds pure, synchronous search logic shared by the palette and the ca
 ## Public surface
 - `normalize(text) → string`.
 - `rank(query, items, { favorites }) → RankedItem[]`.
-- `searchPalette(query, index, context) → Group[]` and `filterCatalog(query, tools, categoryId, context) → Tool[]`.
+- `searchPalette(query, index, context) → Group[]` and `filterCatalog(query, tools, context) → Tool[]` (all categories, F-002.R4).
 
 ## Implements
 F-002.R4 and F-004.R3. It is the main contributor to NFR-02.

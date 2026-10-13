@@ -35,6 +35,7 @@ The Owner installs the portal to the dock or home screen, and it opens instantly
 - **AC5** Given the device is offline, when home is shown, then the offline indicator is visible, and linked tools and non-offline-capable tools are marked unavailable. (R3)
 - **AC6** Given a new version is published while the portal is open, when the portal detects it, then the update message is shown and the page is not reloaded until the user chooses refresh. (R4)
 - **AC7** Given the update message, when the user chooses refresh, then the new version loads with favorites, recents and theme intact. (R4)
+- **AC8** Given one previous online visit, when the device is offline and the user opens the Media tools category address, then the category page with its visible tools is shown. (R2)
 
 ## UX notes
 The indicator and update message live in CMP-AppShell. Unavailable cards use the CMP-ToolCard unavailable state. Tool-level offline behavior is in F-003 (SCR-ToolView). Not-found is SCR-NotFound.

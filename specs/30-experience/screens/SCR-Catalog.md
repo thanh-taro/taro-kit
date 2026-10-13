@@ -7,7 +7,7 @@ components: [CMP-AppShell, CMP-ToolCard, CMP-StateMessage, CMP-CategoryTile]
 ---
 
 ## Purpose
-See and filter every available tool.
+See every available tool, search them, and browse by category.
 
 ## Layout regions
 1. Shell header.
@@ -24,8 +24,8 @@ See and filter every available tool.
 | error | search has no matches | CMP-StateMessage with COPY-catalog.noResults and a clear action (COPY-catalog.clear) |
 
 ## Entry & exit
-- Entered from: shell navigation, the palette, the home invitation, SCR-NotFound.
-- Exits to: SCR-ToolView, or a tool's own address (linked tools).
+- Entered from: SCR-Category (all tools), shell navigation, the palette, the home invitation, SCR-NotFound.
+- Exits to: SCR-ToolView, SCR-Category, or a tool's own address (linked tools).
 
 ## Accessibility
 The result count is announced politely after filtering. The category navigation is a nav landmark of links.

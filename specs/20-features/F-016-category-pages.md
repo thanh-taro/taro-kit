@@ -9,7 +9,7 @@ entities: [ENT-Category, ENT-Tool]
 rules: [RULE-06, RULE-14]
 screens: [SCR-Category, SCR-NotFound]
 components: [CMP-ToolCard, CMP-CategoryTile, CMP-StateMessage]
-nfr: []
+nfr: [NFR-01, NFR-03, NFR-06]
 events: []
 depends_on: [F-001]
 ---
@@ -23,8 +23,8 @@ Every tool lives in exactly one category, and each category is a place of its ow
 
 ## Requirements
 - **R1** Every visible category has a stable portal address built from its id. Visiting it shows the category page.
-- **R2** The category page shows the category's name, icon, tint and intro in Taro's voice, and the number of visible tools in it (COPY-category.toolCount).
-- **R3** The category page lists the category's visible tools alphabetically, as in the catalog (F-002.R2).
+- **R2** The category page shows the category's name, icon, tint and intro in Taro's voice, and the number of visible tools in it (COPY-category.toolCount, or COPY-category.toolCountOne for one tool).
+- **R3** The category page lists the category's visible tools alphabetically (F-002.R1), each shown as in F-002.R2.
 - **R4** The category page lets the user move to any other visible category and back to all tools (COPY-category.allTools).
 - **R5** An unknown category, or one with no visible tools, shows the not-found state (RULE-06).
 

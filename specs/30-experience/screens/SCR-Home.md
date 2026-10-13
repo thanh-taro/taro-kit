@@ -22,13 +22,13 @@ Launch pad for the Owner and front door for visitors.
 | State | When | What the user sees |
 |---|---|---|
 | default | has favorites or recents | the regions above |
-| empty | no favorites and no recents | greeting, search, the first-visit invitation (COPY-home.firstVisit, or COPY-home.firstVisitTouch on touch-only devices) via CMP-StateMessage, then what's new |
+| empty | no favorites and no recents | greeting, search, the first-visit invitation (COPY-home.firstVisit, or COPY-home.firstVisitTouch on touch-only devices) via CMP-StateMessage, browse by category, then what's new |
 | loading | n/a | content is local, so there is no loading state |
 | error | storage unavailable | the session's favorites and recents, plus a one-time notice (COPY-storage.unavailable) |
 
 ## Entry & exit
 - Entered from: the portal root, the shell logo, FLOW-01, FLOW-02.
-- Exits to: SCR-ToolView, SCR-Catalog, SCR-About, the palette.
+- Exits to: SCR-ToolView, SCR-Catalog, SCR-Category, SCR-About, the palette.
 
 ## Accessibility
 Reading order follows the region order. The greeting is the main heading. Each section has a heading. The clock is not announced every minute. Meets NFR-03 and NFR-04.
