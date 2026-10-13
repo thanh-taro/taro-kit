@@ -11,3 +11,6 @@
 - Not changed: the presentation wrapper colors on component boards (sheet chrome, not UI).
 
 A local copy of the canvas sources is in design/canvas/.
+
+## Round 2 (verification): converged
+Every round-1 fix was confirmed. The mechanical checks pass: no doubled units, every type size and radius is on the scale, every COPY ID resolves. One minor was fixed: catalog search inputs now use font.size.input (16 px). Two minors stay open as cosmetic: hard-coded labels in the CategoryTile demo cells, and the live region reusing COPY-category.toolCount, which is intended.

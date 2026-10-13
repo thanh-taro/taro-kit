@@ -33,7 +33,7 @@
     "design": {
       "title": "2 Design",
       "status": "in_progress",
-      "step": "2.4 D3 round-1 fixes published (canvas v36); NEXT: re-audit D3 round 2 (verify), user D3 review, then D4 edge states; open user items: SP-2 Firefox local run, Cloudflare setup for tarokit.app",
+      "step": "2.4 D3 converged (canvas v37); awaiting user D3 review → then D4",
       "gate": {
         "status": "pending",
         "at": null,
@@ -571,11 +571,12 @@
       "ended": "2026-10-13T04:46:21+00:00"
     },
     "design-D3": {
-      "round": 1,
+      "round": 2,
       "max": 3,
-      "active": true,
+      "active": false,
       "started": "2026-10-13T05:30:24+00:00",
-      "outcome": null
+      "outcome": "converged",
+      "ended": "2026-10-13T08:32:25+00:00"
     }
   },
   "log": [
@@ -1046,9 +1047,21 @@
     {
       "at": "2026-10-13T05:36:04+00:00",
       "event": "design step: 2.4 D3 round-1 fixes published (canvas v36); NEXT: re-audit D3 round 2 (verify), user D3 review, then D4 edge states; open user items: SP-2 Firefox local run, Cloudflare setup for tarokit.app"
+    },
+    {
+      "at": "2026-10-13T08:30:56+00:00",
+      "event": "loop design-D3 round 2"
+    },
+    {
+      "at": "2026-10-13T08:32:25+00:00",
+      "event": "loop design-D3 ended: converged"
+    },
+    {
+      "at": "2026-10-13T08:32:26+00:00",
+      "event": "design step: 2.4 D3 converged (canvas v37); awaiting user D3 review → then D4"
     }
   ],
-  "updated": "2026-10-13T05:36:04+00:00",
+  "updated": "2026-10-13T08:32:26+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
