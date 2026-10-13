@@ -571,6 +571,18 @@
       "answer": "Applied with user approval: SSL Full (strict), Always Use HTTPS on, Email Address Obfuscation off (Bot Fight Mode, Rocket Loader, Web Analytics already off)",
       "asked": "2026-10-13T08:52:56+00:00",
       "answered": "2026-10-13T08:52:57+00:00"
+    },
+    {
+      "id": "D-036",
+      "question": "Narrow F-003.R8/AC3/AC11 to browser reality",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "architecture",
+      "status": "answered",
+      "answer": "Narrow both",
+      "asked": "2026-10-13T13:52:29+00:00",
+      "answered": "2026-10-13T13:52:29+00:00"
     }
   ],
   "loops": {
@@ -1163,9 +1175,17 @@
     {
       "at": "2026-10-13T13:43:09+00:00",
       "event": "architecture step: 3 architecture: waiting on SP-1/SP-3 (live lab), then accept ADRs, scaffold, CI → G3"
+    },
+    {
+      "at": "2026-10-13T13:52:29+00:00",
+      "event": "decision D-036 opened: Narrow F-003.R8/AC3/AC11 to browser reality"
+    },
+    {
+      "at": "2026-10-13T13:52:29+00:00",
+      "event": "decision D-036 answered: Narrow both"
     }
   ],
-  "updated": "2026-10-13T13:43:09+00:00",
+  "updated": "2026-10-13T13:52:29+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
