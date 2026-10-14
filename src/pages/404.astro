@@ -1,0 +1,58 @@
+---
+// SCR-NotFound (MOD-Pages): built as 404.html, which the host serves at any unknown address, including
+// unknown and empty categories (F-016.R5) and unknown or hidden tools (F-003), so the address stays as typed.
+// Regions: 1 shell header, 2 CMP-StateMessage (not-found) with a link to the catalog, and Home as a second way out.
+// The page title states that the page was not found (SCR-NotFound accessibility).
+// Design: design/canvas/NotFoundDesktop.dc.html, NotFoundMobile.dc.html.
+// Implements: F-016.R5.
+import { t } from '../modules/copy/index.ts';
+import StateMessage from '../modules/design-system/StateMessage.astro';
+import BaseLayout from '../modules/shell/BaseLayout.astro';
+---
+
+<BaseLayout title={t('COPY-notFound.title')} description={t('COPY-notFound.body')} path="/404/">
+  <div class="not-found">
+    {/* The large status code is decoration only; the heading below says what happened. */}
+    <span class="code" aria-hidden="true">
+      404
+    </span>
+    <StateMessage
+      variant="not-found"
+      headingLevel={1}
+      title={t('COPY-notFound.title')}
+      body={t('COPY-notFound.body')}
+      action={{ href: '/tools/', label: t('COPY-notFound.toCatalog') }}
+    >
+      <a href="/">{t('COPY-nav.home')}</a>
+    </StateMessage>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
+    max-inline-size: calc(var(--tk-space-16) * 8);
+    margin-inline: auto;
+    padding-block: var(--tk-space-16);
+  }
+  .code {
+    color: var(--tk-color-accent);
+    font-family: var(--tk-font-family-display);
+    font-size: var(--tk-font-size-6xl);
+    font-weight: var(--tk-font-weight-semibold);
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+  @media (max-width: 720px) {
+    .not-found {
+      align-items: stretch;
+      padding-block: var(--tk-space-8);
+    }
+    .code {
+      align-self: center;
+    }
+  }
+</style>

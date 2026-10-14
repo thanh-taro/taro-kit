@@ -1,0 +1,10 @@
+# Test fixture for F-016.AC6: the only Converters tool, hidden, so that category has no page (RULE-06).
+id: fx-hidden-converter
+kind: tool
+name: Fixture hidden converter
+summary: Fixture tool, hidden.
+category: converters
+url: https://fx-hidden-converter.example.com/
+origin: own
+added: 2026-10-01
+hidden: true

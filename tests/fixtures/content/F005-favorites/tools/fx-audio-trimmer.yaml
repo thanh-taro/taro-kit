@@ -1,0 +1,9 @@
+# Test fixture for F-016 (category pages): one of three visible Media tools (F016_AC2, F016_AC3).
+id: fx-audio-trimmer
+kind: tool
+name: Audio Trimmer
+summary: Fixture tool for the category tests.
+category: media
+url: https://fx-audio-trimmer.example.com/
+origin: own
+added: 2026-10-01

@@ -1,0 +1,146 @@
+---
+// MOD-DesignSystem: CMP-StateMessage for static pages. Design: design/canvas/CMP-StateMessage.dc.html and, for
+// the not-found page, design/canvas/NotFoundDesktop.dc.html / NotFoundMobile.dc.html.
+// Anatomy: icon tile, title, body, optional primary action; extra actions go in the default slot.
+// - `headingLevel` makes the title a heading (1 on SCR-NotFound, where it is the page heading).
+// - `icon` names the icon from the icon set; each variant has a default, so a page can pick its own.
+// - `live` adds role="status" to the title and body only (not the actions), for messages that appear after the
+//   page has loaded (polite announcement, CMP-StateMessage accessibility); a page's own content leaves it off.
+// - Actions, links or buttons (the slot), get the 44 px touch target (NFR-09).
+// The "page" variant (catalog empty or no results, tool offline) arrives with F-002 and F-003.
+import Icon from './Icon.astro';
+
+type Variant = 'empty' | 'no-results' | 'offline' | 'info' | 'not-found';
+interface Props {
+  variant: Variant;
+  title: string;
+  body?: string;
+  /** The next best action (PRN-05). */
+  action?: { href: string; label: string };
+  /** An icon-set name; default per variant (not-found: circle-question-mark). */
+  icon?: string;
+  headingLevel?: 1 | 2 | 3;
+  live?: boolean;
+}
+const { variant, title, body, action, icon, headingLevel, live = false } = Astro.props;
+const ICONS: Record<Variant, string> = {
+  empty: 'circle-dashed',
+  'no-results': 'search-x',
+  offline: 'wifi-off',
+  info: 'external-link',
+  'not-found': 'circle-question-mark',
+};
+const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
+---
+
+<div class="tk-state" data-variant={variant}>
+  <span class="icon" aria-hidden="true">
+    <Icon name={icon ?? ICONS[variant]} />
+  </span>
+  <div class="text">
+    <div class="message" role={live ? 'status' : undefined}>
+      <Title class="title">{title}</Title>
+      {body && <p class="body">{body}</p>}
+    </div>
+    {(action || Astro.slots.has('default')) && (
+      <div class="actions">
+        {action && (
+          <a class="primary" href={action.href}>
+            {action.label}
+          </a>
+        )}
+        <slot />
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .tk-state {
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    padding: var(--tk-space-5);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-lg);
+    text-align: start;
+  }
+  .icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--tk-space-10);
+    block-size: var(--tk-space-10);
+    border-radius: var(--tk-radius-md);
+    background: var(--tk-color-tint);
+    color: var(--tk-color-accent);
+  }
+  .text,
+  .message {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: calc(var(--tk-space-1) + var(--tk-space-1) / 2);
+    min-inline-size: 0;
+  }
+  .title {
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-bold);
+    line-height: var(--tk-font-line-height-tight);
+  }
+  h1.title {
+    font-family: var(--tk-font-family-display);
+    font-size: var(--tk-font-size-xl);
+    font-weight: var(--tk-font-weight-semibold);
+    letter-spacing: -0.01em;
+  }
+  .body {
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-base);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tk-space-2);
+    padding-block-start: calc(var(--tk-space-1) + var(--tk-space-1) / 2);
+  }
+  /* Slotted links and buttons are outside this component's scope, so the action style is global within .actions. */
+  .actions :global(:is(a, button)) {
+    display: inline-flex;
+    background: transparent;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-4);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-md);
+    color: var(--tk-color-fg);
+    font-weight: var(--tk-font-weight-bold);
+    text-decoration: none;
+  }
+  .actions .primary {
+    background: var(--tk-color-accent);
+    border-color: var(--tk-color-accent);
+    color: var(--tk-color-on-accent);
+  }
+  .actions :global(:is(a, button):focus-visible) {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+
+  @media (max-width: 720px) {
+    .tk-state {
+      padding: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
+    }
+    .actions {
+      flex-direction: column;
+    }
+    .actions :global(:is(a, button)) {
+      min-block-size: var(--tk-space-12);
+    }
+  }
+</style>
