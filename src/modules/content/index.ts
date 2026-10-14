@@ -26,3 +26,4 @@ export {
   type Dated,
   type DatedItem,
 } from './derive.ts';
+export { VISIBLE_TOOL_IDS_MODULE, visibleToolIdsPlugin, visibleToolIdsSource } from './visible-tool-ids.ts';
