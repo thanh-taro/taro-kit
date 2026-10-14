@@ -272,3 +272,8 @@ test.describe('CMP-ToolCard and CMP-FavoriteToggle', () => {
       expect(results.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
     });
 });
+
+test('the production build (port 4321) has no tests-only fixture page', async ({ request }) => {
+  const res = await request.get('http://localhost:4321/__fixtures__/favorites/');
+  expect(res.status()).toBe(404);
+});

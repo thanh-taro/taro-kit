@@ -63,7 +63,7 @@ export interface Registry {
 export interface LoadOptions {
   /** Repo root: holds specs/ (default: process.cwd()). */
   root?: string;
-  /** Content folder (default: <root>/content, or $TAROKIT_CONTENT_DIR). */
+  /** Content folder (default: <root>/content, or $TAROKIT_CONTENT_DIR when set and not empty). */
   contentDir?: string;
   /** Domain schema file (default: <root>/specs/10-domain/project.schema.json). */
   schemaPath?: string;
@@ -108,7 +108,7 @@ const listYaml = (dir: string) =>
 // ---------- main ----------
 export function loadRegistry(opts: LoadOptions = {}): Registry {
   const root = opts.root ?? process.cwd();
-  const contentDir = opts.contentDir ?? process.env.TAROKIT_CONTENT_DIR ?? join(root, 'content');
+  const contentDir = opts.contentDir ?? (process.env.TAROKIT_CONTENT_DIR || join(root, 'content'));
   const schemaPath = opts.schemaPath ?? defaultSchemaPath(root);
   const portalOrigin = opts.portalOrigin ?? process.env.TAROKIT_PORTAL_ORIGIN ?? PORTAL_ORIGIN;
   const relRoot = join(contentDir, '..'); // errors read "content/tools/x.yaml" wherever the folder lives
@@ -335,4 +335,4 @@ export const resetRegistry = (): void => {
 };
 /** The content folder `getRegistry()` reads: $TAROKIT_CONTENT_DIR, or <cwd>/content. */
 export const contentDirectory = (): string =>
-  resolve(process.env.TAROKIT_CONTENT_DIR ?? join(process.cwd(), 'content'));
+  resolve(process.env.TAROKIT_CONTENT_DIR || join(process.cwd(), 'content'));

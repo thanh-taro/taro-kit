@@ -24,8 +24,10 @@ try {
   throw e;
 }
 
-// Tests-only pages (adapters/tests.md): `TAROKIT_FIXTURES=1` builds them into dist-fixtures/, never into
-// dist/. Playwright serves that build on its own port (playwright.config.ts).
+// Tests-only pages (adapters/tests.md): `TAROKIT_FIXTURES=1` (only `pnpm build:fixtures` sets it) builds them
+// into dist-fixtures/, never into dist/. `pnpm build` clears it and TAROKIT_CONTENT_DIR, and
+// scripts/check-dist-clean.ts fails the build if fixture pages or content reach dist/.
+// Playwright serves the fixture build on its own port (playwright.config.ts).
 const fixtures = process.env.TAROKIT_FIXTURES === '1';
 const fixturePages: AstroIntegration = {
   name: 'tarokit:test-fixture-pages',
