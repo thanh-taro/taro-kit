@@ -1,7 +1,0 @@
-# Test fixture (ADR-0005 asset check): the avatar file does not exist in assets/.
-name: Taro Example
-headline: Fixture headline.
-avatar: missing.png
-bio: Fixture bio.
-links:
-  - { label: Site, url: 'https://example.com/' }

@@ -2,7 +2,6 @@
 import preact from '@astrojs/preact';
 import type { AstroIntegration } from 'astro';
 import { defineConfig } from 'astro/config';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   avatarPlugin,
@@ -74,14 +73,9 @@ export default defineConfig({
         contentDir: contentDirectory(),
         onContentChange: resetRegistry,
       }),
-      // MOD-Content: `virtual:tarokit/avatar`, the profile avatar for Astro's image pipeline (F-008.R1).
-      avatarPlugin({
-        file: () => {
-          const { avatar } = getRegistry().profile;
-          return avatar ? join(contentDirectory(), 'assets', avatar.replace(/^\//, '')) : undefined;
-        },
-        contentDir: contentDirectory(),
-      }),
+      // MOD-Content: `virtual:tarokit/avatar`, the registry's validated avatar file for Astro's image pipeline
+      // (F-008.R1).
+      avatarPlugin({ file: () => getRegistry().avatarFile, contentDir: contentDirectory() }),
     ],
   },
   security: {

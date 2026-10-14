@@ -1,17 +1,22 @@
 // F-008 About the Owner (SCR-About): MOD-Content's profile derivations, the avatar asset check, and the About
 // content (MOD-Pages) rendered through Astro's container API from fixture profiles.
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import {
+  AVATAR_TYPES,
   avatarPlugin,
   avatarSource,
+  type ContentError,
   ContentErrors,
   initials,
   loadRegistry,
   paragraphs,
   profileLinks,
   type Registry,
+  resolveAsset,
 } from '../../src/modules/content/index.ts';
 import About from '../../src/modules/pages/About.astro';
 
@@ -70,16 +75,62 @@ describe('F-008 profile derivations (MOD-Content)', () => {
     });
   });
 
-  test('ADR-0005 a profile avatar that is not in content/assets/ fails the build and names the file', () => {
-    expect(() => loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F008-missing-avatar') })).toThrow(
-      ContentErrors,
-    );
+  test('ADR-0005 the registry exposes the one validated avatar file, inside content/assets/', () => {
+    expect(full.avatarFile).toBe(join(root, 'tests/fixtures/content/F008_AC1-full-profile/assets/avatar.png'));
+    expect(noAvatar.avatarFile).toBeUndefined();
+  });
+
+  /** The no-avatar fixture, copied to a temp folder with `avatar` set and `files` added under assets/. */
+  function loadWithAvatar(avatarPath: string, files: Record<string, string> = {}) {
+    const dir = mkdtempSync(join(tmpdir(), 'tk-f008-'));
+    const contentDir = join(dir, 'content');
+    cpSync(join(root, 'tests/fixtures/content/F008_AC2-no-avatar'), contentDir, { recursive: true });
+    const profile = readFileSync(join(contentDir, 'profile.yaml'), 'utf8');
+    writeFileSync(join(contentDir, 'profile.yaml'), `${profile}avatar: '${avatarPath}'\n`);
+    for (const [name, body] of Object.entries(files)) writeFileSync(join(contentDir, 'assets', name), body);
+    writeFileSync(join(dir, 'secret.png'), 'outside the assets folder');
     try {
-      loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F008-missing-avatar') });
+      loadRegistry({ root, contentDir });
+      return 'loaded';
     } catch (e) {
-      expect((e as Error).message).toContain('profile.yaml');
-      expect((e as Error).message).toContain('avatar "missing.png" not found in content/assets/');
+      if (!(e instanceof ContentErrors)) throw e;
+      return e.message;
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
     }
+  }
+
+  test('ADR-0005 an avatar path with ".." fails the build and names profile.yaml and the field', () => {
+    const message = loadWithAvatar('../../secret.png');
+    expect(message).toContain('content/profile.yaml');
+    expect(message).toMatch(/avatar/);
+  });
+
+  test('ADR-0005 an avatar path that resolves outside content/assets/ is an ASSET error', () => {
+    // The schema refuses ".." in content; the shared resolver is the guard behind it.
+    const errors: ContentError[] = [];
+    const site = { contentDir: '/c', file: 'content/profile.yaml', entryId: '-', field: 'avatar', kinds: AVATAR_TYPES };
+    expect(resolveAsset('../profile.png', site, errors)).toBeUndefined();
+    expect(errors).toEqual([
+      expect.objectContaining({
+        rule: 'ASSET',
+        file: 'content/profile.yaml',
+        message: 'avatar "../profile.png" is outside content/assets/',
+      }),
+    ]);
+  });
+
+  test('ADR-0005 a non-image avatar, or an SVG one, fails the build with an ASSET error', () => {
+    for (const name of ['notes.txt', 'face.svg']) {
+      const message = loadWithAvatar(name, { [name]: '<svg xmlns="http://www.w3.org/2000/svg"/>' });
+      expect(message).toContain('content/profile.yaml');
+      expect(message).toContain(`ASSET: avatar "${name}" is not one of .png, .jpg, .jpeg, .webp, .avif`);
+    }
+  });
+
+  test('ADR-0005 a missing avatar file fails the build with an ASSET error', () => {
+    expect(loadWithAvatar('missing.png')).toContain('ASSET: avatar "missing.png" not found in content/assets/');
+    expect(loadWithAvatar('me.webp', { 'me.webp': 'x' })).toBe('loaded');
   });
 });
 
