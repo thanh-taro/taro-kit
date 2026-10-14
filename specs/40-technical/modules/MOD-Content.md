@@ -42,6 +42,7 @@ It runs in Node at build and inside the catalog check. It never runs in the brow
   - `toolPath(id)` (`/t/<id>/`, F-003.R1), `categoryPath(id)` (`/tools/<id>/`, F-016.R1) and `PUBLIC_PAGES`.
   - Ties on the same date are ordered by name, then updated before added.
 - Generated domain types: `src/generated/domain.ts`, which is the schema's TS mirror.
+- `visibleToolIdsPlugin(ids)`: a Vite plugin (registered in `astro.config.ts`) serving the build-time module `virtual:tarokit/visible-tool-ids` (`visibleToolIds`, the visible tools' ids, RULE-06). Islands import it for RULE-02 and INV-04 without a fetch or per-page props (F-005).
 - A CLI, `pnpm content:validate`, used by the build and CI.
 
 ## Implements

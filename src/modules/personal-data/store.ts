@@ -7,6 +7,15 @@
 // Nothing here is ever sent over the network (INV-05).
 import { batch, computed, signal, type ReadonlySignal } from '@preact/signals';
 import {
+  isFavorite,
+  pinFavorite,
+  unpinFavorite,
+  visibleFavorites,
+  type Favorite,
+  type PinResult,
+  type VisibleIds,
+} from './favorites.ts';
+import {
   normalizeDocument,
   parseDocument,
   SCHEMA_VERSION,
@@ -32,6 +41,22 @@ export interface PersonalDataStore {
   readonly preferences: ReadonlySignal<PersonalData['preferences']>;
   /** False when the browser refuses storage: changes then last only for this session. */
   readonly storageAvailable: ReadonlySignal<boolean>;
+  /** Every stored favorite in pin order, oldest first, including unknown or hidden tools (INV-04). */
+  readonly favorites: ReadonlySignal<Favorite[]>;
+  /**
+   * The favorites that may be shown, in pin order (RULE-02, INV-04): pass the visible tool ids
+   * (MOD-Content). Reactive: it updates on every pin and unpin, in every island (F-005.R1).
+   */
+  visibleFavorites(visibleIds: VisibleIds): ReadonlySignal<Favorite[]>;
+  /** True when the tool is a stored favorite. Reading it inside a computed or effect subscribes to changes. */
+  isFavorite(toolId: string): boolean;
+  /**
+   * RULE-02 pin with the visible tool ids: `full` refuses a 25th visible favorite and changes nothing;
+   * otherwise the tool is appended, dropping the oldest unknown or hidden favorites first when storage
+   * would exceed 24 (F-005.R3, F-005.R4). Works in memory when storage is unavailable (F-005.R5).
+   */
+  pin(toolId: string, visibleIds: VisibleIds): PinResult;
+  unpin(toolId: string): void;
   /** Write-through mutation of the whole document (ADR-0010). The recipe must return a new document. */
   update(recipe: (current: PersonalData) => PersonalData): void;
   setTheme(theme: ThemePreference): void;
@@ -92,11 +117,26 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
 
   const data = signal<PersonalData>(parseDocument(null));
   data.value = read();
+  const favorites = computed(() => data.value.favorites);
 
   const store: PersonalDataStore = {
     data,
     preferences: computed(() => data.value.preferences),
     storageAvailable: available,
+    favorites,
+    visibleFavorites: (visibleIds) => {
+      const visible = new Set(visibleIds);
+      return computed(() => visibleFavorites(favorites.value, visible));
+    },
+    isFavorite: (toolId) => isFavorite(data.value, toolId),
+    pin(toolId, visibleIds) {
+      const { result, doc } = pinFavorite(data.peek(), toolId, visibleIds, new Date().toISOString());
+      if (doc !== data.peek()) store.update(() => doc);
+      return result;
+    },
+    unpin(toolId) {
+      if (isFavorite(data.peek(), toolId)) store.update((doc) => unpinFavorite(doc, toolId));
+    },
     update(recipe) {
       const next = normalizeDocument(recipe(structuredClone(data.peek())));
       batch(() => {

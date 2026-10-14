@@ -5,11 +5,14 @@
 // Slots, rendered only when filled (F-011 fills them):
 //   "offline": the quiet offline indicator (COPY-shell.offline), shown in the header;
 //   "update":  the update-ready message (COPY-shell.updateReady + COPY-shell.refresh), below the header.
+// Below the header, the StorageNotice island shows COPY-storage.unavailable when device storage is refused
+// (F-005.R5); it renders nothing otherwise.
 // The search control arrives with F-004, the compact variant with F-003.
 import { t, type CopyId } from '../copy/index.ts';
 import Icon from '../design-system/Icon.astro';
 import { iconSvg } from '../design-system/icons.ts';
 import NavMenu, { type NavItem } from './NavMenu.tsx';
+import StorageNotice from './StorageNotice.tsx';
 import ThemeToggle from './ThemeToggle.tsx';
 
 interface Props {
@@ -67,6 +70,7 @@ const update = await filled('update');
     </div>
   </header>
   {update && <div class="update" set:html={update} />}
+  <StorageNotice client:idle message={t('COPY-storage.unavailable')} />
 </div>
 
 <style>
@@ -74,6 +78,23 @@ const update = await filled('update');
     display: flex;
     flex-direction: column;
     gap: var(--tk-space-3);
+  }
+  /* StorageNotice island (design: HomeStatesDesktop, storage tweak). */
+  .shell-wrap :global(.storage-notice) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--tk-space-3);
+    padding: var(--tk-space-3) var(--tk-space-4);
+    background: var(--tk-color-tint2);
+    color: var(--tk-color-accent2-fg);
+    border-radius: var(--tk-radius-lg);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-semibold);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .shell-wrap :global(.storage-notice .mark) {
+    font-family: var(--tk-font-family-mono);
+    font-weight: var(--tk-font-weight-bold);
   }
   .shell {
     position: relative;

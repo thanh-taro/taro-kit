@@ -1,0 +1,29 @@
+---
+// MOD-DesignSystem: CMP-ToolCard for static pages (catalog, category pages, F-002, F-016). A thin wrapper:
+// the markup is ToolCard.tsx, rendered here without hydration, and only the favorite toggle is an island.
+// Behavior and accessibility are documented in ToolCard.tsx and MOD-DesignSystem.
+import FavoriteToggle from './FavoriteToggle.astro';
+import { toolCardText } from './text.ts';
+import ToolCardView, { type ToolCardTool } from './ToolCard.tsx';
+
+interface Props {
+  /** The tool (a MOD-Content `CatalogTool` or `RegTool` fits). */
+  tool: ToolCardTool;
+  /** `regular` (catalog, category pages) or `compact` (home favorites and recents). Default `regular`. */
+  variant?: 'regular' | 'compact';
+  /** The category's name, shown as a label on regular cards (F-002.R2). */
+  categoryName?: string;
+  /** Offline, and the tool is linked or not offline-capable (F-011.R3). Default false. */
+  unavailable?: boolean;
+  /** A bundled icon's address; without it the card shows the tool's monogram (style.md). */
+  iconSrc?: string;
+  /** Hydration of the favorite toggle. Default `idle`. */
+  hydrate?: 'load' | 'idle' | 'visible';
+}
+const { hydrate = 'idle', ...props } = Astro.props;
+const { tool, variant = 'regular' } = props;
+---
+
+<ToolCardView {...props} text={toolCardText()}>
+  <FavoriteToggle toolId={tool.id} appearance="plain" size={variant === 'regular' ? 'md' : 'sm'} hydrate={hydrate} />
+</ToolCardView>

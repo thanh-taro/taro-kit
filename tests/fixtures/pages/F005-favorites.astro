@@ -1,0 +1,113 @@
+---
+// Tests-only page (built with TAROKIT_FIXTURES=1 into dist-fixtures/, never into dist/; astro.config.ts).
+// F-005 needs tool cards, home favorites and the tool header, which F-002, F-007 and F-003 build later, so
+// this page composes the shared pieces the way they will:
+//   1. a home favorites stand-in (compact Preact ToolCards from MOD-PersonalData, F005FavoritesList);
+//   2. a tool header stand-in with the framed FavoriteToggle (CMP-ToolHeader, F-003);
+//   3. a catalog stand-in: regular ToolCards for every visible tool, grouped like the catalog;
+//   4. the card variants, for screenshots: compact, unavailable regular and unavailable compact.
+// Content comes from tests/fixtures/content/F005-favorites (TAROKIT_CONTENT_DIR): 27 visible tools,
+// one of them linked, and one hidden tool.
+import { t } from '../../../src/modules/copy/index.ts';
+import { getRegistry } from '../../../src/modules/content/index.ts';
+import FavoriteToggle from '../../../src/modules/design-system/FavoriteToggle.astro';
+import ToolCard from '../../../src/modules/design-system/ToolCard.astro';
+import { toolCardText } from '../../../src/modules/design-system/text.ts';
+import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
+import F005FavoritesList from './F005FavoritesList.tsx';
+
+const registry = getRegistry();
+const tools = registry.visibleTools.map(({ id, name, summary, openMode, url }) => ({
+  id,
+  name,
+  summary,
+  openMode,
+  url,
+}));
+const header = registry.toolById('fx-01');
+const linked = registry.visibleTools.find((tool) => tool.openMode === 'linked');
+const categoryName = (id: string) => registry.categories.find((c) => c.id === id)?.name;
+---
+
+<BaseLayout title="F-005 fixture" description="Tests-only page." path="/__fixtures__/favorites/">
+  <div class="fx">
+    <h1>{t('COPY-catalog.title')}</h1>
+    <section aria-labelledby="fx-fav" data-testid="home">
+      <h2 id="fx-fav">{t('COPY-home.favorites')}</h2>
+      <F005FavoritesList client:load tools={tools} text={toolCardText()} />
+    </section>
+
+    {header && (
+      <section class="fx-header" data-testid="tool-header" aria-labelledby="fx-tool">
+        <h2 id="fx-tool">{header.name}</h2>
+        <FavoriteToggle toolId={header.id} hydrate="load" />
+      </section>
+    )}
+
+    <section data-testid="variants" aria-label="Variants">
+      <ul class="fx-grid">
+        <li data-testid="compact-static">
+          <ToolCard tool={registry.visibleTools[0]!} variant="compact" />
+        </li>
+        {linked && (
+          <li data-testid="compact-linked">
+            <ToolCard tool={linked} variant="compact" />
+          </li>
+        )}
+        {linked && (
+          <li data-testid="unavailable-regular">
+            <ToolCard tool={linked} categoryName={categoryName(linked.category)} unavailable />
+          </li>
+        )}
+        <li data-testid="unavailable-compact">
+          <ToolCard tool={registry.visibleTools[1]!} variant="compact" unavailable />
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="fx-catalog" data-testid="catalog">
+      <h2 id="fx-catalog">{t('COPY-nav.tools')}</h2>
+      {registry.categories.map((c) => (
+        <section aria-label={c.name}>
+          <h3>{c.name}</h3>
+          <ul class="fx-grid">
+            {c.tools.map((tool) => (
+              <li>
+                <ToolCard tool={tool} categoryName={c.name} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .fx {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-8);
+  }
+  .fx section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+  }
+  .fx-header {
+    flex-direction: row !important;
+    align-items: center;
+  }
+  .fx-grid,
+  .fx :global(.fx-favorites) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--tk-space-16) * 4), 1fr));
+    gap: var(--tk-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fx :global(.fx-favorites) {
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--tk-space-16) * 2.5), 1fr));
+  }
+</style>

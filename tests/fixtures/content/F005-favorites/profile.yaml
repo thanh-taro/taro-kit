@@ -1,0 +1,7 @@
+name: Fixture Owner
+nickname: Fixture
+headline: Fixture headline.
+bio: Fixture bio.
+links:
+  - { label: Email, url: 'mailto:owner@example.com', kind: email }
+  - { label: Site, url: 'https://example.com/', kind: website }

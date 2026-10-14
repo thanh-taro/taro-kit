@@ -24,3 +24,4 @@ status: draft
 
 ## 2026-10-14
 - F-001 build: `project.schema.json` gains `$comment` rule tags (INV-01, INV-02, INV-07, RULE-07, RULE-14); no shape change. ADR-0005 scaffold note resolved. MOD-Content public surface documents its pure build-time derivations (`visibleTools`, `visibleCategories`, `toolsByCategory`, `changelog`, `sitemapEntries`, `catalogData`). MOD-Pages documents `whatsNew(tools, today)` and `localDate()`, the pure helpers the home island uses to compute what's new in the browser (RULE-04).
+- F-005 build (no behavior change): MOD-PersonalData documents its favorites surface; `pin` takes the visible tool ids (`pin(id, visibleIds)`). MOD-DesignSystem documents the props of `ToolCard` and `FavoriteToggle` (Astro and Preact). MOD-Shell gains the `StorageNotice` island (F-005.R5). MOD-Content documents `virtual:tarokit/visible-tool-ids`, the visible tool ids for islands.

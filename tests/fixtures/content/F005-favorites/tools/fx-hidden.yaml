@@ -1,0 +1,10 @@
+# Test fixture for F-005.AC6 / INV-04: a hidden tool that may still be stored as a favorite.
+id: fx-hidden
+kind: tool
+name: Fixture hidden tool
+summary: Fixture tool, hidden.
+category: developer
+url: https://fx-hidden.example.com/
+origin: own
+added: 2026-10-01
+hidden: true

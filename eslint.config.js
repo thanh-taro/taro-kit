@@ -8,6 +8,7 @@ export default defineConfig(
   {
     ignores: [
       'dist/',
+      'dist-fixtures/',
       '.astro/',
       'node_modules/',
       'spikes/',

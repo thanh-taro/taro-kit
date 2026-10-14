@@ -1,0 +1,169 @@
+/* CMP-ToolCard (MOD-DesignSystem). Class contract shared by ToolCard.astro and ToolCard.tsx.
+   Design: design/canvas/CMP-ToolCard.dc.html. Every value is a --tk-* token. */
+.tk-toolcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tk-space-3);
+  padding: var(--tk-space-4);
+  background: var(--tk-color-surface);
+  border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+  border-radius: var(--tk-radius-lg);
+  transition:
+    background-color var(--tk-motion-duration-fast) var(--tk-motion-easing-standard),
+    border-color var(--tk-motion-duration-fast) var(--tk-motion-easing-standard),
+    transform var(--tk-motion-duration-fast) var(--tk-motion-easing-standard);
+}
+
+/* hover lifts 1 px; keyboard focus shows the 2 px accent ring on the whole card. */
+.tk-toolcard:hover {
+  background: var(--tk-color-surface2);
+  border-color: var(--tk-color-line-strong);
+  transform: translateY(calc(-1 * var(--tk-border-width-hairline)));
+}
+.tk-toolcard:has(.tk-toolcard__link:focus-visible) {
+  outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+  outline-offset: var(--tk-border-width-focus);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tk-toolcard:hover {
+    transform: none;
+  }
+}
+
+.tk-toolcard__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tk-space-3);
+}
+
+.tk-toolcard__icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--tk-size-tool-icon-md);
+  block-size: var(--tk-size-tool-icon-md);
+  overflow: hidden;
+  border-radius: var(--tk-radius-md);
+  background: var(--tk-color-tint);
+  color: var(--tk-color-accent);
+  font-family: var(--tk-font-family-mono);
+  font-size: var(--tk-font-size-sm);
+  font-weight: var(--tk-font-weight-semibold);
+}
+.tk-toolcard__icon img {
+  inline-size: var(--tk-size-icon-md);
+  block-size: var(--tk-size-icon-md);
+}
+
+.tk-toolcard__text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--tk-space-1) / 2);
+  min-inline-size: 0;
+  /* Room for the favorite toggle in the corner. */
+  padding-inline-end: var(--tk-space-10);
+}
+
+/* The stretched link: its box covers the card, so the whole card opens the tool. */
+.tk-toolcard__link {
+  color: var(--tk-color-fg);
+  font-size: var(--tk-font-size-base);
+  font-weight: var(--tk-font-weight-bold);
+  line-height: var(--tk-font-line-height-tight);
+  text-decoration: none;
+}
+.tk-toolcard__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--tk-radius-lg);
+}
+.tk-toolcard__link:focus-visible {
+  outline: none;
+}
+
+.tk-toolcard__summary {
+  color: var(--tk-color-muted);
+  font-size: var(--tk-font-size-sm);
+  line-height: var(--tk-font-line-height-normal);
+}
+
+.tk-toolcard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tk-space-2);
+  color: var(--tk-color-muted);
+  font-size: var(--tk-font-size-xs);
+}
+.tk-toolcard__category {
+  padding: calc(var(--tk-space-1) / 2) var(--tk-space-2);
+  border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+  border-radius: var(--tk-radius-sm);
+}
+.tk-toolcard__newtab,
+.tk-toolcard__unavailable {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tk-space-1);
+}
+.tk-toolcard__newtab svg {
+  inline-size: var(--tk-font-size-xs);
+  block-size: var(--tk-font-size-xs);
+}
+.tk-toolcard__unavailable {
+  color: var(--tk-color-muted);
+  font-size: var(--tk-font-size-sm);
+}
+.tk-toolcard__unavailable svg {
+  inline-size: var(--tk-font-size-sm);
+  block-size: var(--tk-font-size-sm);
+}
+
+/* The favorite toggle sits above the stretched link, so it never opens the tool. */
+.tk-toolcard__fav {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: calc(var(--tk-space-3) / 2);
+  inset-inline-end: calc(var(--tk-space-3) / 2);
+}
+
+/* compact: home favorites and recents. Icon, name and favorite toggle. */
+.tk-toolcard[data-variant='compact'] {
+  gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+  padding: var(--tk-space-3);
+}
+.tk-toolcard[data-variant='compact'] .tk-toolcard__head {
+  flex-direction: column;
+  gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+}
+.tk-toolcard[data-variant='compact'] .tk-toolcard__link {
+  font-size: var(--tk-font-size-md);
+}
+.tk-toolcard[data-variant='compact'] .tk-toolcard__text {
+  padding-inline-end: 0;
+}
+.tk-toolcard[data-variant='compact'] .tk-toolcard__fav {
+  inset-block-start: calc(var(--tk-space-1) / 2);
+  inset-inline-end: calc(var(--tk-space-1) / 2);
+}
+
+/* unavailable: dimmed with a dashed border, muted name and tile. Text keeps 4.5:1 (no opacity). */
+.tk-toolcard[data-unavailable] {
+  border-style: dashed;
+  border-color: var(--tk-color-line-strong);
+}
+.tk-toolcard[data-unavailable] .tk-toolcard__link {
+  color: var(--tk-color-muted);
+}
+.tk-toolcard[data-unavailable] .tk-toolcard__icon {
+  background: var(--tk-color-surface2);
+  color: var(--tk-color-muted);
+}
+
+/* Keeps the refused message (CMP-FavoriteToggle) above the next cards. */
+.tk-toolcard:has(.tk-fav[data-refused]) {
+  z-index: 2;
+}

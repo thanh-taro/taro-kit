@@ -1,0 +1,9 @@
+# Test fixture for F-005 (favorites limit, RULE-02): one of 26 visible own tools.
+id: fx-08
+kind: tool
+name: Fixture tool 08
+summary: Fixture tool for the favorites tests.
+category: developer
+url: https://fx-08.example.com/
+origin: own
+added: 2026-10-01
