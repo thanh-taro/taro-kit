@@ -26,3 +26,6 @@ Waves run up to 3 features in parallel, in separate worktrees. Merges happen one
 **Not in phase 4:**
 - **Real tools.** The JSON Formatter lives in its own project. Its catalog entry stays hidden until it is deployed.
 - **Real profile and Now content.** Before release you write your bio, links and Now note as content files.
+
+## Carry-overs
+- **F-002**: remove `test.fixme` from `F016_AC4 catalog opens` (tests/e2e/category.spec.ts) and make it pass.
