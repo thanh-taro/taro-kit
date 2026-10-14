@@ -3,7 +3,8 @@
 // - Toggles at once, with no confirmation; every toggle and list on the page follows through the shared
 //   MOD-PersonalData signals (F-005.R1).
 // - Refused (RULE-02): a 25th visible favorite is not pinned and COPY-fav.full is shown beside the button,
-//   announced politely and tied to the button with aria-describedby, until focus leaves it or Esc.
+//   announced politely (again on every refused press) and tied to the button with aria-describedby, until
+//   focus leaves it or Esc.
 // - 44 px target (NFR-09). Before hydration it renders off and disabled, like the other device-data islands.
 // Labels arrive as build-time props (`favoriteToggleText()`), so the island ships no copy catalog. The star
 // icon is the children: Astro passes it as static slot HTML, so it is not repeated in the island props.
@@ -63,8 +64,11 @@ export default function FavoriteToggle({
       return;
     }
     const result = store.pin(toolId, visibleToolIds);
-    setRefused(result === 'full');
     setJustPinned(result === 'ok');
+    // Refused again while the message shows: empty the status first and refill it on the next tick, so
+    // screen readers announce it again.
+    setRefused(false);
+    if (result === 'full') setTimeout(() => setRefused(true), 0);
   };
 
   return (
