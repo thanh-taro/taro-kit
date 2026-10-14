@@ -1,7 +1,7 @@
 ---
 id: F-009
 title: Showcase projects
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-02]

@@ -1,0 +1,11 @@
+# Test fixture (F-009).
+id: unity-game
+kind: project
+name: Unity Game Jam
+summary: A 48-hour puzzle game I made with two friends.
+description: I did the level design and the audio.
+tags: [game]
+links:
+  - { label: Play it, url: 'https://example.com/unity-game', kind: website }
+year: 2024
+added: 2026-09-01

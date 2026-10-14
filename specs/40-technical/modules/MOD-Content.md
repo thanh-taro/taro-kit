@@ -37,9 +37,10 @@ It runs in Node at build and inside the catalog check. It never runs in the brow
   - `visibleTools(tools)`: visible tools, alphabetically (F-002.R1);
   - `visibleCategories(categories, tools)`: categories with at least one visible tool, in display order;
   - `toolsByCategory(tools, categoryId)`: one category's visible tools, alphabetically (F-016.R3);
+  - `visibleProjects(projects)`: visible projects, newest year first, then by name (F-009.R1), the order of `Registry.projects`;
   - `changelogItems(tools)` and `changelog(tools)`: RULE-04 changelog items (one added and one updated per tool, newest first; a tool added and updated the same day has only the added item, F-010 edge case), and the same grouped by month (F-010.R3);
   - `sitemapEntries({ categories, allTools })`: site index paths, being the public pages, visible category pages and visible tool addresses (F-015.R3);
-  - `toolPath(id)` (`/t/<id>/`, F-003.R1), `categoryPath(id)` (`/tools/<id>/`, F-016.R1) and `PUBLIC_PAGES`.
+  - `toolPath(id)` (`/t/<id>/`, F-003.R1), `categoryPath(id)` (`/tools/<id>/`, F-016.R1), `projectPath(id)` (`/projects/#<id>`, F-009.R4) and `PUBLIC_PAGES`.
   - Ties on the same date are ordered by name, then updated before added.
 - Generated domain types: `src/generated/domain.ts`, which is the schema's TS mirror.
 - `visibleToolIdsPlugin(ids)`: a Vite plugin (registered in `astro.config.ts`) serving the build-time module `virtual:tarokit/visible-tool-ids` (`visibleToolIds`, the visible tools' ids, RULE-06). Islands import it for RULE-02 and INV-04 without a fetch or per-page props (F-005).

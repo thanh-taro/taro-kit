@@ -1,0 +1,11 @@
+# Test fixture (F-009).
+id: recipe-box
+kind: project
+name: Recipe Box
+summary: The recipes my family keeps asking me for, in one place.
+description: A small static site with a shopping list per recipe.
+tags: [web]
+links:
+  - { label: Live site, url: 'https://example.com/recipes', kind: website }
+year: 2024
+added: 2026-09-01

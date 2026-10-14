@@ -1,0 +1,26 @@
+---
+// Tests-only page (built with TAROKIT_FIXTURES=1 into dist-fixtures/, never into dist/; astro.config.ts).
+// F-009: renders the same SCR-Projects body as /projects/ from tests/fixtures/content/F009-projects, so the
+// fixture build's shared content (F005-favorites) stays untouched. Images are inlined as data addresses here,
+// since the fixture build's image route serves the shared content's projects only.
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { loadRegistry } from '../../../src/modules/content/index.ts';
+import { t } from '../../../src/modules/copy/index.ts';
+import ProjectsView from '../../../src/modules/pages/projects/ProjectsView.astro';
+import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
+
+const contentDir = join(process.cwd(), 'tests/fixtures/content/F009-projects');
+const { projects } = loadRegistry({ contentDir });
+const images = Object.fromEntries(
+  projects.flatMap((p) =>
+    p.image
+      ? [[p.id, `data:image/svg+xml;base64,${readFileSync(join(contentDir, 'assets', p.image)).toString('base64')}`]]
+      : [],
+  ),
+);
+---
+
+<BaseLayout title={t('COPY-meta.projectsTitle')} description={t('COPY-meta.projectsDescription')} path="/projects/">
+  <ProjectsView projects={projects} images={images} />
+</BaseLayout>

@@ -1,0 +1,13 @@
+# Test fixture (F-009).
+id: pocket-budget
+kind: project
+name: Pocket Budget
+summary: A tiny offline budget app I built to track my monthly spending.
+description: Local-first, works offline, and syncs between my phone and laptop through a file.
+image: projects/pocket-budget.svg
+tags: [mobile, finance]
+links:
+  - { label: Live site, url: 'https://example.com/pocket-budget', kind: website }
+  - { label: Source, url: 'https://example.com/pocket-budget/source', kind: code }
+year: 2026
+added: 2026-09-01

@@ -74,6 +74,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-category.navLabel** | Categories | accessible name of the category navigation |
 | **COPY-projects.title** | Things I've built | page heading |
 | **COPY-projects.empty** | I'm putting my projects together. Check back soon. | empty state |
+| **COPY-projects.imageAlt** | Screenshot of {name} | text alternative of a project's image (CMP-ProjectCard, design CMP-ProjectCard) |
 | **COPY-now.title** | What I'm up to | Now section heading |
 | **COPY-now.updated** | Updated {date} | Now note date |
 | **COPY-now.stale** | I wrote this a while ago, so it may be out of date. | when older than 90 days |

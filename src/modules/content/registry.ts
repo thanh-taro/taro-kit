@@ -11,6 +11,7 @@ import {
   toolsByCategory,
   visibleTools as deriveVisibleTools,
   visibleCategories,
+  visibleProjects,
 } from './derive.ts';
 import { type ContentError, ContentErrors } from './errors.ts';
 import { type Def, defaultSchemaPath, mapAjvError, validatorFor } from './schema.ts';
@@ -300,9 +301,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
 
   // 4. Derive build-time views; hidden entries never reach them (RULE-06, F-001.R4).
   const visibleTools = deriveVisibleTools(allTools);
-  const projects = allProjects
-    .filter((p) => !p.hidden)
-    .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name, 'en'));
+  const projects = visibleProjects(allProjects);
   const categories = visibleCategories(catList as Category[], allTools).map((c) => ({
     ...c,
     tools: toolsByCategory(allTools, c.id),

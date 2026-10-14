@@ -1,0 +1,12 @@
+# Test fixture (F-009).
+id: jsoncrack-clone
+kind: project
+name: JsonCrack Clone
+summary: A graph viewer for big JSON files.
+description: I rebuilt it to learn canvas rendering. It handles 50 MB files in the browser.
+tags: [web, visualization]
+links:
+  - { label: Try it, url: 'https://example.com/jsoncrack', kind: website }
+  - { label: Source, url: 'https://example.com/jsoncrack/source', kind: code }
+year: 2025
+added: 2026-09-01
