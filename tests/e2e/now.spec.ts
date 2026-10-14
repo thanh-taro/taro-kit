@@ -57,6 +57,15 @@ test.describe('F-010 Now note', () => {
   });
 });
 
+test.describe('F-010 static page', () => {
+  test('RULE-09 the server HTML carries no stale label; only the island adds it', async ({ request }) => {
+    const html = await (await request.get(`${PROD}/now/`)).text();
+    // The label text is only in the island's serialized props; the rendered slot is empty and pending.
+    expect(html).toMatch(/<span class="now-stale"[^>]*data-state="pending"[^>]*><\/span>/);
+    expect(html).not.toMatch(/<span class="label"[^>]*>I wrote this a while ago/);
+  });
+});
+
 test.describe('F-010 changelog', () => {
   test('F010_AC4 the changelog is grouped by month, newest first, and each item links to its tool', async ({
     page,
@@ -79,6 +88,9 @@ test.describe('F-010 changelog', () => {
     await expect(page.getByTestId('now-stale')).toHaveCount(0);
     // F-010.AC4 on the page: Regex Tester added in March and improved in May; May first.
     await expect(page.getByRole('heading', { level: 2 })).toHaveText(['May 2026', 'March 2026']);
+    // Each link's name carries its kind, so the two Regex Tester links can be told apart.
+    await expect(page.getByRole('link', { name: 'Improved Regex Tester', exact: true })).toHaveCount(1);
+    await expect(page.getByRole('link', { name: 'Added Regex Tester', exact: true })).toHaveCount(1);
     const items = page.getByRole('main').getByRole('listitem');
     await expect(items).toHaveText([/Improved\s*Regex Tester/, /Added\s*Color Picker/, /Added\s*Regex Tester/]);
   });

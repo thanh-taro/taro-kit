@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { changelog, loadRegistry } from '../../src/modules/content/index.ts';
 import NowView from '../../src/modules/pages/now/NowView.astro';
-import { nowView, type NowViewData } from '../../src/modules/pages/now/now.ts';
+import { around, nowView, type NowViewData } from '../../src/modules/pages/now/now.ts';
 import { isStale, STALE_DAYS, staleToday } from '../../src/modules/pages/now/stale.ts';
 
 const root = join(import.meta.dirname, '../..');
@@ -91,9 +91,14 @@ describe('RULE-04 changelog on the Now page', () => {
     expect(march).toBeGreaterThan(may);
     // The label reads as one phrase, "Improved Regex Tester" / "Added Regex Tester", and the tool name links to the tool.
     const mayGroup = html.slice(may, march);
-    expect(mayGroup).toMatch(/Improved\s*<\/span>\s*<a [^>]*href="\/t\/regex\/"[^>]*>Regex Tester<\/a>/);
+    // The kind is inside the link, so the two links' names differ: "Improved Regex Tester", "Added Regex Tester".
+    expect(mayGroup).toMatch(
+      /<a [^>]*href="\/t\/regex\/"[^>]*>\s*<span[^>]*>Improved<\/span>\s*<span[^>]*>Regex Tester<\/span>\s*<\/a>/,
+    );
     expect(mayGroup).toContain('datetime="2026-05-12"');
-    expect(html.slice(march)).toMatch(/Added\s*<\/span>\s*<a [^>]*href="\/t\/regex\/"[^>]*>Regex Tester<\/a>/);
+    expect(html.slice(march)).toMatch(
+      /<a [^>]*href="\/t\/regex\/"[^>]*>\s*<span[^>]*>Added<\/span>\s*<span[^>]*>Regex Tester<\/span>\s*<\/a>/,
+    );
   });
 
   test('F-010 edge: a tool added and updated on the same day appears only as added', () => {
@@ -164,5 +169,12 @@ describe('SCR-Now states', () => {
     expect(html).toContain('First paragraph.');
     expect(html).not.toMatch(/What I(&#39;|')ve shipped/);
     expect(html).not.toContain('Nothing to share yet');
+  });
+});
+
+describe('MOD-Copy placeholders on SCR-Now', () => {
+  test('a copy string split around its placeholder fails clearly when the placeholder is missing', () => {
+    expect(around('Added \u0000!')).toEqual({ before: 'Added ', after: '!' });
+    expect(() => around('Added a tool')).toThrow(/placeholder/);
   });
 });

@@ -46,8 +46,10 @@ export interface NowViewData {
 }
 
 const SLOT = '\u0000';
-const around = (text: string): Around => {
+/** Splits a copy string formatted with SLOT as its placeholder value; a copy string without it is a spec error. */
+export const around = (text: string): Around => {
   const i = text.indexOf(SLOT);
+  if (i < 0) throw new Error(`SCR-Now copy "${text}" is missing its placeholder ({tool} or {date})`);
   return { before: text.slice(0, i), after: text.slice(i + SLOT.length) };
 };
 

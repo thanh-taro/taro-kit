@@ -54,8 +54,11 @@ const MonthTitle = note ? 'h3' : 'h2';
           <ul>
             {m.items.map((i) => (
               <li data-type={i.type}>
-                <span class="kind">{i.label.before.trim()}</span> <a href={i.href}>{i.tool}</a>
-                {i.label.after.trim() && <span>{i.label.after.trim()}</span>}
+                {/* The kind is part of the link, so each link's name is unique: "Added Regex Tester". */}
+                <a href={i.href}>
+                  <span class="kind">{i.label.before.trim()}</span> <span class="tool">{i.tool}</span>
+                  {i.label.after.trim() && <span>{i.label.after.trim()}</span>}
+                </a>
                 <time class="date" datetime={i.date.iso}>
                   <span aria-hidden="true">{i.date.shown}</span>
                   <span class="tk-visually-hidden">{i.date.full}</span>
@@ -184,6 +187,10 @@ const MonthTitle = note ? 'h3' : 'h2';
     padding-inline: var(--tk-space-2);
   }
   li a {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
     min-inline-size: 0;
     color: var(--tk-color-fg);
     font-size: var(--tk-font-size-base);
@@ -197,7 +204,7 @@ const MonthTitle = note ? 'h3' : 'h2';
     border-radius: inherit;
     content: '';
   }
-  li a:hover {
+  li a:hover .tool {
     text-decoration: underline;
   }
   li a:focus-visible {
