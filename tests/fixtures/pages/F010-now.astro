@@ -1,0 +1,21 @@
+---
+// Tests-only page (built with TAROKIT_FIXTURES=1 into dist-fixtures/, never into dist/; astro.config.ts).
+// SCR-Now in the states the production content does not have, from F-010's own content fixtures:
+//   /__fixtures__/now-no-note/  tests/fixtures/content/F010_AC5-no-now-note (no now.yaml, two tools; F-010.AC5)
+//   /__fixtures__/now-empty/    tests/fixtures/content/F010_AC6-no-note-no-tools (no note, no tools; F-010.AC6)
+import { join } from 'node:path';
+import { loadRegistry } from '../../../src/modules/content/index.ts';
+import { t } from '../../../src/modules/copy/index.ts';
+import NowView from '../../../src/modules/pages/now/NowView.astro';
+import { nowView } from '../../../src/modules/pages/now/now.ts';
+import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
+
+const FIXTURES = { 'now-no-note': 'F010_AC5-no-now-note', 'now-empty': 'F010_AC6-no-note-no-tools' } as const;
+const name = Astro.url.pathname.split('/').filter(Boolean).at(-1) as keyof typeof FIXTURES;
+const registry = loadRegistry({ contentDir: join(process.cwd(), 'tests/fixtures/content', FIXTURES[name]) });
+const view = nowView({ now: registry.now, tools: registry.allTools });
+---
+
+<BaseLayout title={t('COPY-meta.nowTitle')} description={t('COPY-meta.nowDescription')} path="/now/">
+  <NowView view={view} />
+</BaseLayout>

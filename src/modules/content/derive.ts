@@ -64,12 +64,17 @@ export function visibleCategories<C extends Ordered>(categories: readonly C[], t
   return categories.filter((c) => used.has(c.id)).sort((a, b) => a.order - b.order);
 }
 
-/** RULE-04 changelog items: one added and, if updated, one updated item per visible tool, newest first. */
+/**
+ * RULE-04 changelog items: one added and, if updated, one updated item per visible tool, newest first.
+ * A tool added and updated on the same day appears only as added (F-010 edge case).
+ */
 export function changelogItems(tools: readonly Dated[]): DatedItem[] {
   return visibleTools(tools)
     .flatMap((t): DatedItem[] => [
       { id: t.id, name: t.name, type: 'added', date: t.added },
-      ...(t.updated ? [{ id: t.id, name: t.name, type: 'updated' as const, date: t.updated }] : []),
+      ...(t.updated && t.updated !== t.added
+        ? [{ id: t.id, name: t.name, type: 'updated' as const, date: t.updated }]
+        : []),
     ])
     .sort(newestFirst);
 }

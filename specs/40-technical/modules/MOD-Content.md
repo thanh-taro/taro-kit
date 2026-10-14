@@ -7,7 +7,7 @@ depends_on: []
 
 ## Responsibility
 MOD-Content owns the authored content and turns it into the **registry**: the single validated, normalized model of the catalog, categories, profile and Now note, used by everything else.
-- **Load:** reads `content/**/*.yaml`.
+- **Load:** reads `content/**/*.yaml`. `now.yaml` is optional: without it there is no Now note and `now` is undefined (F-010.R4).
 - **Validate:** checks the files against `specs/10-domain/project.schema.json` with Ajv, then runs the cross-entry checks that the schema can't express (ADR-0005).
 - **Report:** collects every error with the file, entry and rule.
 - **Normalize:** applies defaults (RULE-07, empty permissions, offline false) and drops hidden entries from every derived view (RULE-06).
@@ -15,7 +15,7 @@ MOD-Content owns the authored content and turns it into the **registry**: the si
   - visible tools by category;
   - categories that have visible tools;
   - projects sorted by year then name;
-  - dated changelog events, with one added and one updated event per tool;
+  - dated changelog events, with one added and one updated event per tool (only the added event when both are the same day, F-010);
   - the site index entries;
   - the embedded-origin list.
 - **Emit:** writes the hashed catalog data file (`/data/catalog.<hash>.json`) that islands fetch, carrying pre-normalized search keys.
@@ -37,7 +37,7 @@ It runs in Node at build and inside the catalog check. It never runs in the brow
   - `visibleTools(tools)`: visible tools, alphabetically (F-002.R1);
   - `visibleCategories(categories, tools)`: categories with at least one visible tool, in display order;
   - `toolsByCategory(tools, categoryId)`: one category's visible tools, alphabetically (F-016.R3);
-  - `changelogItems(tools)` and `changelog(tools)`: RULE-04 changelog items (one added and one updated per tool, newest first), and the same grouped by month (F-010.R3);
+  - `changelogItems(tools)` and `changelog(tools)`: RULE-04 changelog items (one added and one updated per tool, newest first; a tool added and updated the same day has only the added item, F-010 edge case), and the same grouped by month (F-010.R3);
   - `sitemapEntries({ categories, allTools })`: site index paths, being the public pages, visible category pages and visible tool addresses (F-015.R3);
   - `toolPath(id)` (`/t/<id>/`, F-003.R1), `categoryPath(id)` (`/tools/<id>/`, F-016.R1) and `PUBLIC_PAGES`.
   - Ties on the same date are ordered by name, then updated before added.

@@ -1,0 +1,246 @@
+---
+// SCR-Now body (MOD-Pages), rendered inside BaseLayout by src/pages/now/index.astro.
+// Regions: 2 the Now section (note, last updated date, stale label from the StaleLabel island),
+// 3 the changelog (month groups of added/improved items linking to tools).
+// States (F-010.R4): default (both sections); no note (only the changelog, whose title becomes the page heading);
+// empty (no note and no visible tools: CMP-StateMessage with COPY-now.empty under the Now title).
+// Dates are machine-readable (<time datetime>) and read in full (SCR-Now accessibility): the short text is hidden
+// from assistive technology, which reads the full date instead.
+// Design: design/canvas/NowDesktop.dc.html, NowMobile.dc.html, EmptyPagesDesktop.dc.html (now empty).
+// Implements: F-010.R1, F-010.R2, F-010.R3, F-010.R4.
+import { t } from '../../copy/index.ts';
+import StateMessage from '../../design-system/StateMessage.astro';
+import type { NowViewData } from './now.ts';
+import StaleLabel from './StaleLabel.tsx';
+
+interface Props {
+  view: NowViewData;
+}
+const { note, months, empty } = Astro.props.view;
+const both = !!note && months.length > 0;
+// Without the note, the changelog is the page's only section, so its title is the page heading.
+const LogTitle = note ? 'h2' : 'h1';
+const MonthTitle = note ? 'h3' : 'h2';
+---
+
+<div class="now" data-layout={both ? 'both' : 'single'}>
+  {note && (
+    <section class="note" aria-labelledby="now-title">
+      <h1 id="now-title">{t('COPY-now.title')}</h1>
+      <div class="meta">
+        <time class="updated" datetime={note.updated.iso}>
+          {note.updatedLabel.before}
+          <span aria-hidden="true">{note.updated.shown}</span>
+          <span class="tk-visually-hidden">{note.updated.full}</span>
+          {note.updatedLabel.after}
+        </time>
+        <StaleLabel client:load updated={note.updated.iso} label={t('COPY-now.stale')} />
+      </div>
+      <div class="body">
+        {note.paragraphs.map((p) => (
+          <p>{p}</p>
+        ))}
+      </div>
+    </section>
+  )}
+  {months.length > 0 && (
+    <section class="log" aria-labelledby="log-title">
+      <LogTitle id="log-title" class="log-title">
+        {t('COPY-now.changelogTitle')}
+      </LogTitle>
+      {months.map((m) => (
+        <div class="month">
+          <MonthTitle class="month-title">{m.label}</MonthTitle>
+          <ul>
+            {m.items.map((i) => (
+              <li data-type={i.type}>
+                <span class="kind">{i.label.before.trim()}</span> <a href={i.href}>{i.tool}</a>
+                {i.label.after.trim() && <span>{i.label.after.trim()}</span>}
+                <time class="date" datetime={i.date.iso}>
+                  <span aria-hidden="true">{i.date.shown}</span>
+                  <span class="tk-visually-hidden">{i.date.full}</span>
+                </time>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+  )}
+  {empty && (
+    <section class="note" aria-labelledby="now-title">
+      <h1 id="now-title">{t('COPY-now.title')}</h1>
+      <div class="empty">
+        <StateMessage variant="empty" title={t('COPY-now.empty')} />
+      </div>
+    </section>
+  )}
+</div>
+
+<style>
+  .now {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-12);
+    padding-block-start: var(--tk-space-4);
+  }
+  .now[data-layout='both'] {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  .now[data-layout='single'] > section {
+    max-inline-size: var(--tk-size-palette-width);
+  }
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-4);
+  }
+  h1 {
+    font-size: var(--tk-font-size-5xl);
+    line-height: var(--tk-font-line-height-tight);
+    letter-spacing: -0.03em;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+  }
+  .updated {
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-medium);
+  }
+  /* StaleLabel island markup (not scoped: islands render outside Astro's scoping). */
+  .meta :global(.now-stale:empty) {
+    display: none;
+  }
+  .meta :global(.now-stale .label),
+  .kind {
+    display: inline-block;
+    padding: var(--tk-space-1) calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    border-radius: var(--tk-radius-sm);
+    background: var(--tk-color-tint2);
+    color: var(--tk-color-accent2-fg);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-bold);
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    max-inline-size: 60ch;
+    font-size: var(--tk-font-size-lg);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .log-title {
+    font-family: var(--tk-font-family-display);
+    font-size: var(--tk-font-size-xl);
+    font-weight: var(--tk-font-weight-semibold);
+    letter-spacing: -0.01em;
+  }
+  h1.log-title {
+    font-size: var(--tk-font-size-5xl);
+    letter-spacing: -0.03em;
+  }
+  .month {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-2);
+  }
+  .month-title {
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-1) + var(--tk-space-1) / 2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    min-block-size: var(--tk-space-12);
+    padding-inline: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-md);
+  }
+  .kind {
+    flex: none;
+    padding-block: calc(var(--tk-space-1) * 3 / 4);
+    padding-inline: var(--tk-space-2);
+  }
+  li a {
+    min-inline-size: 0;
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-semibold);
+    text-decoration: none;
+  }
+  /* The whole row is the link's touch target (NFR-09). */
+  li a::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    content: '';
+  }
+  li a:hover {
+    text-decoration: underline;
+  }
+  li a:focus-visible {
+    outline: none;
+  }
+  li:has(a:focus-visible) {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+  .date {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+  }
+  .empty {
+    max-inline-size: calc(var(--tk-size-palette-width) - var(--tk-space-5));
+  }
+
+  @media (max-width: 720px) {
+    .now,
+    .now[data-layout='both'] {
+      display: flex;
+      gap: calc(var(--tk-space-6) + var(--tk-space-1) / 2);
+      padding-block-start: 0;
+    }
+    section {
+      gap: var(--tk-space-3);
+    }
+    h1,
+    h1.log-title {
+      font-size: var(--tk-font-size-3xl);
+    }
+    .meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .body {
+      font-size: var(--tk-font-size-base);
+    }
+    li {
+      min-block-size: calc(var(--tk-space-12) + var(--tk-space-1));
+    }
+  }
+</style>

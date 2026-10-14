@@ -1,0 +1,9 @@
+# Test fixture (F-010.AC5).
+id: color
+kind: tool
+name: Color Picker
+summary: Fixture tool for the Now page.
+category: developer
+url: https://color.tarokit.app/
+origin: own
+added: 2026-05-02

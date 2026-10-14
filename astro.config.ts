@@ -38,6 +38,12 @@ const fixturePages: AstroIntegration = {
         pattern: '/__fixtures__/favorites',
         entrypoint: new URL('./tests/fixtures/pages/F005-favorites.astro', import.meta.url),
       });
+      // F-010 SCR-Now states without a Now note (tests/fixtures/content/F010_*).
+      for (const state of ['now-no-note', 'now-empty'])
+        injectRoute({
+          pattern: `/__fixtures__/${state}`,
+          entrypoint: new URL('./tests/fixtures/pages/F010-now.astro', import.meta.url),
+        });
     },
   },
 };

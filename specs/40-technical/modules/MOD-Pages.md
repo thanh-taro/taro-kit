@@ -32,6 +32,10 @@ Internal pure helpers, for its own islands (`src/modules/pages/whats-new.ts`, br
 - `whatsNew(tools, today) → DatedItem[]`: RULE-04 what's new on the viewer's local date `today` (YYYY-MM-DD). One item per visible tool, labeled and dated by its latest date (`updated` if present, so a same-day update is labeled updated), kept when that date is within the last 30 days counting today, or at most one day ahead (a tolerance for timezone gaps with the build). Newest first, same-date ties by name, at most 6.
 - `localDate(date = new Date()) → string`: the local calendar date as YYYY-MM-DD, from the local year, month and day, never from the UTC timestamp.
 
+Helpers for SCR-Now (`src/modules/pages/now/`):
+- `stale.ts` (browser-safe): `isStale(updated, today)` and `staleToday(updated)`, RULE-09 (more than 90 days) on the viewer's local date, reusing `daysBetween` and `localDate`. The `StaleLabel` island uses it.
+- `now.ts` (build time): `nowView({ now, tools }) → { note?, months, empty }` from MOD-Content's `changelog()`, with dates formatted once (they are absolute) and machine-readable. With no note, the changelog title is the page heading; with no visible tools the changelog section is left out; with neither, `empty` (F-010.R4).
+
 Build-time helpers for SCR-Category (`src/modules/pages/category.ts`):
 - `categoryPages(categories, tools) → { category, path, tools, count, nav }[]`: one entry per category with visible tools, in display order, from MOD-Content's `visibleCategories` and `toolsByCategory` (F-016.R1 to R4). Categories that are unknown or have only hidden tools have no entry, so no page (F-016.R5).
 - `toolCountText(count)`: COPY-category.toolCount, or COPY-category.toolCountOne for one tool (F-016.R2).

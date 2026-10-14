@@ -53,7 +53,8 @@ export interface Registry {
   /** Visible projects, newest year first, then by name. */
   projects: RegProject[];
   profile: Profile;
-  now: NowNote;
+  /** The Now note, or undefined when content has no now.yaml (F-010.R4). */
+  now?: NowNote;
   /** Changelog items of visible tools, newest first (RULE-04); `changelog()` groups them by month. */
   changelogEvents: ChangelogEvent[];
   embeddedOrigins: string[];
@@ -126,7 +127,9 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   const projectFiles = listYaml(join(contentDir, 'projects')).map(load);
   const catFile = required('categories.yaml');
   const profileFile = required('profile.yaml');
-  const nowFile = required('now.yaml');
+  // The Now note is optional: without now.yaml, SCR-Now shows only the changelog (F-010.R4).
+  const nowPath = join(contentDir, 'now.yaml');
+  const nowFile = existsSync(nowPath) ? load(nowPath) : undefined;
 
   // 1. Schema (F-001.R2). Each file is checked against its $defs entry of the domain schema.
   // Fields that already failed the schema; the invariant checks skip them, so one mistake gives one error.
@@ -161,7 +164,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     errors.push({ file: catFile.file, entryId: '-', rule: 'SCHEMA', message: 'must be a list of categories' });
   catList.forEach((_, i) => schemaCheck(catFile, 'category', [i]));
   schemaCheck(profileFile, 'profile');
-  schemaCheck(nowFile, 'nowNote');
+  if (nowFile) schemaCheck(nowFile, 'nowNote');
 
   // 2. Invariants the schema cannot express (ADR-0005).
   const entries = [...toolFiles, ...projectFiles].filter((l) => idOf(l.data) !== '-');
@@ -317,7 +320,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     categories,
     projects,
     profile: profileFile.data as Profile,
-    now: nowFile.data as NowNote,
+    now: nowFile?.data as NowNote | undefined,
     changelogEvents,
     embeddedOrigins,
     portalOrigin,

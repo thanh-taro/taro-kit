@@ -1,0 +1,2 @@
+# Test fixture (F-010.AC5): no now.yaml, two visible tools.
+- { id: developer, name: Developer tools, order: 1, intro: Fixture intro., icon: icons/code.svg, tint: violet }
