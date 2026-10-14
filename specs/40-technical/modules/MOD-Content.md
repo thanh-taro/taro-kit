@@ -20,10 +20,10 @@ MOD-Content owns the authored content and turns it into the **registry**: the si
   - the embedded-origin list.
 - **Emit:** writes the hashed catalog data file (`/data/catalog.<hash>.json`) that islands fetch, carrying pre-normalized search keys.
 
-It runs in Node at build and inside the catalog check. It never runs in the browser, except that its emitted JSON is read there.
+It runs in Node at build and inside the catalog check. It never runs in the browser, except that its emitted JSON is read there, and that islands may import the pure derivations in `derive.ts`, which have no Node dependencies.
 
 ## Not responsible for
-- Anything relative to the viewer's date: what's new (RULE-04 window), the stale Now label (RULE-09). The browser computes these.
+- Choosing the viewer's date: what's new (RULE-04 window) and the stale Now label (RULE-09) are evaluated in the browser against the viewer's current local date. MOD-Content supplies the pure `whatsNew(tools, today)`; the caller passes the date.
 - Checking whether addresses are live (MOD-CatalogCheck).
 - Rendering (MOD-Pages) and link-preview tags (MOD-Meta).
 - Personal data (MOD-PersonalData).
@@ -31,7 +31,17 @@ It runs in Node at build and inside the catalog check. It never runs in the brow
 ## Public surface
 - `loadRegistry(options) → Registry`, or a thrown `ContentErrors` holding `{ file, entryId, rule, message }[]`.
 - The `Registry` type, with `visibleTools`, `toolById(id)`, `categories`, `projects`, `profile`, `now`, `changelogEvents`, `embeddedOrigins`, `portalOrigin` and `allTools` (for checks only).
-- `emitCatalogData(registry) → { path, hash }`.
+- `catalogData(registry) → { categories, tools, projects }`: the catalog data file's payload (visible entries only), read by the catalog, search and the palette.
+- `emitCatalogData(registry) → { path, hash }`, which adds MOD-Search's pre-normalized keys to that payload and writes the hashed file (with F-002 and F-004).
+- Pure derivations (`derive.ts`, no Node imports). Each takes normalized entries, drops hidden ones itself (RULE-06), and is shared by the build and browser islands:
+  - `visibleTools(tools)`: visible tools, alphabetically (F-002.R1);
+  - `visibleCategories(categories, tools)`: categories with at least one visible tool, in display order;
+  - `toolsByCategory(tools, categoryId)`: one category's visible tools, alphabetically (F-016.R3);
+  - `whatsNew(tools, today)`: RULE-04 what's new on the viewer's local date `today`: one item per tool, labeled and dated by its latest date, within the last 30 days counting today, newest first, at most 6;
+  - `changelogItems(tools)` and `changelog(tools)`: RULE-04 changelog items (one added and one updated per tool, newest first), and the same grouped by month (F-010.R3);
+  - `sitemapEntries({ categories, allTools })`: site index paths, being the public pages, visible category pages and visible tool addresses (F-015.R3);
+  - `toolPath(id)` (`/t/<id>/`, F-003.R1), `categoryPath(id)` (`/tools/<id>/`, F-016.R1) and `PUBLIC_PAGES`.
+  - Ties on the same date are ordered by name, then updated before added.
 - Generated domain types: `src/generated/domain.ts`, which is the schema's TS mirror.
 - A CLI, `pnpm content:validate`, used by the build and CI.
 
