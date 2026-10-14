@@ -13,6 +13,7 @@ import {
   visibleFavorites,
   type PersonalData,
 } from '../../src/modules/personal-data/index.ts';
+import { claimStorageNotice, resetStorageNoticeForTests } from '../../src/modules/shell/StorageNotice.tsx';
 import { FakeStorage } from './fakes.ts';
 
 const fx = (n: number) => `fx-${String(n).padStart(2, '0')}`;
@@ -197,5 +198,31 @@ describe('F-005 store commands', () => {
     win.dispatchEvent(new Event('focus'));
     expect(a.isFavorite('fx-01')).toBe(false);
     expect(a.isFavorite('fx-02')).toBe(true);
+  });
+});
+
+describe('F-005.R5 one-time storage notice', () => {
+  test('F005_AC7 the notice is claimed once per browser session', () => {
+    const session = new FakeStorage();
+    resetStorageNoticeForTests();
+    expect(claimStorageNotice(() => session)).toBe(true);
+    expect(claimStorageNotice(() => session)).toBe(false);
+    // A new page in the same session: the session flag holds.
+    resetStorageNoticeForTests();
+    expect(claimStorageNotice(() => session)).toBe(false);
+    // A new session.
+    resetStorageNoticeForTests();
+    expect(claimStorageNotice(() => new FakeStorage())).toBe(true);
+  });
+
+  test('F005_AC7 without sessionStorage the notice still shows at most once per page', () => {
+    const refused = () => {
+      throw new DOMException('denied', 'SecurityError');
+    };
+    resetStorageNoticeForTests();
+    expect(claimStorageNotice(refused)).toBe(true);
+    expect(claimStorageNotice(refused)).toBe(false);
+    resetStorageNoticeForTests();
+    expect(claimStorageNotice(refused)).toBe(true);
   });
 });
