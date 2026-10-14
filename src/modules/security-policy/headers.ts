@@ -1,7 +1,8 @@
 // MOD-SecurityPolicy: the response headers a meta CSP can't carry (ADR-0009), written to `_headers` (ADR-0007).
 // - Permissions-Policy: each policy-controlled feature is delegated only to the visible embedded tools that
 //   declare it, always with `self` first (SP-3: without it Chromium delegates nothing), and `()` otherwise.
-// - frame-ancestors 'none', object-src and base-uri as a header policy; Referrer-Policy, nosniff and COOP.
+// - frame-ancestors 'none', object-src and base-uri as a header policy; Referrer-Policy, nosniff, COOP, and
+//   Cache-Control: no-transform (the privacy guard from SP-3).
 // Cache rules belong with the offline worker and publishing (F-011, ADR-0007) and are added there.
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -38,6 +39,8 @@ export function securityHeaders(tools: readonly PolicyTool[]): [name: string, va
     ['Referrer-Policy', 'strict-origin-when-cross-origin'],
     ['X-Content-Type-Options', 'nosniff'],
     ['Cross-Origin-Opener-Policy', 'same-origin'],
+    // ADR-0009 (SP-3 amendment): stops the host injecting analytics beacons into pages (NFR-05).
+    ['Cache-Control', 'no-transform'],
   ];
 }
 

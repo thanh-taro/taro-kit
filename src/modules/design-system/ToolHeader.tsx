@@ -25,9 +25,8 @@ export interface ToolHeaderText {
 }
 
 export interface ToolHeaderProps {
+  /** The tool's name; its icon is the monogram (style.md: ENT-Tool has no icon field yet). */
   name: string;
-  /** A bundled icon's address; without it the tool's monogram shows (style.md). */
-  iconSrc?: string;
   /** The tool's own address, as in the catalog: never carries the theme (F-012.R5). */
   openHref?: string;
   /** The slow variant (RULE-11). */
@@ -42,7 +41,7 @@ const Svg = ({ markup }: { markup: string }) => (
   <span class="tk-toolheader__glyph" aria-hidden="true" dangerouslySetInnerHTML={{ __html: markup }} />
 );
 
-export default function ToolHeader({ name, iconSrc, openHref, slow = false, text, children }: ToolHeaderProps) {
+export default function ToolHeader({ name, openHref, slow = false, text, children }: ToolHeaderProps) {
   return (
     <div class="tk-toolheader" role="toolbar" aria-label={text.label} tabindex={-1} data-slow={slow ? '' : undefined}>
       <div class="tk-toolheader__bar">
@@ -53,7 +52,7 @@ export default function ToolHeader({ name, iconSrc, openHref, slow = false, text
         </a>
         <span class="tk-toolheader__sep" aria-hidden="true" />
         <span class="tk-toolheader__icon" aria-hidden="true">
-          {iconSrc ? <img src={iconSrc} alt="" /> : monogram(name)}
+          {monogram(name)}
         </span>
         <h1 class="tk-toolheader__name">{name}</h1>
         <span class="tk-toolheader__fav">{children}</span>
@@ -73,7 +72,7 @@ export default function ToolHeader({ name, iconSrc, openHref, slow = false, text
       <div class="tk-toolheader__slow" role="status">
         {slow && (
           <>
-            <span class="tk-toolheader__spinner" aria-hidden="true" />
+            <span class="tk-spinner" data-size="sm" aria-hidden="true" />
             <span>{text.slow}</span>
           </>
         )}

@@ -30,6 +30,9 @@ export const FORBIDDEN_SANDBOX = [
 
 const SANDBOX_FOR: Partial<Record<Permission, readonly string[]>> = {
   downloads: ['allow-downloads'],
+  // Popups escape the sandbox so a tool's popup (for example its own OAuth or print window) works normally.
+  // Granted only through the `popups` permission, never by default, and each tool declaring it must justify it in
+  // its catalog entry review (RULE-10, ADR-0009).
   popups: ['allow-popups', 'allow-popups-to-escape-sandbox'],
 };
 /** Permissions Policy features delegated with `allow` (and listed in the portal's Permissions-Policy). */

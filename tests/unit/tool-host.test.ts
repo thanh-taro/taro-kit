@@ -69,12 +69,13 @@ describe('ADR-0009 response headers', () => {
     );
   });
 
-  it('NFR-08 every response gets frame-ancestors none, nosniff, the referrer policy and COOP', () => {
+  it('NFR-08 NFR-05 every response gets frame-ancestors none, nosniff, the referrer policy, COOP and no-transform', () => {
     const headers = Object.fromEntries(securityHeaders([]));
     expect(headers['Content-Security-Policy']).toBe("frame-ancestors 'none'; object-src 'none'; base-uri 'self'");
     expect(headers['X-Content-Type-Options']).toBe('nosniff');
     expect(headers['Referrer-Policy']).toBe('strict-origin-when-cross-origin');
     expect(headers['Cross-Origin-Opener-Policy']).toBe('same-origin');
+    expect(headers['Cache-Control']).toBe('no-transform');
     expect(headersFile([]).split('\n')[0]).toBe('/*');
     expect(headersFile([])).toContain('  Permissions-Policy: clipboard-read=(), ');
   });

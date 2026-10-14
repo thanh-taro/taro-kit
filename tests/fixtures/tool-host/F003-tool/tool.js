@@ -40,6 +40,10 @@ window.probe = {
   },
 };
 
+// The flag: on the ft-ready host the tool asks the portal for the theme once loaded (F-012.R6, ADR-0011).
+if (location.hostname.startsWith('ft-ready.'))
+  window.addEventListener('load', () => window.parent.postMessage({ type: 'taro:ready' }, portal));
+
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('stored').textContent = localStorage.getItem('fixture.value') ?? 'none';
   const result = document.getElementById('copy-result');

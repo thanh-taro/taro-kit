@@ -340,6 +340,46 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     expect(await tool.evaluate(() => (window as unknown as { marker: number }).marker)).toBe(42);
   });
 
+  test('F012_AC7 a tool that says ready while the theme changed during its load gets exactly the theme showing', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    const held = sites.holdTools();
+    await page.goto(toolPage('ft-ready'));
+    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark`);
+    // The user toggles while the tool is still loading: the message can't reach it yet.
+    await page.getByRole('button', { name: 'Switch to light theme' }).click();
+    held.release();
+    const tool = await toolFrame(page, 'ft-ready');
+    const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
+    await expect.poll(received).toEqual([{ type: 'taro:theme', value: 'light' }]);
+    await page.waitForTimeout(300);
+    expect(await received()).toEqual([{ type: 'taro:theme', value: 'light' }]);
+    expect(await tool.evaluate(() => document.documentElement.dataset.theme)).toBe('light');
+  });
+
+  test('F012_AC8 on system, a device switch during the load reaches a ready tool once, and a later one live', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    const held = sites.holdTools();
+    await page.goto(toolPage('ft-ready'));
+    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark`);
+    await page.emulateMedia({ colorScheme: 'light' });
+    held.release();
+    const tool = await toolFrame(page, 'ft-ready');
+    const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
+    await expect.poll(received).toEqual([{ type: 'taro:theme', value: 'light' }]);
+    // Loaded: a later device switch reaches the tool without reloading it.
+    await tool.evaluate(() => ((window as unknown as { marker: number }).marker = 1));
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await expect.poll(received).toEqual([
+      { type: 'taro:theme', value: 'light' },
+      { type: 'taro:theme', value: 'dark' },
+    ]);
+    expect(await tool.evaluate(() => (window as unknown as { marker: number }).marker)).toBe(1);
+  });
+
   test('F012_AC9 a tool that never says it is ready loads normally with the theme in its address', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light' });
     const tool = await openEmbedded(page);
@@ -379,4 +419,36 @@ test.describe('NFR-03 tool view accessibility', () => {
       }
     });
   }
+});
+
+test.describe('SCR-ToolView narrow (390 px)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('SCR-ToolView NFR-09 the shell bar is hidden; back, favorite and open are labeled 44 px icon buttons', async ({
+    page,
+  }) => {
+    await openEmbedded(page);
+    // The compact shell bar is hidden; the tool header takes its place (SCR-ToolView layout region 1).
+    await expect(page.getByRole('banner')).toBeHidden();
+    await expect(page.getByRole('button', { name: /^Switch to (light|dark) theme$/ })).toBeHidden();
+    const bar = header(page);
+    const actions = [
+      bar.getByRole('link', { name: 'Back' }),
+      bar.getByRole('button', { name: 'Add to favorites' }),
+      bar.getByRole('link', { name: 'Open in new tab' }),
+    ];
+    for (const action of actions) {
+      await expect(action).toBeVisible();
+      const box = (await action.boundingBox())!;
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+    // Icon buttons: the text labels are visually hidden, not removed.
+    expect((await actions[0]!.boundingBox())!.width).toBeLessThan(60);
+    expect((await actions[2]!.boundingBox())!.width).toBeLessThan(60);
+    // The tool fills the rest of the screen, edge to edge.
+    const frameBox = (await frameEl(page).boundingBox())!;
+    expect(frameBox.width).toBeGreaterThanOrEqual(388);
+    expect(frameBox.y).toBeGreaterThanOrEqual((await bar.boundingBox())!.height - 1);
+  });
 });

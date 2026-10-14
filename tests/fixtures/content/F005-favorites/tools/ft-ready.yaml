@@ -1,0 +1,9 @@
+# Test fixture for F-012.AC7/AC8 through the real tool frame: the fixture tool on this host says taro:ready.
+id: ft-ready
+kind: tool
+name: Fixture ready tool
+summary: Fixture tool that asks the portal for the theme.
+category: developer
+url: https://ft-ready.tarokit.test/
+origin: own
+added: 2026-10-01

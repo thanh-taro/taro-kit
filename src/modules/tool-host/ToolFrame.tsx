@@ -28,10 +28,9 @@ export interface ToolFrameProps {
   loading: string;
   /** The offline state (CMP-StateMessage page variant with COPY-tool.offline), rendered by Astro at build. */
   children?: ComponentChildren;
-  iconSrc?: string;
 }
 
-export default function ToolFrame({ tool, frame, header, favorite, loading, iconSrc, children }: ToolFrameProps) {
+export default function ToolFrame({ tool, frame, header, favorite, loading, children }: ToolFrameProps) {
   // Before hydration (the build has no device): the loading state, with no frame yet.
   const [phase, setPhase] = useState<ToolPhase>('loading');
   const [src, setSrc] = useState<string | null>(null);
@@ -71,7 +70,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, icon
   const waiting = phase === 'loading' || phase === 'slow';
   return (
     <>
-      <ToolHeader name={tool.name} iconSrc={iconSrc} openHref={tool.url} slow={phase === 'slow'} text={header}>
+      <ToolHeader name={tool.name} openHref={tool.url} slow={phase === 'slow'} text={header}>
         <FavoriteToggle toolId={tool.id} labels={favorite.labels} appearance="plain">
           {/* Build-time SVG from the icon set (DEP-15). */}
           <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: favorite.star }} />
@@ -95,7 +94,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, icon
             )}
             {waiting && (
               <div class="tk-toolarea__loading" role="status">
-                <span class="tk-toolarea__spinner" aria-hidden="true" />
+                <span class="tk-spinner" aria-hidden="true" />
                 <span>{loading}</span>
               </div>
             )}

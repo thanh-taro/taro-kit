@@ -93,6 +93,29 @@
     background: var(--tk-color-surface2);
     color: var(--tk-color-fg);
   }
+  /* The one loading spinner (tool view loading state, CMP-ToolHeader slow hint). `data-size="sm"`: 16 px. */
+  .tk-spinner {
+    display: block;
+    flex: none;
+    inline-size: var(--tk-space-8);
+    block-size: var(--tk-space-8);
+    border: calc(var(--tk-border-width-focus) + var(--tk-border-width-hairline)) solid var(--tk-color-line);
+    border-block-start-color: var(--tk-color-accent);
+    border-radius: var(--tk-radius-pill);
+    animation: tk-spin 0.9s linear infinite;
+  }
+  .tk-spinner[data-size='sm'] {
+    inline-size: var(--tk-size-icon-sm);
+    block-size: var(--tk-size-icon-sm);
+    border-width: var(--tk-border-width-focus);
+    border-color: var(--tk-color-selection-line);
+    border-block-start-color: var(--tk-color-accent);
+  }
+  @keyframes tk-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
   .tk-icon {
     inline-size: var(--tk-size-icon-md);
     block-size: var(--tk-size-icon-md);

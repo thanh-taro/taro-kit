@@ -71,10 +71,6 @@
   font-size: var(--tk-font-size-xs);
   font-weight: var(--tk-font-weight-semibold);
 }
-.tk-toolheader__icon img {
-  inline-size: 100%;
-  block-size: 100%;
-}
 
 .tk-toolheader__name {
   min-inline-size: 0;
@@ -122,15 +118,6 @@
   font-size: var(--tk-font-size-md);
   line-height: var(--tk-font-line-height-normal);
 }
-.tk-toolheader__spinner {
-  flex: none;
-  inline-size: var(--tk-size-icon-sm);
-  block-size: var(--tk-size-icon-sm);
-  border: var(--tk-border-width-focus) solid var(--tk-color-selection-line);
-  border-block-start-color: var(--tk-color-accent);
-  border-radius: var(--tk-radius-pill);
-  animation: tk-spin 0.9s linear infinite;
-}
 
 /* Narrow (SCR-ToolView): the tool header replaces the shell bar; every action is a labeled 44 px icon button. */
 @media (max-width: 720px) {
@@ -174,11 +161,5 @@
   .tk-toolheader__glyph svg {
     inline-size: var(--tk-size-icon-md);
     block-size: var(--tk-size-icon-md);
-  }
-}
-
-@keyframes tk-spin {
-  to {
-    transform: rotate(1turn);
   }
 }
