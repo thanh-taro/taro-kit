@@ -68,6 +68,8 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.copied** | Link copied | confirmation |
 | **COPY-about.links** | Find me | section heading |
 | **COPY-about.more** | See what I've built and what I'm up to now. | pointer to Projects and Now |
+| **COPY-about.nickname** | aka {nickname} | under the avatar, when the profile has a nickname |
+| **COPY-about.avatarAlt** | Portrait of {name} | avatar alt text; {name} is the full name (SCR-About accessibility) |
 | **COPY-category.toolCount** | {count} tools | count on tiles and category pages; singular form is COPY-category.toolCountOne |
 | **COPY-category.toolCountOne** | 1 tool | singular of COPY-category.toolCount |
 | **COPY-category.allTools** | All my tools | link from a category page back to the catalog |

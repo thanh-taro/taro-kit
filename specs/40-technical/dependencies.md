@@ -77,7 +77,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
 |---|---|---|---|---|---|---|---|
 | **DEP-30** | lightningcss (via vite) | transitive | CSS transforms in Vite 8 | build | MPL-2.0 (build-only exception) | approved | ADR-0008 |
-| **DEP-31** | sharp + @img/sharp-libvips (via astro) | transitive | Image optimization for avatar and project images | build | Apache-2.0; libvips binaries LGPL-3.0-or-later (build-only exception) | approved | ADR-0008 |
+| **DEP-31** | sharp + @img/sharp-libvips (astro's image service) | ^0.35.5, direct: pnpm does not hoist astro's optional sharp, and Astro's bundled image service resolves it from the project root | Image optimization for avatar and project images | build | Apache-2.0; libvips binaries LGPL-3.0-or-later (build-only exception) | approved | ADR-0008 |
 | **DEP-32** | caniuse-lite (via browserslist) | transitive | Browser target data | build | CC-BY-4.0 (attribution in notices) | approved | ADR-0008 |
 
 ## Rejected (for the record)

@@ -1,0 +1,15 @@
+# Test fixture (F-008.AC1, AC3, AC4): a full profile with an avatar, nickname, location and paragraphs.
+name: Nguyen Tri Thanh
+nickname: Taro
+headline: Fixture headline. I build small tools.
+avatar: avatar.png
+location: Da Nang, Vietnam
+bio: |
+  Fixture bio, first paragraph.
+
+  Fixture bio, second paragraph
+  that wraps onto a second line.
+links:
+  - { label: Code, url: 'https://github.com/fixture-owner', kind: code }
+  - { label: LinkedIn, url: 'https://www.linkedin.com/in/fixture-owner/', kind: social }
+  - { label: Email, url: 'mailto:owner@example.com', kind: email }

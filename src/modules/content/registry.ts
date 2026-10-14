@@ -209,6 +209,21 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     }
   }
 
+  // The profile avatar is bundled too (ADR-0005, F-008.R1).
+  const avatar = isObj(profileFile.data) ? profileFile.data.avatar : undefined;
+  if (
+    typeof avatar === 'string' &&
+    !schemaFailed.has(fieldKey(profileFile.file, ['avatar'])) &&
+    !existsSync(join(contentDir, 'assets', avatar.replace(/^\//, '')))
+  )
+    errors.push({
+      file: profileFile.file,
+      line: profileFile.lineOf(['avatar']),
+      entryId: '-',
+      rule: 'ASSET',
+      message: `avatar "${avatar}" not found in content/assets/`,
+    });
+
   // INV-07: category ids are unique; RULE-14: no two categories share a tint (F-001.AC9).
   const catIds = new Set<string>();
   const tintOwners = new Map<string, { id: string; i: number }[]>();

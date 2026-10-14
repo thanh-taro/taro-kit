@@ -1,0 +1,27 @@
+---
+// SCR-About (MOD-Pages) at /about/: static, with no island. Region 1 is the shell header (About me marked);
+// the rest is About.astro. The avatar, when the profile has one, is optimized at build (DEP-31): twice the
+// largest displayed size (the 360 px desktop column), in WebP.
+// Implements: F-008.R1, F-008.R2, F-008.R3.
+import { getImage } from 'astro:assets';
+import avatarImage from 'virtual:tarokit/avatar';
+import { getRegistry } from '../modules/content/index.ts';
+import { t } from '../modules/copy/index.ts';
+import About from '../modules/pages/About.astro';
+import BaseLayout from '../modules/shell/BaseLayout.astro';
+
+const { profile } = getRegistry();
+const AVATAR_PX = 720;
+const avatar = avatarImage
+  ? await getImage({ src: avatarImage, width: AVATAR_PX, height: AVATAR_PX, fit: 'cover', format: 'webp' })
+  : undefined;
+---
+
+<BaseLayout title={t('COPY-meta.aboutTitle')} description={t('COPY-meta.aboutDescription')} path="/about/">
+  <About
+    profile={profile}
+    avatar={
+      avatar && { src: avatar.src, width: Number(avatar.attributes.width), height: Number(avatar.attributes.height) }
+    }
+  />
+</BaseLayout>

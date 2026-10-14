@@ -1,0 +1,6 @@
+# Test fixture (F-008.AC2): no avatar, so the initials of the full name stand in.
+name: Taro Example
+headline: Fixture headline.
+bio: Fixture bio.
+links:
+  - { label: Site, url: 'https://example.com/' }

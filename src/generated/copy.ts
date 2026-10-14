@@ -1,7 +1,9 @@
 /* Generated from specs/30-experience/copy.md by scripts/gen.ts. Do not edit. */
 export const COPY = {
+  "COPY-about.avatarAlt": "Portrait of {name}",
   "COPY-about.links": "Find me",
   "COPY-about.more": "See what I've built and what I'm up to now.",
+  "COPY-about.nickname": "aka {nickname}",
   "COPY-catalog.clear": "Clear search",
   "COPY-catalog.empty": "I'm still building my first tools. Check back soon.",
   "COPY-catalog.noResults": "I don't have anything matching \"{query}\" yet.",
@@ -121,6 +123,8 @@ export type CopyId = keyof typeof COPY;
 
 /** Placeholder values required by each COPY id that has `{placeholders}`. */
 export interface CopyParams {
+  "COPY-about.avatarAlt": { name: string | number };
+  "COPY-about.nickname": { nickname: string | number };
   "COPY-catalog.noResults": { query: string | number };
   "COPY-category.toolCount": { count: string | number };
   "COPY-fav.full": { limit: string | number };

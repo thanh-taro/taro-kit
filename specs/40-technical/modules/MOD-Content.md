@@ -41,10 +41,12 @@ It runs in Node at build and inside the catalog check. It never runs in the brow
   - `changelogItems(tools)` and `changelog(tools)`: RULE-04 changelog items (one added and one updated per tool, newest first; a tool added and updated the same day has only the added item, F-010 edge case), and the same grouped by month (F-010.R3);
   - `sitemapEntries({ categories, allTools })`: site index paths, being the public pages, visible category pages and visible tool addresses (F-015.R3);
   - `toolPath(id)` (`/t/<id>/`, F-003.R1), `categoryPath(id)` (`/tools/<id>/`, F-016.R1), `projectPath(id)` (`/projects/#<id>`, F-009.R4) and `PUBLIC_PAGES`.
+  - `initials(name)`, `paragraphs(text)` and `profileLinks(links)` (`profile.ts`): the profile as SCR-About shows it (F-008): the initials of the full name, the bio split at blank lines, and each link with its kind (email for `mailto:` addresses), whether it opens in a new tab (web links) and a short destination (host and path, or the email address).
   - Ties on the same date are ordered by name, then updated before added.
 - `resolveAsset(path, site, errors)`: validates one bundled asset path for any asset field (inside `content/assets/`, one of the allowed extensions when given, present) and returns its absolute file, or adds one `ASSET` error naming the file, entry and field; `assetFile(contentDir, path)`: the file, or none when the path would leave `content/assets/`; `IMAGE_TYPES` and `imageType(path)`: the project image types by extension (PNG, JPEG, WebP, AVIF, SVG), the one table behind validation and the image route (F-009.R2).
 - Generated domain types: `src/generated/domain.ts`, which is the schema's TS mirror.
 - `visibleToolIdsPlugin(ids)`: a Vite plugin (registered in `astro.config.ts`) serving the build-time module `virtual:tarokit/visible-tool-ids` (`visibleToolIds`, the visible tools' ids, RULE-06). Islands import it for RULE-02 and INV-04 without a fetch or per-page props (F-005).
+- `avatarPlugin()`: a Vite plugin serving `virtual:tarokit/avatar`, whose default export is the profile avatar imported from `content/assets/` (so Astro's image pipeline optimizes it, DEP-31), or `null` when the profile has none (F-008.R1). The registry checks that the avatar file exists (ADR-0005).
 - A CLI, `pnpm content:validate`, used by the build and CI.
 
 ## Implements
