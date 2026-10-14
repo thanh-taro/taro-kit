@@ -5,6 +5,13 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { LineCounter, parseDocument } from 'yaml';
 import type { Category, EntryBase, NowNote, Profile, Project, Tool } from '../../generated/domain.ts';
+import {
+  changelogItems,
+  type DatedItem,
+  toolsByCategory,
+  visibleTools as deriveVisibleTools,
+  visibleCategories,
+} from './derive.ts';
 import { type ContentError, ContentErrors } from './errors.ts';
 import { type Def, defaultSchemaPath, mapAjvError, validatorFor } from './schema.ts';
 
@@ -34,13 +41,8 @@ export interface RegCategory extends Category {
   /** Visible tools in this category, sorted by name. */
   tools: RegTool[];
 }
-export interface ChangelogEvent {
-  date: string;
-  type: 'added' | 'updated';
-  kind: 'tool' | 'project';
-  id: string;
-  name: string;
-}
+/** A dated changelog item of a visible tool (RULE-04: the changelog lists tools only). */
+export type ChangelogEvent = DatedItem;
 export interface Registry {
   /** Every tool, hidden ones included. For checks only (RULE-06). */
   allTools: RegTool[];
@@ -52,6 +54,7 @@ export interface Registry {
   projects: RegProject[];
   profile: Profile;
   now: NowNote;
+  /** Changelog items of visible tools, newest first (RULE-04); `changelog()` groups them by month. */
   changelogEvents: ChangelogEvent[];
   embeddedOrigins: string[];
   portalOrigin: string;
@@ -286,19 +289,13 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   });
 
   // 4. Derive build-time views; hidden entries never reach them (RULE-06, F-001.R4).
-  const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
-  const visibleTools = allTools.filter((t) => !t.hidden).sort(byName);
-  const projects = allProjects.filter((p) => !p.hidden).sort((a, b) => b.year - a.year || byName(a, b));
-  const categories = (catList as Category[])
-    .map((c) => ({ ...c, tools: visibleTools.filter((t) => t.category === c.id) }))
-    .filter((c) => c.tools.length > 0)
-    .sort((a, b) => a.order - b.order);
-  const changelogEvents: ChangelogEvent[] = [];
-  for (const e of [...visibleTools, ...projects]) {
-    changelogEvents.push({ date: e.added, type: 'added', kind: e.kind, id: e.id, name: e.name });
-    if (e.updated) changelogEvents.push({ date: e.updated, type: 'updated', kind: e.kind, id: e.id, name: e.name });
-  }
-  changelogEvents.sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
+  const visibleTools = deriveVisibleTools(allTools);
+  const projects = allProjects.filter((p) => !p.hidden).sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+  const categories = visibleCategories(catList as Category[], allTools).map((c) => ({
+    ...c,
+    tools: toolsByCategory(allTools, c.id),
+  }));
+  const changelogEvents = changelogItems(allTools);
   const embeddedOrigins = [
     ...new Set(visibleTools.filter((t) => t.openMode === 'embedded').map((t) => new URL(t.url).origin)),
   ].sort();
