@@ -4,3 +4,9 @@
 declare module 'virtual:tarokit/visible-tool-ids' {
   export const visibleToolIds: readonly string[];
 }
+
+/** MOD-Content: the profile avatar as image metadata, or null when the profile has none (F-008.R1). */
+declare module 'virtual:tarokit/avatar' {
+  const avatar: import('astro').ImageMetadata | null;
+  export default avatar;
+}

@@ -1,6 +1,8 @@
 name: Fixture Owner
 nickname: Fixture
 headline: Fixture headline.
+# F-008.AC1 on the fixture build: a bundled avatar, optimized by sharp at build (assets/avatar.png).
+avatar: avatar.png
 bio: Fixture bio.
 links:
   - { label: Email, url: 'mailto:owner@example.com', kind: email }

@@ -1,7 +1,7 @@
 ---
 id: F-008
 title: About the Owner
-status: ready
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-02]

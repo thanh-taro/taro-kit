@@ -1,5 +1,5 @@
 // MOD-Content public surface (specs/40-technical/modules/MOD-Content.md).
-export { assetFile, IMAGE_TYPES, imageType, resolveAsset, type AssetSite } from './assets.ts';
+export { assetFile, AVATAR_TYPES, IMAGE_TYPES, imageType, resolveAsset, type AssetSite } from './assets.ts';
 export { ContentErrors, formatError, type ContentError } from './errors.ts';
 export {
   contentDirectory,
@@ -38,3 +38,5 @@ export {
   visibleToolIdsSource,
   type DevServerLike,
 } from './visible-tool-ids.ts';
+export { initials, paragraphs, profileLinks, type ProfileLink } from './profile.ts';
+export { AVATAR_MODULE, avatarPlugin, avatarSource } from './avatar.ts';

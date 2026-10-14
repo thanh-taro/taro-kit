@@ -11,7 +11,7 @@ Show who Taro is and how to reach them.
 
 ## Layout regions
 1. Shell header.
-2. Avatar, name, headline, location.
+2. Avatar, name, nickname (COPY-about.nickname), headline, location.
 3. Bio.
 4. Links (COPY-about.links).
 5. Pointers to Projects and Now (COPY-about.more).
@@ -29,4 +29,4 @@ Show who Taro is and how to reach them.
 - Exits to: SCR-Projects, SCR-Now, external links.
 
 ## Accessibility
-The avatar has alt text naming the person. Links state where they go, for example "GitHub profile (opens in new tab)".
+The avatar, or the initials in its place, has alt text naming the person (COPY-about.avatarAlt). Links state where they go, for example "GitHub profile (opens in new tab)".

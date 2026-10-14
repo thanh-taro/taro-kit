@@ -15,6 +15,9 @@ export const IMAGE_TYPES: Readonly<Record<string, string>> = {
   '.svg': 'image/svg+xml',
 };
 
+/** The profile avatar's types: raster images only, which Astro's image pipeline optimizes (F-008.R1, DEP-31). */
+export const AVATAR_TYPES: readonly string[] = Object.keys(IMAGE_TYPES).filter((ext) => ext !== '.svg');
+
 /** The media type of an image by its extension, or undefined for an unknown one. */
 export function imageType(path: string): string | undefined {
   const ext = /\.[A-Za-z0-9]+$/.exec(path)?.[0].toLowerCase();

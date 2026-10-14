@@ -23,6 +23,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-04** | @preact/signals | ^2.11 | Shared reactive stores across islands | runtime | MIT | approved | ADR-0002 |
 | **DEP-05** | typescript | ~6.0 (pinned until astro check supports 7) | Type checking | dev | Apache-2.0 | approved | ADR-0002 |
 | **DEP-06** | @astrojs/check | ^0.9 | Type-checks `.astro` files | dev | MIT | approved | ADR-0002 |
+| **DEP-31** | sharp (pulls @img/sharp-libvips) | ^0.35.5 (direct: pnpm does not hoist astro's optional sharp, and Astro's bundled image service resolves it from the project root) | Image optimization for avatar and project images | build | Apache-2.0; libvips binaries LGPL-3.0-or-later (build-only exception) | approved | ADR-0008 |
 
 ## Content and validation
 
@@ -77,7 +78,6 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
 |---|---|---|---|---|---|---|---|
 | **DEP-30** | lightningcss (via vite) | transitive | CSS transforms in Vite 8 | build | MPL-2.0 (build-only exception) | approved | ADR-0008 |
-| **DEP-31** | sharp + @img/sharp-libvips (via astro) | transitive | Image optimization for avatar and project images | build | Apache-2.0; libvips binaries LGPL-3.0-or-later (build-only exception) | approved | ADR-0008 |
 | **DEP-32** | caniuse-lite (via browserslist) | transitive | Browser target data | build | CC-BY-4.0 (attribution in notices) | approved | ADR-0008 |
 
 ## Rejected (for the record)

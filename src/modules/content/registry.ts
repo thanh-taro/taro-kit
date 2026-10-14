@@ -13,7 +13,7 @@ import {
   visibleCategories,
   visibleProjects,
 } from './derive.ts';
-import { IMAGE_TYPES, resolveAsset } from './assets.ts';
+import { AVATAR_TYPES, IMAGE_TYPES, resolveAsset } from './assets.ts';
 import { type ContentError, ContentErrors } from './errors.ts';
 import { type Def, defaultSchemaPath, mapAjvError, validatorFor } from './schema.ts';
 
@@ -55,6 +55,8 @@ export interface Registry {
   /** Visible projects, newest year first, then by name. */
   projects: RegProject[];
   profile: Profile;
+  /** The profile avatar's validated absolute file (inside content/assets/, a raster image), if it has one. */
+  avatarFile?: string;
   /** The Now note, or undefined when content has no now.yaml (F-010.R4). */
   now?: NowNote;
   /** Changelog items of visible tools, newest first (RULE-04); `changelog()` groups them by month. */
@@ -209,6 +211,25 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     }
   }
 
+  // The profile avatar is a bundled raster image (ADR-0005, F-008.R1). Its one validated file is what the
+  // avatar module imports (MOD-Content `avatarFile`), so nothing downstream recomputes the path.
+  const avatar = isObj(profileFile.data) ? profileFile.data.avatar : undefined;
+  const avatarFile =
+    typeof avatar === 'string' && !schemaFailed.has(fieldKey(profileFile.file, ['avatar']))
+      ? resolveAsset(
+          avatar,
+          {
+            contentDir,
+            file: profileFile.file,
+            entryId: '-',
+            field: 'avatar',
+            line: profileFile.lineOf(['avatar']),
+            kinds: AVATAR_TYPES,
+          },
+          errors,
+        )
+      : undefined;
+
   // INV-07: category ids are unique; RULE-14: no two categories share a tint (F-001.AC9).
   const catIds = new Set<string>();
   const tintOwners = new Map<string, { id: string; i: number }[]>();
@@ -316,6 +337,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     categories,
     projects,
     profile: profileFile.data as Profile,
+    avatarFile,
     now: nowFile?.data as NowNote | undefined,
     changelogEvents,
     embeddedOrigins,

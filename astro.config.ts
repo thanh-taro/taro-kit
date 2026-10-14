@@ -4,6 +4,7 @@ import type { AstroIntegration } from 'astro';
 import { defineConfig } from 'astro/config';
 import { fileURLToPath } from 'node:url';
 import {
+  avatarPlugin,
   contentDirectory,
   ContentErrors,
   getRegistry,
@@ -72,6 +73,9 @@ export default defineConfig({
         contentDir: contentDirectory(),
         onContentChange: resetRegistry,
       }),
+      // MOD-Content: `virtual:tarokit/avatar`, the registry's validated avatar file for Astro's image pipeline
+      // (F-008.R1).
+      avatarPlugin({ file: () => getRegistry().avatarFile, contentDir: contentDirectory() }),
     ],
   },
   security: {

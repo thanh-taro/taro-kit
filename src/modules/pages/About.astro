@@ -1,0 +1,382 @@
+---
+// SCR-About content (MOD-Pages), rendered by /about/ inside BaseLayout. Static, with no island.
+// Regions (SCR-About): 2 avatar, name, headline and location; 3 bio; 4 links (COPY-about.links);
+// 5 pointers to Projects and Now (COPY-about.more). Every sentence is the profile's own words (PRN-04).
+// Design: design/canvas/AboutDesktop.dc.html (avatar, nickname, location and links beside the text) and
+// AboutMobile.dc.html (one column in region order). The DOM puts the name <h1> first, then the side column
+// (avatar, nickname, location, links), then the pointers; grid areas place the side column on the left on
+// wide screens, and on narrow ones only the non-focusable avatar row moves up. Focus order is the same in
+// both layouts: profile links, then Projects and Now.
+// Implements: F-008.R1, F-008.R2, F-008.R3.
+import type { Profile } from '../../generated/domain.ts';
+import { initials, paragraphs, profileLinks, type ProfileLink } from '../content/index.ts';
+import { t } from '../copy/index.ts';
+import Icon from '../design-system/Icon.astro';
+
+interface Props {
+  profile: Profile;
+  /** The optimized avatar image, when the profile has one; otherwise the initials are shown (F-008.R1). */
+  avatar?: { src: string; width: number; height: number };
+}
+const { profile, avatar } = Astro.props;
+const links = profileLinks(profile.links);
+const ICONS: Record<ProfileLink['kind'], string> = {
+  email: 'at-sign',
+  code: 'code-xml',
+  social: 'users-round',
+  website: 'globe',
+  other: 'link',
+};
+const portrait = t('COPY-about.avatarAlt', { name: profile.name });
+---
+
+<div class="about">
+  <div class="intro">
+    <h1 id="about-name">{profile.name}</h1>
+    <p class="headline">{profile.headline}</p>
+    <div class="bio">
+      {paragraphs(profile.bio).map((p) => (
+        <p>{p}</p>
+      ))}
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="id">
+      {avatar ? (
+        <img
+          class="avatar"
+          src={avatar.src}
+          width={avatar.width}
+          height={avatar.height}
+          alt={portrait}
+          decoding="async"
+        />
+      ) : (
+        <span class="avatar" role="img" aria-label={portrait} data-initials>
+          {initials(profile.name)}
+        </span>
+      )}
+      {(profile.nickname || profile.location) && (
+        <div class="meta">
+          {profile.nickname && <p class="nickname">{t('COPY-about.nickname', { nickname: profile.nickname })}</p>}
+          {profile.location && <p class="location">{profile.location}</p>}
+        </div>
+      )}
+    </div>
+
+    <section class="links" aria-labelledby="about-links">
+      <h2 id="about-links">{t('COPY-about.links')}</h2>
+      <ul>
+        {links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              target={l.newTab ? '_blank' : undefined}
+              rel={l.newTab ? 'noopener noreferrer' : undefined}
+              data-kind={l.kind}
+            >
+              <span class="kind" aria-hidden="true">
+                <Icon name={ICONS[l.kind]} size={16} />
+              </span>
+              <span class="label">{l.label}</span>
+              <span class="detail">{l.detail}</span>
+              {l.newTab && (
+                <>
+                  <span class="arrow" aria-hidden="true">
+                    <Icon name="arrow-up-right" size={16} />
+                  </span>
+                  <span class="tk-visually-hidden">{t('COPY-tool.opensNewTab')}</span>
+                </>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+
+  <div class="more">
+    <p>{t('COPY-about.more')}</p>
+    <div class="more-actions">
+      <a class="primary" href="/projects/">
+        {t('COPY-nav.projects')}
+      </a>
+      <a href="/now/">{t('COPY-nav.now')}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Wide (AboutDesktop): the side column spans both rows on the left; the pointers sit right under the bio. */
+  .about {
+    display: grid;
+    grid-template-areas:
+      'side intro'
+      'side more';
+    grid-template-columns: minmax(0, calc(var(--tk-space-12) * 7.5)) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--tk-space-12);
+    row-gap: var(--tk-space-5);
+    padding-block-start: var(--tk-space-6);
+  }
+  .intro,
+  .side {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+  .intro {
+    grid-area: intro;
+    gap: var(--tk-space-5);
+  }
+  .side {
+    grid-area: side;
+    gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
+  }
+
+  /* Region 2: the avatar (or initials), nickname and location. */
+  .id {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
+  }
+  .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--tk-radius-xl);
+    background: linear-gradient(140deg, var(--tk-color-tint), var(--tk-color-bg-glow));
+    box-shadow: var(--tk-shadow-glow);
+    color: var(--tk-color-accent);
+    font-family: var(--tk-font-family-display);
+    font-size: var(--tk-font-size-6xl);
+    font-weight: var(--tk-font-weight-semibold);
+    letter-spacing: -0.03em;
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-1);
+    min-inline-size: 0;
+  }
+  .nickname {
+    color: var(--tk-color-accent);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-semibold);
+  }
+  .location {
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-md);
+  }
+
+  h1 {
+    font-size: var(--tk-font-size-5xl);
+    line-height: var(--tk-font-line-height-tight);
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+  }
+  .headline {
+    color: var(--tk-color-accent);
+    font-size: var(--tk-font-size-xl);
+    font-weight: var(--tk-font-weight-semibold);
+    line-height: var(--tk-font-line-height-normal);
+  }
+
+  /* Region 3: the bio, one paragraph per blank-line-separated block. */
+  .bio {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    max-inline-size: 64ch;
+    font-size: var(--tk-font-size-lg);
+    line-height: var(--tk-font-line-height-normal);
+  }
+
+  /* Region 4: the links (COPY-about.links). */
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-2);
+  }
+  h2 {
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-body);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-bold);
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .links a {
+    display: flex;
+    align-items: center;
+    gap: var(--tk-space-3);
+    min-block-size: var(--tk-space-12);
+    padding-inline: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-md);
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-semibold);
+    text-decoration: none;
+  }
+  .links a:hover {
+    border-color: var(--tk-color-line-strong);
+  }
+  .kind {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: calc(var(--tk-space-6) + var(--tk-space-1));
+    block-size: calc(var(--tk-space-6) + var(--tk-space-1));
+    border-radius: var(--tk-radius-sm);
+    background: var(--tk-color-tint);
+    color: var(--tk-color-accent);
+  }
+  .kind :global(.tk-icon),
+  .arrow :global(.tk-icon) {
+    inline-size: var(--tk-size-icon-sm);
+    block-size: var(--tk-size-icon-sm);
+  }
+  .label {
+    flex: none;
+  }
+  .detail {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-regular);
+    text-align: end;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .arrow {
+    display: flex;
+    flex: none;
+    color: var(--tk-color-muted);
+  }
+
+  /* Region 5: pointers to Projects and Now (COPY-about.more). */
+  .more {
+    grid-area: more;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+    max-inline-size: 64ch;
+    padding: var(--tk-space-5);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-lg);
+    font-size: var(--tk-font-size-base);
+  }
+  .more-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tk-space-2);
+  }
+  .more-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-4);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-md);
+    color: var(--tk-color-fg);
+    font-weight: var(--tk-font-weight-bold);
+    text-decoration: none;
+  }
+  .more-actions .primary {
+    background: var(--tk-color-accent);
+    border-color: var(--tk-color-accent);
+    color: var(--tk-color-on-accent);
+  }
+  a:focus-visible {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+
+  /* Narrow (AboutMobile): one column in region order; the avatar shrinks and sits beside nickname and location. */
+  @media (max-width: 720px) {
+    .about {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
+      padding-block-start: 0;
+    }
+    .intro,
+    .side {
+      display: contents;
+    }
+    .id {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--tk-space-4);
+      order: 0;
+    }
+    h1 {
+      order: 1;
+      font-size: var(--tk-font-size-3xl);
+    }
+    .headline {
+      order: 2;
+      font-size: var(--tk-font-size-lg);
+    }
+    .bio {
+      order: 3;
+      font-size: var(--tk-font-size-base);
+    }
+    .links {
+      order: 4;
+    }
+    .more {
+      order: 5;
+      gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+      padding: var(--tk-space-4);
+    }
+    .avatar {
+      flex: none;
+      inline-size: calc(var(--tk-space-16) + var(--tk-space-6));
+      block-size: calc(var(--tk-space-16) + var(--tk-space-6));
+      box-shadow: none;
+      font-size: var(--tk-font-size-3xl);
+    }
+    .links a {
+      min-block-size: calc(var(--tk-space-12) + var(--tk-space-1));
+    }
+    /* The board shows only the arrow on narrow screens; the destination stays for screen readers. */
+    .detail {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .arrow {
+      margin-inline-start: auto;
+    }
+    .more-actions {
+      flex-wrap: nowrap;
+    }
+    .more-actions a {
+      flex: 1 1 0;
+    }
+  }
+</style>
