@@ -155,23 +155,25 @@ test.describe('F-002 catalog', () => {
     expect(await cardNames(results(page))).toEqual(['Image Resizer', 'Base64']);
   });
 
-  test('F002_AC6 a favorite comes first among equally good matches', async ({ page }) => {
+  test('F002_AC6 a favorite comes first among equally good matches, from the next keystroke', async ({ page }) => {
     await openCatalog(page);
     await search(page).fill('fixture tool 0');
-    const first = await cardNames(results(page));
-    expect(first.slice(0, 2)).toEqual(['Fixture tool 01', 'Fixture tool 02']);
-    // Pin "Fixture tool 02" from its result card: it moves ahead of 01 on the next keystroke.
-    await results(page)
+    const firstTwo = async () => (await cardNames(results(page))).slice(0, 2);
+    expect(await firstTwo()).toEqual(['Fixture tool 01', 'Fixture tool 02']);
+    // Pin "Fixture tool 02" from its result card: the list does not move under the pointer...
+    const toggle = results(page)
       .locator('.tk-toolcard')
       .filter({ hasText: 'Fixture tool 02' })
-      .getByRole('button', { name: 'Add to favorites' })
-      .click();
+      .getByRole('button', { name: 'Add to favorites' });
+    await toggle.click();
+    await expect(
+      results(page).locator('.tk-toolcard').filter({ hasText: 'Fixture tool 02' }).getByRole('button'),
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(await firstTwo()).toEqual(['Fixture tool 01', 'Fixture tool 02']);
+    // ...and the next keystroke ranks the favorite first (RULE-05 tie-break).
     await search(page).press('End');
-    await search(page).pressSequentially('2');
-    await search(page).press('Backspace');
-    await expect
-      .poll(async () => (await cardNames(results(page))).slice(0, 2))
-      .toEqual(['Fixture tool 02', 'Fixture tool 01']);
+    await search(page).press('Space');
+    expect(await firstTwo()).toEqual(['Fixture tool 02', 'Fixture tool 01']);
   });
 
   test('F002_AC7 no matches shows the no-results message and the clear-search action', async ({ page }) => {
@@ -201,6 +203,27 @@ test.describe('F-002 catalog', () => {
     ).toBeVisible();
     await expect(categoryNav(page)).toHaveCount(0);
     await expect(page.locator('.tk-toolcard')).toHaveCount(0);
+    // Nothing to search: no search field, so typing can never replace the empty state.
+    await expect(page.getByRole('searchbox')).toHaveCount(0);
+    await page.keyboard.type('json');
+    await expect(
+      page.getByRole('heading', { level: 2, name: "I'm still building my first tools. Check back soon." }),
+    ).toBeVisible();
+  });
+
+  test('F-002 edge case: when the catalog data cannot load, the field is disabled with the reason and every tool stays listed', async ({
+    page,
+  }) => {
+    await page.route(/\/data\/catalog\.[0-9a-f]+\.json$/, (route) => route.abort());
+    await page.goto(`${FX}/tools/`);
+    await expect(page.getByTestId('catalog')).toHaveAttribute('data-failed', '');
+    await expect(search(page)).toBeDisabled();
+    const reason =
+      "I couldn't load my search just now. Every tool is still listed below; reload the page to try again.";
+    await expect(search(page)).toHaveAccessibleDescription(reason);
+    await expect(page.getByRole('status').filter({ hasText: reason })).toBeVisible();
+    await expect(groups(page)).toBeVisible();
+    await expect(groups(page).locator('.tk-toolcard')).toHaveCount(registry.visibleTools.length);
   });
 
   test('NFR-09 search field, category pills and heading links are 44 px targets at 390 px, with no sideways scroll', async ({

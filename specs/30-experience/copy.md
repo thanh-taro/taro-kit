@@ -37,6 +37,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-catalog.empty** | I'm still building my first tools. Check back soon. | empty state |
 | **COPY-catalog.noResults** | I don't have anything matching "{query}" yet. | no-results state |
 | **COPY-catalog.clear** | Clear search | action |
+| **COPY-catalog.searchUnavailable** | I couldn't load my search just now. Every tool is still listed below; reload the page to try again. | search field description when the catalog data can't load |
 | **COPY-tool.opensNewTab** | Opens in a new tab | linked marker |
 | **COPY-tool.unavailable** | Needs the internet | card state |
 | **COPY-tool.back** | Back | tool header |

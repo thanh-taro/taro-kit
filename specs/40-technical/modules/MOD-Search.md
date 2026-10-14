@@ -21,7 +21,7 @@ MOD-Search holds pure, synchronous search logic shared by the palette and the ca
 In `src/modules/search/` (`index.ts`). Pure, synchronous and browser-safe; no Node imports.
 - `normalize(text) → string`: lower-case, `đ`/`Đ` → `d`, NFD, combining marks stripped, whitespace trimmed and collapsed.
 - `searchKeys({ name, tags?, summary? }) → SearchKeys` (`{ name, tags[], summary }`, each normalized). MOD-Content stores these on every tool and project in the catalog data file.
-- `TIERS` (`exact`, `prefix`, `contains`, `tag`, `summary`, best first) and `matchTier(normalizedQuery, keys) → MatchTier | undefined`: an item takes its best tier. A tag matches when it starts with the query (read of RULE-05 "tag match"); name and summary "contains" are substring matches.
+- `TIERS` (`exact`, `prefix`, `contains`, `tag`, `summary`, best first) and `matchTier(normalizedQuery, keys) → MatchTier | undefined`: an item takes its best tier. A tag matches when it starts with the query (RULE-05); name and summary "contains" are substring matches.
 - `rank(query, items, { favorites }) → RankedItem[]` (`{ item, tier, favorite }`): the ranking core. Items are `Searchable` (`{ id, name, tags?, summary?, keys? }`); pre-computed `keys` are used as they are, otherwise they are computed. A blank query ranks nothing. Order: tier, then favorites first, then name (MOD-Content `byName`), then input order.
 - `compareRanked(a, b)`: that order, for callers that merge or cap ranked lists.
 - `filterCatalog(query, tools, context) → Tool[]`: `rank` over visible tools, mapped back to the tools (all categories, F-002.R4).

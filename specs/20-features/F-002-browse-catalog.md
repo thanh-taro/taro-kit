@@ -43,4 +43,6 @@ Visitors and the Owner can see everything that is available, grouped so it can b
 SCR-Catalog uses CMP-ToolCard for each tool and CMP-StateMessage for empty and no-results. Filtering must feel instant (NFR-02).
 
 ## Edge cases
+- The search data can't be loaded (for example, the network fails). The search field is disabled with the reason (COPY-catalog.searchUnavailable) and every tool stays listed by category; search never silently does nothing.
+- With no visible tools there is nothing to search, so only the empty state shows (R6).
 - A very long name or summary is truncated, with the full text still available to assistive technology.

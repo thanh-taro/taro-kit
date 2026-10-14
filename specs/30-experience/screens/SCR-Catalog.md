@@ -19,9 +19,10 @@ See every available tool, search them, and browse by category.
 | State | When | What the user sees |
 |---|---|---|
 | default | visible tools exist | grouped tools |
-| empty | no visible tools | CMP-StateMessage with COPY-catalog.empty |
+| empty | no visible tools | CMP-StateMessage with COPY-catalog.empty; no search field and no category navigation |
 | loading | n/a | local content |
 | error | search has no matches | CMP-StateMessage with COPY-catalog.noResults and a clear action (COPY-catalog.clear) |
+| search unavailable | the search data can't be loaded | the search field is disabled and described by COPY-catalog.searchUnavailable, announced politely; the grouped list stays |
 
 ## Entry & exit
 - Entered from: SCR-Category (all tools), shell navigation, the palette, the home invitation, SCR-NotFound.

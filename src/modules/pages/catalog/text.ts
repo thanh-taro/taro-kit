@@ -10,6 +10,7 @@ export const catalogSearchText = (): CatalogSearchText => ({
   placeholder: t('COPY-catalog.searchPlaceholder'),
   noResults: t('COPY-catalog.noResults', { query: '{query}' }),
   clear: t('COPY-catalog.clear'),
+  unavailable: t('COPY-catalog.searchUnavailable'),
   count: { one: t('COPY-category.toolCountOne'), other: t('COPY-category.toolCount', { count: '{count}' }) },
   card: toolCardText(),
   icons: { search: iconSvg('search', 16), noResults: iconSvg('search-x') },

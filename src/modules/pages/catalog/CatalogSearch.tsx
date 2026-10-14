@@ -31,6 +31,8 @@ export interface CatalogSearchText {
   noResults: string;
   /** COPY-catalog.clear */
   clear: string;
+  /** COPY-catalog.searchUnavailable: why the field is disabled when the catalog data can't load. */
+  unavailable: string;
   /** COPY-category.toolCountOne, and COPY-category.toolCount with a literal "{count}" left in. */
   count: { one: string; other: string };
   card: ToolCardText;
@@ -39,7 +41,7 @@ export interface CatalogSearchText {
 
 export interface CatalogSearchProps {
   text: CatalogSearchText;
-  /** The catalog data file's address; left out when there are no visible tools (nothing to search). */
+  /** The catalog data file's address; left out when there are no visible tools: then there is no search field. */
   dataUrl?: string;
   /** The category navigation (static, an Astro slot). */
   nav?: ComponentChildren;
@@ -61,17 +63,20 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
   const [data, setData] = useState<Data | null>(null);
   const [query, setQuery] = useState('');
   const [announcement, setAnnouncement] = useState('');
+  const [failed, setFailed] = useState(false);
+  const reasonId = `${uid}-unavailable`;
 
   useEffect(() => {
     // Text typed before hydration is kept (the field is plain HTML until then).
     setQuery(field.current?.value ?? '');
-    if (!dataUrl) return setData(NO_DATA);
+    if (!dataUrl) return;
     let live = true;
     fetch(dataUrl)
       .then((r) => (r.ok ? (r.json() as Promise<Data>) : Promise.reject(new Error(`${r.status}`))))
       .then((d) => live && setData(d))
-      // Without the data the static grouped list stays as it is; nothing is filtered.
-      .catch(() => undefined);
+      // Without the data the grouped list stays and the field is disabled with the reason, so search never
+      // silently does nothing (F-002 edge case, COPY-catalog.searchUnavailable).
+      .catch(() => live && setFailed(true));
     return () => {
       live = false;
     };
@@ -101,29 +106,48 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
   };
 
   return (
-    <div class="tk-catalog" data-testid="catalog" data-ready={data ? '' : undefined}>
+    <div
+      class="tk-catalog"
+      data-testid="catalog"
+      data-ready={data ? '' : undefined}
+      data-failed={failed ? '' : undefined}
+    >
       <div class="tk-catalog__head">
         <h1 id={titleId}>{text.title}</h1>
-        <div class="tk-catalog__search" data-active={searching ? '' : undefined}>
-          <span
-            class="tk-catalog__search-icon"
-            aria-hidden="true"
-            dangerouslySetInnerHTML={{ __html: text.icons.search }}
-          />
-          <label for={fieldId} class="tk-visually-hidden">
-            {text.placeholder}
-          </label>
-          <input
-            ref={field}
-            id={fieldId}
-            type="search"
-            placeholder={text.placeholder}
-            autocomplete="off"
-            spellcheck={false}
-            onInput={(e) => setQuery(e.currentTarget.value)}
-          />
-        </div>
+        {/* With no visible tools there is nothing to search: only the empty state shows (F-002.R6). */}
+        {dataUrl && (
+          <div
+            class="tk-catalog__search"
+            data-active={searching ? '' : undefined}
+            data-disabled={failed ? '' : undefined}
+          >
+            <span
+              class="tk-catalog__search-icon"
+              aria-hidden="true"
+              dangerouslySetInnerHTML={{ __html: text.icons.search }}
+            />
+            <label for={fieldId} class="tk-visually-hidden">
+              {text.placeholder}
+            </label>
+            <input
+              ref={field}
+              id={fieldId}
+              type="search"
+              placeholder={text.placeholder}
+              autocomplete="off"
+              spellcheck={false}
+              disabled={failed}
+              aria-describedby={failed ? reasonId : undefined}
+              onInput={(e) => setQuery(e.currentTarget.value)}
+            />
+          </div>
+        )}
       </div>
+      {dataUrl && (
+        <p id={reasonId} class="tk-catalog__unavailable" role="status">
+          {failed ? text.unavailable : null}
+        </p>
+      )}
       <p class="tk-visually-hidden" aria-live="polite" data-testid="catalog-count">
         {announcement}
       </p>

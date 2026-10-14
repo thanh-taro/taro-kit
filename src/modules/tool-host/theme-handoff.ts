@@ -2,8 +2,12 @@
 // - The frame's `src` carries `theme=light|dark`, the theme showing, never `system`.
 // - Whenever the theme showing differs from the one the tool last got (first the one in its `src`),
 //   it is posted as { type: 'taro:theme', value } to the tool's exact origin, never '*'.
-// - A { type: 'taro:ready' } message is answered the same way, but only when it comes from the tool's
-//   origin and from this frame's own window; everything else is ignored.
+// - A { type: 'taro:ready' } message is always answered with the theme showing (the tool may be a new document
+//   that missed earlier messages), but only when it comes from the tool's origin and from this frame's own
+//   window; everything else is ignored.
+// - Delivery is idempotent: `told` is the last value posted (or the `src` theme), and a change is posted only
+//   when it differs, so a ready answer followed by the same value never posts it twice. Callers connect before
+//   the frame can load (ToolFrame uses a layout effect), so no change reaches the tool ahead of its ready.
 // Only this one value is shared (D-039, the INV-05 exception). Linked tools and open-in-new-tab use the
 // catalog URL as is (F-003).
 // Its only import is import-free too, so the e2e stand-in loads both on their own (tests/fixtures/tool-host).

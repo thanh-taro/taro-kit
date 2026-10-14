@@ -109,6 +109,35 @@ describe('connectThemeHandoff (F-012.R5, F-012.R6)', () => {
     expect(tool.sent).toEqual([themeSent('light')]);
   });
 
+  test('hand-off: ready then a change: the ready answer, then only the new theme', () => {
+    const { tool, shown, receive } = setup('dark');
+    receive({ type: 'taro:ready' }, TOOL_ORIGIN, tool);
+    shown.value = 'light';
+    expect(tool.sent).toEqual([themeSent('dark'), themeSent('light')]);
+  });
+
+  test('hand-off: a change then ready: the change is posted once and ready is answered with the theme showing', () => {
+    const { tool, shown, receive } = setup('dark');
+    shown.value = 'light';
+    receive({ type: 'taro:ready' }, TOOL_ORIGIN, tool);
+    expect(tool.sent).toEqual([themeSent('light'), themeSent('light')]);
+    // Posted before ready, the change may have reached only the frame's blank page, so ready is always answered;
+    // nothing else follows while the theme stays the same.
+    shown.value = 'light';
+    expect(tool.sent).toHaveLength(2);
+  });
+
+  test('hand-off: ready, then the same value again: no duplicate', () => {
+    const { tool, shown, receive } = setup('light', 'dark');
+    // Connecting sends the change made since the src was built.
+    expect(tool.sent).toEqual([themeSent('light')]);
+    tool.sent = [];
+    receive({ type: 'taro:ready' }, TOOL_ORIGIN, tool);
+    shown.value = 'light';
+    shown.value = 'light';
+    expect(tool.sent).toEqual([themeSent('light')]);
+  });
+
   test('a theme change between building the src and connecting is sent at once', () => {
     const { tool } = setup('light', 'dark');
     expect(tool.sent).toEqual([themeSent('light')]);

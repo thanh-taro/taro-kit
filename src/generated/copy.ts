@@ -8,6 +8,7 @@ export const COPY = {
   "COPY-catalog.empty": "I'm still building my first tools. Check back soon.",
   "COPY-catalog.noResults": "I don't have anything matching \"{query}\" yet.",
   "COPY-catalog.searchPlaceholder": "Filter my tools",
+  "COPY-catalog.searchUnavailable": "I couldn't load my search just now. Every tool is still listed below; reload the page to try again.",
   "COPY-catalog.title": "My tools",
   "COPY-category.allTools": "All my tools",
   "COPY-category.navLabel": "Categories",

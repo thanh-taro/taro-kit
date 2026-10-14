@@ -138,6 +138,24 @@ const { view, icons, dataUrl } = Astro.props;
     justify-content: center;
     padding-block: var(--tk-space-10);
   }
+  :global(.tk-catalog__search[data-disabled]) {
+    border-color: var(--tk-color-line);
+    background: var(--tk-color-surface2);
+  }
+  /* Empty, it stays in the accessibility tree (a live region must exist before it is filled) but takes no
+     space and no flex gap. */
+  :global(.tk-catalog__unavailable:empty) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  :global(.tk-catalog__unavailable) {
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-md);
+    line-height: var(--tk-font-line-height-normal);
+  }
   :global(.tk-catalog__static[hidden]) {
     display: none;
   }
