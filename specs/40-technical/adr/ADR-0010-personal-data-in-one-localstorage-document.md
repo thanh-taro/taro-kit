@@ -1,7 +1,7 @@
 ---
 id: ADR-0010
 title: Personal data stored as one versioned localStorage document, with in-memory fallback
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

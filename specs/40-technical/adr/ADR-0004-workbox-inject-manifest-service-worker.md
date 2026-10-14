@@ -1,7 +1,7 @@
 ---
 id: ADR-0004
 title: Service worker built with Workbox injectManifest after the static build
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

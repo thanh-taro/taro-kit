@@ -1,7 +1,7 @@
 ---
 id: ADR-0002
 title: Astro static output with Preact islands, in TypeScript
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

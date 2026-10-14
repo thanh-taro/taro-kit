@@ -1,7 +1,7 @@
 ---
 id: ADR-0003
 title: Plain modern CSS with design tokens compiled to custom properties
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

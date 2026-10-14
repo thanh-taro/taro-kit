@@ -1,7 +1,7 @@
 ---
 id: ADR-0005
 title: Content as YAML files, validated at build by the domain JSON Schema, with generated types
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

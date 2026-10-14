@@ -1,7 +1,7 @@
 ---
 id: ADR-0006
 title: Testing with Vitest, Playwright on three engines, axe, and Lighthouse CI budgets
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

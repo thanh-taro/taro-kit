@@ -1,7 +1,7 @@
 ---
 id: ADR-0007
 title: Host on Cloudflare Workers static assets, build and publish from GitHub Actions
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

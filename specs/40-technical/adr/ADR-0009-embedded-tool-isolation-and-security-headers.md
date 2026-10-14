@@ -1,7 +1,7 @@
 ---
 id: ADR-0009
 title: Embedded tools in sandboxed iframes, with CSP and Permissions-Policy derived from the registry
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

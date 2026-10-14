@@ -1,7 +1,7 @@
 ---
 id: ADR-0008
 title: Dependency and asset licensing policy
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---

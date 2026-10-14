@@ -42,12 +42,12 @@
     },
     "architecture": {
       "title": "3 Architecture & spikes",
-      "status": "gate",
+      "status": "done",
       "step": "3 architecture: waiting on SP-1/SP-3 (live lab), then accept ADRs, scaffold, CI → G3",
       "gate": {
-        "status": "pending",
-        "at": null,
-        "note": null
+        "status": "passed",
+        "at": "2026-10-14T00:41:23+00:00",
+        "note": "Stack accepted (ADR-0001..0011); scaffold merged; all CI steps green locally; spikes closed"
       }
     },
     "build": {
@@ -1251,9 +1251,13 @@
     {
       "at": "2026-10-14T00:33:59+00:00",
       "event": "phase architecture -> gate"
+    },
+    {
+      "at": "2026-10-14T00:41:23+00:00",
+      "event": "gate architecture passed: Stack accepted (ADR-0001..0011); scaffold merged; all CI steps green locally; spikes closed"
     }
   ],
-  "updated": "2026-10-14T00:33:59+00:00",
+  "updated": "2026-10-14T00:41:23+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
