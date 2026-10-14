@@ -52,8 +52,8 @@
     },
     "build": {
       "title": "4 Implementation",
-      "status": "pending",
-      "step": null,
+      "status": "in_progress",
+      "step": "4 wave 1: F-001 + F-012/shell building",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1255,9 +1255,17 @@
     {
       "at": "2026-10-14T00:41:23+00:00",
       "event": "gate architecture passed: Stack accepted (ADR-0001..0011); scaffold merged; all CI steps green locally; spikes closed"
+    },
+    {
+      "at": "2026-10-14T01:36:38+00:00",
+      "event": "phase build -> in_progress"
+    },
+    {
+      "at": "2026-10-14T01:36:38+00:00",
+      "event": "build step: 4 wave 1: F-001 + F-012/shell building"
     }
   ],
-  "updated": "2026-10-14T00:41:23+00:00",
+  "updated": "2026-10-14T01:36:38+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
