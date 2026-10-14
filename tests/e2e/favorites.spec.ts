@@ -133,6 +133,21 @@ test.describe('F-005 favorites', () => {
     await expect(toggle).toHaveAccessibleDescription(FULL);
     expect(await stored(page)).toEqual(range(1, 24));
     expect(await homeNames(page)).toHaveLength(24);
+    // Pressing again while the message shows empties and refills the status, so it is announced again.
+    await message.evaluate((el) => {
+      const w = window as unknown as { statusTexts: string[] };
+      w.statusTexts = [];
+      new MutationObserver(() => w.statusTexts.push(el.textContent ?? '')).observe(el, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
+    });
+    await toggle.click();
+    await expect
+      .poll(() => page.evaluate(() => (window as unknown as { statusTexts: string[] }).statusTexts))
+      .toEqual(['', FULL]);
+    await expect(message).toHaveText(FULL);
     // Esc on the toggle dismisses the message.
     await toggle.focus();
     await page.keyboard.press('Escape');
@@ -153,6 +168,24 @@ test.describe('F-005 favorites', () => {
     await open(page);
     await expect(home(page).getByRole('link')).toHaveCount(3);
     expect(await homeNames(page)).toEqual([name('fx-01'), name('fx-02'), name('fx-03')]);
+  });
+
+  test('F005_AC5 a favorite stored for a really hidden tool never renders and does not count toward 24', async ({
+    page,
+  }) => {
+    // fx-hidden is hidden in the fixture content, so the build leaves it out of the visible ids (RULE-06).
+    await seed(page, [...range(1, 12), 'fx-hidden', ...range(13, 23)]);
+    await open(page);
+    await expect(home(page).getByRole('link')).toHaveCount(23);
+    await expect(page.getByText('Fixture hidden tool')).toHaveCount(0);
+    expect(await homeNames(page)).toEqual(range(1, 23).map(name));
+    // 23 visible favorites: a 24th visible one is accepted (the hidden one doesn't count).
+    const toggle = toggleIn(catalogCard(page, 'fx-24'));
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    await expect(home(page).getByRole('link')).toHaveCount(24);
+    await expect(page.getByText('Fixture hidden tool')).toHaveCount(0);
+    await expect(page.getByText(FULL)).toHaveCount(0);
   });
 
   test('F005_AC6 with 23 visible and 1 hidden favorite, pinning drops the hidden one from storage', async ({
@@ -186,6 +219,25 @@ test.describe('F-005 favorites', () => {
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
     await expect(home(page).getByRole('link', { name: name('fx-04'), exact: true })).toBeVisible();
     await expect(toggleIn(home(page))).toHaveAttribute('aria-pressed', 'true');
+    // One-time: the next page in the same browser session doesn't show it again.
+    await open(page);
+    await expect(page.getByText(NOTICE)).toHaveCount(0);
+  });
+
+  test('F005_AC7 with sessionStorage refused too, the notice shows once on each page', async ({ page }) => {
+    await page.addInitScript(() => {
+      for (const name of ['localStorage', 'sessionStorage'])
+        Object.defineProperty(window, name, {
+          configurable: true,
+          get() {
+            throw new DOMException('The operation is insecure.', 'SecurityError');
+          },
+        });
+    });
+    await open(page);
+    await expect(page.getByRole('status').filter({ hasText: NOTICE })).toHaveCount(1);
+    await toggleIn(catalogCard(page, 'fx-04')).click();
+    await expect(page.getByRole('status').filter({ hasText: NOTICE })).toHaveCount(1);
   });
 
   test('F-005.R5 no storage notice while storage works', async ({ page }) => {
