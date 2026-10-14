@@ -42,7 +42,7 @@
     },
     "architecture": {
       "title": "3 Architecture & spikes",
-      "status": "in_progress",
+      "status": "gate",
       "step": "3 architecture: waiting on SP-1/SP-3 (live lab), then accept ADRs, scaffold, CI → G3",
       "gate": {
         "status": "pending",
@@ -1247,9 +1247,13 @@
     {
       "at": "2026-10-14T00:32:02+00:00",
       "event": "decision D-039 answered: Keep F-012.R5/R6 + ADR-0011 after spec review; D-008 now: nothing shared except the current theme"
+    },
+    {
+      "at": "2026-10-14T00:33:59+00:00",
+      "event": "phase architecture -> gate"
     }
   ],
-  "updated": "2026-10-14T00:32:02+00:00",
+  "updated": "2026-10-14T00:33:59+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
