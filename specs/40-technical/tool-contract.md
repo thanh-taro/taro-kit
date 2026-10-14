@@ -20,7 +20,7 @@ How a separate tool project (for example the JSON Formatter) must behave to be l
 
 ## Theme hand-off (F-012.R5/R6, ADR-0011)
 - The portal opens the embedded tool with `?theme=light` or `?theme=dark`. Read it before first paint.
-- After loading, the tool may post `{ type: 'taro:ready' }` to `https://tarokit.app`. The portal answers with `{ type: 'taro:theme', theme }` and sends it again whenever the theme changes. Accept messages only when `event.origin === 'https://tarokit.app'`.
+- After loading, the tool may post `{ type: 'taro:ready' }` to `https://tarokit.app`. The portal answers with `{ type: 'taro:theme', value }` (`value` is `'light'` or `'dark'`) and sends it again whenever the theme changes. Accept messages only when `event.origin === 'https://tarokit.app'`.
 - When the tool is opened directly (linked, or through open-in-new-tab), no theme is passed; use your own default or the device setting.
 - If the tool has a service worker, ignore the `theme` query parameter when matching cached pages (`ignoreSearch`).
 - Nothing else is exchanged with the portal (D-039).
