@@ -31,4 +31,10 @@ describe('CMP-AppShell', () => {
     expect(html).toMatch(/<a href="\/settings\/" class="tk-iconbtn settings"[^>]*aria-current="page"/);
     expect(html).not.toMatch(/<a href="\/"[^>]*aria-current="page"/);
   });
+
+  test('SCR-Category on a category page, Tools is marked as the current section, not as the page', async () => {
+    const html = await render(AppShell, { path: '/tools/media/' });
+    expect(html).toMatch(/<a href="\/tools\/"[^>]*aria-current="true"/);
+    expect(html).not.toMatch(/aria-current="page"/);
+  });
 });
