@@ -5,8 +5,9 @@
 // (external, linked) and fx-hidden (hidden).
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { FX, PROD } from './ports.ts';
 
-const URL_ = 'http://localhost:4322/__fixtures__/favorites/';
+const URL_ = `${FX}/__fixtures__/favorites/`;
 const STORAGE_KEY = 'tarokit.personal';
 const FULL = 'You can keep up to 24 favorites. Unpin one to make room.';
 const NOTICE =
@@ -326,6 +327,6 @@ test.describe('CMP-ToolCard and CMP-FavoriteToggle', () => {
 });
 
 test('the production build (port 4321) has no tests-only fixture page', async ({ request }) => {
-  const res = await request.get('http://localhost:4321/__fixtures__/favorites/');
+  const res = await request.get(`${PROD}/__fixtures__/favorites/`);
   expect(res.status()).toBe(404);
 });

@@ -4,9 +4,7 @@
 // Productivity hold the F-005 tools. The production build (port 4321) is checked for its sample categories.
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-
-const FX = 'http://localhost:4322';
-const PROD = 'http://localhost:4321';
+import { FX, PROD } from './ports.ts';
 
 const hero = (page: Page) => page.getByTestId('category-hero');
 const categoryNav = (page: Page) => page.getByRole('navigation', { name: 'Categories' });

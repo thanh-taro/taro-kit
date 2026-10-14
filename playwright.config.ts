@@ -1,10 +1,9 @@
 // End-to-end (ADR-0006): against `astro preview` serving the real build, on three engines.
 // PRs run Chromium only (`--project=chromium`); the full matrix gates publishing.
 import { defineConfig, devices } from '@playwright/test';
+import { FIXTURES_PORT, PORT } from './tests/e2e/ports.ts';
 
-const PORT = 4321;
-/** Tests-only pages (tests/fixtures/pages), built into dist-fixtures/ and served here; see astro.config.ts. */
-const FIXTURES_PORT = 4322;
+// Tests-only pages (tests/fixtures/pages) are built into dist-fixtures/ and served on FIXTURES_PORT; see astro.config.ts.
 const fixturesEnv = { TAROKIT_FIXTURES: '1', TAROKIT_CONTENT_DIR: 'tests/fixtures/content/F005-favorites' };
 
 export default defineConfig({
