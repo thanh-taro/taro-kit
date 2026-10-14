@@ -24,6 +24,15 @@ import {
   type PersonalData,
   type ThemePreference,
 } from './document.ts';
+import { localDate } from './dates.ts';
+import { daysUsedInLast14, recordDayUsed } from './days-used.ts';
+import {
+  clearRecentVisits,
+  recordRecentVisit,
+  visibleRecents,
+  type RecentVisit,
+  type VisibleRecentsOptions,
+} from './recents.ts';
 
 const PROBE_KEY = 'tarokit.probe';
 
@@ -33,7 +42,12 @@ export interface StoreEnvironment {
   storage: () => Storage | null;
   /** Where `storage` and `focus` events arrive (the window); omitted means no cross-window sync. */
   events?: Pick<Window, 'addEventListener' | 'removeEventListener'>;
+  /** The clock for visit times and the local date (RULE-13); default `new Date()`. Tests fix it. */
+  now?: () => Date;
 }
+
+/** `clearRecents` outcome: saved on the device, or for this session only. */
+export type ClearResult = 'saved' | 'unsaved';
 
 export interface PersonalDataStore {
   /** The whole document, always valid (normalized on read). */
@@ -57,8 +71,35 @@ export interface PersonalDataStore {
    */
   pin(toolId: string, visibleIds: VisibleIds): PinResult;
   unpin(toolId: string): void;
-  /** Write-through mutation of the whole document (ADR-0010). The recipe must return a new document. */
-  update(recipe: (current: PersonalData) => PersonalData): void;
+  /** Every stored recent visit, newest first, including unknown or hidden tools (RULE-01, INV-04). */
+  readonly recents: ReadonlySignal<RecentVisit[]>;
+  /**
+   * The recents that may be shown (RULE-01, INV-04): visible tools only, favorites left out unless
+   * `excludeFavorites` is false, at most `max` (default 8). Reactive on visits, clears, pins and unpins.
+   */
+  visibleRecents(visibleIds: VisibleIds, options?: VisibleRecentsOptions): ReadonlySignal<RecentVisit[]>;
+  /**
+   * Today's local date (YYYY-MM-DD) from the store's clock. It moves on `recordDay()` and `refresh()`, so a page
+   * left open past midnight catches up when it is shown or focused again (MOD-Shell calls `recordDay`).
+   */
+  readonly today: ReadonlySignal<string>;
+  /** RULE-13: the recorded dates within the last 14 days of `today`, today included. */
+  readonly daysUsedLast14: ReadonlySignal<number>;
+  /** F-006.R1/R2: the tool moves to the top of recents with the current time (callers decide when). */
+  recordVisit(toolId: string): void;
+  /** F-006.R6: records today's local date once (RULE-13). Writes nothing when it is already recorded. */
+  recordDay(): void;
+  /**
+   * F-006.R4: empties recents (the caller confirms first). `unsaved` when the change could not be kept on the
+   * device (storage unavailable or failing, or a newer schema version on disk, which is never overwritten):
+   * recents are then cleared for this session only, and the caller must say so.
+   */
+  clearRecents(): ClearResult;
+  /**
+   * Write-through mutation of the whole document (ADR-0010). The recipe must return a new document.
+   * Returns true when the document was saved on the device, false when it lasts for this session only.
+   */
+  update(recipe: (current: PersonalData) => PersonalData): boolean;
   setTheme(theme: ThemePreference): void;
   /** A deep copy of the current document (for export, F-013). */
   snapshot(): PersonalData;
@@ -86,6 +127,7 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
   const available = signal(storage !== null);
 
   let newerOnDisk = false;
+  const now = env.now ?? (() => new Date());
 
   const read = (): PersonalData => {
     if (!storage) return data.peek();
@@ -104,20 +146,28 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
     return doc;
   };
 
-  const write = (doc: PersonalData): void => {
-    if (!storage || newerOnDisk) return;
+  /** True when the document is now on the device. */
+  const write = (doc: PersonalData): boolean => {
+    if (!storage || newerOnDisk) return false;
     try {
       storage.setItem(STORAGE_KEY, JSON.stringify(doc));
+      return true;
     } catch {
       // Storage went away or is full: keep going in memory for the rest of the session.
       storage = null;
       available.value = false;
+      return false;
     }
   };
 
   const data = signal<PersonalData>(parseDocument(null));
   data.value = read();
   const favorites = computed(() => data.value.favorites);
+  const recents = computed(() => data.value.recents);
+  const today = signal(localDate(now()));
+  const tick = () => {
+    today.value = localDate(now());
+  };
 
   const store: PersonalDataStore = {
     data,
@@ -137,18 +187,39 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
     unpin(toolId) {
       if (isFavorite(data.peek(), toolId)) store.update((doc) => unpinFavorite(doc, toolId));
     },
+    recents,
+    visibleRecents: (visibleIds, options) => {
+      const visible = new Set(visibleIds);
+      return computed(() => visibleRecents(data.value, visible, options));
+    },
+    today,
+    daysUsedLast14: computed(() => daysUsedInLast14(data.value.daysUsed, today.value)),
+    recordVisit(toolId) {
+      store.update((doc) => recordRecentVisit(doc, toolId, now().toISOString()));
+    },
+    recordDay() {
+      tick();
+      const date = today.peek();
+      if (!data.peek().daysUsed.includes(date)) store.update((doc) => recordDayUsed(doc, date));
+    },
+    clearRecents() {
+      return store.update(clearRecentVisits) ? 'saved' : 'unsaved';
+    },
     update(recipe) {
       const next = normalizeDocument(recipe(structuredClone(data.peek())));
+      let saved = false;
       batch(() => {
         data.value = next;
-        write(next);
+        saved = write(next);
       });
+      return saved;
     },
     setTheme(theme) {
       store.update((doc) => ({ ...doc, preferences: { ...doc.preferences, theme } }));
     },
     snapshot: () => structuredClone(data.peek()),
     refresh() {
+      tick();
       const next = read();
       if (JSON.stringify(next) !== JSON.stringify(data.peek())) data.value = next;
     },

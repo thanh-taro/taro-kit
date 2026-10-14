@@ -1,9 +1,12 @@
 ---
 // SCR-Settings (MOD-Pages). Regions: 1 shell header, 1b page heading, 2 Appearance with the theme
-// choice (F-012.R2), 4 Privacy statement. Region 3, "Your data" (export, import, days used, clear
-// recents, erase), arrives with F-013 and F-006 and is left out until then.
+// choice (F-012.R2), 3 Your data, 4 Privacy statement. Region 3 holds days used (F-006.R6) and clear recents
+// with its confirmation (F-006.R4); export, import and erase arrive with F-013 (design: SettingsDesktop,
+// SettingsMobile, SettingsDialogs*).
 import { t } from '../../modules/copy/index.ts';
 import Icon from '../../modules/design-system/Icon.astro';
+import ClearRecents from '../../modules/pages/settings/ClearRecents.tsx';
+import DaysUsed from '../../modules/pages/settings/DaysUsed.tsx';
 import ThemeChoice from '../../modules/pages/settings/ThemeChoice.tsx';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
 
@@ -25,6 +28,23 @@ const choice = {
     <section class="card appearance" aria-labelledby="s-appearance">
       <h2 id="s-appearance">{t('COPY-settings.appearance')}</h2>
       <ThemeChoice client:load {...choice} />
+    </section>
+
+    <section class="card data" aria-labelledby="s-data">
+      <h2 id="s-data">{t('COPY-settings.yourData')}</h2>
+      {/* The count is filled in on the device (RULE-13); `{count}` stays a placeholder at build. */}
+      <DaysUsed client:load template={t('COPY-settings.daysUsed', { count: '{count}' })} />
+      <hr />
+      <div class="actions">
+        <ClearRecents
+          client:load
+          label={t('COPY-settings.clearRecents')}
+          question={t('COPY-settings.clearRecentsConfirm')}
+          confirmLabel={t('COPY-common.confirm')}
+          cancelLabel={t('COPY-common.cancel')}
+          unsaved={t('COPY-settings.clearRecentsUnsaved')}
+        />
+      </div>
     </section>
 
     <section class="privacy" aria-labelledby="s-privacy">
@@ -116,6 +136,129 @@ const choice = {
     outline-offset: var(--tk-border-width-focus);
   }
 
+  /* Your data (design: SettingsDesktop / SettingsMobile): days used, then the actions. */
+  .data {
+    gap: var(--tk-space-4);
+  }
+  .data hr {
+    inline-size: 100%;
+    margin: 0;
+    border: 0;
+    border-block-start: var(--tk-border-width-hairline) solid var(--tk-color-line);
+  }
+  .data :global(.days) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-2);
+  }
+  .data :global(.days-line) {
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-semibold);
+  }
+  .data :global(.days-strip) {
+    display: flex;
+    gap: var(--tk-space-1);
+  }
+  .data :global(.days-strip span) {
+    inline-size: var(--tk-space-6);
+    block-size: var(--tk-space-6);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-sm);
+    background: var(--tk-color-surface2);
+  }
+  .data :global(.days-strip span[data-used]) {
+    background: var(--tk-color-accent);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tk-space-3);
+  }
+  .data :global(.action) {
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-4);
+    background: transparent;
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-md);
+    font: inherit;
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-bold);
+    cursor: pointer;
+  }
+  .data :global(.action:disabled) {
+    cursor: default;
+  }
+  .data :global(.clear-recents) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--tk-space-3);
+  }
+  /* F-006.R4: a clear that could not be saved (design: the alert style of SettingsDialogs' import error). */
+  .data :global(.action-error) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--tk-space-3);
+    padding: var(--tk-space-3) var(--tk-space-4);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-danger);
+    border-radius: var(--tk-radius-md);
+    font-size: var(--tk-font-size-base);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .data :global(.action-error .mark) {
+    color: var(--tk-color-danger);
+    font-family: var(--tk-font-family-mono);
+    font-weight: var(--tk-font-weight-bold);
+  }
+
+  /* ConfirmDialog (design: SettingsDialogsDesktop, a centered card over the scrim). */
+  .settings :global(.tk-confirm) {
+    inline-size: min(calc(var(--tk-space-16) * 7.5), calc(100% - 2 * var(--tk-size-gutter)));
+    padding: var(--tk-space-6);
+    background: var(--tk-color-surface);
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-xl);
+    box-shadow: var(--tk-shadow-glow);
+  }
+  .settings :global(.tk-confirm[open]) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-5);
+  }
+  .settings :global(.tk-confirm::backdrop) {
+    background: var(--tk-color-scrim);
+  }
+  .settings :global(.tk-confirm__title) {
+    font-size: var(--tk-font-size-xl);
+    line-height: var(--tk-font-line-height-tight);
+  }
+  .settings :global(.tk-confirm__actions) {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--tk-space-3);
+  }
+  .settings :global(.tk-confirm__actions button) {
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-4);
+    border-radius: var(--tk-radius-md);
+    font: inherit;
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-bold);
+    cursor: pointer;
+  }
+  .settings :global(.tk-confirm__cancel) {
+    background: transparent;
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+  }
+  .settings :global(.tk-confirm__confirm) {
+    background: var(--tk-color-accent);
+    color: var(--tk-color-on-accent);
+    border: 0;
+  }
+
   .privacy {
     display: flex;
     align-items: flex-start;
@@ -158,6 +301,34 @@ const choice = {
     }
     .card h2 {
       font-size: var(--tk-font-size-base);
+    }
+    /* Your data: full-width actions and a strip that fills the row (SettingsMobile). */
+    .actions,
+    .data :global(.clear-recents) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .data :global(.days-strip) {
+      display: grid;
+      grid-template-columns: repeat(14, minmax(0, 1fr));
+    }
+    .data :global(.days-strip span) {
+      inline-size: auto;
+      block-size: auto;
+      aspect-ratio: 1;
+    }
+    /* The confirmation becomes a bottom sheet, Confirm above Cancel (SettingsDialogsMobile). */
+    .settings :global(.tk-confirm) {
+      inline-size: 100%;
+      max-inline-size: none;
+      margin: auto 0 0;
+      padding: var(--tk-space-6) var(--tk-space-5) var(--tk-space-8);
+      border-width: var(--tk-border-width-hairline) 0 0;
+      border-radius: var(--tk-radius-xl) var(--tk-radius-xl) 0 0;
+    }
+    .settings :global(.tk-confirm__actions) {
+      flex-direction: column-reverse;
+      align-items: stretch;
     }
     .appearance :global(.options) {
       display: grid;

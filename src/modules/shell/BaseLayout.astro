@@ -58,7 +58,13 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     <script>
       // MOD-Theme after first paint: follow the device setting live and apply every change (F-012.R1, R2).
       import { theme } from '../theme/index.ts';
+      import { connectVisitRecording } from '../tool-host/visits.ts';
+      import { connectDayRecording } from './day-recording.ts';
       theme();
+      // F-006.R6 (RULE-13): every page view, and every return to the page, records today's local date once.
+      connectDayRecording();
+      // F-006.R1: following a link to a linked tool's own address records the visit (cards, the linked note).
+      connectVisitRecording();
     </script>
   </body>
 </html>

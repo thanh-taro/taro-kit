@@ -1,0 +1,62 @@
+---
+// Tests-only page (built with TAROKIT_FIXTURES=1 into dist-fixtures/, never into dist/; astro.config.ts).
+// F-006 shows recents on home, which F-007 builds later, so this page composes the shared pieces the way home
+// and the catalog will:
+//   1. home's recents region: the real MOD-Pages RecentTools island (via F006RecentsHost, for `?hide`);
+//   2. a catalog stand-in: regular static ToolCards for every visible tool, whose linked cards record visits.
+// Content: tests/fixtures/content/F005-favorites (fx-01 … fx-26, ft-*, fx-linked; fx-hidden is hidden).
+import { getRegistry } from '../../../src/modules/content/index.ts';
+import { t } from '../../../src/modules/copy/index.ts';
+import ToolCard from '../../../src/modules/design-system/ToolCard.astro';
+import { toolCardText } from '../../../src/modules/design-system/text.ts';
+import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
+import F006RecentsHost from './F006RecentsHost.tsx';
+
+const registry = getRegistry();
+const tools = registry.visibleTools.map(({ id, name, summary, openMode, url }) => ({
+  id,
+  name,
+  summary,
+  openMode,
+  url,
+}));
+---
+
+<BaseLayout title="F-006 fixture" description="Tests-only page." path="/__fixtures__/recents/">
+  <div class="fx">
+    <h1>{t('COPY-nav.home')}</h1>
+    <F006RecentsHost client:load tools={tools} text={toolCardText()} heading={t('COPY-home.recents')} />
+
+    <section aria-labelledby="fx-catalog" data-testid="catalog">
+      <h2 id="fx-catalog">{t('COPY-nav.tools')}</h2>
+      <ul class="fx-grid">
+        {registry.visibleTools.map((tool) => (
+          <li>
+            <ToolCard tool={tool} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .fx {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-8);
+  }
+  .fx section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+  }
+  .fx-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--tk-space-16) * 4), 1fr));
+    gap: var(--tk-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

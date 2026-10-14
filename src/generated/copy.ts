@@ -86,6 +86,7 @@ export const COPY = {
   "COPY-settings.backupScope": "Your backup holds your favorites, recents, theme and days used. Each tool keeps its own data.",
   "COPY-settings.clearRecents": "Clear recent tools",
   "COPY-settings.clearRecentsConfirm": "Clear your recent tools?",
+  "COPY-settings.clearRecentsUnsaved": "I cleared your recent tools for now, but couldn't save that on this device, so they may come back next time.",
   "COPY-settings.daysUsed": "You've used TaroKit on {count} of the last 14 days",
   "COPY-settings.erase": "Erase your data",
   "COPY-settings.eraseConfirm": "Erase all your TaroKit data on this device? This can't be undone.",

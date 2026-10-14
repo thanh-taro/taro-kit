@@ -39,6 +39,11 @@ const fixturePages: AstroIntegration = {
         pattern: '/__fixtures__/favorites',
         entrypoint: new URL('./tests/fixtures/pages/F005-favorites.astro', import.meta.url),
       });
+      // F-006 recents: home's recents region and catalog cards (F-007 and F-002 build the real pages).
+      injectRoute({
+        pattern: '/__fixtures__/recents',
+        entrypoint: new URL('./tests/fixtures/pages/F006-recents.astro', import.meta.url),
+      });
       // F-010 SCR-Now states without a Now note (tests/fixtures/content/F010_*).
       for (const state of ['now-no-note', 'now-empty'])
         injectRoute({

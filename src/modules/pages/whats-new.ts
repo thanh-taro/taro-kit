@@ -3,24 +3,16 @@
 // Only types come from MOD-Content, which never runs in the browser.
 // Implements: F-001.R1 (a new tool appears in what's new), F-001.R4 (hidden tools never do).
 import type { Dated, DatedItem } from '../content/derive.ts';
+import { daysBetween } from '../personal-data/dates.ts';
+
+// The local-date helpers live in MOD-PersonalData (platform-mapping), shared with days used (RULE-13).
+export { daysBetween, localDate } from '../personal-data/dates.ts';
 
 /** RULE-04 window and cap. */
 export const WHATS_NEW_DAYS = 30;
 export const WHATS_NEW_MAX = 6;
 /** One day of tolerance for a date just ahead of the viewer's, from a timezone gap with the build. */
 const FUTURE_TOLERANCE_DAYS = 1;
-
-/** The local calendar date of `d` as YYYY-MM-DD. Never from toISOString, which is UTC. */
-export function localDate(d: Date = new Date()): string {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-
-/** Whole days from `from` to `to`, both YYYY-MM-DD calendar dates. */
-export function daysBetween(from: string, to: string): number {
-  const utc = (s: string) => Date.UTC(Number(s.slice(0, 4)), Number(s.slice(5, 7)) - 1, Number(s.slice(8, 10)));
-  return Math.round((utc(to) - utc(from)) / 86_400_000);
-}
 
 /**
  * RULE-04 what's new on the viewer's local date `today` (YYYY-MM-DD), never the build date.

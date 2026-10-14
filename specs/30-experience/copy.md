@@ -107,6 +107,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-settings.importInvalid** | I couldn't import that file because {reason}. Nothing changed. | import error |
 | **COPY-settings.importConfirm** | Replace your favorites, recents, theme and days used with the ones in this file? | confirm import |
 | **COPY-settings.clearRecentsConfirm** | Clear your recent tools? | confirm |
+| **COPY-settings.clearRecentsUnsaved** | I cleared your recent tools for now, but couldn't save that on this device, so they may come back next time. | clear-recents error (F-006.R4) |
 | **COPY-settings.eraseConfirm** | Erase all your TaroKit data on this device? This can't be undone. | confirm |
 | **COPY-settings.privacy** | No accounts, no tracking. Everything you do here stays in your browser, and I never see it. | privacy statement |
 | **COPY-notFound.title** | I can't find that page | not-found heading |
