@@ -30,3 +30,4 @@ status: draft
 - F-016 shipped (wave 2): category pages, shared not-found page (SCR-NotFound) and CMP-StateMessage page variant. F-016.AC4 "catalog opens" is completed with F-002.
 - F-003 build (no behavior change): COPY-tool.frameLabel ("{tool} tool", the accessible name SCR-ToolView and ADR-0009 already require) added to copy.md. MOD-DesignSystem documents the CMP-StateMessage `page` variant (`page`, `detail`, `action.newTab`) and `ToolHeader.tsx`. F-003 set to building.
 - F-003 review round 1 (no behavior change): architecture.md (Runtime boundaries) and the tool author contract note that tools share the portal's site, so the portal stays cookie-free and tools scope cookies to their own host. The INV-03 build guard always refuses the production portal origin.
+- F-003 and F-012 shipped (wave 2): tool view with isolation, states and _headers; theme hand-off verified through the real tool frame. Wave 2 complete.

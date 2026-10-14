@@ -1,7 +1,7 @@
 ---
 id: F-003
 title: Open a tool
-status: building
+status: shipped
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
