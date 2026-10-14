@@ -11,7 +11,7 @@ status: draft
 | **NFR-02** | Instant search. | On the reference device, the palette opens within 100 ms of the shortcut, and results update within 50 ms per keystroke with 500 catalog entries. |
 | **NFR-03** | Accessible. | WCAG 2.2 AA in both themes; automated audit with zero serious issues; manual screen-reader pass on the M-1 flows (FLOW-01, FLOW-02, FLOW-03). |
 | **NFR-04** | Keyboard-complete. | Every feature works with the keyboard alone; focus is always visible; no keyboard traps outside the embedded tool area. |
-| **NFR-05** | Private. | The portal makes zero requests to third parties of its own (all fonts, icons and images are bundled); no cookies; no analytics or fingerprinting; personal data never leaves the device (INV-05). |
+| **NFR-05** | Private. | The portal makes zero requests to third parties of its own (all fonts, icons and images are bundled); no cookies; no analytics or fingerprinting; personal data never leaves the device, except the theme showing passed to an embedded tool (INV-05). |
 | **NFR-06** | Works offline. | After one online visit, every portal page and all catalog content load with no network. |
 | **NFR-07** | Responsive. | Layouts work from 320 px to 2560 px wide with no horizontal scrolling; text zooms to 200 % without loss. |
 | **NFR-08** | Isolated tools. | Embedded tools run isolated from the portal with only their declared permissions (RULE-10); the portal restricts which sites may be embedded to catalog addresses. |

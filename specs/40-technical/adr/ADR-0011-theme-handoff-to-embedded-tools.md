@@ -1,7 +1,7 @@
 ---
 id: ADR-0011
 title: Theme handoff to embedded tools — address parameter plus origin-checked messages
-status: proposed
+status: accepted
 date: 2026-10-13
 supersedes: []
 ---
@@ -32,8 +32,11 @@ their pages directly, and nothing beyond the theme may be shared (PRN-01).
 
 ## Consequences
 - The theme value becomes visible in the tool's address (and its request logs on the host);
-  it is not personal data.
+  it is the one exception to INV-05 (D-039).
 - Changing the `src` query does not change the frame's origin, so frame-src (ADR-0009) is unaffected.
 - Offline-capable tools must ignore the query string when matching their cached page (e.g. `ignoreSearch`), or an offline open with `?theme=` misses the cache (F-003.R6).
 - E2E: a stub tool on a second origin asserts the parameter, the message on toggle, and that a
   ready message from another origin gets no answer (F-012.AC5–AC7).
+
+## Acceptance (2026-10-14, D-039)
+Accepted after spec review. D-039 amends D-008: nothing is shared at runtime except the theme showing. The postMessage target is the tool's exact origin; the portal checks `event.origin` and `event.source` (the tool's own frame). When a frame is reloaded after coming back online (F-003.R6), its `src` carries the theme showing at that moment. Tools must ignore the `theme` query parameter when matching cached pages (`ignoreSearch`); this is listed in the tool-author guidance.

@@ -11,6 +11,7 @@ export default defineConfig(
       '.astro/',
       'node_modules/',
       'spikes/',
+      '.claude/',
       '.venv/',
       'src/generated/',
       'playwright-report/',
