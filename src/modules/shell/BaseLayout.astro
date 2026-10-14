@@ -3,9 +3,13 @@
 // Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
 // the single font preload (ADR-0003). Body: skip link first, banner, main.
 // Slots: default (page content), "offline" and "update" (CMP-AppShell status, F-011).
+// Palette (MOD-Palette, F-004.R1): the pre-rendered <dialog> with its island after the frame, and the inline
+// bootstrap last in <body>, after every search control it arms; its hash is registered here, before <head>.
 import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { t } from '../copy/index.ts';
+import { paletteBootstrap } from '../palette/logic.ts';
+import PaletteDialog from '../palette/PaletteDialog.astro';
 import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts';
 import { themeInlineScript } from '../theme/inline.ts';
 import AppShell from './AppShell.astro';
@@ -27,6 +31,7 @@ const { title, description, path, embeddedToolUrl, variant = 'full', skipTo = '#
 // The CSP meta renders with <head>, so inline-script hashes and the page's frame-src go in here (SP-6).
 if (!Astro.csp) throw new Error('security.csp must be enabled (ADR-0009)');
 Astro.csp.insertScriptHash(inlineScriptHash(themeInlineScript));
+Astro.csp.insertScriptHash(inlineScriptHash(paletteBootstrap));
 Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
 ---
 
@@ -55,6 +60,9 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
         <slot />
       </main>
     </div>
+    <PaletteDialog />
+    {/* set:html on a build-time constant only (paletteBootstrap, hashed for the CSP). */}
+    <script is:inline set:html={paletteBootstrap} />
     <script>
       // MOD-Theme after first paint: follow the device setting live and apply every change (F-012.R1, R2).
       import { theme } from '../theme/index.ts';

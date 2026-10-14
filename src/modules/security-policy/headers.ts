@@ -1,6 +1,7 @@
 // MOD-SecurityPolicy: the response headers a meta CSP can't carry (ADR-0009), written to `_headers` (ADR-0007).
 // - Permissions-Policy: each policy-controlled feature is delegated only to the visible embedded tools that
-//   declare it, always with `self` first (SP-3: without it Chromium delegates nothing), and `()` otherwise.
+//   declare it, always with `self` first (SP-3: without it Chromium delegates nothing), and `()` otherwise, except
+//   the portal's own features (PORTAL_FEATURES: clipboard-write for F-004.R5), which keep `(self)`.
 // - frame-ancestors 'none', object-src and base-uri as a header policy; Referrer-Policy, nosniff, COOP, and
 //   Cache-Control: no-transform (the privacy guard from SP-3).
 // Cache rules belong with the offline worker and publishing (F-011, ADR-0007) and are added there.
@@ -16,7 +17,16 @@ export interface PolicyTool {
   hidden?: boolean;
 }
 
-/** `feature=(self "https://tool…")` per feature some visible embedded tool declares, else `feature=()`. */
+/**
+ * Features the portal page itself uses, so `self` keeps them even when no tool declares them: clipboard-write for
+ * the palette's copy-address action (F-004.R5). Frames still get a feature only through their own `allow`.
+ */
+export const PORTAL_FEATURES: ReadonlySet<string> = new Set(['clipboard-write']);
+
+/**
+ * `feature=(self "https://tool…")` per feature some visible embedded tool declares; otherwise `feature=(self)` for
+ * the portal's own features (PORTAL_FEATURES) and `feature=()` for the rest.
+ */
 export function permissionsPolicy(tools: readonly PolicyTool[]): string {
   const embedded = tools.filter((t) => t.openMode === 'embedded' && !t.hidden);
   return POLICY_FEATURES.map((feature) => {
@@ -27,7 +37,8 @@ export function permissionsPolicy(tools: readonly PolicyTool[]): string {
           .map((t) => secureOrigin(t.url, 'Permissions-Policy')),
       ),
     ].sort();
-    return origins.length ? `${feature}=(self ${origins.map((o) => `"${o}"`).join(' ')})` : `${feature}=()`;
+    if (origins.length) return `${feature}=(self ${origins.map((o) => `"${o}"`).join(' ')})`;
+    return PORTAL_FEATURES.has(feature) ? `${feature}=(self)` : `${feature}=()`;
   }).join(', ');
 }
 

@@ -1,0 +1,273 @@
+/* MOD-Palette: CMP-CommandPalette (the <dialog> and the Palette island's markup; unscoped, islands render outside
+   Astro's scoping). Design: design/canvas/CMP-CommandPalette, PaletteDesktop (centred dialog over a scrim, key hints)
+   and PaletteMobile (touch sheet: full screen, field on top with Cancel, no key hints). Every value is a token. */
+@layer components {
+  .tk-palette-dialog {
+    inline-size: min(var(--tk-size-palette-width), 100% - 2 * var(--tk-space-4));
+    max-inline-size: none;
+    max-block-size: calc(100dvh - 2 * min(15vh, var(--tk-space-16) * 2));
+    margin: min(15vh, calc(var(--tk-space-16) * 2)) auto auto;
+    padding: 0;
+    overflow: hidden;
+    background: var(--tk-color-surface);
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-xl);
+    box-shadow: var(--tk-shadow-glow);
+  }
+  .tk-palette-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .tk-palette-dialog::backdrop {
+    background: var(--tk-color-scrim);
+  }
+  /* The island's root (inside astro-island) fills the dialog, so a click on the dialog itself is a click outside. */
+  .tk-palette-dialog > astro-island {
+    display: contents;
+  }
+  .tk-palette {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-block-size: 0;
+  }
+  .tk-palette kbd {
+    padding: 0 var(--tk-space-1);
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-block-end-width: var(--tk-border-width-focus);
+    border-radius: var(--tk-radius-sm);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-medium);
+  }
+
+  .tk-palette__bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--tk-space-3);
+    min-block-size: calc(var(--tk-space-12) + var(--tk-space-3));
+    padding-inline: var(--tk-space-4);
+    border-block-end: var(--tk-border-width-hairline) solid var(--tk-color-line);
+  }
+  .tk-palette__search-icon {
+    color: var(--tk-color-muted);
+  }
+  .tk-palette__field {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    min-block-size: var(--tk-size-touch-target);
+    padding: 0;
+    background: transparent;
+    border: 0;
+    outline: none;
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-lg);
+    font-weight: var(--tk-font-weight-medium);
+  }
+  .tk-palette__field::placeholder {
+    color: var(--tk-color-muted);
+    opacity: 1;
+  }
+  .tk-palette .tk-palette__esc {
+    color: var(--tk-color-muted);
+  }
+  .tk-palette__cancel {
+    display: none;
+  }
+
+  .tk-palette__unavailable {
+    margin: var(--tk-space-3) var(--tk-space-4) 0;
+    padding: var(--tk-space-3) var(--tk-space-4);
+    background: var(--tk-color-tint2);
+    color: var(--tk-color-accent2-fg);
+    border-radius: var(--tk-radius-lg);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-semibold);
+  }
+
+  .tk-palette__list {
+    flex: 1 1 auto;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--tk-space-2) var(--tk-space-2) var(--tk-space-2);
+  }
+  .tk-palette__group {
+    display: flex;
+    flex-direction: column;
+    padding-block: var(--tk-space-1);
+  }
+  .tk-palette__heading {
+    padding: var(--tk-space-2);
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tk-palette__option {
+    display: flex;
+    align-items: center;
+    gap: var(--tk-space-3);
+    min-block-size: var(--tk-space-12);
+    padding: var(--tk-space-1) var(--tk-space-3);
+    border-radius: var(--tk-radius-md);
+    cursor: pointer;
+  }
+  .tk-palette__option[aria-selected='true'] {
+    background: var(--tk-color-selection);
+    box-shadow: inset 0 0 0 var(--tk-border-width-hairline) var(--tk-color-selection-line);
+  }
+  .tk-palette__glyph {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: calc(var(--tk-space-6) + var(--tk-space-1));
+    block-size: calc(var(--tk-space-6) + var(--tk-space-1));
+    border-radius: var(--tk-radius-sm);
+    background: var(--tk-color-tint);
+    color: var(--tk-color-accent);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-semibold);
+  }
+  .tk-palette__text {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+  .tk-palette__name {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--tk-space-1);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-semibold);
+    line-height: var(--tk-font-line-height-tight);
+  }
+  .tk-palette__name mark {
+    background: none;
+    color: var(--tk-color-accent);
+    font-weight: var(--tk-font-weight-bold);
+  }
+  .tk-palette__newtab {
+    color: var(--tk-color-muted);
+  }
+  .tk-palette__sub {
+    overflow: hidden;
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-xs);
+    line-height: var(--tk-font-line-height-normal);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tk-palette__hint {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--tk-space-2);
+    margin-inline-start: auto;
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    white-space: nowrap;
+  }
+
+  .tk-palette__empty {
+    padding: var(--tk-space-4);
+  }
+  .tk-palette__empty .tk-state {
+    border: 0;
+  }
+
+  .tk-palette__hints {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    gap: var(--tk-space-4);
+    padding: var(--tk-space-3) var(--tk-space-4);
+    border-block-start: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-xs);
+  }
+
+  /* Over the key hints, so it never hides a result. */
+  .tk-palette__toast {
+    position: absolute;
+    inset-block-end: var(--tk-space-1);
+    inset-inline: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .tk-palette__copied {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--tk-space-2);
+    padding: var(--tk-space-2) var(--tk-space-4);
+    background: var(--tk-color-fg);
+    color: var(--tk-color-bg);
+    border-radius: var(--tk-radius-md);
+    box-shadow: var(--tk-shadow-glow);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-bold);
+  }
+
+  /* Touch sheet (CMP-CommandPalette): touch-only or narrow screens. */
+  @media (max-width: 720px), (any-hover: none) and (any-pointer: coarse) {
+    .tk-palette-dialog {
+      inline-size: 100%;
+      block-size: 100dvh;
+      max-block-size: none;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .tk-palette__bar {
+      gap: var(--tk-space-2);
+      padding: var(--tk-space-3) var(--tk-space-2) var(--tk-space-3) var(--tk-space-4);
+    }
+    .tk-palette__field {
+      padding-inline: var(--tk-space-3);
+      background: var(--tk-color-bg);
+      border: var(--tk-border-width-hairline) solid var(--tk-color-accent);
+      border-radius: var(--tk-radius-lg);
+      font-size: var(--tk-font-size-input);
+    }
+    .tk-palette__search-icon,
+    .tk-palette .tk-palette__esc,
+    .tk-palette__hints {
+      display: none;
+    }
+    .tk-palette__cancel {
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      min-block-size: var(--tk-size-touch-target);
+      padding-inline: var(--tk-space-3);
+      background: transparent;
+      border: 0;
+      color: var(--tk-color-accent);
+      font-size: var(--tk-font-size-base);
+      font-weight: var(--tk-font-weight-bold);
+      cursor: pointer;
+    }
+    .tk-palette__option {
+      min-block-size: calc(var(--tk-space-12) + var(--tk-space-1));
+    }
+    .tk-palette__glyph {
+      inline-size: var(--tk-space-8);
+      block-size: var(--tk-space-8);
+      border-radius: var(--tk-radius-md);
+    }
+    .tk-palette__toast {
+      inset-block-end: var(--tk-space-8);
+    }
+  }
+}

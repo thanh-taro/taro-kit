@@ -9,10 +9,15 @@
 // (F-005.R5); it renders nothing otherwise.
 // Variant `compact` (the tool view, F-003): logo mark, theme toggle and status only, to leave the most space for
 // the tool; below 720 px the bar is hidden and the tool header carries back, favorite and open (SCR-ToolView).
-// The search control arrives with F-004.
+// Search control (F-004.R1, MOD-Palette): a button marked `data-tk-palette-open`, armed by the palette bootstrap
+// before any island loads, which also shows the platform's shortcut in its key cap (`data-tk-shortcut`). Full:
+// COPY-palette.placeholder's text with the shortcut; compact: COPY-shell.search with the shortcut; narrow: an
+// icon button named COPY-shell.search (design CMP-AppShell).
 import { t, type CopyId } from '../copy/index.ts';
 import Icon from '../design-system/Icon.astro';
 import { iconSvg } from '../design-system/icons.ts';
+import { SHORTCUT_LABELS } from '../palette/logic.ts';
+import { searchControlLead } from '../palette/text.ts';
 import NavMenu, { type NavItem } from './NavMenu.tsx';
 import StorageNotice from './StorageNotice.tsx';
 import ThemeToggle from './ThemeToggle.tsx';
@@ -67,8 +72,18 @@ const update = await filled('update');
       <span class={compact ? 'tk-visually-hidden' : 'word'}>{t('COPY-shell.brand')}</span>
     </a>
     {!compact && <NavMenu client:load items={items} menuLabel={t('COPY-nav.menu')} menuIcon={iconSvg('menu', 16)} />}
+    <button type="button" class="search" data-tk-palette-open>
+      <Icon name="search" size={16} />
+      <span class="search-text">{compact ? t('COPY-shell.search') : searchControlLead()}</span>
+      <kbd data-tk-shortcut>{SHORTCUT_LABELS.other}</kbd>
+    </button>
     <div class="end">
       {offline && <div class="offline" set:html={offline} />}
+      {!compact && (
+        <button type="button" class="tk-iconbtn search-icon" data-tk-palette-open aria-label={t('COPY-shell.search')}>
+          <Icon name="search" />
+        </button>
+      )}
       <ThemeToggle client:idle {...toggle} />
       {!compact && (
         <a
@@ -154,6 +169,76 @@ const update = await filled('update');
     gap: var(--tk-space-1);
     margin-inline-start: auto;
   }
+  /* Search control (design CMP-AppShell): a field-like button with the shortcut's key cap. */
+  .search {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: var(--tk-space-2);
+    min-inline-size: 0;
+    min-block-size: var(--tk-size-touch-target);
+    margin-inline-start: auto;
+    padding-inline: var(--tk-space-3) var(--tk-space-1);
+    background: var(--tk-color-surface);
+    color: var(--tk-color-muted);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-md);
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-medium);
+    cursor: pointer;
+  }
+  .search:hover {
+    color: var(--tk-color-fg);
+  }
+  .search-text {
+    min-inline-size: calc(var(--tk-space-16) * 2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .search kbd {
+    flex: none;
+    margin-inline-start: auto;
+    padding: 1px var(--tk-space-1);
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-block-end-width: var(--tk-border-width-focus);
+    border-radius: var(--tk-radius-sm);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-medium);
+  }
+  .search ~ .end {
+    margin-inline-start: 0;
+  }
+  .search-icon {
+    display: none;
+    color: var(--tk-color-fg);
+  }
+  .shell-wrap[data-variant='compact'] .search {
+    inline-size: calc(var(--tk-space-16) * 3 + var(--tk-space-6) + var(--tk-space-1));
+    flex: none;
+    margin-inline-start: 0;
+    gap: var(--tk-space-2);
+  }
+  .shell-wrap[data-variant='compact'] .search ~ .end {
+    margin-inline-start: auto;
+  }
+
+  /* Between the narrow layout and room for the full control, the full shell uses the icon control. */
+  @media (max-width: 880px) {
+    .shell-wrap[data-variant='full'] .search {
+      display: none;
+    }
+    .shell-wrap[data-variant='full'] .search-icon {
+      display: inline-flex;
+    }
+    .shell-wrap[data-variant='full'] .end {
+      margin-inline-start: auto;
+    }
+  }
+
   .settings[aria-current='page'] {
     background: var(--tk-color-surface2);
     color: var(--tk-color-fg);
@@ -211,8 +296,15 @@ const update = await filled('update');
     .shell :global(.nav) {
       order: 3;
     }
-    .settings {
+    .settings,
+    .search {
       display: none;
+    }
+    .search-icon {
+      display: inline-flex;
+    }
+    .search ~ .end {
+      margin-inline-start: auto;
     }
     .shell :global(.nav .menu) {
       display: inline-flex;

@@ -25,7 +25,7 @@ In `src/modules/search/` (`index.ts`). Pure, synchronous and browser-safe; no No
 - `rank(query, items, { favorites }) → RankedItem[]` (`{ item, tier, favorite }`): the ranking core. Items are `Searchable` (`{ id, name, tags?, summary?, keys? }`); pre-computed `keys` are used as they are, otherwise they are computed. A blank query ranks nothing. Order: tier, then favorites first, then name (MOD-Content `byName`), then input order.
 - `compareRanked(a, b)`: that order, for callers that merge or cap ranked lists.
 - `filterCatalog(query, tools, context) → Tool[]`: `rank` over visible tools, mapped back to the tools (all categories, F-002.R4).
-- `searchPalette(query, index, context) → Group[]` (F-004) is added on top of `rank` and `compareRanked` without changing them: rank each kind (tools, projects, pages, actions) separately, keep the group order Tools, Projects, Pages, Actions, and cap each group at 8. Favorites are tool ids, so pass them for the tools group only.
+- `searchPalette(query, index, context) → Group[]` (F-004) is added on top of `rank` and `compareRanked` without changing them: rank each kind (tools, projects, pages, actions) separately, keep the group order Tools, Projects, Pages, Actions, and cap each group at 8. Favorites are tool ids, so pass them for the tools group only. As built (`palette.ts`): `index` is `{ tools, projects, pages, actions }` of `Searchable`; each group is `{ id, items }` with the items best first; groups with no match are left out, so a blank query or no match gives `[]`. `PALETTE_GROUPS` and `PALETTE_GROUP_MAX` (8) are exported.
 
 ## Implements
 F-002.R4 and F-004.R3. It is the main contributor to NFR-02.

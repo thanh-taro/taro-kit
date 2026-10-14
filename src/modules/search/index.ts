@@ -13,3 +13,11 @@ export {
   type SearchKeys,
 } from './rank.ts';
 export { filterCatalog } from './catalog.ts';
+export {
+  PALETTE_GROUP_MAX,
+  PALETTE_GROUPS,
+  searchPalette,
+  type PaletteGroup,
+  type PaletteGroupId,
+  type PaletteIndex,
+} from './palette.ts';

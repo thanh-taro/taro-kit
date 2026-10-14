@@ -37,4 +37,18 @@ describe('CMP-AppShell', () => {
     expect(html).toMatch(/<a href="\/tools\/"[^>]*aria-current="true"/);
     expect(html).not.toMatch(/aria-current="page"/);
   });
+
+  test('F-004.R1 the full shell has the search control with the shortcut key cap, and an icon control for narrow', async () => {
+    const html = await render(AppShell, { path: '/' });
+    expect(html).toMatch(/<button type="button" class="search"[^>]*data-tk-palette-open/);
+    expect(html).toContain('What are you looking for?</span>');
+    expect(html).toMatch(/<kbd[^>]*data-tk-shortcut[^>]*>Ctrl K<\/kbd>/);
+    expect(html).toMatch(/<button[^>]*class="tk-iconbtn search-icon"[^>]*data-tk-palette-open[^>]*aria-label="Search"/);
+  });
+
+  test('F-004.R1 the compact shell (tool view) has the search control too, labelled Search', async () => {
+    const html = await render(AppShell, { path: '/t/json/', variant: 'compact' });
+    expect(html).toMatch(/<button type="button" class="search"[^>]*data-tk-palette-open[^>]*>[\s\S]*?Search<\/span>/);
+    expect(html).not.toContain('search-icon');
+  });
 });
