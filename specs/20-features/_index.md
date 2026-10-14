@@ -7,7 +7,7 @@ status: draft
 
 | ID | Title | Milestone | Priority | Status |
 |---|---|---|---|---|
-| F-001 | Maintain the catalog | M-1 | P0 | building |
+| F-001 | Maintain the catalog | M-1 | P0 | shipped |
 | F-002 | Browse the catalog | M-1 | P0 | ready |
 | F-003 | Open a tool | M-1 | P0 | ready |
 | F-004 | Search with the command palette | M-1 | P0 | ready |
