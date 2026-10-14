@@ -3,8 +3,10 @@
 // the not-found page, design/canvas/NotFoundDesktop.dc.html / NotFoundMobile.dc.html.
 // Anatomy: icon tile, title, body, optional primary action; extra actions go in the default slot.
 // - `headingLevel` makes the title a heading (1 on SCR-NotFound, where it is the page heading).
-// - `live` adds role="status" for messages that appear after the page has loaded (polite announcement,
-//   CMP-StateMessage accessibility); a message that is the page's own content leaves it off.
+// - `icon` names the icon from the icon set; each variant has a default, so a page can pick its own.
+// - `live` adds role="status" to the title and body only (not the actions), for messages that appear after the
+//   page has loaded (polite announcement, CMP-StateMessage accessibility); a page's own content leaves it off.
+// - Actions, links or buttons (the slot), get the 44 px touch target (NFR-09).
 // The "page" variant (catalog empty or no results, tool offline) arrives with F-002 and F-003.
 import Icon from './Icon.astro';
 
@@ -15,10 +17,12 @@ interface Props {
   body?: string;
   /** The next best action (PRN-05). */
   action?: { href: string; label: string };
+  /** An icon-set name; default per variant (not-found: circle-question-mark). */
+  icon?: string;
   headingLevel?: 1 | 2 | 3;
   live?: boolean;
 }
-const { variant, title, body, action, headingLevel, live = false } = Astro.props;
+const { variant, title, body, action, icon, headingLevel, live = false } = Astro.props;
 const ICONS: Record<Variant, string> = {
   empty: 'circle-dashed',
   'no-results': 'search-x',
@@ -29,13 +33,15 @@ const ICONS: Record<Variant, string> = {
 const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
 ---
 
-<div class="tk-state" data-variant={variant} role={live ? 'status' : undefined}>
+<div class="tk-state" data-variant={variant}>
   <span class="icon" aria-hidden="true">
-    <Icon name={ICONS[variant]} />
+    <Icon name={icon ?? ICONS[variant]} />
   </span>
   <div class="text">
-    <Title class="title">{title}</Title>
-    {body && <p class="body">{body}</p>}
+    <div class="message" role={live ? 'status' : undefined}>
+      <Title class="title">{title}</Title>
+      {body && <p class="body">{body}</p>}
+    </div>
     {(action || Astro.slots.has('default')) && (
       <div class="actions">
         {action && (
@@ -71,7 +77,8 @@ const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
     background: var(--tk-color-tint);
     color: var(--tk-color-accent);
   }
-  .text {
+  .text,
+  .message {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -100,9 +107,11 @@ const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
     gap: var(--tk-space-2);
     padding-block-start: calc(var(--tk-space-1) + var(--tk-space-1) / 2);
   }
-  /* Slotted links are outside this component's scope, so the action style is global within .actions. */
-  .actions :global(a) {
+  /* Slotted links and buttons are outside this component's scope, so the action style is global within .actions. */
+  .actions :global(:is(a, button)) {
     display: inline-flex;
+    background: transparent;
+    cursor: pointer;
     align-items: center;
     justify-content: center;
     min-block-size: var(--tk-size-touch-target);
@@ -118,7 +127,7 @@ const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
     border-color: var(--tk-color-accent);
     color: var(--tk-color-on-accent);
   }
-  .actions :global(a:focus-visible) {
+  .actions :global(:is(a, button):focus-visible) {
     outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
     outline-offset: var(--tk-border-width-focus);
   }
@@ -130,7 +139,7 @@ const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
     .actions {
       flex-direction: column;
     }
-    .actions :global(a) {
+    .actions :global(:is(a, button)) {
       min-block-size: var(--tk-space-12);
     }
   }

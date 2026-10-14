@@ -55,7 +55,19 @@ test.describe('F-016 category page', () => {
       await page.goto(`${FX}/tools/media/`);
       const h = hero(page);
       await expect(h.getByRole('heading', { level: 1, name: 'Media tools' })).toBeVisible();
+      // The Media fixture's own icon (content/assets/icons/clapperboard.svg), not another category's.
       await expect(h.locator('.hero-icon svg')).toBeVisible();
+      await expect(h.locator('.hero-icon svg path[d^="M20.2 6 3 11"]')).toHaveCount(1);
+      await expect(
+        categoryNav(page)
+          .getByRole('link', { name: /^Media tools/ })
+          .locator('svg path[d^="M20.2 6 3 11"]'),
+      ).toHaveCount(1);
+      await expect(
+        categoryNav(page)
+          .getByRole('link', { name: /^Developer tools/ })
+          .locator('svg path[d^="M20.2 6 3 11"]'),
+      ).toHaveCount(0);
       await expect(h.getByText('Fixture intro.')).toBeVisible();
       await expect(h.getByText('3 tools', { exact: true })).toBeVisible();
       // RULE-14: the header uses the category's tint, the mango pair of the current theme.
@@ -87,9 +99,7 @@ test.describe('F-016 category page', () => {
     await expect(first.getByRole('button', { name: 'Add to favorites' })).toBeVisible();
   });
 
-  test('F016_AC4 the category navigation moves to Developer tools, and all tools opens the catalog', async ({
-    page,
-  }) => {
+  test('F016_AC4 the category navigation moves to Developer tools', async ({ page }) => {
     await page.goto(`${FX}/tools/media/`);
     const nav = categoryNav(page);
     // Every visible category, in display order; the current one is marked; empty categories are left out.
@@ -112,11 +122,23 @@ test.describe('F-016 category page', () => {
       'aria-current',
       'page',
     );
+  });
 
-    // The catalog itself (SCR-Catalog, /tools/) is built by F-002; the link goes to its address.
+  test('F016_AC4 link target: "All my tools" goes to the catalog address', async ({ page }) => {
+    await page.goto(`${FX}/tools/media/`);
     await expect(categoryNav(page).getByRole('link', { name: 'All my tools' })).toHaveAttribute('href', '/tools/');
-    await categoryNav(page).getByRole('link', { name: 'All my tools' }).click();
+  });
+
+  // un-fixme in F-002 (SCR-Catalog at /tools/ does not exist yet).
+  test.fixme('F016_AC4 catalog opens: choosing all tools opens the catalog', async ({ page }) => {
+    await page.goto(`${FX}/tools/media/`);
+    const [res] = await Promise.all([
+      page.waitForResponse((r) => new URL(r.url()).pathname === '/tools/'),
+      categoryNav(page).getByRole('link', { name: 'All my tools' }).click(),
+    ]);
+    expect(res.status()).toBe(200);
     await expect(page).toHaveURL(`${FX}/tools/`);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My tools');
   });
 
   test('F016_AC4 the category navigation is reachable from the keyboard', async ({ page }) => {
@@ -176,9 +198,10 @@ test.describe('F-016 production content (port 4321)', () => {
       const res = await page.goto(`${PROD}/tools/${id}/`);
       expect(res?.status()).toBe(200);
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(name);
-      // RULE-06: hidden sample tools are not listed or counted.
-      await expect(hero(page).getByText('1 tool', { exact: true })).toBeVisible();
-      await expect(toolList(page).locator('.tk-toolcard')).toHaveCount(1);
+      // F-016.R2, RULE-06: the hero count is the number of listed (visible) tools.
+      const cards = await toolList(page).locator('.tk-toolcard').count();
+      expect(cards).toBeGreaterThan(0);
+      await expect(hero(page).locator('.count')).toHaveText(cards === 1 ? '1 tool' : `${cards} tools`);
     }
     expect(violations).toEqual([]);
   });

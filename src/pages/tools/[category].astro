@@ -18,17 +18,18 @@ import BaseLayout from '../../modules/shell/BaseLayout.astro';
 
 export const getStaticPaths = (() => {
   const registry = getRegistry();
+  // Each category icon is read once for the whole build and shared by every page (hero and navigation).
+  const icons = Object.fromEntries(
+    registry.categories.map((c) => [c.id, svgFromFile(join(contentDirectory(), 'assets', c.icon))]),
+  );
   return categoryPages(registry.categories, registry.visibleTools).map((page) => ({
     params: { category: page.category.id },
-    props: { page },
+    props: { page, icons },
   }));
 }) satisfies GetStaticPaths;
 
-const { page } = Astro.props;
+const { page, icons } = Astro.props;
 const { category, tools, count, nav } = page;
-const icons = new Map(
-  getRegistry().categories.map((c) => [c.id, svgFromFile(join(contentDirectory(), 'assets', c.icon))]),
-);
 ---
 
 <BaseLayout
@@ -38,7 +39,7 @@ const icons = new Map(
 >
   <div class="category">
     <section class="hero" data-tint={category.tint} data-testid="category-hero" aria-labelledby="category-name">
-      <span class="hero-icon" aria-hidden="true" set:html={icons.get(category.id)} />
+      <span class="hero-icon" aria-hidden="true" set:html={icons[category.id]} />
       <div class="hero-text">
         <h1 id="category-name">{category.name}</h1>
         <p class="intro">{category.intro}</p>
@@ -54,7 +55,7 @@ const icons = new Map(
             href={c.href}
             count={c.count}
             tint={c.tint}
-            iconSvg={icons.get(c.id) ?? ''}
+            iconSvg={icons[c.id] ?? ''}
             current={c.id === category.id}
           />
         ))
