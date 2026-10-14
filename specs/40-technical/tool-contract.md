@@ -16,6 +16,7 @@ How a separate tool project (for example the JSON Formatter) must behave to be l
 - The base sandbox is `allow-scripts allow-same-origin allow-forms`. Extra capabilities are granted only through the tool's catalog `permissions` (RULE-10, ADR-0009). Enforcement varies by browser: no browser can stop file inputs, and Safari cannot stop clipboard writes.
 - `window.open` works, but the portal's opener reference is null, so don't depend on `window.opener` (ADR-0009).
 - **Storage**: keep user data in localStorage. In Chrome, Edge and Firefox, the tool sees the same localStorage embedded and direct. Safari keeps separate storage for the embedded tool, and the Storage Access API does not change that (F-003.R8, D-038). IndexedDB and the tool's own service worker may also differ when embedded.
+- **Cookies**: tools share the `tarokit.app` site with the portal, so a `Domain=.tarokit.app` cookie would reach the portal and every other tool. Scope cookies to your own host (no `Domain` attribute). The portal sets and reads no cookies, and never will (architecture.md, Runtime boundaries).
 - Offline: if `offline: true`, the tool's own service worker must work after the tool has been opened inside the portal once while online (ADR-0009, SP-4).
 
 ## Theme hand-off (F-012.R5/R6, ADR-0011)

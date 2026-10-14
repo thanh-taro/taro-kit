@@ -1,0 +1,10 @@
+# Test fixture for F-003 (tool view): an own embedded tool with no permissions (RULE-10 default).
+# Its address is answered by the e2e fixture tool (tests/fixtures/tool-host/F003-tool), on a portal subdomain.
+id: ft-embedded
+kind: tool
+name: Fixture embedded tool
+summary: Fixture tool for the tool view tests.
+category: developer
+url: https://ft-embedded.tarokit.test/
+origin: own
+added: 2026-10-01

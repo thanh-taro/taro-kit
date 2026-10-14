@@ -110,7 +110,8 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   const root = opts.root ?? process.cwd();
   const contentDir = opts.contentDir ?? (process.env.TAROKIT_CONTENT_DIR || join(root, 'content'));
   const schemaPath = opts.schemaPath ?? defaultSchemaPath(root);
-  const portalOrigin = opts.portalOrigin ?? process.env.TAROKIT_PORTAL_ORIGIN ?? PORTAL_ORIGIN;
+  // An empty TAROKIT_PORTAL_ORIGIN (as `pnpm build` sets it) means the production origin.
+  const portalOrigin = opts.portalOrigin ?? (process.env.TAROKIT_PORTAL_ORIGIN || PORTAL_ORIGIN);
   const relRoot = join(contentDir, '..'); // errors read "content/tools/x.yaml" wherever the folder lives
   const errors: ContentError[] = [];
   const load = (abs: string) => loadYaml(relRoot, abs, errors);
@@ -260,20 +261,17 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
         rule: 'INV-07',
         message: `category "${d.category}" does not exist in content/categories.yaml`,
       });
-    // INV-03: an embedded tool is never served from the portal's own origin (ADR-0009 build guard).
+    // INV-03: an embedded tool is never served from the portal's own origin (ADR-0009 build guard). The
+    // production origin is always refused too, whatever origin this build is configured with.
     const mode = d.openMode ?? (d.origin === 'own' ? 'embedded' : 'linked');
-    if (
-      mode === 'embedded' &&
-      typeof d.url === 'string' &&
-      URL.canParse(d.url) &&
-      new URL(d.url).origin === portalOrigin
-    )
+    const toolOrigin = typeof d.url === 'string' && URL.canParse(d.url) ? new URL(d.url).origin : undefined;
+    if (mode === 'embedded' && toolOrigin && (toolOrigin === portalOrigin || toolOrigin === PORTAL_ORIGIN))
       errors.push({
         file: l.file,
         line: l.lineOf(['url']),
         entryId: idOf(d),
         rule: 'INV-03',
-        message: `an embedded tool must not be served from the portal origin ${portalOrigin}`,
+        message: `an embedded tool must not be served from the portal origin ${toolOrigin}`,
       });
   }
 

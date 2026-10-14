@@ -2,6 +2,7 @@
 import preact from '@astrojs/preact';
 import type { AstroIntegration } from 'astro';
 import { defineConfig } from 'astro/config';
+import { fileURLToPath } from 'node:url';
 import {
   contentDirectory,
   ContentErrors,
@@ -9,7 +10,7 @@ import {
   resetRegistry,
   visibleToolIdsPlugin,
 } from './src/modules/content/index.ts';
-import { CSP_DIRECTIVES } from './src/modules/security-policy/index.ts';
+import { CSP_DIRECTIVES, writeHeaders } from './src/modules/security-policy/index.ts';
 
 // Content is validated before Astro does anything else, so bad content fails the build at once
 // with the domain error list (MOD-Content, F-001.R2).
@@ -41,6 +42,14 @@ const fixturePages: AstroIntegration = {
   },
 };
 
+// MOD-SecurityPolicy: `_headers` next to the pages (ADR-0009 response headers, ADR-0007), after every build.
+const securityHeaders: AstroIntegration = {
+  name: 'tarokit:security-headers',
+  hooks: {
+    'astro:build:done': ({ dir }) => writeHeaders(getRegistry(), fileURLToPath(dir)),
+  },
+};
+
 export default defineConfig({
   site: portalOrigin,
   output: 'static',
@@ -48,7 +57,7 @@ export default defineConfig({
   trailingSlash: 'always',
   // Silences the syntax-highlighter-vs-CSP warning: no Markdown pages are rendered.
   markdown: { syntaxHighlight: false },
-  integrations: [preact(), ...(fixtures ? [fixturePages] : [])],
+  integrations: [preact(), securityHeaders, ...(fixtures ? [fixturePages] : [])],
   vite: {
     // MOD-Content: `virtual:tarokit/visible-tool-ids` for islands (RULE-02, INV-04).
     plugins: [

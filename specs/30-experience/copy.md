@@ -45,6 +45,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-tool.slow** | {tool} is taking its time. You can open it in a new tab instead. | after the slow-load threshold |
 | **COPY-tool.offline** | {tool} needs the internet. I'll load it as soon as you're back online. | offline state |
 | **COPY-tool.linkedNote** | {tool} lives on its own site. Open it there. | linked tool view |
+| **COPY-tool.frameLabel** | {tool} tool | accessible name of the tool header toolbar, the embedded tool region and its frame (SCR-ToolView, ADR-0009) |
 | **COPY-fav.add** | Add to favorites | toggle label (off) |
 | **COPY-fav.remove** | Remove from favorites | toggle label (on) |
 | **COPY-fav.full** | You can keep up to {limit} favorites. Unpin one to make room. | limit reached; {limit} from RULE-02 |

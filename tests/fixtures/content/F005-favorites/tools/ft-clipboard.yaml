@@ -1,0 +1,10 @@
+# Test fixture for F-003.AC3 (the control): an own embedded tool granted clipboard-write (RULE-10).
+id: ft-clipboard
+kind: tool
+name: Fixture clipboard tool
+summary: Fixture tool that may write to the clipboard.
+category: developer
+url: https://ft-clipboard.tarokit.test/
+origin: own
+permissions: [clipboard-write]
+added: 2026-10-01

@@ -92,6 +92,12 @@ describe('MOD-Content validation', () => {
     ]);
   });
 
+  it('INV-03 always refuses the production portal origin, even when the build is configured with another', () => {
+    expect(failures('INV03-portal-origin', { portalOrigin: 'https://staging.example.com' })).toEqual([
+      'content/tools/self.yaml:7 › self-hosted › INV-03: an embedded tool must not be served from the portal origin https://tarokit.app',
+    ]);
+  });
+
   it('INV-03 fails on an embedded tool served from the portal origin', () => {
     expect(failures('INV03-portal-origin')).toEqual([
       'content/tools/self.yaml:7 › self-hosted › INV-03: an embedded tool must not be served from the portal origin https://tarokit.app',

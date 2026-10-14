@@ -1,0 +1,55 @@
+// MOD-SecurityPolicy: the response headers a meta CSP can't carry (ADR-0009), written to `_headers` (ADR-0007).
+// - Permissions-Policy: each policy-controlled feature is delegated only to the visible embedded tools that
+//   declare it, always with `self` first (SP-3: without it Chromium delegates nothing), and `()` otherwise.
+// - frame-ancestors 'none', object-src and base-uri as a header policy; Referrer-Policy, nosniff, COOP, and
+//   Cache-Control: no-transform (the privacy guard from SP-3).
+// Cache rules belong with the offline worker and publishing (F-011, ADR-0007) and are added there.
+import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { POLICY_FEATURE_FOR, POLICY_FEATURES, type Permission } from './frame.ts';
+import { secureOrigin } from './origin.ts';
+
+export interface PolicyTool {
+  url: string;
+  openMode: 'embedded' | 'linked';
+  permissions: readonly string[];
+  hidden?: boolean;
+}
+
+/** `feature=(self "https://tool…")` per feature some visible embedded tool declares, else `feature=()`. */
+export function permissionsPolicy(tools: readonly PolicyTool[]): string {
+  const embedded = tools.filter((t) => t.openMode === 'embedded' && !t.hidden);
+  return POLICY_FEATURES.map((feature) => {
+    const origins = [
+      ...new Set(
+        embedded
+          .filter((t) => t.permissions.some((p) => POLICY_FEATURE_FOR[p as Permission] === feature))
+          .map((t) => secureOrigin(t.url, 'Permissions-Policy')),
+      ),
+    ].sort();
+    return origins.length ? `${feature}=(self ${origins.map((o) => `"${o}"`).join(' ')})` : `${feature}=()`;
+  }).join(', ');
+}
+
+/** Headers for every response (ADR-0009, "Response headers"). */
+export function securityHeaders(tools: readonly PolicyTool[]): [name: string, value: string][] {
+  return [
+    ['Content-Security-Policy', "frame-ancestors 'none'; object-src 'none'; base-uri 'self'"],
+    ['Permissions-Policy', permissionsPolicy(tools)],
+    ['Referrer-Policy', 'strict-origin-when-cross-origin'],
+    ['X-Content-Type-Options', 'nosniff'],
+    ['Cross-Origin-Opener-Policy', 'same-origin'],
+    // ADR-0009 (SP-3 amendment): stops the host injecting analytics beacons into pages (NFR-05).
+    ['Cache-Control', 'no-transform'],
+  ];
+}
+
+/** The `_headers` file (Cloudflare static assets format): one rule for every path. */
+export function headersFile(tools: readonly PolicyTool[]): string {
+  return ['/*', ...securityHeaders(tools).map(([n, v]) => `  ${n}: ${v}`), ''].join('\n');
+}
+
+/** Writes `<distDir>/_headers` after the build. */
+export function writeHeaders(registry: { allTools: readonly PolicyTool[] }, distDir: string): void {
+  writeFileSync(join(distDir, '_headers'), headersFile(registry.allTools));
+}

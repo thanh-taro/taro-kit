@@ -74,6 +74,7 @@ flowchart LR
 ## Runtime boundaries
 - **Portal origin** (`https://<apex>`): the HTML, assets, `sw.js` and personal data. Nothing from other origins loads into it, except frames from the `frame-src` allowlist.
 - **Tool origins** (`https://<tool>.<apex>`): independent deploys. They are reachable only as sandboxed frames or new tabs. They share the *site* with the portal, never the *origin*.
+- **Cookies:** because tools share the `tarokit.app` site, any tool can set `Domain=.tarokit.app` cookies that the portal would receive. The portal therefore stays cookie-free: it sets and reads no cookies and keeps personal data only in local storage (ADR-0010), so a tool's cookies can't reach or change portal state.
 - **Islands** communicate only through signals in MOD-PersonalData, MOD-Theme and MOD-Offline, and through the `openPalette` DOM event. Islands never import each other.
 
 ## Performance baselines

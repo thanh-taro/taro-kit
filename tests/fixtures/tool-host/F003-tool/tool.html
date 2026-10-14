@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- The F-003 e2e fixture tool, served for every https://ft-*.tarokit.test/ address (tests/e2e/support/sites.ts).
+     It follows the tool author contract (specs/40-technical/tool-contract.md): theme from ?theme= before first
+     paint, and messages accepted only from the portal that embeds it. It also exposes probes for the isolation
+     tests (F-003.AC3–AC5) and keeps a value in its local key-value storage (F-003.AC11). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture tool</title>
+    <script src="/tool.js"></script>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, sans-serif;
+      }
+      [data-theme='dark'] {
+        color-scheme: dark;
+        background: #111;
+        color: #eee;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        display: grid;
+        gap: 12px;
+        justify-items: start;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1 id="status">tool loaded</h1>
+      <p>Stored value: <output id="stored">none</output></p>
+      <p><button type="button" id="copy">Copy to clipboard</button> <output id="copy-result"></output></p>
+      <p><button type="button" id="top-nav">Navigate the portal</button></p>
+    </main>
+  </body>
+</html>

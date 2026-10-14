@@ -1,0 +1,31 @@
+---
+// /t/<id>/ (MOD-Pages route, SCR-ToolView content by MOD-ToolHost). One page per visible tool: the stable
+// portal address built from its id (F-003.R1). Hidden and unknown ids get no page, so the host's not-found
+// page answers (F-003.R7, RULE-06). Only an embedded tool's page may frame anything, and only that tool's
+// origin (ADR-0009 frame-src).
+import { getRegistry, toolPath, type RegTool } from '../../modules/content/index.ts';
+import { t } from '../../modules/copy/index.ts';
+import BaseLayout from '../../modules/shell/BaseLayout.astro';
+import ToolView from '../../modules/tool-host/ToolView.astro';
+
+export function getStaticPaths() {
+  return getRegistry().visibleTools.map((tool) => ({ params: { id: tool.id }, props: { tool } }));
+}
+
+interface Props {
+  tool: RegTool;
+}
+const { tool } = Astro.props;
+const embedded = tool.openMode === 'embedded';
+---
+
+<BaseLayout
+  title={t('COPY-meta.toolTitle', { tool: tool.name })}
+  description={tool.summary}
+  path={toolPath(tool.id)}
+  variant="compact"
+  embeddedToolUrl={embedded ? tool.url : undefined}
+  skipTo={embedded ? '#tool' : '#main'}
+>
+  <ToolView tool={tool} />
+</BaseLayout>

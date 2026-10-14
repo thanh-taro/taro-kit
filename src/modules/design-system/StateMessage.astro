@@ -7,7 +7,10 @@
 // - `live` adds role="status" to the title and body only (not the actions), for messages that appear after the
 //   page has loaded (polite announcement, CMP-StateMessage accessibility); a page's own content leaves it off.
 // - Actions, links or buttons (the slot), get the 44 px touch target (NFR-09).
-// The "page" variant (catalog empty or no results, tool offline) arrives with F-002 and F-003.
+// - `page`: whole-page empty or blocking states (tool offline, linked note; catalog empty or no results with F-002):
+//   centered, a larger icon tile and the title as a heading in the display face (default level 2).
+// - `detail`: a short mono line under the title, such as a linked tool's site (design LinkedDesktop).
+// - `action.newTab`: opens in a new tab with no opener or referrer (a linked tool's own address, F-003.R4).
 import Icon from './Icon.astro';
 
 type Variant = 'empty' | 'no-results' | 'offline' | 'info' | 'not-found';
@@ -16,13 +19,17 @@ interface Props {
   title: string;
   body?: string;
   /** The next best action (PRN-05). */
-  action?: { href: string; label: string };
+  action?: { href: string; label: string; newTab?: boolean };
+  /** Whole-page layout (CMP-StateMessage "page" variant). */
+  page?: boolean;
+  /** A short mono line under the title. */
+  detail?: string;
   /** An icon-set name; default per variant (not-found: circle-question-mark). */
   icon?: string;
   headingLevel?: 1 | 2 | 3;
   live?: boolean;
 }
-const { variant, title, body, action, icon, headingLevel, live = false } = Astro.props;
+const { variant, title, body, action, icon, headingLevel, live = false, page = false, detail } = Astro.props;
 const ICONS: Record<Variant, string> = {
   empty: 'circle-dashed',
   'no-results': 'search-x',
@@ -30,10 +37,11 @@ const ICONS: Record<Variant, string> = {
   info: 'external-link',
   'not-found': 'circle-question-mark',
 };
-const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
+const level = headingLevel ?? (page ? 2 : undefined);
+const Title = level ? (`h${level}` as const) : 'p';
 ---
 
-<div class="tk-state" data-variant={variant}>
+<div class="tk-state" data-variant={variant} data-page={page ? '' : undefined}>
   <span class="icon" aria-hidden="true">
     <Icon name={icon ?? ICONS[variant]} />
   </span>
@@ -42,10 +50,16 @@ const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
       <Title class="title">{title}</Title>
       {body && <p class="body">{body}</p>}
     </div>
+    {detail && <p class="detail">{detail}</p>}
     {(action || Astro.slots.has('default')) && (
       <div class="actions">
         {action && (
-          <a class="primary" href={action.href}>
+          <a
+            class="primary"
+            href={action.href}
+            target={action.newTab ? '_blank' : undefined}
+            rel={action.newTab ? 'noopener noreferrer' : undefined}
+          >
             {action.label}
           </a>
         )}
@@ -132,7 +146,67 @@ const Title = headingLevel ? (`h${headingLevel}` as const) : 'p';
     outline-offset: var(--tk-border-width-focus);
   }
 
+  .detail {
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-sm);
+  }
+
+  /* page: centered, larger icon tile, display heading (design: ToolStates*, LinkedDesktop). */
+  .tk-state[data-page] {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--tk-space-4);
+    max-inline-size: calc(var(--tk-space-12) * 10);
+    padding: 0;
+    background: none;
+    border: 0;
+    text-align: center;
+  }
+  [data-page] .icon {
+    inline-size: var(--tk-space-16);
+    block-size: var(--tk-space-16);
+    border-radius: var(--tk-radius-xl);
+  }
+  [data-page] .icon :global(svg) {
+    inline-size: var(--tk-space-8);
+    block-size: var(--tk-space-8);
+  }
+  [data-page] .text,
+  [data-page] .message {
+    align-items: center;
+    gap: var(--tk-space-4);
+  }
+  [data-page] .title {
+    font-family: var(--tk-font-family-display);
+    font-size: var(--tk-font-size-xl);
+    font-weight: var(--tk-font-weight-semibold);
+    line-height: var(--tk-font-line-height-normal);
+    letter-spacing: -0.02em;
+  }
+  [data-page] .actions {
+    justify-content: center;
+    padding-block-start: 0;
+  }
+  [data-page] .actions .primary {
+    min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-1));
+    padding-inline: var(--tk-space-5);
+    border-radius: var(--tk-radius-lg);
+    font-size: var(--tk-font-size-base);
+  }
+
   @media (max-width: 720px) {
+    [data-page] .icon {
+      inline-size: calc(var(--tk-space-12) + var(--tk-space-2));
+      block-size: calc(var(--tk-space-12) + var(--tk-space-2));
+    }
+    [data-page] .icon :global(svg) {
+      inline-size: var(--tk-space-6);
+      block-size: var(--tk-space-6);
+    }
+    [data-page] .title {
+      font-size: var(--tk-font-size-lg);
+    }
     .tk-state {
       padding: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
     }

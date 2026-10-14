@@ -8,7 +8,16 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, process.argv[2] ?? 'dist');
 const TEXT = /\.(html|js|mjs|css|json|xml|txt|webmanifest)$/i;
 /** Markers of tests-only pages and fixture content (tests/fixtures/pages, tests/fixtures/content). */
-const MARKERS = ['__fixtures__', 'tests/fixtures', 'Fixture tool', 'fx-hidden'];
+// F-003's fixture tools: their test-only origins, and their ids as quoted strings or paths (never a bare "ft-",
+// which real words like "draft-" contain).
+const MARKERS = [
+  '__fixtures__',
+  'tests/fixtures',
+  'Fixture tool',
+  'fx-hidden',
+  'tarokit.test',
+  ...['ft-embedded', 'ft-clipboard', 'ft-offline', 'ft-ready'].flatMap((id) => [`"${id}"`, `/t/${id}/`]),
+];
 
 function* walk(dir: string): Generator<string> {
   for (const name of readdirSync(dir)) {

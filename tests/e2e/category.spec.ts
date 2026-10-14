@@ -3,8 +3,16 @@
 // tools (Audio Trimmer, Clip Maker, Image Resizer), Converters holds only a hidden tool, and Developer tools and
 // Productivity hold the F-005 tools. The production build (port 4321) is checked for its sample categories.
 import AxeBuilder from '@axe-core/playwright';
+import { join } from 'node:path';
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { loadRegistry } from '../../src/modules/content/index.ts';
 import { FX, PROD } from './ports.ts';
+
+// The fixture content is shared by several features' e2e tests, so counts come from its registry, not constants.
+const root = join(import.meta.dirname, '../..');
+const fixtureRegistry = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') });
+const visibleIn = (categoryId: string) =>
+  fixtureRegistry.categories.find((c) => c.id === categoryId)?.tools.length ?? 0;
 
 const hero = (page: Page) => page.getByTestId('category-hero');
 const categoryNav = (page: Page) => page.getByRole('navigation', { name: 'Categories' });
@@ -105,7 +113,7 @@ test.describe('F-016 category page', () => {
       .getByRole('link')
       .evaluateAll((links) => links.map((a) => a.getAttribute('aria-label') ?? a.textContent));
     expect(names).toEqual([
-      'Developer tools, 26 tools',
+      `Developer tools, ${visibleIn('developer')} tools`,
       'Media tools, 3 tools',
       'Productivity, 1 tool',
       'All my tools',
