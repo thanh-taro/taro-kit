@@ -1,0 +1,15 @@
+---
+// The same linked tool shown twice on one page (e.g. home favorites and what's new): ids must stay unique.
+import ToolCard from '../../../src/modules/design-system/ToolCard.astro';
+
+const tool = {
+  id: 'loan',
+  name: 'Loan Calculator',
+  summary: 'Monthly payment.',
+  openMode: 'linked' as const,
+  url: 'https://loan.example/',
+};
+---
+
+<ToolCard tool={tool} />
+<ToolCard tool={tool} variant="compact" />

@@ -1,12 +1,13 @@
-// MOD-DesignSystem: CMP-ToolCard, Preact version, for islands that list tools from device data
-// (home favorites and recents, F-007; search results, F-002). Same markup and class contract as
-// ToolCard.astro, which static pages use (styles/tool-card.css).
+// MOD-DesignSystem: CMP-ToolCard, the single source of its markup (class contract in styles/tool-card.css).
+// Islands that list tools from device data (home favorites and recents, F-007; search results, F-002) use it
+// directly; static pages use ToolCard.astro, which renders it without hydration around a FavoriteToggle island.
 // - One stretched link whose name is the tool name; the favorite toggle is a separate button above it,
 //   so it never opens the tool (CMP-ToolCard behavior).
 // - Variants: regular (icon, name, summary, category label, linked marker) and compact (icon, name,
 //   toggle); `unavailable` dims either one and adds COPY-tool.unavailable (F-011.R3 drives it).
 // - Linked tools: the marker (COPY-tool.opensNewTab) is visible on regular cards and screen-reader text on
 //   compact ones; both describe the link (aria-describedby).
+import type { ComponentChildren } from 'preact';
 import { useId } from 'preact/hooks';
 import FavoriteToggle, { type FavoriteToggleLabels } from './FavoriteToggle.tsx';
 import { describedBy, monogram, toolCardLink, type ToolCardTool, type ToolCardVariant } from './tool-card.ts';
@@ -35,6 +36,11 @@ export interface ToolCardProps {
   /** A bundled icon's address; without it the card shows the tool's monogram (style.md). */
   iconSrc?: string;
   text: ToolCardText;
+  /**
+   * The favorite toggle. ToolCard.astro passes the FavoriteToggle island here (so only the toggle hydrates);
+   * inside an island leave it out and the card renders its own FavoriteToggle from `text`.
+   */
+  children?: ComponentChildren;
 }
 
 // Build-time SVG strings from the icon set (DEP-15), never user or runtime data.
@@ -49,6 +55,7 @@ export default function ToolCard({
   unavailable = false,
   iconSrc,
   text,
+  children,
 }: ToolCardProps) {
   const uid = useId();
   const { href, newTab } = toolCardLink(tool);
@@ -97,9 +104,11 @@ export default function ToolCard({
         </span>
       )}
       <span class="tk-toolcard__fav">
-        <FavoriteToggle toolId={tool.id} labels={text.favorite} size={regular ? 'md' : 'sm'}>
-          <Svg markup={regular ? text.icons.star : text.icons.starSmall} />
-        </FavoriteToggle>
+        {children ?? (
+          <FavoriteToggle toolId={tool.id} labels={text.favorite} size={regular ? 'md' : 'sm'}>
+            <Svg markup={regular ? text.icons.star : text.icons.starSmall} />
+          </FavoriteToggle>
+        )}
       </span>
     </div>
   );

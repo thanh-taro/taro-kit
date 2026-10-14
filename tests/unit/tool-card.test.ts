@@ -7,6 +7,7 @@ import { visibleToolIds } from 'virtual:tarokit/visible-tool-ids';
 import { getRegistry, visibleToolIdsSource } from '../../src/modules/content/index.ts';
 import FavoriteToggle from '../../src/modules/design-system/FavoriteToggle.astro';
 import ToolCard from '../../src/modules/design-system/ToolCard.astro';
+import SameToolTwice from '../fixtures/design-system/SameToolTwice.astro';
 import { favoriteToggleLabels } from '../../src/modules/design-system/text.ts';
 import { monogram, toolCardLink } from '../../src/modules/design-system/tool-card.ts';
 
@@ -83,9 +84,18 @@ describe('CMP-ToolCard', () => {
   });
 
   test('CMP-ToolCard ids are unique when the same tool is shown twice on a page', async () => {
-    const a = (await render(ToolCard, { tool: linked })).match(/aria-describedby="([^"]+)"/)?.[1];
-    const b = (await render(ToolCard, { tool: linked })).match(/aria-describedby="([^"]+)"/)?.[1];
-    expect(a).not.toBe(b);
+    const html = await render(SameToolTwice);
+    const ids = [...html.matchAll(/aria-describedby="([^"]+)"/g)].map((m) => m[1]);
+    expect(ids).toHaveLength(2);
+    expect(new Set(ids).size).toBe(2);
+    for (const id of ids) expect(html).toContain(`id="${id}"`);
+  });
+
+  test('CMP-ToolCard static cards hydrate only the favorite toggle', async () => {
+    const html = await render(ToolCard, { tool: embedded });
+    expect(html.match(/<astro-island /g)).toHaveLength(1);
+    expect(html).toMatch(/<astro-island [^>]*component-url="[^"]*FavoriteToggle\.tsx"/);
+    expect(html.indexOf('<div class="tk-toolcard"')).toBeLessThan(html.indexOf('<astro-island'));
   });
 });
 

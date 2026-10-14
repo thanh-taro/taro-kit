@@ -39,7 +39,3 @@ export function monogram(name: string): string {
 /** Space-separated ids for aria-describedby, or undefined when there are none. */
 export const describedBy = (...ids: (string | false | undefined)[]): string | undefined =>
   ids.filter(Boolean).join(' ') || undefined;
-
-let counter = 0;
-/** A page-unique id prefix for a statically rendered card (the Preact version uses `useId`). */
-export const nextCardId = (toolId: string): string => `tc-${toolId}-${++counter}`;

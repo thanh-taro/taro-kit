@@ -1,14 +1,10 @@
 ---
-// MOD-DesignSystem: CMP-ToolCard for static pages (catalog, category pages, F-002, F-016). Same markup and
-// class contract as ToolCard.tsx (styles/tool-card.css); only the favorite toggle is an island.
-// - One stretched link whose name is the tool name; the toggle is a separate button above it.
-// - Variants: regular and compact; `unavailable` dims either one and adds COPY-tool.unavailable (F-011.R3).
-// - Linked tools open their own address in a new tab (F-003.R4) and carry COPY-tool.opensNewTab: visible
-//   on regular cards, screen-reader text on compact ones; both describe the link.
-import { t } from '../copy/index.ts';
+// MOD-DesignSystem: CMP-ToolCard for static pages (catalog, category pages, F-002, F-016). A thin wrapper:
+// the markup is ToolCard.tsx, rendered here without hydration, and only the favorite toggle is an island.
+// Behavior and accessibility are documented in ToolCard.tsx and MOD-DesignSystem.
 import FavoriteToggle from './FavoriteToggle.astro';
-import Icon from './Icon.astro';
-import { describedBy, monogram, nextCardId, toolCardLink, type ToolCardTool } from './tool-card.ts';
+import { toolCardText } from './text.ts';
+import ToolCardView, { type ToolCardTool } from './ToolCard.tsx';
 
 interface Props {
   /** The tool (a MOD-Content `CatalogTool` or `RegTool` fits). */
@@ -24,55 +20,10 @@ interface Props {
   /** Hydration of the favorite toggle. Default `idle`. */
   hydrate?: 'load' | 'idle' | 'visible';
 }
-const { tool, variant = 'regular', categoryName, unavailable = false, iconSrc, hydrate = 'idle' } = Astro.props;
-const { href, newTab } = toolCardLink(tool);
-const regular = variant === 'regular';
-const uid = nextCardId(tool.id);
-const newTabId = newTab ? `${uid}-newtab` : undefined;
-const unavailableId = unavailable ? `${uid}-unavailable` : undefined;
+const { hydrate = 'idle', ...props } = Astro.props;
+const { tool, variant = 'regular' } = props;
 ---
 
-<div class="tk-toolcard" data-variant={variant} data-unavailable={unavailable ? '' : undefined}>
-  <div class="tk-toolcard__head">
-    <span class="tk-toolcard__icon" aria-hidden="true">
-      {iconSrc ? <img src={iconSrc} alt="" /> : monogram(tool.name)}
-    </span>
-    <div class="tk-toolcard__text">
-      <a
-        class="tk-toolcard__link"
-        href={href}
-        target={newTab ? '_blank' : undefined}
-        rel={newTab ? 'noopener noreferrer' : undefined}
-        aria-describedby={describedBy(newTabId, unavailableId)}
-      >
-        {tool.name}
-      </a>
-      {regular && <p class="tk-toolcard__summary">{tool.summary}</p>}
-    </div>
-  </div>
-  {regular && (categoryName || newTab) && (
-    <div class="tk-toolcard__meta">
-      {categoryName && <span class="tk-toolcard__category">{categoryName}</span>}
-      {newTab && (
-        <span id={newTabId} class="tk-toolcard__newtab">
-          {t('COPY-tool.opensNewTab')}
-          <Icon name="external-link" size={16} />
-        </span>
-      )}
-    </div>
-  )}
-  {!regular && newTab && (
-    <span id={newTabId} class="tk-visually-hidden">
-      {t('COPY-tool.opensNewTab')}
-    </span>
-  )}
-  {unavailable && (
-    <span id={unavailableId} class="tk-toolcard__unavailable">
-      <Icon name="wifi-off" size={16} />
-      {t('COPY-tool.unavailable')}
-    </span>
-  )}
-  <span class="tk-toolcard__fav">
-    <FavoriteToggle toolId={tool.id} appearance="plain" size={regular ? 'md' : 'sm'} hydrate={hydrate} />
-  </span>
-</div>
+<ToolCardView {...props} text={toolCardText()}>
+  <FavoriteToggle toolId={tool.id} appearance="plain" size={variant === 'regular' ? 'md' : 'sm'} hydrate={hydrate} />
+</ToolCardView>
