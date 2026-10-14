@@ -13,7 +13,7 @@ Waves run up to 3 features in parallel, in separate worktrees. Merges happen one
 | Wave | Features | Why together |
 |---|---|---|
 | 1 · Foundations | **F-001** catalog (finish: `$comment` rule tags, every AC tested) · **F-012** theme incl. the R5/R6 hand-off · **Shell** (CMP-AppShell narrow menu, offline and update slots, search entry, ADR-0010 personal-data store) | Everything else builds on these |
-| 2 · Core pages | **F-016** category pages · **F-003** tool view (embed/link, isolation, states) · **F-005** favorites | F-003 and F-005 need the data store; F-016 needs F-001 |
+| 2 · Core pages | **F-016** category pages · **F-003** tool view (embed/link, isolation, states; also F-012.AC5, AC9 and AC10, the theme hand-off through the real tool frame) · **F-005** favorites (incl. the COPY-storage.unavailable notice) | F-003 and F-005 need the data store; F-016 needs F-001 |
 | 3 · Content pages | **F-008** About · **F-009** Projects · **F-010** Now + changelog | Independent static pages |
 | 4 · Navigation | **F-002** catalog · **F-006** recents + days used · **F-004** ⌘K palette | Need F-003, F-009 and F-016 |
 | 5 · Platform | **F-011** offline/PWA · **F-015** link previews · **F-014** catalog check (CI) | Need every page in place |

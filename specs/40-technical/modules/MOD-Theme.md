@@ -8,7 +8,7 @@ depends_on: [MOD-PersonalData]
 ## Responsibility
 MOD-Theme resolves and applies the theme (RULE-03).
 - **Before first paint:** a tiny inline, CSP-hashed head script reads the stored preference and sets `data-theme` on the root element, so the first paint is already correct (F-012.R4).
-- **After hydration:** it follows the system setting live through `matchMedia('(prefers-color-scheme: dark)')`. It also exposes the quick toggle, which flips to the opposite of the theme currently showing and stores that choice explicitly.
+- **After hydration:** it follows the system setting live through `matchMedia('(prefers-color-scheme: light)')`: light only when the device asks for light, otherwise dark. A device with no preference therefore shows dark, as the dark-first style intends (D-019). It also exposes the quick toggle, which flips to the opposite of the theme currently showing and stores that choice explicitly.
 
 ## Not responsible for
 - Color values (MOD-DesignSystem tokens).
