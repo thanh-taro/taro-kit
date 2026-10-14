@@ -1,0 +1,16 @@
+<!doctype html>
+<!-- Portal stand-in for the F-012.R5/R6 hand-off e2e test, served at https://portal.test/.
+     Same CSP shape as a /t/<id>/ page (ADR-0009): scripts from self only, frame-src = the tool's origin. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="content-security-policy"
+      content="default-src 'self'; script-src 'self'; frame-src https://tool.test; object-src 'none'"
+    />
+    <title>Hand-off host</title>
+  </head>
+  <body>
+    <script type="module" src="/host.js"></script>
+  </body>
+</html>
