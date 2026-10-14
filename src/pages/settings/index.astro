@@ -1,0 +1,168 @@
+---
+// SCR-Settings (MOD-Pages). Regions: 1 shell header, 1b page heading, 2 Appearance with the theme
+// choice (F-012.R2), 4 Privacy statement. Region 3, "Your data" (export, import, days used, clear
+// recents, erase), arrives with F-013 and F-006 and is left out until then.
+import { t } from '../../modules/copy/index.ts';
+import Icon from '../../modules/design-system/Icon.astro';
+import ThemeChoice from '../../modules/pages/settings/ThemeChoice.tsx';
+import BaseLayout from '../../modules/shell/BaseLayout.astro';
+
+// F-012.R2: the three choices, in RULE-03 order.
+const choice = {
+  legend: t('COPY-settings.theme'),
+  options: [
+    { value: 'system' as const, label: t('COPY-settings.themeSystem') },
+    { value: 'light' as const, label: t('COPY-settings.themeLight') },
+    { value: 'dark' as const, label: t('COPY-settings.themeDark') },
+  ],
+};
+---
+
+<BaseLayout title={t('COPY-meta.settingsTitle')} description={t('COPY-meta.settingsDescription')} path="/settings/">
+  <div class="settings">
+    <h1>{t('COPY-settings.title')}</h1>
+
+    <section class="card appearance" aria-labelledby="s-appearance">
+      <h2 id="s-appearance">{t('COPY-settings.appearance')}</h2>
+      <ThemeChoice client:load {...choice} />
+    </section>
+
+    <section class="privacy" aria-labelledby="s-privacy">
+      <span class="privacy-icon" aria-hidden="true">
+        <Icon name="shield" />
+      </span>
+      <div class="privacy-text">
+        <h2 id="s-privacy">{t('COPY-settings.privacyTitle')}</h2>
+        <p>{t('COPY-settings.privacy')}</p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .settings {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-6);
+    max-inline-size: var(--tk-size-palette-width);
+    padding-block-start: var(--tk-space-4);
+  }
+  h1 {
+    font-size: var(--tk-font-size-5xl);
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+    padding: var(--tk-space-5);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-lg);
+  }
+  .card h2 {
+    font-size: var(--tk-font-size-lg);
+  }
+
+  /* ThemeChoice island: a segmented radiogroup (design: SettingsDesktop / SettingsMobile). */
+  .appearance :global(.choice) {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-inline-size: 0;
+  }
+  .appearance :global(legend) {
+    margin-block-end: var(--tk-space-2);
+    padding: 0;
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-md);
+  }
+  .appearance :global(.options) {
+    display: inline-flex;
+    align-self: flex-start;
+    gap: var(--tk-space-1);
+    padding: var(--tk-space-1);
+    background: var(--tk-color-bg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-lg);
+  }
+  .appearance :global(.options label) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-4);
+    border-radius: var(--tk-radius-md);
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-bold);
+    cursor: pointer;
+  }
+  .appearance :global(.options input) {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .appearance :global(.options label:has(input:checked)) {
+    background: var(--tk-color-accent);
+    color: var(--tk-color-on-accent);
+  }
+  .appearance :global(.options label:has(input:focus-visible)) {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+
+  .privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--tk-space-3);
+    padding: var(--tk-space-5);
+    background: var(--tk-color-tint);
+    border-radius: var(--tk-radius-lg);
+  }
+  .privacy-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--tk-space-10);
+    block-size: var(--tk-space-10);
+    border-radius: var(--tk-radius-md);
+    background: var(--tk-color-surface);
+    color: var(--tk-color-accent);
+  }
+  .privacy-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-1);
+  }
+  .privacy h2 {
+    font-size: var(--tk-font-size-base);
+  }
+
+  @media (max-width: 720px) {
+    .settings {
+      gap: var(--tk-space-4);
+      padding-block-start: 0;
+    }
+    h1 {
+      font-size: var(--tk-font-size-3xl);
+    }
+    .card,
+    .privacy {
+      padding: var(--tk-space-4);
+    }
+    .card h2 {
+      font-size: var(--tk-font-size-base);
+    }
+    .appearance :global(.options) {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-self: stretch;
+    }
+  }
+</style>

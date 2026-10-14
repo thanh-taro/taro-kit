@@ -2,6 +2,7 @@
 // MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
 // Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
 // the single font preload (ADR-0003). Body: skip link first, banner, main.
+// Slots: default (page content), "offline" and "update" (CMP-AppShell status, F-011).
 import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { t } from '../copy/index.ts';
@@ -36,16 +37,25 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
   </head>
   <body>
     {/* First element of <body>: runs before any content paints (F-012.R4), and after Astro's CSP meta in <head>, so its hash governs it. */}
+    {/* set:html on a build-time constant only (themeInlineScript, hashed for the CSP). */}
     <script is:inline set:html={themeInlineScript} />
     <a href="#main" class="skip">
       {t('COPY-shell.skip')}
     </a>
     <div class="frame">
-      <AppShell path={path} />
+      <AppShell path={path}>
+        <slot name="offline" slot="offline" />
+        <slot name="update" slot="update" />
+      </AppShell>
       <main id="main" tabindex="-1">
         <slot />
       </main>
     </div>
+    <script>
+      // MOD-Theme after first paint: follow the device setting live and apply every change (F-012.R1, R2).
+      import { theme } from '../theme/index.ts';
+      theme();
+    </script>
   </body>
 </html>
 
