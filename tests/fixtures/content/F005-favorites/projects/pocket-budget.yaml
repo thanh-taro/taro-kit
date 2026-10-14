@@ -4,7 +4,7 @@ kind: project
 name: Pocket Budget
 summary: A tiny offline budget app I built to track my monthly spending.
 description: Local-first, works offline, and syncs between my phone and laptop through a file.
-image: projects/pocket-budget.svg
+image: projects/pocket-budget.png
 tags: [mobile, finance]
 links:
   - { label: Live site, url: 'https://example.com/pocket-budget', kind: website }

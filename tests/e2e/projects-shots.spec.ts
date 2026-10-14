@@ -18,12 +18,12 @@ for (const [size, viewport] of Object.entries(sizes))
       const tag = `${size}-${scheme}`;
 
       test('default, focused from its address, and empty', async ({ page }) => {
-        await page.goto(`${FX}/__fixtures__/projects/`);
+        await page.goto(`${FX}/projects/`);
         await expect(page.getByRole('img', { name: 'Screenshot of Pocket Budget' })).toBeVisible();
         await shot(page, `default-${tag}`, true);
         await page.goto('about:blank');
-        await page.goto(`${FX}/__fixtures__/projects/#unity-game`);
-        await expect(page.locator('li[id="unity-game"]')).toBeFocused();
+        await page.goto(`${FX}/projects/#unity-game`);
+        await expect(page.locator('li[data-project-id="unity-game"]')).toBeFocused();
         await shot(page, `address-${tag}`);
         await page.goto(`${PROD}/projects/`);
         await shot(page, `empty-${tag}`);

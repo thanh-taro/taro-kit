@@ -44,10 +44,6 @@ const fixturePages: AstroIntegration = {
           pattern: `/__fixtures__/${state}`,
           entrypoint: new URL('./tests/fixtures/pages/F010-now.astro', import.meta.url),
         });
-      injectRoute({
-        pattern: '/__fixtures__/projects',
-        entrypoint: new URL('./tests/fixtures/pages/F009-projects.astro', import.meta.url),
-      });
     },
   },
 };

@@ -2,38 +2,32 @@
 // MOD-DesignSystem: CMP-ProjectCard, one project in the showcase (SCR-Projects).
 // Design: design/canvas/CMP-ProjectCard.dc.html, ProjectsDesktop.dc.html, ProjectsMobile.dc.html.
 // Anatomy: image or name placeholder; name (a heading); year; summary; description; tags; links.
-// - The root is the list item, carrying the project id as its `id`, so `/projects/#<id>` finds it, and
+// - The root is the list item, with the prefixed id `project-<id>` (projectCardId) and the project id in
+//   `data-project-id`, so the page script resolves `/projects/#<id>` to it without clashing with shell ids, and
 //   `tabindex="-1"`, so the page can focus it (F-009.R4); a focused card shows the accent ring.
 // - Without an image, the placeholder is the name's monogram (F-009 edge case; style.md), hidden from assistive tech.
 // - Every link opens in a new tab with no opener or referrer, described by COPY-tool.opensNewTab (F-009.R2).
 //   The first link is primary unless it is a source-code link; the rest are secondary (design ProjectsDesktop).
 // Implements: F-009.R2.
-import type { Link } from '../../generated/domain.ts';
 import { t } from '../copy/index.ts';
 import Icon from './Icon.astro';
+import { projectCardId, type ProjectCardData } from './project-card.ts';
 import { monogram } from './tool-card.ts';
 
 interface Props {
-  project: {
-    id: string;
-    name: string;
-    summary: string;
-    description: string;
-    tags?: string[];
-    year: number;
-    links: Link[];
-  };
+  project: ProjectCardData;
   /** The bundled image's address; without it, the name's monogram shows. */
   imageSrc?: string;
   headingLevel?: 2 | 3;
 }
 const { project, imageSrc, headingLevel = 2 } = Astro.props;
 const Heading = `h${headingLevel}` as const;
-const newTabId = `${project.id}-newtab`;
+const cardId = projectCardId(project.id);
+const newTabId = `${cardId}-newtab`;
 const primaryIndex = project.links[0]?.kind === 'code' ? -1 : 0;
 ---
 
-<li class="tk-projectcard" id={project.id} tabindex="-1" data-testid="project-card">
+<li class="tk-projectcard" id={cardId} data-project-id={project.id} tabindex="-1" data-testid="project-card">
   <article>
     {imageSrc ? (
       <img

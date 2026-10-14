@@ -4,22 +4,14 @@
 // list item with a heading and its own address `#<id>`; or, with no visible project, the empty CMP-StateMessage.
 // Design: design/canvas/ProjectsDesktop.dc.html, ProjectsMobile.dc.html, EmptyPagesDesktop.dc.html.
 // Implements: F-009.R1 (order comes from MOD-Content's visibleProjects), F-009.R2, F-009.R3, F-009.R4.
-import type { Link } from '../../../generated/domain.ts';
 import { t } from '../../copy/index.ts';
 import ProjectCard from '../../design-system/ProjectCard.astro';
+import type { ProjectCardData } from '../../design-system/project-card.ts';
 import StateMessage from '../../design-system/StateMessage.astro';
 
 interface Props {
   /** Visible projects, already in display order. */
-  projects: {
-    id: string;
-    name: string;
-    summary: string;
-    description: string;
-    tags?: string[];
-    year: number;
-    links: Link[];
-  }[];
+  projects: ProjectCardData[];
   /** Image address per project id, for projects that have one. */
   images: Record<string, string>;
 }

@@ -4,6 +4,7 @@ kind: project
 name: JsonCrack Clone
 summary: A graph viewer for big JSON files.
 description: I rebuilt it to learn canvas rendering. It handles 50 MB files in the browser.
+image: projects/jsoncrack-clone.svg
 tags: [web, visualization]
 links:
   - { label: Try it, url: 'https://example.com/jsoncrack', kind: website }

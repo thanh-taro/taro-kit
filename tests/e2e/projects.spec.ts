@@ -1,14 +1,17 @@
-// F-009 Showcase projects (SCR-Projects). The listed states run on the tests-only page /__fixtures__/projects/
-// (fixture build, port 4322), which renders the same ProjectsView as /projects/ from
-// tests/fixtures/content/F009-projects: six visible projects from 2024 to 2026 and one hidden project.
+// F-009 Showcase projects (SCR-Projects). The listed states run on /projects/ of the fixture build (port 4322),
+// whose content is tests/fixtures/content/F005-favorites: seven visible projects from 2024 to 2026 (two with
+// images, one whose id is "main") and one hidden project with an image.
 // The production build (port 4321) has only a hidden sample project, so /projects/ shows the empty state.
 import AxeBuilder from '@axe-core/playwright';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { FX, PROD } from './ports.ts';
 
-const LIST = `${FX}/__fixtures__/projects/`;
+const LIST = `${FX}/projects/`;
+const assets = join(import.meta.dirname, '../fixtures/content/F005-favorites/assets/projects');
 const cards = (page: Page) => page.getByTestId('projects').getByRole('listitem');
-const card = (page: Page, id: string) => page.locator(`li[id="${id}"]`);
+const card = (page: Page, id: string) => page.locator(`li[data-project-id="${id}"]`);
 
 /** Every request to example.com (the fixture projects' links) gets a tiny page, so nothing leaves the machine. */
 async function stubLinks(page: Page) {
@@ -28,6 +31,7 @@ test.describe('F-009 projects page', () => {
       'Pocket Budget',
       'JsonCrack Clone',
       'Tiny Synth',
+      'Main Street Map',
       'Recipe Box',
       'Study Buddy Bot',
       'Unity Game Jam',
@@ -38,7 +42,7 @@ test.describe('F-009 projects page', () => {
 
   test('F009_AC2 a hidden project is not listed', async ({ page }) => {
     await page.goto(LIST);
-    await expect(cards(page)).toHaveCount(6);
+    await expect(cards(page)).toHaveCount(7);
     await expect(page.getByText('Secret Fixture Game')).toHaveCount(0);
     await expect(card(page, 'secret-game')).toHaveCount(0);
   });
@@ -100,6 +104,17 @@ test.describe('F-009 projects page', () => {
     await expect(card(page, 'pocket-budget')).toBeFocused();
   });
 
+  test('F-009.R4 a project whose id is "main" gets its card, without touching the shell\'s main region', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto(`${LIST}#main`);
+    await expect(card(page, 'main')).toBeFocused();
+    await expect(card(page, 'main')).toBeInViewport();
+    expect(await page.evaluate(() => document.getElementById('main')?.tagName)).toBe('MAIN');
+    await expect(page.locator('[id="main"]')).toHaveCount(1);
+  });
+
   for (const id of ['does-not-exist', 'secret-game'])
     test(`F-009 edge case: the address of an unknown or hidden project (${id}) opens the page at the top`, async ({
       page,
@@ -120,9 +135,29 @@ test.describe('F-009 projects page', () => {
     expect(await img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   });
 
+  for (const [file, type] of [
+    ['pocket-budget.png', 'image/png'],
+    ['jsoncrack-clone.svg', 'image/svg+xml'],
+  ] as const)
+    test(`F-009.R2 a visible project's image is served at /projects/images/${file}`, async ({ request }) => {
+      const res = await request.get(`${FX}/projects/images/${file}`);
+      expect(res.status()).toBe(200);
+      expect(res.headers()['content-type']).toContain(type);
+      expect(Buffer.compare(await res.body(), readFileSync(join(assets, file)))).toBe(0);
+    });
+
+  test("RULE-06 a hidden project's image is not emitted", async ({ request }) => {
+    const res = await request.get(`${FX}/projects/images/secret-game.png`);
+    expect(res.status()).toBe(404);
+  });
+
   for (const scheme of ['dark', 'light'] as const)
-    for (const url of [LIST, `${LIST}#unity-game`, `${PROD}/projects/`])
-      test(`NFR-03 ${url.replace(/^http:\/\/[^/]+/, '')} has no serious axe issues (${scheme})`, async ({ page }) => {
+    for (const [label, url] of [
+      ['list', LIST],
+      ['card opened from its address', `${LIST}#unity-game`],
+      ['empty (production)', `${PROD}/projects/`],
+    ])
+      test(`NFR-03 projects ${label} has no serious axe issues (${scheme})`, async ({ page }) => {
         await page.emulateMedia({ colorScheme: scheme });
         await page.goto(url);
         await expect(page.locator('html')).toHaveAttribute('data-theme', scheme);

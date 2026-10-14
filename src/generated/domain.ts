@@ -21,7 +21,7 @@ export type Timestamp = string;
  */
 export type SecureUrl = string;
 /**
- * Relative path of an asset bundled with the portal; never a remote address (NFR-05).
+ * Relative path of an asset bundled with the portal, inside content/assets/ (no ".." segments); never a remote address (NFR-05).
  *
  * This interface was referenced by `TaroKitDataModel`'s JSON-Schema
  * via the `definition` "assetPath".
@@ -76,7 +76,10 @@ export interface Tool {
 export interface Project {
   kind?: "project";
   description: string;
-  image?: AssetPath;
+  /**
+   * Relative path of an asset bundled with the portal, inside content/assets/ (no ".." segments); never a remote address (NFR-05).
+   */
+  image?: string;
   /**
    * @maxItems 4
    */
