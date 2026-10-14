@@ -2,6 +2,7 @@
 // MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
 // Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
 // the single font preload (ADR-0003). Body: skip link first, banner, main.
+// Slots: default (page content), "offline" and "update" (CMP-AppShell status, F-011).
 import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { t } from '../copy/index.ts';
@@ -11,7 +12,8 @@ import AppShell from './AppShell.astro';
 
 interface Props {
   title: string;
-  description: string;
+  /** Omitted only where the copy has no page description yet. */
+  description?: string;
   /** Current route path, e.g. "/". */
   path: string;
   /** Set only on /t/<id>/ for an embedded tool: the page's frame-src becomes that tool's origin. */
@@ -31,7 +33,7 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <meta name="description" content={description} />
+    {description && <meta name="description" content={description} />}
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
   </head>
   <body>
@@ -41,11 +43,19 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
       {t('COPY-shell.skip')}
     </a>
     <div class="frame">
-      <AppShell path={path} />
+      <AppShell path={path}>
+        <slot name="offline" slot="offline" />
+        <slot name="update" slot="update" />
+      </AppShell>
       <main id="main" tabindex="-1">
         <slot />
       </main>
     </div>
+    <script>
+      // MOD-Theme after first paint: follow the device setting live and apply every change (F-012.R1, R2).
+      import { theme } from '../theme/index.ts';
+      theme();
+    </script>
   </body>
 </html>
 
