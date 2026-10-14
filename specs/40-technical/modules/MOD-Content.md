@@ -32,7 +32,7 @@ It runs in Node at build and inside the catalog check. It never runs in the brow
 - `loadRegistry(options) → Registry`, or a thrown `ContentErrors` holding `{ file, entryId, rule, message }[]`.
 - The `Registry` type, with `visibleTools`, `toolById(id)`, `categories`, `projects`, `profile`, `avatarFile` (the validated avatar file, F-008.R1), `now`, `changelogEvents`, `embeddedOrigins`, `portalOrigin` and `allTools` (for checks only).
 - `catalogData(registry) → { categories, tools, projects }`: the catalog data file's payload (visible entries only), read by the catalog, search and the palette.
-- `emitCatalogData(registry) → { path, hash }`, which adds MOD-Search's pre-normalized keys to that payload and writes the hashed file (with F-002 and F-004).
+- `catalogDataFile(registry) → { path, hash, json }` (`emit-catalog-data.ts`, Node): that payload with MOD-Search's `searchKeys` on every tool and project, its address `/data/catalog.<hash>.json` (the first 10 hex digits of its SHA-256) and its JSON. Pages pass `path` to islands. `emitCatalogData(registry, outDir) → { path, hash }` writes it into the build output (an `astro:build:done` hook in `astro.config.ts`), and `catalogDataPlugin(registry)` serves it in dev.
 - Pure derivations (`derive.ts`), used at build by pages, the site index and the catalog data. Each takes normalized entries and drops hidden ones itself (RULE-06):
   - `visibleTools(tools)`: visible tools, alphabetically (F-002.R1);
   - `visibleCategories(categories, tools)`: categories with at least one visible tool, in display order;

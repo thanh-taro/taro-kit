@@ -1,0 +1,250 @@
+---
+// MOD-Pages: the SCR-Catalog body, rendered by /tools/ from the registry and by tests from fixture content.
+// Regions (after the shell header): 2 the title (COPY-catalog.title) and search field
+// (COPY-catalog.searchPlaceholder); 3 the category navigation (COPY-category.navLabel), a compact
+// CMP-CategoryTile per visible category; 4 the tool groups by category, each heading a link to its category page,
+// then CMP-ToolCard items. With no visible tools: the empty CMP-StateMessage (COPY-catalog.empty) and no navigation.
+// The grouped list is static HTML (the no-JS baseline); the CatalogSearch island adds search (F-002.R4, R5).
+// Design: design/canvas/CatalogDesktop.dc.html, CatalogMobile.dc.html, CatalogStatesDesktop.dc.html.
+// Implements: F-002.R1, F-002.R2 (through CMP-ToolCard), F-002.R3, F-002.R6.
+import type { Category } from '../../../generated/domain.ts';
+import { t } from '../../copy/index.ts';
+import CategoryTile from '../../design-system/CategoryTile.astro';
+import StateMessage from '../../design-system/StateMessage.astro';
+import ToolCard from '../../design-system/ToolCard.astro';
+import type { ToolCardTool } from '../../design-system/tool-card.ts';
+import type { CatalogView } from './catalog.ts';
+import CatalogSearch from './CatalogSearch.tsx';
+import { catalogSearchText } from './text.ts';
+
+interface Props {
+  view: CatalogView<Pick<Category, 'id' | 'name' | 'tint'>, ToolCardTool>;
+  /** Build-time inline SVG per category id (`svgFromFile`). */
+  icons: Record<string, string>;
+  /** The catalog data file's address (MOD-Content `catalogDataFile`). */
+  dataUrl: string;
+}
+const { view, icons, dataUrl } = Astro.props;
+---
+
+<CatalogSearch client:idle text={catalogSearchText()} dataUrl={view.empty ? undefined : dataUrl}>
+  {!view.empty && (
+    <nav slot="nav" class="cats" aria-label={t('COPY-category.navLabel')}>
+      {view.nav.map((c) => (
+        <CategoryTile name={c.name} href={c.href} count={c.count} tint={c.tint} iconSvg={icons[c.id] ?? ''} />
+      ))}
+    </nav>
+  )}
+  {view.empty ? (
+    <div class="state">
+      <StateMessage variant="empty" page title={t('COPY-catalog.empty')} />
+    </div>
+  ) : (
+    <div class="groups" data-testid="catalog-groups">
+      {view.groups.map(({ category, path, tools }) => (
+        <section aria-labelledby={`group-${category.id}`}>
+          <h2 id={`group-${category.id}`}>
+            <span class="group-icon" data-tint={category.tint} aria-hidden="true" set:html={icons[category.id]} />
+            <a href={path}>
+              {category.name}
+              <span class="chevron" aria-hidden="true">
+                ›
+              </span>
+            </a>
+          </h2>
+          <ul class="tk-catalog__grid">
+            {tools.map((tool) => (
+              <li>
+                <ToolCard tool={tool} categoryName={category.name} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  )}
+</CatalogSearch>
+
+<style>
+  /* The island's own markup (CatalogSearch.tsx) is not scoped here, so its classes are global. */
+  :global(.tk-catalog) {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-6) + var(--tk-space-1));
+  }
+  :global(.tk-catalog__head) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--tk-space-4);
+    padding-block-start: var(--tk-space-4);
+  }
+  :global(.tk-catalog__head h1) {
+    font-size: var(--tk-font-size-5xl);
+    line-height: var(--tk-font-line-height-tight);
+    letter-spacing: -0.03em;
+  }
+  :global(.tk-catalog__search) {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    inline-size: calc(var(--tk-space-12) * 7.5);
+    max-inline-size: 100%;
+    min-block-size: var(--tk-space-12);
+    padding-inline: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-lg);
+  }
+  :global(.tk-catalog__search[data-active]) {
+    border-color: var(--tk-color-accent);
+  }
+  :global(.tk-catalog__search:focus-within) {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+  :global(.tk-catalog__search-icon) {
+    display: flex;
+    color: var(--tk-color-muted);
+  }
+  :global(.tk-catalog__search input) {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    min-block-size: var(--tk-size-touch-target);
+    background: transparent;
+    border: 0;
+    outline: none;
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-input);
+    font-weight: var(--tk-font-weight-medium);
+  }
+  :global(.tk-catalog__search input::placeholder) {
+    color: var(--tk-color-muted);
+    opacity: 1;
+  }
+  /* Results and every group: three columns on wide screens (design CatalogDesktop). */
+  :global(.tk-catalog__grid) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--tk-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  :global(.tk-catalog__state),
+  .state {
+    display: flex;
+    justify-content: center;
+    padding-block: var(--tk-space-10);
+  }
+  :global(.tk-catalog__static[hidden]) {
+    display: none;
+  }
+
+  /* Region 3: the category navigation, compact tiles. */
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tk-space-2);
+  }
+
+  /* Region 4: one section per category, its heading a link to the category page. */
+  .groups {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-6) + var(--tk-space-1));
+  }
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+  }
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    font-size: var(--tk-font-size-xl);
+    letter-spacing: -0.01em;
+  }
+  .group-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--tk-space-8);
+    block-size: var(--tk-space-8);
+    border-radius: var(--tk-radius-md);
+    background: var(--cat-bg);
+    color: var(--cat-fg);
+  }
+  .group-icon :global(.tk-icon) {
+    inline-size: var(--tk-size-icon-sm);
+    block-size: var(--tk-size-icon-sm);
+  }
+  h2 a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--tk-size-touch-target);
+    color: inherit;
+    text-decoration: none;
+    border-radius: var(--tk-radius-sm);
+  }
+  h2 a:hover {
+    text-decoration: underline;
+  }
+  h2 a:focus-visible {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+  .chevron {
+    margin-inline-start: calc(var(--tk-space-1) + var(--tk-space-1) / 2);
+    color: var(--tk-color-muted);
+  }
+
+  @media (max-width: 960px) {
+    :global(.tk-catalog__grid) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 720px) {
+    :global(.tk-catalog) {
+      gap: var(--tk-space-5);
+    }
+    :global(.tk-catalog__head) {
+      flex-direction: column;
+      align-items: stretch;
+      padding-block-start: 0;
+    }
+    :global(.tk-catalog__head h1) {
+      font-size: var(--tk-font-size-3xl);
+    }
+    :global(.tk-catalog__search) {
+      inline-size: auto;
+    }
+    :global(.tk-catalog__grid) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--tk-space-2);
+    }
+    /* The navigation scrolls sideways instead of wrapping, edge to edge (CatalogMobile). */
+    .cats {
+      flex-wrap: nowrap;
+      margin-inline: calc(-1 * (var(--tk-size-gutter) + var(--tk-space-2)));
+      padding: 0 calc(var(--tk-size-gutter) + var(--tk-space-2)) var(--tk-space-1);
+      overflow-x: auto;
+    }
+    .groups {
+      gap: var(--tk-space-6);
+    }
+    section {
+      gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    }
+    h2 {
+      font-size: var(--tk-font-size-lg);
+    }
+    .group-icon {
+      inline-size: calc(var(--tk-space-6) + var(--tk-space-1));
+      block-size: calc(var(--tk-space-6) + var(--tk-space-1));
+    }
+  }
+</style>

@@ -2,6 +2,7 @@
 // the SCR-Projects body (R1 to R3) rendered through Astro's container API, and the address-to-card mapping (R4).
 // Content: the fixture build's content, tests/fixtures/content/F005-favorites (its projects/ are F-009's).
 // Browser behavior (new tab on activation, the #<id> address) is verified in tests/e2e/projects.spec.ts.
+import preact from '@astrojs/preact/server.js';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { cpSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -28,6 +29,8 @@ const registry = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/con
 
 async function render(component: Parameters<AstroContainer['renderToString']>[0], props = {}) {
   const container = await AstroContainer.create();
+  // CMP-StateMessage (the empty state) is a Preact component rendered without hydration.
+  container.addServerRenderer({ name: '@astrojs/preact', renderer: preact });
   return container.renderToString(component, { props });
 }
 
@@ -131,7 +134,8 @@ describe('F-009 SCR-Projects body', () => {
 
   test('F009_AC4 with no visible projects the page shows the empty state', async () => {
     const html = await render(ProjectsView, { projects: [], images: {} });
-    expect(html).toContain('I&#39;m putting my projects together. Check back soon.');
+    // CMP-StateMessage renders through Preact (StateMessage.tsx), which leaves apostrophes unescaped.
+    expect(html).toMatch(/I(&#39;|')m putting my projects together\. Check back soon\./);
     expect(html).toContain('class="tk-state"');
     expect(html).not.toMatch(/<ul/);
   });

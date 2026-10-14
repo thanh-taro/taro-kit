@@ -1,0 +1,11 @@
+# Test fixture for F-002 (catalog search): not found by "json" (F002_AC5); found by "image" in its summary,
+# after the Media tool Image Resizer, in one ranked list across two categories (F002_AC6).
+id: fx-base64
+kind: tool
+name: Base64
+summary: Encode and decode Base64 text and images.
+category: developer
+url: https://fx-base64.example.com/
+origin: own
+tags: [encoding]
+added: 2026-10-01

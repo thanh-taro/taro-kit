@@ -135,8 +135,7 @@ test.describe('F-016 category page', () => {
     await expect(categoryNav(page).getByRole('link', { name: 'All my tools' })).toHaveAttribute('href', '/tools/');
   });
 
-  // un-fixme in F-002 (SCR-Catalog at /tools/ does not exist yet).
-  test.fixme('F016_AC4 catalog opens: choosing all tools opens the catalog', async ({ page }) => {
+  test('F016_AC4 catalog opens: choosing all tools opens the catalog', async ({ page }) => {
     await page.goto(`${FX}/tools/media/`);
     const [res] = await Promise.all([
       page.waitForResponse((r) => new URL(r.url()).pathname === '/tools/'),
