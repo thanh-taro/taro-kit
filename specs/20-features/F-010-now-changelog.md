@@ -1,7 +1,7 @@
 ---
 id: F-010
 title: Now and changelog
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-02, PER-01]
@@ -40,3 +40,4 @@ SCR-Now holds both sections. Changelog labels: COPY-now.changelogAdded, COPY-now
 
 ## Edge cases
 - A tool added and updated on the same day appears only as added.
+- A Now note with no visible tools shows only the note: the changelog has no items (RULE-04), so its section is left out.

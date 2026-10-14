@@ -162,6 +162,12 @@ describe('MOD-Content validation', () => {
       'content/tools/units.yaml:9 › units › SCHEMA: (root): unknown field "opnMode"',
     ]);
   });
+
+  it('F-001.R2 an optional now.yaml that is present but invalid still fails and names the file (F-010.R4)', () => {
+    const lines = failures('F010-now-missing-updated');
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toMatch(/^content\/now\.yaml\b.*SCHEMA: .*updated/);
+  });
 });
 
 describe('MOD-Content normalization', () => {

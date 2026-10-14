@@ -1,0 +1,17 @@
+---
+// SCR-Now (MOD-Pages) at /now/: static Now note and changelog grouped by month; the StaleLabel island adds the
+// RULE-09 label against the viewer's date. Region 1 is the shell header (BaseLayout), with Now marked.
+// Implements: F-010.R1, F-010.R2, F-010.R3, F-010.R4.
+import { getRegistry } from '../../modules/content/index.ts';
+import { t } from '../../modules/copy/index.ts';
+import NowView from '../../modules/pages/now/NowView.astro';
+import { nowView } from '../../modules/pages/now/now.ts';
+import BaseLayout from '../../modules/shell/BaseLayout.astro';
+
+const registry = getRegistry();
+const view = nowView({ now: registry.now, tools: registry.allTools });
+---
+
+<BaseLayout title={t('COPY-meta.nowTitle')} description={t('COPY-meta.nowDescription')} path="/now/">
+  <NowView view={view} />
+</BaseLayout>

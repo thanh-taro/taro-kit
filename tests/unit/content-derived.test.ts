@@ -137,18 +137,14 @@ describe('RULE-04 changelog', () => {
     ]);
   });
 
-  it('RULE-04 orders same-date items by name, then updated before added', () => {
+  it('RULE-04 orders same-date items by name', () => {
     const items = changelog([
       tool('beta', '2026-05-01'),
       tool('alpha', '2026-05-01', '2026-05-01'),
       tool('gamma', '2026-04-01', '2026-05-01'),
     ])[0].items;
-    expect(items.map((i) => `${i.id}:${i.type}`)).toEqual([
-      'alpha:updated',
-      'alpha:added',
-      'beta:added',
-      'gamma:updated',
-    ]);
+    // alpha was added and updated the same day, so it appears only as added (F-010 edge case).
+    expect(items.map((i) => `${i.id}:${i.type}`)).toEqual(['alpha:added', 'beta:added', 'gamma:updated']);
   });
 
   it('RULE-04 leaves projects out of the changelog', () => {
