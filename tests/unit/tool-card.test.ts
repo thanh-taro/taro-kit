@@ -4,7 +4,12 @@ import preact from '@astrojs/preact/server.js';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, test } from 'vitest';
 import { visibleToolIds } from 'virtual:tarokit/visible-tool-ids';
-import { getRegistry, visibleToolIdsSource } from '../../src/modules/content/index.ts';
+import {
+  getRegistry,
+  RESOLVED_VISIBLE_TOOL_IDS_MODULE,
+  visibleToolIdsPlugin,
+  visibleToolIdsSource,
+} from '../../src/modules/content/index.ts';
 import FavoriteToggle from '../../src/modules/design-system/FavoriteToggle.astro';
 import ToolCard from '../../src/modules/design-system/ToolCard.astro';
 import SameToolTwice from '../fixtures/design-system/SameToolTwice.astro';
@@ -126,6 +131,40 @@ describe('visible tool ids for islands (MOD-Content)', () => {
     const registry = getRegistry();
     expect(visibleToolIds).toEqual(registry.visibleTools.map((t) => t.id));
     for (const hidden of registry.allTools.filter((t) => t.hidden)) expect(visibleToolIds).not.toContain(hidden.id);
+  });
+
+  test('in dev, a content edit clears the registry cache, invalidates the module and reloads the page', () => {
+    let ids = ['a'];
+    let resets = 0;
+    const plugin = visibleToolIdsPlugin({
+      ids: () => ids,
+      contentDir: '/repo/content',
+      onContentChange: () => resets++,
+    });
+    const listeners: Record<string, (path: string) => void> = {};
+    const watched: string[] = [];
+    const invalidated: unknown[] = [];
+    const sent: unknown[] = [];
+    const mod = { id: RESOLVED_VISIBLE_TOOL_IDS_MODULE };
+    const graph = {
+      getModuleById: (id: string) => (id === RESOLVED_VISIBLE_TOOL_IDS_MODULE ? mod : undefined),
+      invalidateModule: (m: unknown) => void invalidated.push(m),
+    };
+    plugin.configureServer({
+      watcher: { add: (p: string) => watched.push(p), on: (e: string, cb: (p: string) => void) => (listeners[e] = cb) },
+      environments: { client: { moduleGraph: graph }, ssr: { moduleGraph: graph } },
+      ws: { send: (payload) => void sent.push(payload) },
+    });
+    expect(watched).toEqual(['/repo/content']);
+    listeners.change!('/repo/src/other.ts');
+    expect(resets).toBe(0);
+    ids = ['a', 'b'];
+    listeners.change!('/repo/content/tools/b.yaml');
+    expect(resets).toBe(1);
+    expect(invalidated).toEqual([mod, mod]);
+    expect(sent).toEqual([{ type: 'full-reload' }]);
+    expect(plugin.load(RESOLVED_VISIBLE_TOOL_IDS_MODULE)).toBe(visibleToolIdsSource(['a', 'b']));
+    expect(Object.keys(listeners).sort()).toEqual(['add', 'change', 'unlink']);
   });
 
   test('the module source is plain data', () => {

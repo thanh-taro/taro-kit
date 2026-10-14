@@ -2,7 +2,7 @@
 // Runs in Node at build (Astro config, pages, scripts). Never runs in the browser.
 // Implements: F-001.R1, F-001.R2, F-001.R3, F-001.R4, F-001.R5.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { LineCounter, parseDocument } from 'yaml';
 import type { Category, EntryBase, NowNote, Profile, Project, Tool } from '../../generated/domain.ts';
 import {
@@ -329,3 +329,10 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
 let cached: Registry | undefined;
 /** One load per process: the Astro config and every page share it. */
 export const getRegistry = (): Registry => (cached ??= loadRegistry());
+/** Forgets the cached registry, so the next `getRegistry()` reloads content (dev server, on content edits). */
+export const resetRegistry = (): void => {
+  cached = undefined;
+};
+/** The content folder `getRegistry()` reads: $TAROKIT_CONTENT_DIR, or <cwd>/content. */
+export const contentDirectory = (): string =>
+  resolve(process.env.TAROKIT_CONTENT_DIR ?? join(process.cwd(), 'content'));

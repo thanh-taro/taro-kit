@@ -2,7 +2,13 @@
 import preact from '@astrojs/preact';
 import type { AstroIntegration } from 'astro';
 import { defineConfig } from 'astro/config';
-import { ContentErrors, getRegistry, visibleToolIdsPlugin } from './src/modules/content/index.ts';
+import {
+  contentDirectory,
+  ContentErrors,
+  getRegistry,
+  resetRegistry,
+  visibleToolIdsPlugin,
+} from './src/modules/content/index.ts';
 import { CSP_DIRECTIVES } from './src/modules/security-policy/index.ts';
 
 // Content is validated before Astro does anything else, so bad content fails the build at once
@@ -43,7 +49,13 @@ export default defineConfig({
   integrations: [preact(), ...(fixtures ? [fixturePages] : [])],
   vite: {
     // MOD-Content: `virtual:tarokit/visible-tool-ids` for islands (RULE-02, INV-04).
-    plugins: [visibleToolIdsPlugin(() => getRegistry().visibleTools.map((t) => t.id))],
+    plugins: [
+      visibleToolIdsPlugin({
+        ids: () => getRegistry().visibleTools.map((t) => t.id),
+        contentDir: contentDirectory(),
+        onContentChange: resetRegistry,
+      }),
+    ],
   },
   security: {
     csp: {

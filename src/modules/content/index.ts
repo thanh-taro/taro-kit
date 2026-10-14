@@ -1,7 +1,9 @@
 // MOD-Content public surface (specs/40-technical/modules/MOD-Content.md).
 export { ContentErrors, formatError, type ContentError } from './errors.ts';
 export {
+  contentDirectory,
   getRegistry,
+  resetRegistry,
   loadRegistry,
   PORTAL_ORIGIN,
   type ChangelogEvent,
@@ -26,4 +28,10 @@ export {
   type Dated,
   type DatedItem,
 } from './derive.ts';
-export { VISIBLE_TOOL_IDS_MODULE, visibleToolIdsPlugin, visibleToolIdsSource } from './visible-tool-ids.ts';
+export {
+  RESOLVED_VISIBLE_TOOL_IDS_MODULE,
+  VISIBLE_TOOL_IDS_MODULE,
+  visibleToolIdsPlugin,
+  visibleToolIdsSource,
+  type DevServerLike,
+} from './visible-tool-ids.ts';
