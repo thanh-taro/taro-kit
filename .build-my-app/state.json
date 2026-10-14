@@ -607,6 +607,18 @@
       "answer": "Accept and document; ADR-0001 accepted",
       "asked": "2026-10-13T14:06:55+00:00",
       "answered": "2026-10-13T14:06:55+00:00"
+    },
+    {
+      "id": "D-039",
+      "question": "Theme hand-off to embedded tools (JSON Formatter change request; amends D-008)",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "architecture",
+      "status": "answered",
+      "answer": "Keep F-012.R5/R6 + ADR-0011 after spec review; D-008 now: nothing shared except the current theme",
+      "asked": "2026-10-14T00:32:02+00:00",
+      "answered": "2026-10-14T00:32:02+00:00"
     }
   ],
   "loops": {
@@ -1227,9 +1239,17 @@
     {
       "at": "2026-10-13T14:06:55+00:00",
       "event": "decision D-038 answered: Accept and document; ADR-0001 accepted"
+    },
+    {
+      "at": "2026-10-14T00:32:02+00:00",
+      "event": "decision D-039 opened: Theme hand-off to embedded tools (JSON Formatter change request; amends D-008)"
+    },
+    {
+      "at": "2026-10-14T00:32:02+00:00",
+      "event": "decision D-039 answered: Keep F-012.R5/R6 + ADR-0011 after spec review; D-008 now: nothing shared except the current theme"
     }
   ],
-  "updated": "2026-10-13T14:06:55+00:00",
+  "updated": "2026-10-14T00:32:02+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

@@ -41,3 +41,6 @@ Shipping Fontsource subsets as-is fails the NFR-11 headroom: the home page is 19
 - Loading: `font-display: swap`, and preload Manrope Latin only.
 
 Measured on the reference profile: home transfer 74 KB (EN) and 87 KB (VI), of which fonts are 39–52 KB, JS 15 KB, CSS 3 KB and the catalog 12 KB at 500 entries.
+
+## Note from the scaffold (2026-10-14)
+- Generated tokens put the dark theme on `:root` and the light theme under `[data-theme="light"]` (adapters/design.md), with a `prefers-color-scheme` fallback for when no script has run.

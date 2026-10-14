@@ -16,6 +16,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-nav.now** | Now | navigation |
 | **COPY-nav.settings** | Settings | navigation |
 | **COPY-nav.menu** | Menu | narrow-layout menu button |
+| **COPY-shell.brand** | TaroKit | wordmark in the shell header |
 | **COPY-shell.skip** | Skip to content | first focusable element |
 | **COPY-shell.offline** | You're offline. Tools that need the internet are paused. | quiet indicator |
 | **COPY-shell.updateReady** | I've shipped an update to TaroKit. | update message |

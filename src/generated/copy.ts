@@ -93,6 +93,7 @@ export const COPY = {
   "COPY-settings.theme": "Theme: System, Light, Dark",
   "COPY-settings.title": "Settings",
   "COPY-settings.yourData": "Your data",
+  "COPY-shell.brand": "TaroKit",
   "COPY-shell.offline": "You're offline. Tools that need the internet are paused.",
   "COPY-shell.refresh": "Refresh",
   "COPY-shell.skip": "Skip to content",

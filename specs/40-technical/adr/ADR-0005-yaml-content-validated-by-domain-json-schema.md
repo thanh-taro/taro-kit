@@ -51,3 +51,5 @@ The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project
 - MOD-Content's error contract is `file:line › entry › rule: message`, one line per error, all errors reported at once.
 - Measured: validating 500 entries takes 95 ms cold; the browser-side backup validator is 4.7 KB gzip and runs under strict CSP with no eval.
 
+## Note from the scaffold (2026-10-14)
+- The `$comment` rule tags are not in `project.schema.json` yet, so the validator maps RULE-07 by schema position. Adding the tags is part of building F-001; the error contract is unchanged.

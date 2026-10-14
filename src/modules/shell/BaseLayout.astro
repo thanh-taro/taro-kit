@@ -30,13 +30,13 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {/* Blocking head script (platform-mapping, F-012.R4). Astro emits its CSP meta later in <head>. */}
-    <script is:inline set:html={themeInlineScript} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
   </head>
   <body>
+    {/* First element of <body>: runs before any content paints (F-012.R4), and after Astro's CSP meta in <head>, so its hash governs it. */}
+    <script is:inline set:html={themeInlineScript} />
     <a href="#main" class="skip">
       {t('COPY-shell.skip')}
     </a>

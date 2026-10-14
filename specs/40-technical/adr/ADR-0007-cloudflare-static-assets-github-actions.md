@@ -53,3 +53,6 @@ The hosting and CI requirements:
 - GitHub disables scheduled workflows in public repos after 60 days without repository activity. The weekly check (F-014.R5) can silently stop. Mitigation: a monthly reminder in the Owner's routine, or a re-enable step in the release checklist. This is recorded as a known risk.
 - In private repos, Actions minutes are metered: 2,000 per month free. The full matrix fits within that at the expected commit rate, but it should be watched.
 - Hosting is plain files plus `_headers`, so leaving Cloudflare means regenerating headers in the new host's format (MOD-SecurityPolicy owns the format).
+
+## Note from the scaffold (2026-10-14)
+- The scheduled check workflow is `.github/workflows/catalog-check.yml` (weekly plus pre-deploy), not `weekly-check.yml`.
