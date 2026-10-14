@@ -42,5 +42,11 @@ In `src/modules/design-system/`. Markup and CSS are shared by the Astro and Prea
 - **`FavoriteToggle.astro`** (the tool header, standalone). Props: `toolId`, `appearance` (`framed`, the default, or `plain`), `size` (`md` or `sm`), `hydrate` (`idle`, the default, `load` or `visible`).
 - **`FavoriteToggle.tsx`** (the island). Props: `toolId`; `labels` (`favoriteToggleLabels()`: COPY-fav.add, COPY-fav.remove, COPY-fav.full with the RULE-02 limit); `appearance`; `size`; the star icon as children (`favoriteStar(size)`). It is a 44 px toggle button with `aria-pressed` and a label that states the current state. A refused pin keeps it off and shows COPY-fav.full in a polite status beside it, tied with `aria-describedby`, until focus leaves or Esc. Each refused press empties and refills the status, so it is announced again. Before hydration it renders off and disabled.
 
+### Category tile, state message and category icons (F-016)
+- **`CategoryTile.astro`**, compact variant (category navigation). Props: `name`, `href` (`categoryPath(id)`), `count` (COPY-category.toolCount or COPY-category.toolCountOne), `tint`, `iconSvg` and `current`. One link, a pill with the tinted icon and the name; its accessible name is "<name>, <count>" (`aria-label`); `current` adds the tint fill and `aria-current="page"`. The regular variant (home row) is added with F-007.
+- **`StateMessage.astro`**. Props: `variant` (`empty`, `no-results`, `offline`, `info`, `not-found`), `title`, `body`, `action` (`{ href, label }`, the primary action), `headingLevel` (the title as a heading, 1 on SCR-NotFound) and `live` (`role="status"`, for messages that appear after load). Extra actions go in the default slot. The `page` variant is added with F-002 and F-003.
+- **`styles/category-tint.css`**: an element with `data-tint="<tint>"` gets that tint's pair for the current theme as `--cat-bg` and `--cat-fg` (RULE-14).
+- **`svgFromFile(file, size)`** (`icons.ts`): inline SVG for a bundled icon file, such as a category icon in `content/assets/icons/` (DEP-44), normalized like `iconSvg` (1.5 px stroke, currentColor, aria-hidden).
+
 ## Implements
 The shared parts of F-002.R2, F-005.R1, F-009.R2 and F-011.R3, plus CMP-ToolCard, CMP-ProjectCard, CMP-StateMessage, CMP-FavoriteToggle and CMP-ToolHeader. It is the main owner of NFR-03, NFR-07 and NFR-09.

@@ -9,6 +9,8 @@ export interface NavItem {
   href: string;
   label: string;
   current: boolean;
+  /** The current page is inside this item's section (a category page under Tools): aria-current="true". */
+  inSection?: boolean;
   /** Shown only in the narrow menu (the settings link, which is an icon in the wide header). */
   narrowOnly?: boolean;
 }
@@ -74,7 +76,7 @@ export default function NavMenu({ items, menuLabel, menuIcon }: Props) {
       <ul id="main-menu" class="list">
         {items.map((item) => (
           <li key={item.href} class={item.narrowOnly ? 'narrow-only' : undefined}>
-            <a href={item.href} aria-current={item.current ? 'page' : undefined}>
+            <a href={item.href} aria-current={item.current ? 'page' : item.inSection ? 'true' : undefined}>
               {item.label}
             </a>
           </li>

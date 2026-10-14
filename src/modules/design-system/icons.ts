@@ -11,7 +11,16 @@ export type IconSize = 16 | 20;
 
 /** Inline SVG markup for a named icon, 1.5 px stroke (style.md), hidden from assistive tech. */
 export function iconSvg(name: string, size: IconSize = 20): string {
-  const raw = readFileSync(join(iconDir, `${name}.svg`), 'utf8');
+  return svgFromFile(join(iconDir, `${name}.svg`), size);
+}
+
+/**
+ * Inline SVG markup for a bundled SVG file from the icon set, such as a category icon copied into
+ * content/assets/icons/ (DEP-44): the outer <svg> is replaced, so every icon gets the same 1.5 px stroke,
+ * currentColor and aria-hidden, whatever the file declares. Build-time only.
+ */
+export function svgFromFile(file: string, size: IconSize = 20): string {
+  const raw = readFileSync(file, 'utf8');
   const body = raw
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/^[\s\S]*?<svg[^>]*>/, '')

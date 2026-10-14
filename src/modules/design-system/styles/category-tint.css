@@ -1,0 +1,19 @@
+/* RULE-14 category tints (MOD-DesignSystem): an element with data-tint="<tint>" gets that tint's background and
+   foreground pair for the current theme as --cat-bg and --cat-fg. Used by CMP-CategoryTile and the SCR-Category
+   hero. The tint is decorative and never the only cue (SCR-Category accessibility). */
+[data-tint='violet'] {
+  --cat-bg: var(--tk-color-cat-violet-bg);
+  --cat-fg: var(--tk-color-cat-violet-fg);
+}
+[data-tint='mango'] {
+  --cat-bg: var(--tk-color-cat-mango-bg);
+  --cat-fg: var(--tk-color-cat-mango-fg);
+}
+[data-tint='sky'] {
+  --cat-bg: var(--tk-color-cat-sky-bg);
+  --cat-fg: var(--tk-color-cat-sky-fg);
+}
+[data-tint='mint'] {
+  --cat-bg: var(--tk-color-cat-mint-bg);
+  --cat-fg: var(--tk-color-cat-mint-fg);
+}

@@ -1,0 +1,93 @@
+---
+// MOD-DesignSystem: CMP-CategoryTile. Design: design/canvas/CMP-CategoryTile.dc.html.
+// This is the compact variant (category navigation on SCR-Category, F-016.R4): a pill with a small tinted icon
+// and the name; `current` marks the page's own category with its tint and aria-current. The regular variant
+// (home row, F-007.R7) is added with F-007.
+// - The whole tile is one link to the category page; its name reads "<name>, <count>" (aria-label, as in the
+//   design; the compact pill shows only the name, which starts the label, so label-in-name holds).
+// - The tint (RULE-14, styles/category-tint.css) is decorative; the name always shows. Touch target 44 px (NFR-09).
+interface Props {
+  name: string;
+  /** The category page address, `categoryPath(id)` (F-016.R1). */
+  href: string;
+  /** COPY-category.toolCount or COPY-category.toolCountOne. */
+  count: string;
+  tint: 'violet' | 'mango' | 'sky' | 'mint';
+  /** Build-time inline SVG of the category icon (`svgFromFile`), never user or runtime data. */
+  iconSvg: string;
+  /** The current category (the page's own). Default false. */
+  current?: boolean;
+}
+const { name, href, count, tint, iconSvg, current = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class="tk-cattile"
+  data-tint={tint}
+  aria-label={`${name}, ${count}`}
+  aria-current={current ? 'page' : undefined}
+>
+  <span class="icon" aria-hidden="true" set:html={iconSvg} />
+  {name}
+</a>
+
+<style>
+  .tk-cattile {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--tk-space-2);
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: calc(var(--tk-space-1) + var(--tk-space-1) / 2) calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    border-radius: var(--tk-radius-pill);
+    background: var(--tk-color-surface);
+    box-shadow: inset 0 0 0 var(--tk-border-width-hairline) var(--tk-color-line);
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-semibold);
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color var(--tk-motion-duration-fast) var(--tk-motion-easing-standard),
+      transform var(--tk-motion-duration-fast) var(--tk-motion-easing-standard);
+  }
+  .icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: calc(var(--tk-size-tool-icon-sm) + var(--tk-space-1));
+    block-size: calc(var(--tk-size-tool-icon-sm) + var(--tk-space-1));
+    border-radius: var(--tk-radius-pill);
+    background: var(--cat-bg);
+    color: var(--cat-fg);
+  }
+  .icon :global(.tk-icon) {
+    inline-size: var(--tk-size-icon-sm);
+    block-size: var(--tk-size-icon-sm);
+  }
+  /* hover lifts 1 px; focus shows the 2 px accent ring (CMP-CategoryTile). */
+  .tk-cattile:hover {
+    background: var(--tk-color-surface2);
+    transform: translateY(calc(-1 * var(--tk-border-width-hairline)));
+  }
+  .tk-cattile:focus-visible {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+  .tk-cattile[aria-current='page'] {
+    background: var(--cat-bg);
+    box-shadow: inset 0 0 0 var(--tk-border-width-hairline) var(--cat-fg);
+    color: var(--cat-fg);
+    font-weight: var(--tk-font-weight-bold);
+  }
+  .tk-cattile[aria-current='page'] .icon {
+    background: var(--tk-color-surface);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tk-cattile:hover {
+      transform: none;
+    }
+  }
+</style>

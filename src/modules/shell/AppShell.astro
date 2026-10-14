@@ -30,7 +30,13 @@ const links: [href: string, copy: CopyId][] = [
   ['/now/', 'COPY-nav.now'],
 ];
 const items: NavItem[] = [
-  ...links.map(([href, id]) => ({ href, label: t(id), current: href === path })),
+  // A page below a section (SCR-Category under /tools/) marks that section's item (SCR-Category region 1).
+  ...links.map(([href, id]) => ({
+    href,
+    label: t(id),
+    current: href === path,
+    inSection: href !== '/' && href !== path && path.startsWith(href),
+  })),
   { href: SETTINGS, label: t('COPY-nav.settings'), current: path === SETTINGS, narrowOnly: true },
 ];
 const toggle = {
@@ -171,7 +177,7 @@ const update = await filled('update');
   .shell :global(.nav .list a:hover) {
     color: var(--tk-color-fg);
   }
-  .shell :global(.nav .list a[aria-current='page']) {
+  .shell :global(.nav .list a[aria-current]) {
     background: var(--tk-color-surface2);
     color: var(--tk-color-fg);
     font-weight: var(--tk-font-weight-semibold);

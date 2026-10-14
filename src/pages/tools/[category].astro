@@ -1,0 +1,216 @@
+---
+// SCR-Category (MOD-Pages): one static page per visible category at /tools/<category-id>/ (F-016).
+// Regions: 1 shell header (Tools marked), 2 category hero in the category tint, 3 category navigation
+// (compact CMP-CategoryTile per visible category, plus all tools), 4 the tool list (CMP-ToolCard).
+// Unknown categories and categories whose tools are all hidden get no page, so the host serves 404.html
+// (SCR-NotFound) at the same address (F-016.R5, RULE-06).
+// Design: design/canvas/CategoryDesktop.dc.html, CategoryMobile.dc.html.
+// Implements: F-016.R1, F-016.R2, F-016.R3, F-016.R4, F-016.R5.
+import { join } from 'node:path';
+import type { GetStaticPaths } from 'astro';
+import { contentDirectory, getRegistry } from '../../modules/content/index.ts';
+import { t } from '../../modules/copy/index.ts';
+import CategoryTile from '../../modules/design-system/CategoryTile.astro';
+import { svgFromFile } from '../../modules/design-system/icons.ts';
+import ToolCard from '../../modules/design-system/ToolCard.astro';
+import { categoryPages } from '../../modules/pages/category.ts';
+import BaseLayout from '../../modules/shell/BaseLayout.astro';
+
+export const getStaticPaths = (() => {
+  const registry = getRegistry();
+  return categoryPages(registry.categories, registry.visibleTools).map((page) => ({
+    params: { category: page.category.id },
+    props: { page },
+  }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const { category, tools, count, nav } = page;
+const icons = new Map(
+  getRegistry().categories.map((c) => [c.id, svgFromFile(join(contentDirectory(), 'assets', c.icon))]),
+);
+---
+
+<BaseLayout
+  title={t('COPY-meta.categoryTitle', { category: category.name })}
+  description={category.intro}
+  path={page.path}
+>
+  <div class="category">
+    <section class="hero" data-tint={category.tint} data-testid="category-hero" aria-labelledby="category-name">
+      <span class="hero-icon" aria-hidden="true" set:html={icons.get(category.id)} />
+      <div class="hero-text">
+        <h1 id="category-name">{category.name}</h1>
+        <p class="intro">{category.intro}</p>
+        <p class="count">{count}</p>
+      </div>
+    </section>
+
+    <nav class="cats" aria-label={t('COPY-category.navLabel')}>
+      {
+        nav.map((c) => (
+          <CategoryTile
+            name={c.name}
+            href={c.href}
+            count={c.count}
+            tint={c.tint}
+            iconSvg={icons.get(c.id) ?? ''}
+            current={c.id === category.id}
+          />
+        ))
+      }
+      <a class="all" href="/tools/">{t('COPY-category.allTools')}</a>
+    </nav>
+
+    <ul class="tools" data-testid="category-tools" aria-labelledby="category-name">
+      {
+        tools.map((tool) => (
+          <li>
+            <ToolCard tool={tool} categoryName={category.name} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .category {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-6) + var(--tk-space-1));
+  }
+
+  /* Region 2: the hero in the category tint (RULE-14); the name, not the tint, says which category it is. */
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--tk-space-6) + var(--tk-space-1));
+    padding: var(--tk-space-10);
+    background: var(--cat-bg);
+    border-radius: var(--tk-radius-xl);
+  }
+  .hero-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: calc(var(--tk-space-16) + var(--tk-space-6));
+    block-size: calc(var(--tk-space-16) + var(--tk-space-6));
+    border-radius: var(--tk-radius-xl);
+    background: var(--tk-color-surface);
+    color: var(--cat-fg);
+  }
+  .hero-icon :global(.tk-icon) {
+    inline-size: var(--tk-space-10);
+    block-size: var(--tk-space-10);
+  }
+  .hero-text {
+    display: flex;
+    flex: 1 1 calc(var(--tk-space-16) * 6);
+    flex-direction: column;
+    gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    min-inline-size: 0;
+  }
+  h1 {
+    font-size: var(--tk-font-size-5xl);
+    line-height: var(--tk-font-line-height-tight);
+    letter-spacing: -0.03em;
+  }
+  .intro {
+    max-inline-size: var(--tk-size-palette-width);
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-lg);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .count {
+    color: var(--cat-fg);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-medium);
+  }
+
+  /* Region 3: the category navigation, compact tiles and the all-tools link. */
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tk-space-2);
+  }
+  .all {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    border-radius: var(--tk-radius-pill);
+    color: var(--tk-color-accent);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-bold);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .all:hover {
+    text-decoration: underline;
+  }
+  .all:focus-visible {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+
+  /* Region 4: the tool list, three columns on wide screens. */
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--tk-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 960px) {
+    .tools {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 720px) {
+    .category {
+      gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
+    }
+    .hero {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--tk-space-3);
+      padding: calc(var(--tk-space-5) + var(--tk-space-1) / 2);
+    }
+    .hero-icon {
+      inline-size: calc(var(--tk-space-12) + var(--tk-space-2));
+      block-size: calc(var(--tk-space-12) + var(--tk-space-2));
+      border-radius: var(--tk-radius-lg);
+    }
+    .hero-icon :global(.tk-icon) {
+      inline-size: var(--tk-space-6);
+      block-size: var(--tk-space-6);
+    }
+    .hero-text {
+      flex-basis: auto;
+    }
+    h1 {
+      font-size: var(--tk-font-size-3xl);
+    }
+    .intro {
+      font-size: var(--tk-font-size-base);
+    }
+    /* The navigation scrolls sideways instead of wrapping, edge to edge (CategoryMobile). */
+    .cats {
+      flex-wrap: nowrap;
+      margin-inline: calc(-1 * (var(--tk-size-gutter) + var(--tk-space-2)));
+      padding: 0 calc(var(--tk-size-gutter) + var(--tk-space-2)) var(--tk-space-1);
+      overflow-x: auto;
+    }
+    .tools {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--tk-space-2);
+    }
+  }
+</style>
