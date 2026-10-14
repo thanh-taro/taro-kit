@@ -1,10 +1,15 @@
 ---
-// CMP-AppShell header, full variant (MOD-Shell): logo, navigation with the current page marked,
-// theme quick toggle and settings link. Search control, offline indicator, update message and the
-// narrow-screen menu arrive with F-004, F-011 and the shell build.
+// CMP-AppShell header (MOD-Shell): logo, navigation with the current page marked, theme quick toggle
+// (F-012.R3) and settings link. Variants: full, and narrow below 720 px, where the navigation and the
+// settings link collapse behind the Menu button (NavMenu island).
+// Slots, rendered only when filled (F-011 fills them):
+//   "offline": the quiet offline indicator (COPY-shell.offline), shown in the header;
+//   "update":  the update-ready message (COPY-shell.updateReady + COPY-shell.refresh), below the header.
+// The search control arrives with F-004, the compact variant with F-003.
 import { t, type CopyId } from '../copy/index.ts';
 import Icon from '../design-system/Icon.astro';
 import { iconSvg } from '../design-system/icons.ts';
+import NavMenu, { type NavItem } from './NavMenu.tsx';
 import ThemeToggle from './ThemeToggle.tsx';
 
 interface Props {
@@ -13,12 +18,17 @@ interface Props {
 }
 const { path } = Astro.props;
 
-const nav: [href: string, copy: CopyId][] = [
+const SETTINGS = '/settings/';
+const links: [href: string, copy: CopyId][] = [
   ['/', 'COPY-nav.home'],
   ['/tools/', 'COPY-nav.tools'],
   ['/projects/', 'COPY-nav.projects'],
   ['/about/', 'COPY-nav.about'],
   ['/now/', 'COPY-nav.now'],
+];
+const items: NavItem[] = [
+  ...links.map(([href, id]) => ({ href, label: t(id), current: href === path })),
+  { href: SETTINGS, label: t('COPY-nav.settings'), current: path === SETTINGS, narrowOnly: true },
 ];
 const toggle = {
   labels: {
@@ -27,34 +37,46 @@ const toggle = {
   },
   icons: { light: iconSvg('sun'), dark: iconSvg('moon') },
 };
+// A forwarded slot counts as present even when empty, so presence is decided by rendered content.
+const filled = async (name: string) => (Astro.slots.has(name) ? (await Astro.slots.render(name)).trim() : '');
+const offline = await filled('offline');
+const update = await filled('update');
 ---
 
-<header class="shell">
-  <a href="/" class="logo">
-    <span class="mark" aria-hidden="true">
-      T
-    </span>
-    <span class="word">{t('COPY-shell.brand')}</span>
-  </a>
-  <nav class="nav">
-    {nav.map(([href, id]) => (
-      <a href={href} aria-current={href === path ? 'page' : undefined}>
-        {t(id)}
-      </a>
-    ))}
-  </nav>
-  <div class="end">
-    <ThemeToggle client:idle {...toggle} />
-    <a href="/settings/" class="tk-iconbtn" aria-label={t('COPY-nav.settings')}>
-      <Icon name="settings" />
+<div class="shell-wrap">
+  <header class="shell">
+    <a href="/" class="logo">
+      <span class="mark" aria-hidden="true">
+        T
+      </span>
+      <span class="word">{t('COPY-shell.brand')}</span>
     </a>
-  </div>
-</header>
+    <NavMenu client:load items={items} menuLabel={t('COPY-nav.menu')} menuIcon={iconSvg('menu', 16)} />
+    <div class="end">
+      {offline && <div class="offline" set:html={offline} />}
+      <ThemeToggle client:idle {...toggle} />
+      <a
+        href={SETTINGS}
+        class="tk-iconbtn settings"
+        aria-label={t('COPY-nav.settings')}
+        aria-current={path === SETTINGS ? 'page' : undefined}
+      >
+        <Icon name="settings" />
+      </a>
+    </div>
+  </header>
+  {update && <div class="update" set:html={update} />}
+</div>
 
 <style>
-  .shell {
+  .shell-wrap {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+  }
+  .shell {
+    position: relative;
+    display: flex;
     align-items: center;
     gap: var(--tk-space-2) var(--tk-space-5);
     min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-3));
@@ -65,6 +87,7 @@ const toggle = {
   }
   .logo {
     display: inline-flex;
+    flex: none;
     align-items: center;
     gap: var(--tk-space-2);
     min-block-size: var(--tk-size-touch-target);
@@ -90,12 +113,30 @@ const toggle = {
     font-size: var(--tk-font-size-xs);
     font-weight: var(--tk-font-weight-bold);
   }
-  .nav {
+  .end {
+    display: flex;
+    align-items: center;
+    gap: var(--tk-space-1);
+    margin-inline-start: auto;
+  }
+  .settings[aria-current='page'] {
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+  }
+
+  /* NavMenu island markup (not scoped: islands render outside Astro's scoping). */
+  .shell :global(.nav .menu) {
+    display: none;
+  }
+  .shell :global(.nav .list) {
     display: flex;
     gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
     font-size: var(--tk-font-size-md);
   }
-  .nav a {
+  .shell :global(.nav .list a) {
     display: inline-flex;
     align-items: center;
     min-block-size: var(--tk-size-touch-target);
@@ -105,25 +146,70 @@ const toggle = {
     text-decoration: none;
     white-space: nowrap;
   }
-  .nav a:hover {
+  .shell :global(.nav .list a:hover) {
     color: var(--tk-color-fg);
   }
-  .nav a[aria-current='page'] {
+  .shell :global(.nav .list a[aria-current='page']) {
     background: var(--tk-color-surface2);
     color: var(--tk-color-fg);
     font-weight: var(--tk-font-weight-semibold);
   }
-  .end {
-    display: flex;
-    align-items: center;
-    gap: var(--tk-space-1);
-    margin-inline-start: auto;
+  .shell :global(.nav .narrow-only) {
+    display: none;
   }
+
+  /* Narrow variant (CMP-AppShell): logo, theme toggle, Menu; the links open in a panel below. */
   @media (max-width: 720px) {
-    .nav {
+    .shell {
+      gap: var(--tk-space-1);
+      padding-inline: var(--tk-space-4) var(--tk-space-1);
+    }
+    .logo {
+      font-size: var(--tk-font-size-sm);
+    }
+    .shell :global(.nav) {
       order: 3;
-      inline-size: 100%;
-      overflow-x: auto;
+    }
+    .settings {
+      display: none;
+    }
+    .shell :global(.nav .menu) {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--tk-space-2);
+      min-block-size: var(--tk-size-touch-target);
+      padding-inline: var(--tk-space-3);
+      background: var(--tk-color-surface2);
+      border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+      border-radius: var(--tk-radius-md);
+      color: var(--tk-color-fg);
+      font-size: var(--tk-font-size-sm);
+      font-weight: var(--tk-font-weight-semibold);
+      cursor: pointer;
+    }
+    .shell :global(.nav .list) {
+      display: none;
+    }
+    .shell :global(.nav[data-open] .list) {
+      position: absolute;
+      inset-inline: 0;
+      inset-block-start: calc(100% + var(--tk-space-2));
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: var(--tk-space-2);
+      background: var(--tk-color-surface);
+      border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+      border-radius: var(--tk-radius-lg);
+      box-shadow: var(--tk-shadow-glow);
+      font-size: var(--tk-font-size-base);
+    }
+    .shell :global(.nav[data-open] .list a) {
+      display: flex;
+    }
+    .shell :global(.nav .narrow-only) {
+      display: list-item;
     }
   }
 </style>
