@@ -22,4 +22,4 @@ status: draft
 - Gate G3 approved by the user (2026-10-14): ADR-0002 to ADR-0010 accepted; dependency registry approved.
 
 ## 2026-10-14
-- F-001 build: `project.schema.json` gains `$comment` rule tags (INV-01, INV-02, INV-07, RULE-07, RULE-14); no shape change. ADR-0005 scaffold note resolved. MOD-Content public surface documents its pure derivations (`visibleTools`, `visibleCategories`, `toolsByCategory`, `whatsNew`, `changelog`, `sitemapEntries`, `catalogData`); `whatsNew` takes the viewer's date, so the browser still owns the date (architecture unchanged).
+- F-001 build: `project.schema.json` gains `$comment` rule tags (INV-01, INV-02, INV-07, RULE-07, RULE-14); no shape change. ADR-0005 scaffold note resolved. MOD-Content public surface documents its pure build-time derivations (`visibleTools`, `visibleCategories`, `toolsByCategory`, `changelog`, `sitemapEntries`, `catalogData`). MOD-Pages documents `whatsNew(tools, today)` and `localDate()`, the pure helpers the home island uses to compute what's new in the browser (RULE-04).

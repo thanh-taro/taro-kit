@@ -128,6 +128,9 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   const nowFile = required('now.yaml');
 
   // 1. Schema (F-001.R2). Each file is checked against its $defs entry of the domain schema.
+  // Fields that already failed the schema; the invariant checks skip them, so one mistake gives one error.
+  const schemaFailed = new Set<string>();
+  const fieldKey = (file: string, path: (string | number)[]) => `${file}#${path.join('/')}`;
   const schemaCheck = (l: Loaded, def: Def, prefix: (string | number)[] = []) => {
     if (l.data === undefined) return;
     const target = prefix.reduce<unknown>((o, k) => (o as Obj | undefined)?.[k as string], l.data);
@@ -137,6 +140,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     for (const err of validate.errors ?? []) {
       const m = mapAjvError(err, isObj(target) ? target : undefined, schemaPath, def);
       if (!m) continue;
+      schemaFailed.add(fieldKey(l.file, [...prefix, ...m.path]));
       const key = `${m.rule}|${m.message}`;
       if (seen.has(key)) continue;
       seen.add(key);
@@ -243,7 +247,12 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     if (!isObj(l.data)) continue;
     const d = l.data;
     // INV-07 / F-001.R5: the tool's category exists (F-001.AC7).
-    if (typeof d.category === 'string' && catFile.data !== undefined && !catIds.has(d.category))
+    if (
+      typeof d.category === 'string' &&
+      !schemaFailed.has(fieldKey(l.file, ['category'])) &&
+      catFile.data !== undefined &&
+      !catIds.has(d.category)
+    )
       errors.push({
         file: l.file,
         line: l.lineOf(['category']),
@@ -290,7 +299,9 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
 
   // 4. Derive build-time views; hidden entries never reach them (RULE-06, F-001.R4).
   const visibleTools = deriveVisibleTools(allTools);
-  const projects = allProjects.filter((p) => !p.hidden).sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+  const projects = allProjects
+    .filter((p) => !p.hidden)
+    .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name, 'en'));
   const categories = visibleCategories(catList as Category[], allTools).map((c) => ({
     ...c,
     tools: toolsByCategory(allTools, c.id),

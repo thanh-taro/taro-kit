@@ -16,8 +16,8 @@ import {
   toolsByCategory,
   visibleCategories,
   visibleTools,
-  whatsNew,
 } from '../../src/modules/content/index.ts';
+import { whatsNew } from '../../src/modules/pages/whats-new.ts';
 
 const root = join(import.meta.dirname, '../..');
 const fixtures = join(root, 'tests/fixtures/content');
@@ -122,35 +122,6 @@ const tool = (id: string, added: string, updated?: string, hidden = false) => ({
   hidden,
 });
 
-describe('RULE-04 what’s new', () => {
-  it('RULE-04 lists tools whose latest date is within the last 30 days, today included', () => {
-    const today = '2026-10-14';
-    const items = whatsNew(
-      [tool('a', '2026-10-11'), tool('b', '2026-08-15'), tool('c', '2026-09-15'), tool('d', '2026-09-14')],
-      today,
-    );
-    // 2026-09-15 is the 30th day counting today; 2026-09-14 is the 31st.
-    expect(items.map((i) => i.id)).toEqual(['a', 'c']);
-  });
-
-  it('RULE-04 lists a tool once, as updated, ranked by its updated date', () => {
-    const items = whatsNew([tool('old', '2026-10-04', '2026-10-12'), tool('new', '2026-10-10')], '2026-10-14');
-    expect(items).toEqual([
-      { id: 'old', name: 'OLD', type: 'updated', date: '2026-10-12' },
-      { id: 'new', name: 'NEW', type: 'added', date: '2026-10-10' },
-    ]);
-  });
-
-  it('RULE-04 keeps the 6 newest of 8 recent tools', () => {
-    const tools = Array.from({ length: 8 }, (_, i) => tool(`t${i + 1}`, `2026-10-0${i + 1}`));
-    expect(whatsNew(tools, '2026-10-14').map((i) => i.id)).toEqual(['t8', 't7', 't6', 't5', 't4', 't3']);
-  });
-
-  it('RULE-06 leaves hidden tools out of what’s new', () => {
-    expect(whatsNew([tool('h', '2026-10-13', undefined, true)], '2026-10-14')).toEqual([]);
-  });
-});
-
 describe('RULE-04 changelog', () => {
   it('RULE-04 lists one added and one updated item per tool, newest first, grouped by month', () => {
     const months = changelog([tool('json', '2026-03-02', '2026-05-20'), tool('units', '2026-05-01')]);
@@ -163,6 +134,20 @@ describe('RULE-04 changelog', () => {
         ],
       },
       { month: '2026-03', items: [{ id: 'json', name: 'JSON', type: 'added', date: '2026-03-02' }] },
+    ]);
+  });
+
+  it('RULE-04 orders same-date items by name, then updated before added', () => {
+    const items = changelog([
+      tool('beta', '2026-05-01'),
+      tool('alpha', '2026-05-01', '2026-05-01'),
+      tool('gamma', '2026-04-01', '2026-05-01'),
+    ])[0].items;
+    expect(items.map((i) => `${i.id}:${i.type}`)).toEqual([
+      'alpha:updated',
+      'alpha:added',
+      'beta:added',
+      'gamma:updated',
     ]);
   });
 

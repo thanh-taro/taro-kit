@@ -111,10 +111,18 @@ describe('MOD-Content validation', () => {
     );
   });
 
-  it('INV-07 names the rule when a tool category is not a lowercase slug', () => {
-    expect(failures('INV07-tool-category-not-slug')).toContain(
+  it('INV-07 reports only the slug error when a tool category is not a lowercase slug', () => {
+    expect(failures('INV07-tool-category-not-slug')).toEqual([
       'content/tools/units.yaml:6 › units › INV-07: category "Converters" is not a lowercase slug',
-    );
+    ]);
+  });
+
+  it('reports one line per mistake when one entry has several', () => {
+    expect(failures('several-errors-one-entry')).toEqual([
+      'content/tools/units.yaml:6 › units › INV-07: category "Converters" is not a lowercase slug',
+      'content/tools/units.yaml:7 › units › INV-02: url "http://units.tarokit.app/" is not a secure https address',
+      'content/tools/units.yaml:11 › units › INV-06: updated 2026-01-01 is before added 2026-02-02',
+    ]);
   });
 
   it('RULE-07 is found by its $comment tag, wherever the subschema sits in the schema', () => {

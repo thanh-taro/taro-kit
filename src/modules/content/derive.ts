@@ -1,9 +1,9 @@
 // MOD-Content derived views: pure functions over normalized entries, shared by every consumer of the registry.
-// No Node imports: the build uses them on the registry, and browser islands can use them on the catalog data
-// file with the viewer's date (what's new, RULE-04). Every function drops hidden entries itself (RULE-06).
+// No Node imports, and nothing relative to the viewer's date (that is MOD-Pages', in the browser).
+// Every function drops hidden entries itself (RULE-06).
 // Implements: F-001.R1 (an entry appears everywhere it belongs), F-001.R4 (hidden entries appear nowhere).
 
-interface Listed {
+export interface Listed {
   id: string;
   name: string;
   hidden?: boolean;
@@ -11,7 +11,7 @@ interface Listed {
 interface InCategory extends Listed {
   category: string;
 }
-interface Dated extends Listed {
+export interface Dated extends Listed {
   added: string;
   updated?: string;
 }
@@ -34,10 +34,6 @@ export interface ChangelogMonth {
   items: DatedItem[];
 }
 
-/** RULE-04 window and cap. */
-export const WHATS_NEW_DAYS = 30;
-export const WHATS_NEW_MAX = 6;
-
 /** Public pages listed in the site index (F-015.R1, F-015.R3; routes per MOD-Pages). */
 export const PUBLIC_PAGES = ['/', '/tools/', '/projects/', '/about/', '/now/'] as const;
 
@@ -46,9 +42,10 @@ export const toolPath = (id: string): string => `/t/${id}/`;
 /** A category's stable portal address (F-016.R1). */
 export const categoryPath = (id: string): string => `/tools/${id}/`;
 
-const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
+/** Alphabetical by name, the same in Node and every browser locale. */
+export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, 'en');
 /** Newest first; ties by name, then updated before added, so output is stable. */
-const newestFirst = (a: DatedItem, b: DatedItem) =>
+export const newestFirst = (a: DatedItem, b: DatedItem) =>
   b.date.localeCompare(a.date) || byName(a, b) || b.type.localeCompare(a.type);
 
 /** Visible tools, alphabetically (RULE-06, F-002.R1). */
@@ -65,28 +62,6 @@ export function toolsByCategory<T extends InCategory>(tools: readonly T[], categ
 export function visibleCategories<C extends Ordered>(categories: readonly C[], tools: readonly InCategory[]): C[] {
   const used = new Set(visibleTools(tools).map((t) => t.category));
   return categories.filter((c) => used.has(c.id)).sort((a, b) => a.order - b.order);
-}
-
-/** Days from `from` to `to`, both YYYY-MM-DD local dates. */
-function daysBetween(from: string, to: string): number {
-  const utc = (d: string) => Date.UTC(Number(d.slice(0, 4)), Number(d.slice(5, 7)) - 1, Number(d.slice(8, 10)));
-  return Math.round((utc(to) - utc(from)) / 86_400_000);
-}
-
-/**
- * RULE-04 what's new, seen on the viewer's local date `today` (YYYY-MM-DD), never the build date.
- * One item per visible tool, dated and labeled by its latest date (`updated` if present, otherwise `added`),
- * kept when that date is within the last 30 days counting today, newest first, at most 6.
- */
-export function whatsNew(tools: readonly Dated[], today: string): DatedItem[] {
-  return visibleTools(tools)
-    .map((t): DatedItem => {
-      const type = t.updated ? 'updated' : 'added';
-      return { id: t.id, name: t.name, type, date: t.updated ?? t.added };
-    })
-    .filter((i) => daysBetween(i.date, today) < WHATS_NEW_DAYS)
-    .sort(newestFirst)
-    .slice(0, WHATS_NEW_MAX);
 }
 
 /** RULE-04 changelog items: one added and, if updated, one updated item per visible tool, newest first. */

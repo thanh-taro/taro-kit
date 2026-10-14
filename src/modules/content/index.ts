@@ -22,9 +22,7 @@ export {
   toolsByCategory,
   visibleCategories,
   visibleTools,
-  WHATS_NEW_DAYS,
-  WHATS_NEW_MAX,
-  whatsNew,
   type ChangelogMonth,
+  type Dated,
   type DatedItem,
 } from './derive.ts';
