@@ -224,7 +224,9 @@
           "maxLength": 600
         },
         "image": {
-          "$ref": "#/$defs/assetPath"
+          "$ref": "#/$defs/assetPath",
+          "pattern": "\\.(png|jpg|jpeg|webp|avif|svg)$",
+          "description": "A PNG, JPEG, WebP, AVIF or SVG image."
         },
         "links": {
           "type": "array",
@@ -437,8 +439,8 @@
     },
     "assetPath": {
       "type": "string",
-      "pattern": "^/?[A-Za-z0-9_./-]+$",
-      "description": "Relative path of an asset bundled with the portal; never a remote address (NFR-05)."
+      "pattern": "^(?!(?:.*/)?\\.\\.(?:/|$))/?[A-Za-z0-9_./-]+$",
+      "description": "Relative path of an asset bundled with the portal, inside content/assets/ (no \"..\" segments); never a remote address (NFR-05)."
     }
   }
 }

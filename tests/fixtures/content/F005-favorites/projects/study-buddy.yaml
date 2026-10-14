@@ -1,0 +1,11 @@
+# Test fixture (F-009).
+id: study-buddy
+kind: project
+name: Study Buddy Bot
+summary: A chat bot that quizzes my friends before exams.
+description: Built over a weekend for a study group; it is still in use.
+tags: [bot]
+links:
+  - { label: Source, url: 'https://example.com/study-buddy', kind: code }
+year: 2024
+added: 2026-09-01

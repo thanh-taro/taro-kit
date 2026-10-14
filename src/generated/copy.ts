@@ -78,6 +78,7 @@ export const COPY = {
   "COPY-palette.noResults": "I couldn't find \"{query}\".",
   "COPY-palette.placeholder": "What are you looking for? ({shortcut})",
   "COPY-projects.empty": "I'm putting my projects together. Check back soon.",
+  "COPY-projects.imageAlt": "Screenshot of {name}",
   "COPY-projects.title": "Things I've built",
   "COPY-settings.appearance": "Appearance",
   "COPY-settings.backupScope": "Your backup holds your favorites, recents, theme and days used. Each tool keeps its own data.",
@@ -132,6 +133,7 @@ export interface CopyParams {
   "COPY-now.updated": { date: string | number };
   "COPY-palette.noResults": { query: string | number };
   "COPY-palette.placeholder": { shortcut: string | number };
+  "COPY-projects.imageAlt": { name: string | number };
   "COPY-settings.daysUsed": { count: string | number };
   "COPY-settings.importInvalid": { reason: string | number };
   "COPY-shell.themeToggle": { theme: string | number };

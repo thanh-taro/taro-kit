@@ -1,0 +1,11 @@
+# Test fixture (F-009): an id that equals the shell's main region id, so it must not collide.
+id: main
+kind: project
+name: Main Street Map
+summary: A map of the coffee places on my street.
+description: Hand-drawn, then traced. My first SVG project.
+tags: [map]
+links:
+  - { label: Live site, url: 'https://example.com/main-street', kind: website }
+year: 2024
+added: 2026-09-01

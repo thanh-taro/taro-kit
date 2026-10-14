@@ -11,7 +11,9 @@ import {
   toolsByCategory,
   visibleTools as deriveVisibleTools,
   visibleCategories,
+  visibleProjects,
 } from './derive.ts';
+import { IMAGE_TYPES, resolveAsset } from './assets.ts';
 import { type ContentError, ContentErrors } from './errors.ts';
 import { type Def, defaultSchemaPath, mapAjvError, validatorFor } from './schema.ts';
 
@@ -197,16 +199,14 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
         rule: 'INV-06',
         message: `updated ${d.updated} is before added ${d.added}`,
       });
-    // Bundled assets exist (ADR-0005).
-    for (const key of ['icon', 'image'])
-      if (typeof d[key] === 'string' && !existsSync(join(contentDir, 'assets', d[key].replace(/^\//, ''))))
-        errors.push({
-          file: l.file,
-          line: l.lineOf([key]),
-          entryId: idOf(d),
-          rule: 'ASSET',
-          message: `${key} "${d[key]}" not found in content/assets/`,
-        });
+    // Bundled assets exist, inside content/assets/ (ADR-0005).
+    for (const key of ['icon', 'image']) {
+      const path = d[key];
+      if (typeof path !== 'string' || schemaFailed.has(fieldKey(l.file, [key]))) continue;
+      const kinds = key === 'image' ? Object.keys(IMAGE_TYPES) : undefined;
+      const site = { contentDir, file: l.file, entryId: idOf(d), field: key, line: l.lineOf([key]), kinds };
+      resolveAsset(path, site, errors);
+    }
   }
 
   // INV-07: category ids are unique; RULE-14: no two categories share a tint (F-001.AC9).
@@ -225,14 +225,12 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
       });
     catIds.add(id);
     if (typeof c.tint === 'string') tintOwners.set(c.tint, [...(tintOwners.get(c.tint) ?? []), { id, i }]);
-    if (typeof c.icon === 'string' && !existsSync(join(contentDir, 'assets', c.icon.replace(/^\//, ''))))
-      errors.push({
-        file: catFile.file,
-        line: catFile.lineOf([i, 'icon']),
-        entryId: id,
-        rule: 'ASSET',
-        message: `icon "${c.icon}" not found in content/assets/`,
-      });
+    if (typeof c.icon === 'string' && !schemaFailed.has(fieldKey(catFile.file, [i, 'icon'])))
+      resolveAsset(
+        c.icon,
+        { contentDir, file: catFile.file, entryId: id, field: 'icon', line: catFile.lineOf([i, 'icon']) },
+        errors,
+      );
   });
   for (const [tint, owners] of tintOwners) {
     if (owners.length < 2) continue;
@@ -300,9 +298,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
 
   // 4. Derive build-time views; hidden entries never reach them (RULE-06, F-001.R4).
   const visibleTools = deriveVisibleTools(allTools);
-  const projects = allProjects
-    .filter((p) => !p.hidden)
-    .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name, 'en'));
+  const projects = visibleProjects(allProjects);
   const categories = visibleCategories(catList as Category[], allTools).map((c) => ({
     ...c,
     tools: toolsByCategory(allTools, c.id),

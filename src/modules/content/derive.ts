@@ -42,6 +42,9 @@ export const toolPath = (id: string): string => `/t/${id}/`;
 /** A category's stable portal address (F-016.R1). */
 export const categoryPath = (id: string): string => `/tools/${id}/`;
 
+/** A project's stable address on the projects page (F-009.R4). */
+export const projectPath = (id: string): string => `/projects/#${id}`;
+
 /** Alphabetical by name, the same in Node and every browser locale. */
 export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, 'en');
 /** Newest first; ties by name, then updated before added, so output is stable. */
@@ -51,6 +54,11 @@ export const newestFirst = (a: DatedItem, b: DatedItem) =>
 /** Visible tools, alphabetically (RULE-06, F-002.R1). */
 export function visibleTools<T extends Listed>(tools: readonly T[]): T[] {
   return tools.filter((t) => !t.hidden).sort(byName);
+}
+
+/** Visible projects, newest year first, then by name (RULE-06, F-009.R1). */
+export function visibleProjects<T extends Listed & { year: number }>(projects: readonly T[]): T[] {
+  return projects.filter((p) => !p.hidden).sort((a, b) => b.year - a.year || byName(a, b));
 }
 
 /** Visible tools of one category, alphabetically (F-016.R3). */

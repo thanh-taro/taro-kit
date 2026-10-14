@@ -32,7 +32,7 @@ A catalog entry of kind `tool`. Additional fields:
 ### ENT-Project — Project
 A catalog entry of kind `project`, shown in the projects showcase. Additional fields:
 - **description**: a short paragraph.
-- **image**, optional, bundled with the portal.
+- **image**, optional, bundled with the portal: a PNG, JPEG, WebP, AVIF or SVG file.
 - **links**: a list of label + address pairs, such as live site or source.
 - **year**.
 

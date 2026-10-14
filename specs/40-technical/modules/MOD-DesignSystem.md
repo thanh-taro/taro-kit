@@ -49,5 +49,8 @@ In `src/modules/design-system/`. Markup and CSS are shared by the Astro and Prea
 - **`styles/category-tint.css`**: an element with `data-tint="<tint>"` gets that tint's pair for the current theme as `--cat-bg` and `--cat-fg` (RULE-14).
 - **`svgFromFile(file, size)`** (`icons.ts`): inline SVG for a bundled icon file, such as a category icon in `content/assets/icons/` (DEP-44), normalized like `iconSvg` (1.5 px stroke, currentColor, aria-hidden).
 
+### Project card (F-009)
+- **`ProjectCard.astro`** (CMP-ProjectCard). Props: `project` (`{ id, name, summary, description, tags, year, links }`), `imageSrc` (the bundled image's address; without it, a placeholder shows the name's monogram, F-009 edge case) and `headingLevel` (2 by default). The image's text alternative is COPY-projects.imageAlt. Each link opens in a new tab with no opener or referrer, and COPY-tool.opensNewTab describes it (`aria-describedby`). The first link is the primary one unless it is a source-code link (`kind: code`); the others are secondary (design ProjectsDesktop). The card's list item has the element id `project-<id>` (`projectCardId`, `project-card.ts`, with the props type `ProjectCardData`), so a project id never collides with the shell's ids, and takes focus programmatically (`tabindex="-1"`); a focused card shows the accent ring.
+
 ## Implements
 The shared parts of F-002.R2, F-005.R1, F-009.R2 and F-011.R3, plus CMP-ToolCard, CMP-ProjectCard, CMP-StateMessage, CMP-FavoriteToggle and CMP-ToolHeader. It is the main owner of NFR-03, NFR-07 and NFR-09.
