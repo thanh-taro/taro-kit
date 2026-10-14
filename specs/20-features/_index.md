@@ -16,7 +16,7 @@ status: draft
 | F-007 | Home dashboard | M-1 | P0 | ready |
 | F-008 | About the Owner | M-1 | P0 | ready |
 | F-009 | Showcase projects | M-1 | P1 | ready |
-| F-010 | Now and changelog | M-1 | P1 | building |
+| F-010 | Now and changelog | M-1 | P1 | shipped |
 | F-011 | Install and work offline | M-1 | P0 | ready |
 | F-012 | Choose a theme | M-1 | P1 | shipped |
 | F-013 | Export and import personal data | M-1 | P1 | ready |

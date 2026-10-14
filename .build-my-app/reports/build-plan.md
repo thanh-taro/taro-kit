@@ -29,3 +29,4 @@ Waves run up to 3 features in parallel, in separate worktrees. Merges happen one
 
 ## Carry-overs
 - **F-002**: remove `test.fixme` from `F016_AC4 catalog opens` (tests/e2e/category.spec.ts) and make it pass.
+- **F-011 / QA**: project images are copied unoptimized to `/projects/images/<id>.<ext>`; add an optimization step (DEP-31 sharp) if NFR-01 budgets need it.

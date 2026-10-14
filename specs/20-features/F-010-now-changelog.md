@@ -1,7 +1,7 @@
 ---
 id: F-010
 title: Now and changelog
-status: building
+status: shipped
 milestone: M-1
 priority: P1
 personas: [PER-02, PER-01]

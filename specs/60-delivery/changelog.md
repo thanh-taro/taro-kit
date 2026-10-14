@@ -33,3 +33,4 @@ status: draft
 - F-003 and F-012 shipped (wave 2): tool view with isolation, states and _headers; theme hand-off verified through the real tool frame. Wave 2 complete.
 - F-010 build (no behavior change): MOD-Content documents that `now.yaml` is optional (no Now note, F-010.R4) and that a same-day added and updated tool has only the added changelog item (F-010 edge case). MOD-Pages documents the SCR-Now helpers (`stale.ts`, `now.ts`, `StaleLabel` island). F-010 status is building.
 - F-010 review round 1: clarification of a ready feature (no new requirement or acceptance criterion). F-010 edge cases state that a Now note with no visible tools shows only the note, because RULE-04 gives the changelog no items.
+- F-010 shipped (wave 3): Now page with the stale label (RULE-09) and the changelog.
