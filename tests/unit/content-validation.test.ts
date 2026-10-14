@@ -1,28 +1,28 @@
 // MOD-Content validator (F-001.R2, R3, R5): each failing fixture overlays the valid base content.
-import { cpSync, mkdtempSync, rmSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { ContentErrors, loadRegistry, type Registry } from '../../src/modules/content/index.ts';
+import { ContentErrors, loadRegistry, type LoadOptions, type Registry } from '../../src/modules/content/index.ts';
 
 const root = join(import.meta.dirname, '../..');
 const fixtures = join(root, 'tests/fixtures/content');
 const tmpDirs: string[] = [];
 
 /** Builds a content folder from the valid base plus an overlay fixture, and loads it. */
-function load(overlay?: string): Registry {
+function load(overlay?: string, options: Omit<LoadOptions, 'root' | 'contentDir'> = {}): Registry {
   const dir = mkdtempSync(join(tmpdir(), 'tarokit-content-'));
   tmpDirs.push(dir);
   const contentDir = join(dir, 'content');
   cpSync(join(fixtures, 'valid'), contentDir, { recursive: true });
   if (overlay) cpSync(join(fixtures, overlay), contentDir, { recursive: true });
-  return loadRegistry({ root, contentDir });
+  return loadRegistry({ ...options, root, contentDir });
 }
 
 /** Loads a fixture that must fail, and returns the formatted error lines. */
-function failures(overlay: string): string[] {
+function failures(overlay: string, options: Omit<LoadOptions, 'root' | 'contentDir'> = {}): string[] {
   try {
-    load(overlay);
+    load(overlay, options);
   } catch (e) {
     if (e instanceof ContentErrors)
       return e.message
@@ -103,6 +103,52 @@ describe('MOD-Content validation', () => {
     expect(lines).toHaveLength(2);
     expect(lines.join('\n')).toContain('› json › INV-06');
     expect(lines.join('\n')).toContain('› units › INV-02');
+  });
+
+  it('INV-07 names the rule when a category id is not a lowercase slug', () => {
+    expect(failures('INV07-category-id-not-slug')).toContain(
+      'content/categories.yaml:5 › Productivity › INV-07: id "Productivity" is not a lowercase slug',
+    );
+  });
+
+  it('INV-07 reports only the slug error when a tool category is not a lowercase slug', () => {
+    expect(failures('INV07-tool-category-not-slug')).toEqual([
+      'content/tools/units.yaml:6 › units › INV-07: category "Converters" is not a lowercase slug',
+    ]);
+  });
+
+  it('reports one line per mistake when one entry has several', () => {
+    expect(failures('several-errors-one-entry')).toEqual([
+      'content/tools/units.yaml:6 › units › INV-07: category "Converters" is not a lowercase slug',
+      'content/tools/units.yaml:7 › units › INV-02: url "http://units.tarokit.app/" is not a secure https address',
+      'content/tools/units.yaml:11 › units › INV-06: updated 2026-01-01 is before added 2026-02-02',
+    ]);
+  });
+
+  it('RULE-07 is found by its $comment tag, wherever the subschema sits in the schema', () => {
+    // Reverse $defs/tool/allOf: the open-mode subschemas move to positions 0 and 1.
+    const schema = JSON.parse(readFileSync(join(root, 'specs/10-domain/project.schema.json'), 'utf8'));
+    schema.$defs.tool.allOf.reverse();
+    const dir = mkdtempSync(join(tmpdir(), 'tarokit-schema-'));
+    tmpDirs.push(dir);
+    const schemaPath = join(dir, 'project.schema.json');
+    writeFileSync(schemaPath, JSON.stringify(schema));
+    const lines = failures('F001_AC5-external-embedded', { schemaPath });
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toMatch(/^content\/tools\/excalidraw\.yaml:9 › excalidraw › RULE-07: /);
+  });
+
+  it('every rule-bearing subschema of the domain schema carries a rule tag', () => {
+    const schema = JSON.parse(readFileSync(join(root, 'specs/10-domain/project.schema.json'), 'utf8'));
+    const d = schema.$defs;
+    const tagOf = (s: { $comment?: string }) => /^(INV|RULE)-\d+/.exec(s.$comment ?? '')?.[0];
+    expect(tagOf(d.secureUrl)).toBe('INV-02');
+    expect(tagOf(d.link.properties.url)).toBe('INV-02');
+    expect(tagOf(d.entryBase.properties.id)).toBe('INV-01');
+    expect(d.tool.allOf.slice(1).map(tagOf)).toEqual(['RULE-07', 'RULE-07']);
+    expect(tagOf(d.tool.properties.category)).toBe('INV-07');
+    expect(tagOf(d.category.properties.id)).toBe('INV-07');
+    expect(tagOf(d.category.properties.tint)).toBe('RULE-14');
   });
 
   it('fails on a misspelled field instead of silently defaulting', () => {

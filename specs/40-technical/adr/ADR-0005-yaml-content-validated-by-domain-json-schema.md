@@ -53,3 +53,4 @@ The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project
 
 ## Note from the scaffold (2026-10-14)
 - The `$comment` rule tags are not in `project.schema.json` yet, so the validator maps RULE-07 by schema position. Adding the tags is part of building F-001; the error contract is unchanged.
+- Done while building F-001 (2026-10-14): `project.schema.json` tags INV-01, INV-02, INV-07, RULE-07 and RULE-14 on their subschemas as `"$comment": "<ID>: …"`. The validator reads the innermost tag on the failing keyword's schema path, or, for a shared definition reached through `$ref` (such as `slug`), the tag on the referring property. Nothing is mapped by position.

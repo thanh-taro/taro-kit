@@ -18,6 +18,7 @@
       "format": "date-time"
     },
     "secureUrl": {
+      "$comment": "INV-02: tool addresses, project links and profile links use https.",
       "type": "string",
       "format": "uri",
       "pattern": "^https://"
@@ -35,6 +36,7 @@
           "maxLength": 40
         },
         "url": {
+          "$comment": "INV-02: links use https, except email (mailto) links.",
           "type": "string",
           "pattern": "^(https://|mailto:)"
         },
@@ -61,6 +63,7 @@
       ],
       "properties": {
         "id": {
+          "$comment": "INV-01: entry ids are lowercase slugs.",
           "$ref": "#/$defs/slug"
         },
         "kind": {
@@ -109,6 +112,7 @@
           "$ref": "#/$defs/entryBase"
         },
         {
+          "$comment": "RULE-07: an embedded tool has origin own (INV-03).",
           "if": {
             "properties": {
               "openMode": {
@@ -128,6 +132,7 @@
           }
         },
         {
+          "$comment": "RULE-07: an external tool is always linked.",
           "if": {
             "properties": {
               "origin": {
@@ -154,6 +159,7 @@
           "const": "tool"
         },
         "category": {
+          "$comment": "INV-07: every tool belongs to one existing category.",
           "$ref": "#/$defs/slug"
         },
         "url": {
@@ -246,6 +252,7 @@
       ],
       "properties": {
         "id": {
+          "$comment": "INV-07: category ids are lowercase slugs, like entry ids.",
           "$ref": "#/$defs/slug"
         },
         "name": {
@@ -264,6 +271,7 @@
           "$ref": "#/$defs/assetPath"
         },
         "tint": {
+          "$comment": "RULE-14: one of the four category tints.",
           "enum": [
             "violet",
             "mango",

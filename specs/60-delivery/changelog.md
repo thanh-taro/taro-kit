@@ -20,3 +20,7 @@ status: draft
 - Change request from the JSON Formatter (its D-008): F-012 now tells embedded tools the theme showing — R5/R6, AC5–AC7, scope updated; MOD-Theme/MOD-ToolHost updated; ADR-0011 (proposed) theme handoff. Catalog: json-formatter entry added, hidden until deployed.
 - D-039 amends D-008: nothing is shared at runtime with tools except the theme showing. F-012 gains R5/R6 and AC5–AC10 (theme hand-off, from the JSON Formatter change request, reviewed); INV-05 and NFR-05 note the exception; ADR-0011 accepted. F-012 stays ready.
 - Gate G3 approved by the user (2026-10-14): ADR-0002 to ADR-0010 accepted; dependency registry approved.
+- RULE-04 clarified (no behavior change): the 30-day window includes today, a one-day future tolerance, same-day label, and the tie order.
+
+## 2026-10-14
+- F-001 build: `project.schema.json` gains `$comment` rule tags (INV-01, INV-02, INV-07, RULE-07, RULE-14); no shape change. ADR-0005 scaffold note resolved. MOD-Content public surface documents its pure build-time derivations (`visibleTools`, `visibleCategories`, `toolsByCategory`, `changelog`, `sitemapEntries`, `catalogData`). MOD-Pages documents `whatsNew(tools, today)` and `localDate()`, the pure helpers the home island uses to compute what's new in the browser (RULE-04).

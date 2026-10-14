@@ -84,7 +84,10 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-settings.appearance** | Appearance | section heading |
 | **COPY-settings.yourData** | Your data | section heading |
 | **COPY-settings.privacyTitle** | Privacy | section heading |
-| **COPY-settings.theme** | Theme: System, Light, Dark | setting label and options |
+| **COPY-settings.theme** | Theme | theme setting label |
+| **COPY-settings.themeSystem** | System | theme option |
+| **COPY-settings.themeLight** | Light | theme option |
+| **COPY-settings.themeDark** | Dark | theme option |
 | **COPY-settings.export** | Export your data | button |
 | **COPY-settings.import** | Import from file | button |
 | **COPY-settings.clearRecents** | Clear recent tools | button |
@@ -110,6 +113,8 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-meta.toolsTitle** | Tools — TaroKit | catalog preview title |
 | **COPY-meta.toolsDescription** | Every tool I've built, by category. | catalog preview description |
 | **COPY-meta.categoryTitle** | {category} — TaroKit | category preview title; the description is the category intro |
+| **COPY-meta.settingsTitle** | Settings — TaroKit | settings page title (not in the site index) |
+| **COPY-meta.settingsDescription** | Your theme and your data on this device. | settings page description |
 | **COPY-meta.toolTitle** | {tool} — TaroKit | tool preview title |
 | **COPY-meta.aboutTitle** | About me — TaroKit | About preview title |
 | **COPY-meta.aboutDescription** | Who I am, what I do, and how to reach me. | About preview description |
