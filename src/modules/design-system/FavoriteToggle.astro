@@ -1,0 +1,36 @@
+---
+// MOD-DesignSystem: CMP-FavoriteToggle for static pages. Renders the FavoriteToggle island with its
+// build-time labels (COPY-fav.add, COPY-fav.remove, COPY-fav.full) and the star icon.
+// Use it in the tool header (F-003, appearance "framed", hydrate "load") and wherever a lone toggle is needed;
+// CMP-ToolCard includes one already.
+import FavoriteToggleIsland from './FavoriteToggle.tsx';
+import { favoriteStar, favoriteToggleLabels } from './text.ts';
+
+interface Props {
+  /** The tool's catalog id. */
+  toolId: string;
+  /** `plain` (borderless, cards) or `framed` (tool header, standalone). Default `framed`. */
+  appearance?: 'plain' | 'framed';
+  /** Star size; the target stays 44 px. Default `md`. */
+  size?: 'sm' | 'md';
+  /** Hydration: `load` where the state must show at first paint (tool view), else `idle` (default). */
+  hydrate?: 'load' | 'idle' | 'visible';
+}
+const { toolId, appearance = 'framed', size = 'md', hydrate = 'idle' } = Astro.props;
+const props = { toolId, appearance, size, labels: favoriteToggleLabels() };
+const star = favoriteStar(size === 'sm' ? 16 : 20);
+---
+
+{hydrate === 'load' ? (
+  <FavoriteToggleIsland client:load {...props}>
+    <Fragment set:html={star} />
+  </FavoriteToggleIsland>
+) : hydrate === 'visible' ? (
+  <FavoriteToggleIsland client:visible {...props}>
+    <Fragment set:html={star} />
+  </FavoriteToggleIsland>
+) : (
+  <FavoriteToggleIsland client:idle {...props}>
+    <Fragment set:html={star} />
+  </FavoriteToggleIsland>
+)}

@@ -4,6 +4,9 @@
 
 @import '../../../generated/tokens.css';
 @import './fonts.css';
+/* Shared components whose markup is rendered both by Astro and by islands (unscoped class contracts). */
+@import './favorite-toggle.css' layer(components);
+@import './tool-card.css' layer(components);
 
 @layer reset {
   *,

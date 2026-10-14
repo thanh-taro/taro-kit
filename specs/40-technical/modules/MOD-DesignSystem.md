@@ -28,5 +28,19 @@ MOD-DesignSystem owns the visual foundation and the shared presentational compon
 - The `<Icon name>` component.
 - The components listed above, with props that mirror their component specs' anatomy and states.
 
+### Tool card and favorite toggle props (F-005)
+In `src/modules/design-system/`. Markup and CSS are shared by the Astro and Preact versions through the class contracts `.tk-toolcard*` (`styles/tool-card.css`) and `.tk-fav*` (`styles/favorite-toggle.css`).
+- **`ToolCard.astro`** (static pages: catalog, category pages). Props:
+  - `tool`: `{ id, name, summary, openMode, url }` (a `CatalogTool` or `RegTool` fits);
+  - `variant`: `regular` (default; icon, name, summary, category label, linked marker) or `compact` (icon, name, toggle);
+  - `categoryName`: the category label on regular cards;
+  - `unavailable`: dimmed, with COPY-tool.unavailable describing the link (F-011 sets it);
+  - `iconSrc`: a bundled icon's address; without it the tool's monogram shows (style.md);
+  - `hydrate`: `load`, `idle` (default) or `visible`, for the toggle island.
+  The card is one stretched link named by the tool. An embedded tool links to `/t/<id>/` (F-003.R1). A linked tool links to its own address in a new tab (F-003.R4), and COPY-tool.opensNewTab describes the link (`aria-describedby`): visible on regular cards, screen-reader text on compact ones. The toggle sits above the link, so it never opens the tool.
+- **`ToolCard.tsx`** (Preact, for islands that list cards from device data, such as home and search results). Same props without `hydrate`, plus `text`: the build-time `toolCardText()` (`text.ts`), passed once to the island.
+- **`FavoriteToggle.astro`** (the tool header, standalone). Props: `toolId`, `appearance` (`framed`, the default, or `plain`), `size` (`md` or `sm`), `hydrate` (`idle`, the default, `load` or `visible`).
+- **`FavoriteToggle.tsx`** (the island). Props: `toolId`; `labels` (`favoriteToggleLabels()`: COPY-fav.add, COPY-fav.remove, COPY-fav.full with the RULE-02 limit); `appearance`; `size`; the star icon as children (`favoriteStar(size)`). It is a 44 px toggle button with `aria-pressed` and a label that states the current state. A refused pin keeps it off and shows COPY-fav.full in a polite status beside it, tied with `aria-describedby`, until focus leaves or Esc. Before hydration it renders off and disabled.
+
 ## Implements
 The shared parts of F-002.R2, F-005.R1, F-009.R2 and F-011.R3, plus CMP-ToolCard, CMP-ProjectCard, CMP-StateMessage, CMP-FavoriteToggle and CMP-ToolHeader. It is the main owner of NFR-03, NFR-07 and NFR-09.
