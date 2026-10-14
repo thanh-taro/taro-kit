@@ -205,6 +205,16 @@
     justify-content: center;
     pointer-events: none;
   }
+  .tk-palette__failed {
+    max-inline-size: calc(100% - 2 * var(--tk-space-4));
+    padding: var(--tk-space-2) var(--tk-space-4);
+    background: var(--tk-color-tint2);
+    color: var(--tk-color-accent2-fg);
+    border-radius: var(--tk-radius-md);
+    box-shadow: var(--tk-shadow-glow);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-semibold);
+  }
   .tk-palette__copied {
     display: inline-flex;
     align-items: center;

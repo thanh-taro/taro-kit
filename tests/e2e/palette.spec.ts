@@ -200,6 +200,94 @@ test.describe('F-004 command palette', () => {
     await expect(page.locator('li[data-project-id="unity-game"]')).toBeFocused();
   });
 
+  test('F-004 edge case: keys pressed before the island is ready are kept, and Enter runs once it is', async ({
+    page,
+  }) => {
+    // Idle time never comes, so only the shortcut can start the island (client:palette hydrates on open).
+    await page.addInitScript(() => {
+      window.requestIdleCallback = () => 0;
+    });
+    await goto(page, '/');
+    await page.keyboard.press(`${await mod(page)}+k`);
+    await expect(field(page)).toBeFocused();
+    await page.keyboard.type('settings');
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(`${PORTAL}/settings/`);
+  });
+
+  test('F-004.R4 a project already in view gets the focus back even when another element was focused', async ({
+    page,
+  }) => {
+    await goto(page, projectPath('unity-game'));
+    const card = page.locator('li[data-project-id="unity-game"]');
+    await expect(card).toBeFocused();
+    const other = page.getByRole('link', { name: 'About me' }).first();
+    await other.focus();
+    await openPalette(page);
+    await field(page).fill('unity');
+    await page.keyboard.press('Enter');
+    await expect(dialog(page)).toBeHidden();
+    await expect(card).toBeFocused();
+  });
+
+  test('F-004.R1 Mod+Shift+K does not open the palette', async ({ page }) => {
+    await goto(page, '/');
+    // Key handlers run while the press is dispatched, so the dialog's state is final when it returns.
+    await page.keyboard.press(`${await mod(page)}+Shift+K`);
+    await expect(page.locator('#tk-palette')).not.toHaveAttribute('open', '');
+    // The plain shortcut, pressed the same way, does open it.
+    await page.keyboard.press(`${await mod(page)}+k`);
+    await expect(dialog(page)).toBeVisible();
+  });
+
+  test("F-004.R1 on a phone-sized tool view, the tool header's search button opens the palette", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(toolPage(embedded.id));
+    await page.waitForLoadState('load');
+    await expect(page.getByRole('banner')).toBeHidden();
+    const search = page.getByRole('toolbar', { name: `${embedded.name} tool` }).getByRole('button', { name: 'Search' });
+    const box = (await search.boundingBox())!;
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+    await search.click();
+    await expect(dialog(page)).toBeVisible();
+    await expect(field(page)).toBeFocused();
+  });
+
+  test('CMP-AppShell at 800 px the full shell shows the search icon button, not the field-like control', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 800, height: 600 });
+    await goto(page, '/');
+    const banner = page.getByRole('banner');
+    await expect(banner.getByRole('button', { name: 'Search', exact: true })).toBeVisible();
+    await expect(banner.getByRole('button', { name: /What are you looking for\?/ })).toBeHidden();
+    await banner.getByRole('button', { name: 'Search', exact: true }).click();
+    await expect(dialog(page)).toBeVisible();
+  });
+
+  test('F-004.R4 copy-address shows "Link copied", then the palette closes', async ({ page, context, browserName }) => {
+    test.skip(browserName !== 'chromium', 'clipboard permission is granted through Chromium');
+    await context.grantPermissions(['clipboard-write'], { origin: PORTAL });
+    await goto(page, '/now/');
+    await openPalette(page);
+    await field(page).fill('copy link');
+    await page.keyboard.press('Enter');
+    await expect(dialog(page).getByText('Link copied')).toBeVisible();
+    await expect(dialog(page)).toBeHidden();
+  });
+
+  test('F-004 edge case: a failed export keeps the palette open and says so', async ({ page }) => {
+    await goto(page, '/');
+    await openPalette(page);
+    // The export code can't load (as when offline before it was cached).
+    await page.route('**/_astro/backup.*.js', (route) => route.abort());
+    await field(page).fill('export');
+    await page.keyboard.press('Enter');
+    await expect(dialog(page).getByRole('status').filter({ hasText: "I couldn't save your backup" })).toBeVisible();
+    await expect(dialog(page)).toBeVisible();
+  });
+
   test('F-004.R4 results run from the keyboard across groups: a page, an embedded tool, a linked tool', async ({
     page,
   }) => {

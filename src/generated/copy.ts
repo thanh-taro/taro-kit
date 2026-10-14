@@ -71,6 +71,7 @@ export const COPY = {
   "COPY-palette.close": "Cancel",
   "COPY-palette.copied": "Link copied",
   "COPY-palette.dialogLabel": "Search TaroKit",
+  "COPY-palette.exportFailed": "I couldn't save your backup just now. Please try again.",
   "COPY-palette.groupActions": "Actions",
   "COPY-palette.groupFavorites": "Favorites",
   "COPY-palette.groupPages": "Pages",

@@ -15,6 +15,7 @@ import { projectPath } from '../content/derive.ts';
 import { visibleFavorites, visibleRecents, type PersonalData } from '../personal-data/index.ts';
 import { normalize, searchKeys, searchPalette, type PaletteGroupId, type SearchKeys } from '../search/index.ts';
 import type { OpenableTool } from '../tool-host/index.ts';
+import { PALETTE_HYDRATE_EVENT } from './events.ts';
 
 /** F-004.R2: favorites shown on an empty query. Recents use RULE-01's 8 (MOD-PersonalData default). */
 export const PALETTE_FAVORITES_MAX = 8;
@@ -25,6 +26,7 @@ export const PALETTE_DIALOG_ID = 'tk-palette';
 export const PALETTE_INPUT_ID = 'tk-palette-q';
 /** The DOM event other islands dispatch on `document` to open the palette (MOD-Palette `openPalette`). */
 export const OPEN_PALETTE_EVENT = 'tarokit:open-palette';
+export { PALETTE_HYDRATE_EVENT };
 /** The shortcut as shown in the search controls and the placeholder (COPY-palette.placeholder {shortcut}). */
 export const SHORTCUT_LABELS = { apple: '⌘K', other: 'Ctrl K' } as const;
 
@@ -132,7 +134,7 @@ export interface RunEnvironment {
   assign(path: string): void;
   /** MOD-Theme quick toggle (RULE-03). */
   toggleTheme(): void;
-  /** MOD-Backup `exportBackup` (F-013.R1), lazy-loaded. */
+  /** MOD-Backup `exportBackup` (F-013.R1), lazy-loaded; rejects when the module can't load or the export fails. */
   exportData(): Promise<void>;
   /** Writes text to the clipboard, within the user's gesture. */
   copy(text: string): Promise<void>;
@@ -140,7 +142,8 @@ export interface RunEnvironment {
   href(): string;
 }
 
-export type RunOutcome = 'closed' | 'copied';
+/** `copied`: show COPY-palette.copied, then close; `exportFailed`: stay open and show COPY-palette.exportFailed. */
+export type RunOutcome = 'closed' | 'copied' | 'exportFailed';
 
 /** Runs one result (F-004.R4, R5). */
 export async function runEntry(entry: PaletteEntry, env: RunEnvironment): Promise<RunOutcome> {
@@ -154,12 +157,21 @@ export async function runEntry(entry: PaletteEntry, env: RunEnvironment): Promis
       return 'closed';
     }
   }
+  if (entry.kind === 'action' && entry.id === 'export') {
+    // The palette stays open until the backup is saved, so a failure can be shown where the user asked for it.
+    try {
+      await env.exportData();
+    } catch {
+      return 'exportFailed';
+    }
+    env.close();
+    return 'closed';
+  }
   env.close();
   if (entry.kind === 'tool') env.openTool(entry);
   else if (entry.kind === 'project') env.assign(projectPath(entry.id));
   else if (entry.kind === 'page') env.assign(entry.path);
-  else if (entry.id === 'theme') env.toggleTheme();
-  else await env.exportData();
+  else env.toggleTheme();
   return 'closed';
 }
 
@@ -182,18 +194,26 @@ export function isPaletteShortcut(
   e: Pick<KeyboardEvent, 'key' | 'metaKey' | 'ctrlKey' | 'altKey' | 'shiftKey'>,
   apple: boolean,
 ): boolean {
-  return (e.key === 'k' || e.key === 'K') && (apple ? e.metaKey && !e.ctrlKey : e.ctrlKey && !e.metaKey) && !e.altKey;
+  return (
+    (e.key === 'k' || e.key === 'K') &&
+    (apple ? e.metaKey && !e.ctrlKey : e.ctrlKey && !e.metaKey) &&
+    !e.altKey &&
+    !e.shiftKey
+  );
 }
 
 interface BootstrapConfig {
   dialog: string;
   input: string;
   event: string;
+  hydrate: string;
   labels: { apple: string; other: string };
 }
 
 // Inlined as source. `back` is where focus returns when the dialog closes, however it closes (Esc, a click
-// outside, Cancel, or running a result).
+// outside, Cancel, or running a result). Opening also asks the island to hydrate now (PALETTE_HYDRATE_EVENT,
+// directive.ts) rather than at idle time. Until the island marks the field `data-live`, an Enter is kept as
+// `data-pending-enter`, which the island runs once its data has loaded, so no early key is lost.
 function paletteMain(
   c: BootstrapConfig,
   isApple: (n: NavigatorLike) => boolean,
@@ -218,7 +238,14 @@ function paletteMain(
       dlg!.showModal();
     }
     q!.focus();
+    d.dispatchEvent(new Event(c.hydrate));
   }
+  q.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.isComposing && !q!.hasAttribute('data-live')) {
+      e.preventDefault();
+      q!.setAttribute('data-pending-enter', '');
+    }
+  });
   d.addEventListener('keydown', function (e) {
     if (isShortcut(e, apple)) {
       e.preventDefault();
@@ -236,6 +263,7 @@ function paletteMain(
     const b = back as HTMLElement | null;
     back = null;
     q!.value = '';
+    q!.removeAttribute('data-pending-enter');
     if (b && b.isConnected && b.focus) b.focus();
   });
 }
@@ -244,6 +272,7 @@ const config: BootstrapConfig = {
   dialog: PALETTE_DIALOG_ID,
   input: PALETTE_INPUT_ID,
   event: OPEN_PALETTE_EVENT,
+  hydrate: PALETTE_HYDRATE_EVENT,
   labels: SHORTCUT_LABELS,
 };
 

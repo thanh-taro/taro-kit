@@ -24,6 +24,8 @@ export interface PaletteText {
   browseAll: string;
   /** COPY-palette.copied */
   copied: string;
+  /** COPY-palette.exportFailed */
+  exportFailed: string;
   /** COPY-palette.close */
   close: string;
   /** COPY-palette.resultCountOne, and COPY-palette.resultCount with a literal "{count}" left in. */
@@ -74,6 +76,7 @@ export function paletteText(): PaletteText {
     noResults: t('COPY-palette.noResults', { query: '{query}' }),
     browseAll: t('COPY-palette.browseAll'),
     copied: t('COPY-palette.copied'),
+    exportFailed: t('COPY-palette.exportFailed'),
     close: t('COPY-palette.close'),
     count: { one: t('COPY-palette.resultCountOne'), other: t('COPY-palette.resultCount', { count: '{count}' }) },
     unavailable: t('COPY-palette.unavailable'),

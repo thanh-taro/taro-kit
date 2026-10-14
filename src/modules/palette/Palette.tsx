@@ -1,5 +1,5 @@
-// MOD-Palette island: the inside of the command palette's <dialog> (CMP-CommandPalette), hydrated client:idle
-// (ADR-0002). The <dialog> itself is static (PaletteDialog.astro) and the inline bootstrap opens and closes it, so
+// MOD-Palette island: the inside of the command palette's <dialog> (CMP-CommandPalette), hydrated at idle time
+// or at once when the palette opens (`client:palette`, directive.ts; ADR-0002). The <dialog> itself is static (PaletteDialog.astro) and the inline bootstrap opens and closes it, so
 // the shortcut works before this island has loaded; the field is uncontrolled, so text typed before hydration
 // is kept. Design: design/canvas/CMP-CommandPalette, PaletteDesktop, PaletteMobile.
 // - Data: the hashed catalog data file (visible entries only, with pre-normalized keys), fetched on hydration,
@@ -30,6 +30,7 @@ import {
   runEntry,
   type PaletteEntry,
   type RunEnvironment,
+  type ViewGroup,
   type ViewGroupId,
 } from './logic.ts';
 import type { PaletteText } from './text.ts';
@@ -60,6 +61,7 @@ const GLYPHS: Record<string, string> = {
 };
 const fill = (template: string, name: string, value: string | number) =>
   template.split(`{${name}}`).join(String(value));
+const flatten = (groups: ViewGroup[]) => groups.flatMap((g) => g.items.map((entry) => ({ group: g.id, entry })));
 const optionId = (group: ViewGroupId, entry: PaletteEntry) => `tk-palette-${group}-${entry.kind}-${entry.id}`;
 
 function Name({ name, query }: { name: string; query: string }) {
@@ -75,13 +77,6 @@ function Name({ name, query }: { name: string; query: string }) {
   );
 }
 
-/** Goes to a portal address; the same address again (a project already in view) re-runs its fragment handling. */
-function assign(path: string): void {
-  const target = new URL(path, location.href);
-  if (target.href === location.href && target.hash) window.dispatchEvent(new HashChangeEvent('hashchange'));
-  else location.assign(target.href);
-}
-
 export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
   const field = useRef<HTMLInputElement>(null);
   const [data, setData] = useState<Loaded>(null);
@@ -89,6 +84,9 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [exportFailed, setExportFailed] = useState(false);
+  // An Enter pressed before the island or its data was ready: run once settled (no early key is lost).
+  const [pending, setPending] = useState(false);
   const [apple, setApple] = useState(false);
   const [announcement, setAnnouncement] = useState('');
   const closeTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -97,6 +95,12 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
     setApple(isApplePlatform(navigator));
     // Text typed before hydration is kept (the field is plain HTML until then).
     setQuery(field.current?.value ?? '');
+    // From now on the island handles Enter; one the bootstrap kept before hydration is taken over.
+    field.current?.setAttribute('data-live', '');
+    if (field.current?.hasAttribute('data-pending-enter')) {
+      field.current.removeAttribute('data-pending-enter');
+      setPending(true);
+    }
     const stop = personalData().data.subscribe(setDoc);
     let live = true;
     fetch(dataUrl)
@@ -111,6 +115,8 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
       setQuery('');
       setActive(0);
       setCopied(false);
+      setExportFailed(false);
+      setPending(false);
       setAnnouncement('');
     };
     dialog?.addEventListener('close', reset);
@@ -130,7 +136,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
   );
   const searching = query.trim() !== '';
   const groups = useMemo(() => (settled ? paletteView(query, index, doc) : []), [settled, query, index, doc]);
-  const flat = useMemo(() => groups.flatMap((g) => g.items.map((entry) => ({ group: g.id, entry }))), [groups]);
+  const flat = useMemo(() => flatten(groups), [groups]);
   const current = flat[Math.min(active, flat.length - 1)];
   const activeId = current ? optionId(current.group, current.entry) : undefined;
 
@@ -148,28 +154,59 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
   const env: RunEnvironment = {
     close: () => dialog()?.close(),
     openTool: (tool) => openTool(tool),
-    assign,
+    assign: (path) => {
+      const target = new URL(path, location.href);
+      if (target.href !== location.href || !target.hash) return location.assign(target.href);
+      // The same address again (a project already in view): re-run its fragment handling after the dialog's
+      // close event, whose focus return would otherwise take the focus back from the card.
+      const fire = () => window.dispatchEvent(new HashChangeEvent('hashchange'));
+      const d = dialog();
+      if (d) d.addEventListener('close', fire, { once: true });
+      else fire();
+    },
     toggleTheme: () => theme().toggle(),
     exportData: () => import('../backup/index.ts').then((m) => m.exportBackup()),
     copy: (value) => navigator.clipboard.writeText(value),
     href: () => location.href,
   };
   const run = async (entry: PaletteEntry) => {
-    if ((await runEntry(entry, env)) === 'copied') {
+    setExportFailed(false);
+    const outcome = await runEntry(entry, env);
+    if (outcome === 'copied') {
       setCopied(true);
       closeTimer.current = setTimeout(() => dialog()?.close(), COPIED_MS);
-    }
+    } else if (outcome === 'exportFailed') setExportFailed(true);
   };
 
+  useEffect(() => {
+    if (!settled || !pending) return;
+    setPending(false);
+    const chosen = flat[Math.min(active, flat.length - 1)];
+    if (chosen) void run(chosen.entry);
+  }, [settled, pending, flat]);
+
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.isComposing || flat.length === 0) return;
-    const at = Math.min(active, flat.length - 1);
+    if (e.isComposing) return;
+    if (e.key === 'Enter' && !settled) {
+      e.preventDefault();
+      setPending(true);
+      return;
+    }
+    if (!settled || !doc) return;
+    // A key pressed right after typing can arrive before the re-render: work from the field's text as it is now,
+    // so Enter never runs a result of the previous query.
+    const value = field.current?.value ?? query;
+    const fresh = value === query;
+    const list = fresh ? flat : flatten(paletteView(value, index, doc));
+    if (list.length === 0) return;
+    const at = fresh ? Math.min(active, list.length - 1) : 0;
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
-      setActive(e.key === 'ArrowDown' ? Math.min(at + 1, flat.length - 1) : Math.max(at - 1, 0));
+      if (!fresh) setQuery(value);
+      setActive(e.key === 'ArrowDown' ? Math.min(at + 1, list.length - 1) : Math.max(at - 1, 0));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      void run(flat[at]!.entry);
+      void run(list[at]!.entry);
     }
   };
 
@@ -313,6 +350,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
         ))}
       </p>
       <div class="tk-palette__toast" role="status">
+        {exportFailed && <span class="tk-palette__failed">{text.exportFailed}</span>}
         {copied && (
           <span class="tk-palette__copied">
             <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: text.icons.copied }} />

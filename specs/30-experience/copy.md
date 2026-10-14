@@ -70,6 +70,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.copied** | Link copied | confirmation |
 | **COPY-palette.resultCount** | {count} results | announced result count; singular form is COPY-palette.resultCountOne |
 | **COPY-palette.resultCountOne** | 1 result | singular of COPY-palette.resultCount |
+| **COPY-palette.exportFailed** | I couldn't save your backup just now. Please try again. | when the palette's export action fails |
 | **COPY-palette.unavailable** | I couldn't load my tools and projects just now. Pages and actions still work; reload the page to try again. | when the catalog data can't load |
 | **COPY-about.links** | Find me | section heading |
 | **COPY-about.more** | See what I've built and what I'm up to now. | pointer to Projects and Now |

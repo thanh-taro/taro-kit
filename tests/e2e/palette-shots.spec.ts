@@ -65,6 +65,11 @@ for (const [size, viewport] of Object.entries(sizes))
 
         await page.goto(`${FX}/t/ft-embedded/`);
         await page.waitForLoadState('load');
+        if (size === 'mobile')
+          await page
+            .getByRole('toolbar')
+            .first()
+            .screenshot({ path: join(out, `toolheader-search-${tag}.png`) });
         if (size === 'desktop')
           await page.getByRole('banner').screenshot({ path: join(out, `shell-compact-${tag}.png`) });
         const apple = await page.evaluate(() => {

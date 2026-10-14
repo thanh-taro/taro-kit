@@ -1,6 +1,6 @@
 ---
 // MOD-Palette: the pre-rendered palette <dialog> (CMP-CommandPalette), mounted once per page by MOD-Shell's
-// BaseLayout, with the Palette island inside (client:idle, ADR-0002). The inline bootstrap (logic.ts
+// BaseLayout, with the Palette island inside (`client:palette`: idle, or at once on open; ADR-0002). The inline bootstrap (logic.ts
 // `paletteBootstrap`, rendered and CSP-hashed by BaseLayout) opens it with showModal(), which makes the rest of
 // the page inert, and focuses the field (F-004.R1, NFR-02).
 // Implements: F-004.R1 (with the bootstrap), CMP-CommandPalette accessibility (a labelled modal dialog).
@@ -12,5 +12,5 @@ import './palette.css';
 ---
 
 <dialog id={PALETTE_DIALOG_ID} class="tk-palette-dialog" aria-label={t('COPY-palette.dialogLabel')}>
-  <Palette client:idle text={paletteText()} dataUrl={paletteDataPath()} catalogPath="/tools/" />
+  <Palette client:palette text={paletteText()} dataUrl={paletteDataPath()} catalogPath="/tools/" />
 </dialog>

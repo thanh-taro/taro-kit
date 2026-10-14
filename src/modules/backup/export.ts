@@ -7,6 +7,8 @@ import type { BackupFile } from '../../generated/domain.ts';
 import { localDate, personalData, type PersonalData } from '../personal-data/index.ts';
 
 export const BACKUP_FORMAT = 'tarokit-backup';
+/** How long the download's object URL is kept before it is released. */
+export const REVOKE_AFTER_MS = 30_000;
 
 /** `tarokit-backup-YYYY-MM-DD.json`, with the device's local date (F-013.R1). */
 export const backupFileName = (now: Date): string => `${BACKUP_FORMAT}-${localDate(now)}.json`;
@@ -32,8 +34,8 @@ function browserDownload(name: string, json: string): void {
   document.body.append(link);
   link.click();
   link.remove();
-  // The download has started from the URL; release it once the click has been handled.
-  setTimeout(() => URL.revokeObjectURL(url), 0);
+  // Released well after the click: some browsers start reading the URL only after the download prompt.
+  setTimeout(() => URL.revokeObjectURL(url), REVOKE_AFTER_MS);
 }
 
 const browser = (): ExportEnvironment => ({

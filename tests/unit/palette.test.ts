@@ -207,10 +207,16 @@ describe('MOD-Palette running a result (F-004.R4, R5)', () => {
     expect(calls).toEqual(['close', 'theme']);
   });
 
-  test('F004_AC7 the export action closes the palette and exports the backup', async () => {
+  test('F004_AC7 the export action exports the backup, then closes the palette', async () => {
     const { e, calls } = env();
     expect(await runEntry(find('action', 'export'), e)).toBe('closed');
-    expect(calls).toEqual(['close', 'export']);
+    expect(calls).toEqual(['export', 'close']);
+  });
+
+  test('F-004 edge case: a failed export keeps the palette open and reports it', async () => {
+    const { e, calls } = env({ exportData: () => Promise.reject(new Error('chunk failed')) });
+    expect(await runEntry(find('action', 'export'), e)).toBe('exportFailed');
+    expect(calls).toEqual([]);
   });
 
   test('F004_AC8 copy-address copies the page address and asks for the confirmation before closing', async () => {
@@ -262,6 +268,9 @@ describe('MOD-Palette shortcut and bootstrap (F-004.R1)', () => {
     expect(isPaletteShortcut(key('k', { ctrlKey: true }), false)).toBe(true);
     expect(isPaletteShortcut(key('k', { ctrlKey: true, altKey: true }), false)).toBe(false);
     expect(isPaletteShortcut(key('j', { ctrlKey: true }), false)).toBe(false);
+    // Mod+Shift+K is another shortcut (browsers and tools use it), never the palette.
+    expect(isPaletteShortcut(key('K', { metaKey: true, shiftKey: true }), true)).toBe(false);
+    expect(isPaletteShortcut(key('K', { ctrlKey: true, shiftKey: true }), false)).toBe(false);
   });
   test('NFR-02 the inline bootstrap stays small (under 2 KB before compression) and carries the shortcut logic', () => {
     expect(paletteBootstrap.length).toBeLessThan(2048);
