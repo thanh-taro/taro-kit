@@ -1,0 +1,184 @@
+/* CMP-ToolHeader (MOD-DesignSystem). Class contract of ToolHeader.tsx.
+   Design: design/canvas/CMP-ToolHeader.dc.html, ToolDesktop, ToolMobile, ToolStates*. Every value is a --tk-* token. */
+.tk-toolheader {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--tk-color-surface);
+  border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+  border-radius: var(--tk-radius-md);
+}
+.tk-toolheader:focus {
+  /* Focus lands here on entry (SCR-ToolView); the controls inside carry the visible focus rings. */
+  outline: none;
+}
+.tk-toolheader[data-slow] {
+  border-radius: var(--tk-radius-lg);
+}
+
+.tk-toolheader__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--tk-space-2);
+  min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-3));
+  padding-inline: var(--tk-space-1);
+}
+
+.tk-toolheader__back,
+.tk-toolheader__open {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--tk-space-2);
+  min-block-size: var(--tk-size-touch-target);
+  border-radius: var(--tk-radius-md);
+  font-size: var(--tk-font-size-md);
+  text-decoration: none;
+}
+.tk-toolheader__back {
+  padding-inline: var(--tk-space-3);
+  color: var(--tk-color-muted);
+}
+.tk-toolheader__back:hover {
+  color: var(--tk-color-fg);
+}
+.tk-toolheader__glyph,
+.tk-toolheader__glyph svg {
+  display: block;
+  inline-size: var(--tk-size-icon-sm);
+  block-size: var(--tk-size-icon-sm);
+}
+
+.tk-toolheader__sep {
+  flex: none;
+  inline-size: var(--tk-border-width-hairline);
+  block-size: var(--tk-space-6);
+  background: var(--tk-color-line);
+}
+
+.tk-toolheader__icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--tk-size-tool-icon-sm);
+  block-size: var(--tk-size-tool-icon-sm);
+  overflow: hidden;
+  border-radius: var(--tk-radius-sm);
+  background: var(--tk-color-tint);
+  color: var(--tk-color-accent);
+  font-family: var(--tk-font-family-mono);
+  font-size: var(--tk-font-size-xs);
+  font-weight: var(--tk-font-weight-semibold);
+}
+.tk-toolheader__icon img {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.tk-toolheader__name {
+  min-inline-size: 0;
+  overflow: hidden;
+  font-family: var(--tk-font-family-body);
+  font-size: var(--tk-font-size-base);
+  font-weight: var(--tk-font-weight-semibold);
+  line-height: var(--tk-font-line-height-tight);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tk-toolheader__fav {
+  display: inline-flex;
+  flex: none;
+}
+
+/* Always visible, never in a menu (CMP-ToolHeader); the primary button in the slow variant. */
+.tk-toolheader__open {
+  margin-inline-start: auto;
+  padding-inline: var(--tk-space-4);
+  background: var(--tk-color-surface2);
+  border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+  color: var(--tk-color-fg);
+  font-weight: var(--tk-font-weight-semibold);
+}
+.tk-toolheader__open:hover {
+  border-color: var(--tk-color-accent);
+}
+.tk-toolheader__open[data-primary] {
+  background: var(--tk-color-accent);
+  border-color: var(--tk-color-accent);
+  color: var(--tk-color-on-accent);
+  font-weight: var(--tk-font-weight-bold);
+}
+
+/* The slow hint (RULE-11): an always-present polite status, painted only when filled. */
+.tk-toolheader__slow:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: var(--tk-space-3);
+  padding: var(--tk-space-3) var(--tk-space-4);
+  background: var(--tk-color-selection);
+  border-block-start: var(--tk-border-width-hairline) solid var(--tk-color-selection-line);
+  font-size: var(--tk-font-size-md);
+  line-height: var(--tk-font-line-height-normal);
+}
+.tk-toolheader__spinner {
+  flex: none;
+  inline-size: var(--tk-size-icon-sm);
+  block-size: var(--tk-size-icon-sm);
+  border: var(--tk-border-width-focus) solid var(--tk-color-selection-line);
+  border-block-start-color: var(--tk-color-accent);
+  border-radius: var(--tk-radius-pill);
+  animation: tk-spin 0.9s linear infinite;
+}
+
+/* Narrow (SCR-ToolView): the tool header replaces the shell bar; every action is a labeled 44 px icon button. */
+@media (max-width: 720px) {
+  .tk-toolheader {
+    border-width: 0 0 var(--tk-border-width-hairline);
+    border-radius: 0;
+  }
+  .tk-toolheader[data-slow] {
+    border-radius: 0;
+  }
+  .tk-toolheader__bar {
+    gap: var(--tk-space-1);
+  }
+  .tk-toolheader__back,
+  .tk-toolheader__open {
+    justify-content: center;
+    inline-size: var(--tk-size-touch-target);
+    padding-inline: 0;
+  }
+  .tk-toolheader__label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .tk-toolheader__sep {
+    display: none;
+  }
+  .tk-toolheader__name {
+    margin-inline-start: var(--tk-space-1);
+  }
+  .tk-toolheader__fav {
+    margin-inline-start: auto;
+  }
+  .tk-toolheader__open {
+    margin-inline-start: 0;
+  }
+  .tk-toolheader__glyph,
+  .tk-toolheader__glyph svg {
+    inline-size: var(--tk-size-icon-md);
+    block-size: var(--tk-size-icon-md);
+  }
+}
+
+@keyframes tk-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}

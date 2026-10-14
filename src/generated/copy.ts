@@ -106,6 +106,7 @@ export const COPY = {
   "COPY-shell.updateReady": "I've shipped an update to TaroKit.",
   "COPY-storage.unavailable": "Your browser isn't letting me save anything right now, so I'll forget your favorites and recents when you leave.",
   "COPY-tool.back": "Back",
+  "COPY-tool.frameLabel": "{tool} tool",
   "COPY-tool.linkedNote": "{tool} lives on its own site. Open it there.",
   "COPY-tool.loading": "Getting {tool} ready…",
   "COPY-tool.offline": "{tool} needs the internet. I'll load it as soon as you're back online.",
@@ -134,6 +135,7 @@ export interface CopyParams {
   "COPY-settings.daysUsed": { count: string | number };
   "COPY-settings.importInvalid": { reason: string | number };
   "COPY-shell.themeToggle": { theme: string | number };
+  "COPY-tool.frameLabel": { tool: string | number };
   "COPY-tool.linkedNote": { tool: string | number };
   "COPY-tool.loading": { tool: string | number };
   "COPY-tool.offline": { tool: string | number };

@@ -7,7 +7,9 @@
 //   "update":  the update-ready message (COPY-shell.updateReady + COPY-shell.refresh), below the header.
 // Below the header, the StorageNotice island shows COPY-storage.unavailable when device storage is refused
 // (F-005.R5); it renders nothing otherwise.
-// The search control arrives with F-004, the compact variant with F-003.
+// Variant `compact` (the tool view, F-003): logo mark, theme toggle and status only, to leave the most space for
+// the tool; below 720 px the bar is hidden and the tool header carries back, favorite and open (SCR-ToolView).
+// The search control arrives with F-004.
 import { t, type CopyId } from '../copy/index.ts';
 import Icon from '../design-system/Icon.astro';
 import { iconSvg } from '../design-system/icons.ts';
@@ -18,8 +20,11 @@ import ThemeToggle from './ThemeToggle.tsx';
 interface Props {
   /** Current route path, e.g. "/" (marks the current navigation item). */
   path: string;
+  /** `full` (default) or `compact` (tool view). */
+  variant?: 'full' | 'compact';
 }
-const { path } = Astro.props;
+const { path, variant = 'full' } = Astro.props;
+const compact = variant === 'compact';
 
 const SETTINGS = '/settings/';
 const links: [href: string, copy: CopyId][] = [
@@ -53,26 +58,30 @@ const offline = await filled('offline');
 const update = await filled('update');
 ---
 
-<div class="shell-wrap">
+<div class="shell-wrap" data-variant={variant}>
   <header class="shell">
     <a href="/" class="logo">
       <span class="mark" aria-hidden="true">
         T
       </span>
-      <span class="word">{t('COPY-shell.brand')}</span>
+      <span class={compact ? 'tk-visually-hidden' : 'word'}>{t('COPY-shell.brand')}</span>
     </a>
-    <NavMenu client:load items={items} menuLabel={t('COPY-nav.menu')} menuIcon={iconSvg('menu', 16)} />
+    {!compact && <NavMenu client:load items={items} menuLabel={t('COPY-nav.menu')} menuIcon={iconSvg('menu', 16)} />}
     <div class="end">
       {offline && <div class="offline" set:html={offline} />}
       <ThemeToggle client:idle {...toggle} />
-      <a
-        href={SETTINGS}
-        class="tk-iconbtn settings"
-        aria-label={t('COPY-nav.settings')}
-        aria-current={path === SETTINGS ? 'page' : undefined}
-      >
-        <Icon name="settings" />
-      </a>
+      {
+        !compact && (
+          <a
+            href={SETTINGS}
+            class="tk-iconbtn settings"
+            aria-label={t('COPY-nav.settings')}
+            aria-current={path === SETTINGS ? 'page' : undefined}
+          >
+            <Icon name="settings" />
+          </a>
+        )
+      }
     </div>
   </header>
   {update && <div class="update" set:html={update} />}
@@ -186,6 +195,12 @@ const update = await filled('update');
     display: none;
   }
 
+  .shell-wrap[data-variant='compact'] .shell {
+    min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-2));
+    padding-inline: var(--tk-space-3) var(--tk-space-1);
+    border-radius: var(--tk-radius-md);
+  }
+
   /* Narrow variant (CMP-AppShell): logo, theme toggle, Menu; the links open in a panel below. */
   @media (max-width: 720px) {
     .shell {
@@ -238,6 +253,13 @@ const update = await filled('update');
     }
     .shell :global(.nav .narrow-only) {
       display: list-item;
+    }
+    /* SCR-ToolView narrow: the shell bar is hidden; the tool header takes its place. */
+    .shell-wrap[data-variant='compact'] .shell {
+      display: none;
+    }
+    .shell-wrap[data-variant='compact'] {
+      gap: 0;
     }
   }
 </style>

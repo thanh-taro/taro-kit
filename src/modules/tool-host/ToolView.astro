@@ -1,0 +1,126 @@
+---
+// MOD-ToolHost <ToolView tool>: the content of /t/<id>/ (SCR-ToolView) for one visible tool.
+// - Embedded (F-003.R1–R3, R5, R6): the ToolFrame island, with the frame attributes from MOD-SecurityPolicy.
+// - Linked (F-003.R4): the tool header and the linked note with the link; nothing opens by itself, and the page
+//   embeds nothing (its frame-src is 'none').
+// Strings are COPY ids rendered at build; icons come from the icon set.
+import type { RegTool } from '../content/index.ts';
+import { t } from '../copy/index.ts';
+import FavoriteToggle from '../design-system/FavoriteToggle.astro';
+import { iconSvg } from '../design-system/icons.ts';
+import { favoriteStar, favoriteToggleLabels } from '../design-system/text.ts';
+import ToolHeader, { type ToolHeaderText } from '../design-system/ToolHeader.tsx';
+import { frameAttributesFor } from '../security-policy/index.ts';
+import ToolFrame from './ToolFrame.tsx';
+import ToolState from './ToolState.tsx';
+
+interface Props {
+  tool: RegTool;
+}
+const { tool } = Astro.props;
+const name = { tool: tool.name };
+const label = t('COPY-tool.frameLabel', name);
+const header: ToolHeaderText = {
+  back: t('COPY-tool.back'),
+  openNewTab: t('COPY-tool.openNewTab'),
+  label,
+  slow: t('COPY-tool.slow', name),
+  icons: { back: iconSvg('chevron-left', 16), newTab: iconSvg('arrow-up-right', 16) },
+};
+---
+
+{
+  tool.openMode === 'embedded' ? (
+    <ToolFrame
+      client:load
+      tool={{ id: tool.id, name: tool.name, url: tool.url, offline: tool.offline }}
+      frame={{ ...frameAttributesFor(tool), title: label }}
+      header={header}
+      favorite={{ labels: favoriteToggleLabels(), star: favoriteStar(20) }}
+      loading={t('COPY-tool.loading', name)}
+      offline={{ title: t('COPY-tool.offline', name), icon: iconSvg('wifi-off', 20) }}
+    />
+  ) : (
+    <>
+      <ToolHeader name={tool.name} text={header}>
+        <FavoriteToggle toolId={tool.id} appearance="plain" hydrate="load" />
+      </ToolHeader>
+      <div class="tk-toolarea" data-linked>
+        <ToolState
+          variant="info"
+          icon={iconSvg('arrow-up-right', 20)}
+          title={t('COPY-tool.linkedNote', name)}
+          detail={new URL(tool.url).host}
+          action={{ href: tool.url, label: t('COPY-tool.openNewTab'), icon: iconSvg('arrow-up-right', 16) }}
+        />
+      </div>
+    </>
+  )
+}
+
+<script>
+  import { connectToolPage } from './entry.ts';
+  connectToolPage();
+</script>
+
+<style>
+  /* The tool area fills the space below the header (SCR-ToolView region 3). */
+  :global(.tk-toolarea) {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: stretch;
+    min-block-size: calc(var(--tk-space-16) * 6);
+    overflow: hidden;
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-md);
+  }
+  :global(.tk-toolarea:focus) {
+    outline: none;
+  }
+  :global(.tk-toolarea[data-phase='offline']),
+  :global(.tk-toolarea[data-linked]) {
+    align-items: center;
+    justify-content: center;
+    padding: var(--tk-space-16) var(--tk-space-4);
+  }
+  :global(.tk-toolarea[data-linked]) {
+    background: none;
+    border: 0;
+  }
+  :global(.tk-toolarea iframe) {
+    flex: 1 1 auto;
+    inline-size: 100%;
+    border: 0;
+    background: var(--tk-color-surface);
+  }
+  :global(.tk-toolarea__loading) {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--tk-space-3);
+    background: var(--tk-color-surface);
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-base);
+  }
+  :global(.tk-toolarea__spinner) {
+    inline-size: var(--tk-space-8);
+    block-size: var(--tk-space-8);
+    border: calc(var(--tk-border-width-focus) + var(--tk-border-width-hairline)) solid var(--tk-color-line);
+    border-block-start-color: var(--tk-color-accent);
+    border-radius: var(--tk-radius-pill);
+    animation: tk-spin 0.9s linear infinite;
+  }
+
+  @media (max-width: 720px) {
+    :global(.tk-toolarea) {
+      border: 0;
+      border-radius: 0;
+    }
+  }
+</style>

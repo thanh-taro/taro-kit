@@ -8,6 +8,7 @@
 @import './favorite-toggle.css' layer(components);
 @import './tool-card.css' layer(components);
 @import './category-tint.css' layer(components);
+@import './tool-header.css' layer(components);
 
 @layer reset {
   *,

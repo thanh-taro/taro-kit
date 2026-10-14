@@ -17,8 +17,12 @@ interface Props {
   path: string;
   /** Set only on /t/<id>/ for an embedded tool: the page's frame-src becomes that tool's origin. */
   embeddedToolUrl?: string;
+  /** CMP-AppShell variant: `full` (default) or `compact` (the tool view, SCR-ToolView). */
+  variant?: 'full' | 'compact';
+  /** Where the skip link jumps: the main region (default), or into the tool on the tool view. */
+  skipTo?: string;
 }
-const { title, description, path, embeddedToolUrl } = Astro.props;
+const { title, description, path, embeddedToolUrl, variant = 'full', skipTo = '#main' } = Astro.props;
 
 // The CSP meta renders with <head>, so inline-script hashes and the page's frame-src go in here (SP-6).
 if (!Astro.csp) throw new Error('security.csp must be enabled (ADR-0009)');
@@ -39,11 +43,11 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     {/* First element of <body>: runs before any content paints (F-012.R4), and after Astro's CSP meta in <head>, so its hash governs it. */}
     {/* set:html on a build-time constant only (themeInlineScript, hashed for the CSP). */}
     <script is:inline set:html={themeInlineScript} />
-    <a href="#main" class="skip">
+    <a href={skipTo} class="skip">
       {t('COPY-shell.skip')}
     </a>
-    <div class="frame">
-      <AppShell path={path}>
+    <div class="frame" data-variant={variant}>
+      <AppShell path={path} variant={variant}>
         <slot name="offline" slot="offline" />
         <slot name="update" slot="update" />
       </AppShell>
@@ -92,5 +96,28 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
   }
   main:focus {
     outline: none;
+  }
+  /* Compact (SCR-ToolView): full width, and the tool area fills the window below the headers. */
+  .frame[data-variant='compact'] {
+    gap: var(--tk-space-3);
+    max-inline-size: none;
+    min-block-size: 100dvh;
+    padding: var(--tk-space-3) var(--tk-space-4) var(--tk-space-4);
+  }
+  .frame[data-variant='compact'] main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+    padding-inline: 0;
+  }
+  @media (max-width: 720px) {
+    .frame[data-variant='compact'] {
+      gap: 0;
+      padding: 0;
+    }
+    .frame[data-variant='compact'] main {
+      gap: 0;
+    }
   }
 </style>

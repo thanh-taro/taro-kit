@@ -1,0 +1,10 @@
+# Test fixture for F-003.R6: an own embedded tool that is offline-capable, so it never shows the offline state.
+id: ft-offline
+kind: tool
+name: Fixture offline tool
+summary: Fixture tool that works offline.
+category: developer
+url: https://ft-offline.tarokit.test/
+origin: own
+offline: true
+added: 2026-10-01
