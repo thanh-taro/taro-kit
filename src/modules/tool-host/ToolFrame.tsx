@@ -9,6 +9,7 @@
 // - Theme hand-off: connected for as long as the frame exists (F-012.R5/R6).
 // - Open-in-new-tab uses the catalog address as is: no theme (F-012.R5).
 // Strings, icons and attributes arrive as build-time props, so the island ships no copy catalog or icon set.
+import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FrameAttributes } from '../security-policy/frame.ts';
 import FavoriteToggle, { type FavoriteToggleLabels } from '../design-system/FavoriteToggle.tsx';
@@ -16,7 +17,6 @@ import ToolHeader, { type ToolHeaderText } from '../design-system/ToolHeader.tsx
 import { theme } from '../theme/index.ts';
 import { initialPhase, SLOW_LOAD_MS, type ToolPhase } from './phase.ts';
 import { connectThemeHandoff, embeddedSrc, type HandoffTheme } from './theme-handoff.ts';
-import ToolState from './ToolState.tsx';
 
 export interface ToolFrameProps {
   tool: { id: string; name: string; url: string; offline: boolean };
@@ -26,12 +26,12 @@ export interface ToolFrameProps {
   favorite: { labels: FavoriteToggleLabels; star: string };
   /** COPY-tool.loading for this tool. */
   loading: string;
-  /** COPY-tool.offline for this tool, and its icon. */
-  offline: { title: string; icon: string };
+  /** The offline state (CMP-StateMessage page variant with COPY-tool.offline), rendered by Astro at build. */
+  children?: ComponentChildren;
   iconSrc?: string;
 }
 
-export default function ToolFrame({ tool, frame, header, favorite, loading, offline, iconSrc }: ToolFrameProps) {
+export default function ToolFrame({ tool, frame, header, favorite, loading, iconSrc, children }: ToolFrameProps) {
   // Before hydration (the build has no device): the loading state, with no frame yet.
   const [phase, setPhase] = useState<ToolPhase>('loading');
   const [src, setSrc] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, offl
       </ToolHeader>
       <section id="tool" class="tk-toolarea" aria-label={frame.title} tabindex={-1} data-phase={phase}>
         {phase === 'offline' ? (
-          <ToolState variant="offline" icon={offline.icon} title={offline.title} live />
+          children
         ) : (
           <>
             {src && (

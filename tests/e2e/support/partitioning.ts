@@ -22,8 +22,7 @@ function disabledFeatures(): string[] {
 
 export function partitionedChromium(): { ignoreDefaultArgs: string[]; args: string[] } {
   const features = disabledFeatures();
-  if (!features.includes('ThirdPartyStoragePartitioning'))
-    return { ignoreDefaultArgs: [], args: [] }; // Playwright no longer disables it.
+  if (!features.includes('ThirdPartyStoragePartitioning')) return { ignoreDefaultArgs: [], args: [] }; // Playwright no longer disables it.
   return {
     ignoreDefaultArgs: [`--disable-features=${features.join(',')}`],
     args: [`--disable-features=${features.filter((f) => f !== 'ThirdPartyStoragePartitioning').join(',')}`],

@@ -1,5 +1,5 @@
 // Cross-origin test sites for the tool view (F-003, F-012.R5/R6), routed by Playwright in the browser context.
-// - https://tarokit.test: the portal. Every request is proxied to the fixture build (port 4322, dist-fixtures/)
+// - https://tarokit.test: the portal. Every request is proxied to the fixture build (FX in ports.ts, dist-fixtures/)
 //   and gets the build's `_headers` (ADR-0009: Permissions-Policy, COOP, frame-ancestors), as the host would.
 // - https://elsewhere-portal.test: the same build under an unrelated site (the AC11 storage-partition control).
 // - https://<id>.tarokit.test: the fixture tool (tests/fixtures/tool-host/F003-tool), one per catalog entry,
@@ -9,9 +9,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { BrowserContext, Route } from '@playwright/test';
+import { FX } from '../ports.ts';
 
 const root = join(import.meta.dirname, '../../..');
-export const BUILD = 'http://localhost:4322';
+/** The fixture build's preview server (ports.ts, env-overridable). */
+export const BUILD = FX;
 export const PORTAL = 'https://tarokit.test';
 export const OTHER_PORTAL = 'https://elsewhere-portal.test';
 export const toolUrl = (id: string) => `https://${id}.tarokit.test/`;
@@ -63,8 +65,7 @@ export async function serveSites(context: BrowserContext): Promise<Sites> {
     const url = new URL(route.request().url());
     toolRequests.push(url.href);
     if (hold) await hold;
-    if (url.pathname === '/tool.js')
-      return route.fulfill({ body: fixture('tool.js'), contentType: 'text/javascript' });
+    if (url.pathname === '/tool.js') return route.fulfill({ body: fixture('tool.js'), contentType: 'text/javascript' });
     if (url.pathname === '/favicon.ico') return route.fulfill({ status: 404 });
     return route.fulfill({ body: fixture('tool.html'), contentType: 'text/html' });
   });

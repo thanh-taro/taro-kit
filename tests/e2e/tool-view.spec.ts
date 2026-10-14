@@ -1,6 +1,6 @@
 // F-003 Open a tool, end to end through the real tool view (/t/<id>/), its ToolFrame and CMP-ToolHeader, plus
 // the theme hand-off through the real frame (F-012.AC5, AC6, AC9, AC10) and unpinning from the real header
-// (F-005.AC2). The portal is the fixture build (port 4322) served as https://tarokit.test with its `_headers`;
+// (F-005.AC2). The portal is the fixture build (FX in ports.ts) served as https://tarokit.test with its `_headers`;
 // tools are fixture pages on their own origins (tests/e2e/support/sites.ts). Fixture content:
 // tests/fixtures/content/F005-favorites (ft-embedded, ft-clipboard, ft-offline, fx-linked, fx-hidden).
 import AxeBuilder from '@axe-core/playwright';
@@ -27,7 +27,10 @@ const seed = (page: Page, doc: { favorites?: string[]; theme?: 'system' | 'light
         key,
         JSON.stringify({
           schemaVersion: 1,
-          favorites: favorites.map((toolId, i) => ({ toolId, pinnedAt: new Date(Date.UTC(2026, 9, 1, 0, i)).toISOString() })),
+          favorites: favorites.map((toolId, i) => ({
+            toolId,
+            pinnedAt: new Date(Date.UTC(2026, 9, 1, 0, i)).toISOString(),
+          })),
           recents: [],
           preferences: { theme },
           daysUsed: [],
@@ -134,9 +137,7 @@ test.describe('F-003 tool view: embedded tools', () => {
     await expect(header(page)).toBeVisible();
   });
 
-  test('F003_AC4 an embedded tool that reads the portal’s stored personal data receives nothing', async ({
-    page,
-  }) => {
+  test('F003_AC4 an embedded tool that reads the portal’s stored personal data receives nothing', async ({ page }) => {
     await seed(page, { favorites: ['ft-embedded', 'fx-01'], theme: 'dark' });
     const tool = await openEmbedded(page);
     expect(await page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)).toContain('ft-embedded');
@@ -163,7 +164,9 @@ test.describe('F-003 tool view: embedded tools', () => {
       document.addEventListener('securitypolicyviolation', (e) => w.violations.push(e.effectiveDirective));
     });
     await tool.evaluate(() =>
-      (window as unknown as { probe: { navigateArea(u: string): void } }).probe.navigateArea('https://elsewhere.test/x'),
+      (window as unknown as { probe: { navigateArea(u: string): void } }).probe.navigateArea(
+        'https://elsewhere.test/x',
+      ),
     );
     await expect
       .poll(() => page.evaluate(() => (window as unknown as { violations: string[] }).violations))
@@ -324,7 +327,9 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     expect(new URL(tool.url()).searchParams.get('theme')).toBe('light');
   });
 
-  test('F012_AC6 the header toggle reaches the tool without reloading it, and nothing else is sent', async ({ page }) => {
+  test('F012_AC6 the header toggle reaches the tool without reloading it, and nothing else is sent', async ({
+    page,
+  }) => {
     await page.emulateMedia({ colorScheme: 'dark' });
     const tool = await openEmbedded(page);
     await tool.evaluate(() => ((window as unknown as { marker: number }).marker = 42));

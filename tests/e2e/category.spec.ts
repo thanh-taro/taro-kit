@@ -105,7 +105,7 @@ test.describe('F-016 category page', () => {
       .getByRole('link')
       .evaluateAll((links) => links.map((a) => a.getAttribute('aria-label') ?? a.textContent));
     expect(names).toEqual([
-      'Developer tools, 26 tools',
+      'Developer tools, 29 tools', // fx-01…fx-26 and the F-003 tool-view fixtures (ft-*)
       'Media tools, 3 tools',
       'Productivity, 1 tool',
       'All my tools',

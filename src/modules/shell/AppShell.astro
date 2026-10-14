@@ -70,18 +70,16 @@ const update = await filled('update');
     <div class="end">
       {offline && <div class="offline" set:html={offline} />}
       <ThemeToggle client:idle {...toggle} />
-      {
-        !compact && (
-          <a
-            href={SETTINGS}
-            class="tk-iconbtn settings"
-            aria-label={t('COPY-nav.settings')}
-            aria-current={path === SETTINGS ? 'page' : undefined}
-          >
-            <Icon name="settings" />
-          </a>
-        )
-      }
+      {!compact && (
+        <a
+          href={SETTINGS}
+          class="tk-iconbtn settings"
+          aria-label={t('COPY-nav.settings')}
+          aria-current={path === SETTINGS ? 'page' : undefined}
+        >
+          <Icon name="settings" />
+        </a>
+      )}
     </div>
   </header>
   {update && <div class="update" set:html={update} />}

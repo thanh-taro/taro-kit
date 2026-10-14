@@ -12,7 +12,7 @@ import { favoriteStar, favoriteToggleLabels } from '../design-system/text.ts';
 import ToolHeader, { type ToolHeaderText } from '../design-system/ToolHeader.tsx';
 import { frameAttributesFor } from '../security-policy/index.ts';
 import ToolFrame from './ToolFrame.tsx';
-import ToolState from './ToolState.tsx';
+import StateMessage from '../design-system/StateMessage.astro';
 
 interface Props {
   tool: RegTool;
@@ -29,34 +29,34 @@ const header: ToolHeaderText = {
 };
 ---
 
-{
-  tool.openMode === 'embedded' ? (
-    <ToolFrame
-      client:load
-      tool={{ id: tool.id, name: tool.name, url: tool.url, offline: tool.offline }}
-      frame={{ ...frameAttributesFor(tool), title: label }}
-      header={header}
-      favorite={{ labels: favoriteToggleLabels(), star: favoriteStar(20) }}
-      loading={t('COPY-tool.loading', name)}
-      offline={{ title: t('COPY-tool.offline', name), icon: iconSvg('wifi-off', 20) }}
-    />
-  ) : (
-    <>
-      <ToolHeader name={tool.name} text={header}>
-        <FavoriteToggle toolId={tool.id} appearance="plain" hydrate="load" />
-      </ToolHeader>
-      <div class="tk-toolarea" data-linked>
-        <ToolState
-          variant="info"
-          icon={iconSvg('arrow-up-right', 20)}
-          title={t('COPY-tool.linkedNote', name)}
-          detail={new URL(tool.url).host}
-          action={{ href: tool.url, label: t('COPY-tool.openNewTab'), icon: iconSvg('arrow-up-right', 16) }}
-        />
-      </div>
-    </>
-  )
-}
+{tool.openMode === 'embedded' ? (
+  <ToolFrame
+    client:load
+    tool={{ id: tool.id, name: tool.name, url: tool.url, offline: tool.offline }}
+    frame={{ ...frameAttributesFor(tool), title: label }}
+    header={header}
+    favorite={{ labels: favoriteToggleLabels(), star: favoriteStar(20) }}
+    loading={t('COPY-tool.loading', name)}
+  >
+    <StateMessage variant="offline" page live title={t('COPY-tool.offline', name)} />
+  </ToolFrame>
+) : (
+  <>
+    <ToolHeader name={tool.name} text={header}>
+      <FavoriteToggle toolId={tool.id} appearance="plain" hydrate="load" />
+    </ToolHeader>
+    <div class="tk-toolarea" data-linked>
+      <StateMessage
+        variant="info"
+        page
+        icon="arrow-up-right"
+        title={t('COPY-tool.linkedNote', name)}
+        detail={new URL(tool.url).host}
+        action={{ href: tool.url, label: t('COPY-tool.openNewTab'), newTab: true }}
+      />
+    </div>
+  </>
+)}
 
 <script>
   import { connectToolPage } from './entry.ts';
