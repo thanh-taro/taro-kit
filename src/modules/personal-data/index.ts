@@ -6,7 +6,9 @@ export {
   parseDocument,
   SCHEMA_VERSION,
   STORAGE_KEY,
+  storedSchemaVersion,
   type PersonalData,
   type ThemePreference,
 } from './document.ts';
 export { createPersonalDataStore, personalData, type PersonalDataStore, type StoreEnvironment } from './store.ts';
+export { readStoredTheme } from './read-stored-theme.ts';

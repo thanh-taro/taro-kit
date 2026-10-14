@@ -40,9 +40,10 @@ window.toggleTheme = () => {
 
 const frame = document.createElement('iframe');
 frame.title = 'Test tool';
-frame.src = embeddedSrc(toolUrl, theme.value);
+const srcTheme = theme.value;
+frame.src = embeddedSrc(toolUrl, srcTheme);
 document.body.append(frame);
-connectThemeHandoff({ frame, toolUrl, theme, host: window });
+connectThemeHandoff({ frame, toolUrl, srcTheme, theme, host: window });
 
 // A second frame from the same origin as the tool: not this tool's frame, so it must get no answer.
 if (params.has('impostor')) {

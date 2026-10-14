@@ -38,6 +38,7 @@ const toggle = {
   icons: { light: iconSvg('sun'), dark: iconSvg('moon') },
 };
 // A forwarded slot counts as present even when empty, so presence is decided by rendered content.
+// set:html below re-emits markup Astro already rendered from the page's own slot, never runtime data.
 const filled = async (name: string) => (Astro.slots.has(name) ? (await Astro.slots.render(name)).trim() : '');
 const offline = await filled('offline');
 const update = await filled('update');

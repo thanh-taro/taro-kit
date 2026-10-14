@@ -93,3 +93,13 @@ export function parseDocument(text: string | null): PersonalData {
     return emptyDocument();
   }
 }
+
+/** The schemaVersion in the stored text, or 0 when there is none or it can't be read. */
+export function storedSchemaVersion(text: string | null): number {
+  try {
+    const v: unknown = text === null ? undefined : (JSON.parse(text) as { schemaVersion?: unknown })?.schemaVersion;
+    return typeof v === 'number' && Number.isFinite(v) ? v : 0;
+  } catch {
+    return 0;
+  }
+}

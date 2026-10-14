@@ -28,6 +28,13 @@ describe('F-012 theme', () => {
     expect(root.theme).toBe('light');
   });
 
+  test('a device with no light/dark preference shows dark (dark-first, D-019)', () => {
+    // matchMedia('(prefers-color-scheme: light)') is false both for dark and for no preference.
+    const { root, theme } = setup({ deviceLight: false });
+    expect(theme.shownTheme.value).toBe('dark');
+    expect(root.theme).toBe('dark');
+  });
+
   test('F012_AC1 an explicit choice ignores device changes (RULE-03)', () => {
     const { media, root } = setup({ deviceLight: false, stored: 'dark' });
     media.set(true);

@@ -1,21 +1,19 @@
-// SCR-Settings theme choice labels come from COPY-settings.theme (F-012.R2).
+// SCR-Settings theme choice labels come from their COPY IDs (F-012.R2).
 import { describe, expect, test } from 'vitest';
-import { themeChoiceCopy } from '../../src/modules/pages/settings/theme-copy.ts';
+import { t } from '../../src/modules/copy/index.ts';
 
-describe('COPY-settings.theme', () => {
-  test('F012_AC2 settings offers system, light and dark with labels from the copy', () => {
-    expect(themeChoiceCopy()).toEqual({
-      legend: 'Theme',
-      options: [
-        { value: 'system', label: 'System' },
-        { value: 'light', label: 'Light' },
-        { value: 'dark', label: 'Dark' },
-      ],
-    });
+describe('SCR-Settings theme copy', () => {
+  test('the legend and the three choices have their own COPY IDs', () => {
+    expect(t('COPY-settings.theme')).toBe('Theme');
+    expect([t('COPY-settings.themeSystem'), t('COPY-settings.themeLight'), t('COPY-settings.themeDark')]).toEqual([
+      'System',
+      'Light',
+      'Dark',
+    ]);
   });
 
-  test('a copy text without exactly three options fails the build', () => {
-    expect(() => themeChoiceCopy('Theme: Light, Dark')).toThrow(/COPY-settings.theme/);
-    expect(() => themeChoiceCopy('Theme')).toThrow(/COPY-settings.theme/);
+  test('the page has its own title and description', () => {
+    expect(t('COPY-meta.settingsTitle')).toBe('Settings — TaroKit');
+    expect(t('COPY-meta.settingsDescription').length).toBeGreaterThan(0);
   });
 });

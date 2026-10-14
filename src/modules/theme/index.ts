@@ -27,7 +27,8 @@ export interface Theme {
   dispose(): void;
 }
 
-// Same query and fallback as the inline script: dark unless the device asks for light.
+// Same query and fallback as the inline script: dark unless the device asks for light, so a device
+// with no preference shows dark (dark-first, D-019).
 const LIGHT_QUERY = '(prefers-color-scheme: light)';
 
 export function createTheme(env: ThemeEnvironment): Theme {
@@ -63,6 +64,3 @@ export function theme(): Theme {
   });
   return shared;
 }
-
-/** The palette's theme action (F-004.R5) calls this; same behavior as the header toggle (RULE-03). */
-export const toggleTheme = (): void => theme().toggle();

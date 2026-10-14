@@ -5,17 +5,26 @@
 import { t } from '../../modules/copy/index.ts';
 import Icon from '../../modules/design-system/Icon.astro';
 import ThemeChoice from '../../modules/pages/settings/ThemeChoice.tsx';
-import { themeChoiceCopy } from '../../modules/pages/settings/theme-copy.ts';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
+
+// F-012.R2: the three choices, in RULE-03 order.
+const choice = {
+  legend: t('COPY-settings.theme'),
+  options: [
+    { value: 'system' as const, label: t('COPY-settings.themeSystem') },
+    { value: 'light' as const, label: t('COPY-settings.themeLight') },
+    { value: 'dark' as const, label: t('COPY-settings.themeDark') },
+  ],
+};
 ---
 
-<BaseLayout title={t('COPY-settings.title')} path="/settings/">
+<BaseLayout title={t('COPY-meta.settingsTitle')} description={t('COPY-meta.settingsDescription')} path="/settings/">
   <div class="settings">
     <h1>{t('COPY-settings.title')}</h1>
 
     <section class="card appearance" aria-labelledby="s-appearance">
       <h2 id="s-appearance">{t('COPY-settings.appearance')}</h2>
-      <ThemeChoice client:load {...themeChoiceCopy()} />
+      <ThemeChoice client:load {...choice} />
     </section>
 
     <section class="privacy" aria-labelledby="s-privacy">
@@ -40,7 +49,6 @@ import BaseLayout from '../../modules/shell/BaseLayout.astro';
   }
   h1 {
     font-size: var(--tk-font-size-5xl);
-    letter-spacing: -0.03em;
   }
   .card {
     display: flex;

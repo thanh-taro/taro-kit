@@ -3,6 +3,8 @@
 // `frame-src` is deliberately absent here: each page sets exactly one (frameSrcDirective), because Astro
 // merges a page's directive into a global one, and "'none' <origin>" is not a valid source list.
 
+import { secureOrigin } from './origin.ts';
+
 export const CSP_DIRECTIVES = [
   "default-src 'self'",
   "img-src 'self' data:",
@@ -21,7 +23,5 @@ export const CSP_DIRECTIVES = [
  */
 export function frameSrcDirective(embeddedToolUrl?: string): `frame-src ${string}` {
   if (!embeddedToolUrl) return "frame-src 'none'";
-  const origin = new URL(embeddedToolUrl).origin;
-  if (!origin.startsWith('https://')) throw new Error(`frame-src: ${origin} is not a secure origin (INV-02)`);
-  return `frame-src ${origin}`;
+  return `frame-src ${secureOrigin(embeddedToolUrl, 'frame-src')}`;
 }

@@ -6,6 +6,7 @@ import {
   emptyDocument,
   normalizeDocument,
   parseDocument,
+  readStoredTheme,
   STORAGE_KEY,
 } from '../../src/modules/personal-data/index.ts';
 import { FakeStorage } from './fakes.ts';
@@ -52,6 +53,44 @@ describe('document (ADR-0010, RULE-08 defaults)', () => {
       { toolId: 'a', openedAt: '2' },
     ];
     expect(normalizeDocument({ recents }).recents).toEqual([{ toolId: 'a', openedAt: '1' }]);
+  });
+});
+
+describe('document safety', () => {
+  test('stored __proto__ and constructor keys are ignored', () => {
+    const doc = parseDocument(
+      '{"__proto__":{"polluted":true},"constructor":{"prototype":{"polluted":true}},' +
+        '"preferences":{"__proto__":{"theme":"dark"},"constructor":"x"}}',
+    );
+    expect(doc).toEqual(emptyDocument());
+    expect(Object.keys(doc.preferences)).toEqual(['theme']);
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+    expect(Object.getPrototypeOf(doc)).toBe(Object.prototype);
+  });
+});
+
+describe('readStoredTheme (inlined into the head script)', () => {
+  test('reads the preference from the STORAGE_KEY document', () => {
+    const storage = new FakeStorage();
+    const g = globalThis as { localStorage?: Storage };
+    g.localStorage = storage;
+    try {
+      expect(readStoredTheme()).toBe('system');
+      storage.setItem(STORAGE_KEY, JSON.stringify({ ...emptyDocument(), preferences: { theme: 'dark' } }));
+      expect(readStoredTheme()).toBe('dark');
+      storage.setItem(STORAGE_KEY, '{oops');
+      expect(readStoredTheme()).toBe('system');
+    } finally {
+      delete g.localStorage;
+    }
+    expect(readStoredTheme()).toBe('system');
+  });
+
+  test('is self-contained, so its source can be inlined', () => {
+    const source = readStoredTheme.toString();
+    // The transpiler may switch quote style.
+    expect(source.includes(`'${STORAGE_KEY}'`) || source.includes(`"${STORAGE_KEY}"`)).toBe(true);
+    expect(source).not.toMatch(/\bimport\b|__vite|require\(/);
   });
 });
 
@@ -115,6 +154,20 @@ describe('store (ADR-0010)', () => {
     storage.setItem(STORAGE_KEY, JSON.stringify(emptyDocument()));
     win.dispatchEvent(new Event('focus'));
     expect(store.preferences.value.theme).toBe('dark');
+  });
+});
+
+describe('store with a document from a newer schema version', () => {
+  test('reads what it can but never writes it back', () => {
+    const storage = new FakeStorage();
+    const newer = JSON.stringify({ schemaVersion: 2, preferences: { theme: 'light' }, favorites: 'v2 shape' });
+    storage.setItem(STORAGE_KEY, newer);
+    const store = createPersonalDataStore({ storage: () => storage });
+    expect(store.preferences.value.theme).toBe('light');
+    expect(storage.getItem(STORAGE_KEY)).toBe(newer);
+    store.setTheme('dark');
+    expect(store.preferences.value.theme).toBe('dark');
+    expect(storage.getItem(STORAGE_KEY)).toBe(newer);
   });
 });
 

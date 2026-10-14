@@ -18,6 +18,7 @@ export default function ThemeToggle({ labels, icons }: Props) {
   // Subscribes after hydration: the build has no device, so the first client render matches the server's.
   useEffect(() => theme().shownTheme.subscribe(setShown), []);
   const next: ShownTheme = shown === 'dark' ? 'light' : 'dark';
+  // `icons` are build-time SVG from the icon set (DEP-15), never user or runtime data.
   return (
     <button
       type="button"

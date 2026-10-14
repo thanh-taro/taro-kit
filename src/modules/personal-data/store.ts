@@ -6,7 +6,15 @@
 // - Reactive signals (DEP-04), so every island updates at once (F-005.R1).
 // Nothing here is ever sent over the network (INV-05).
 import { batch, computed, signal, type ReadonlySignal } from '@preact/signals';
-import { parseDocument, normalizeDocument, STORAGE_KEY, type PersonalData, type ThemePreference } from './document.ts';
+import {
+  normalizeDocument,
+  parseDocument,
+  SCHEMA_VERSION,
+  STORAGE_KEY,
+  storedSchemaVersion,
+  type PersonalData,
+  type ThemePreference,
+} from './document.ts';
 
 const PROBE_KEY = 'tarokit.probe';
 
@@ -52,6 +60,8 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
   let storage = probe(env);
   const available = signal(storage !== null);
 
+  let newerOnDisk = false;
+
   const read = (): PersonalData => {
     if (!storage) return data.peek();
     let text: string | null;
@@ -61,13 +71,16 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
       return data.peek();
     }
     const doc = parseDocument(text);
+    // A document from a newer schema version (another version of the portal wrote it) is read as far as
+    // possible but never overwritten: changes last for this session only.
+    newerOnDisk = storedSchemaVersion(text) > SCHEMA_VERSION;
     // An unreadable or invalid document is repaired and rewritten (ADR-0010); nothing is thrown at the user.
     if (text !== null && text !== JSON.stringify(doc)) write(doc);
     return doc;
   };
 
   const write = (doc: PersonalData): void => {
-    if (!storage) return;
+    if (!storage || newerOnDisk) return;
     try {
       storage.setItem(STORAGE_KEY, JSON.stringify(doc));
     } catch {
