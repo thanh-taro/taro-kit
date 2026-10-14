@@ -12,6 +12,7 @@
     "gen:check": "node scripts/gen.ts --check",
     "content:validate": "node scripts/content-validate.ts",
     "build": "pnpm run gen && pnpm run content:validate && astro build && node scripts/check-dist-fonts.ts",
+    "build:fixtures": "pnpm run gen && TAROKIT_FIXTURES=1 TAROKIT_CONTENT_DIR=tests/fixtures/content/F005-favorites astro build",
     "preview": "astro preview",
     "test": "vitest run",
     "test:e2e": "playwright test",

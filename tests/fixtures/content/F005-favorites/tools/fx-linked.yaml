@@ -1,0 +1,9 @@
+# Test fixture for CMP-ToolCard: an external tool, always linked (RULE-07), opens in a new tab.
+id: fx-linked
+kind: tool
+name: Fixture linked tool
+summary: Fixture tool on its own site.
+category: productivity
+url: https://fx-linked.example.com/
+origin: external
+added: 2026-10-01
