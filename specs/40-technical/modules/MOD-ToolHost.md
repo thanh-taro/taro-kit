@@ -14,7 +14,9 @@ MOD-ToolHost owns the content of `/t/<id>/` (SCR-ToolView).
   - **Theme handoff:** while the frame exists, every change of `shownTheme` is posted as `{ type: "taro:theme", value }` to the tool's exact origin; a `{ type: "taro:ready" }` message is answered the same way, but only when `event.origin` equals the tool's origin and `event.source` is this frame (F-012.R6).
   - **Slow loads:** after 10 s (RULE-11), it switches the header to the slow hint while the frame keeps loading.
 - **Linked tools:** the page shows the linked note with the link (F-003.R4) and records nothing until the link is followed.
-- **Visits:** records one when an embedded tool's view is shown (F-006.R1).
+- **Visits (F-006.R1):**
+  - records one when an embedded tool's view is shown, offline or slow included;
+  - records a linked tool's visit when a link to its own address is followed: a card link marked `data-tk-visit="<id>"` (CMP-ToolCard), or the linked note's link (inside `data-tk-visit-links="<id>"`). `connectVisitRecording()` is one delegated listener per page (click and middle click), installed by MOD-Shell. Showing the linked note or the not-found state records nothing.
 - **Accessibility:** the accessible region name, the skip-into-tool link, and focus on the header at entry.
 
 Unknown and hidden ids never reach this module. No page is generated for them, so the host's and the service worker's not-found page answers (MOD-Pages).
@@ -26,7 +28,8 @@ Unknown and hidden ids never reach this module. No page is generated for them, s
 
 ## Public surface
 - `<ToolView tool>` (an Astro page part plus the `ToolFrame` island).
-- `openTool(tool, { from })`, a shared helper for cards and the palette. It opens linked tools in a new tab with `noopener noreferrer`, records the visit, and navigates to `/t/<id>/` for embedded tools.
+- `openTool(tool, env?)`, a shared helper for script-driven opens such as the palette. It opens linked tools in a new tab with `noopener noreferrer` and records the visit; for embedded tools it navigates to `/t/<id>/`, whose tool view records the visit. `env` (`open`, `assign`, `record`) is injectable for tests.
+- `connectVisitRecording(doc?, record?)` and `visitTarget(element)` (`visits.ts`).
 
 ## Implements
 F-003.R1 to F-003.R6 and F-003.R8 (with SP-1), F-006.R1, and F-012.R5–R6 (with MOD-Theme). It contributes to NFR-08 and to F-011.AC3.

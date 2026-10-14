@@ -45,7 +45,8 @@ const header: ToolHeaderText = {
     <ToolHeader name={tool.name} text={header}>
       <FavoriteToggle toolId={tool.id} appearance="plain" hydrate="load" />
     </ToolHeader>
-    <div class="tk-toolarea" data-linked>
+    {/* F-006.R1: showing the note records nothing; following its link records the visit (visits.ts). */}
+    <div class="tk-toolarea" data-linked data-tk-visit-links={tool.id}>
       <StateMessage
         variant="info"
         page

@@ -24,6 +24,15 @@ import {
   type PersonalData,
   type ThemePreference,
 } from './document.ts';
+import { localDate } from './dates.ts';
+import { daysUsedInLast14, recordDayUsed } from './days-used.ts';
+import {
+  clearRecentVisits,
+  recordRecentVisit,
+  visibleRecents,
+  type RecentVisit,
+  type VisibleRecentsOptions,
+} from './recents.ts';
 
 const PROBE_KEY = 'tarokit.probe';
 
@@ -33,6 +42,8 @@ export interface StoreEnvironment {
   storage: () => Storage | null;
   /** Where `storage` and `focus` events arrive (the window); omitted means no cross-window sync. */
   events?: Pick<Window, 'addEventListener' | 'removeEventListener'>;
+  /** The clock for visit times and the local date (RULE-13); default `new Date()`. Tests fix it. */
+  now?: () => Date;
 }
 
 export interface PersonalDataStore {
@@ -57,6 +68,21 @@ export interface PersonalDataStore {
    */
   pin(toolId: string, visibleIds: VisibleIds): PinResult;
   unpin(toolId: string): void;
+  /** Every stored recent visit, newest first, including unknown or hidden tools (RULE-01, INV-04). */
+  readonly recents: ReadonlySignal<RecentVisit[]>;
+  /**
+   * The recents that may be shown (RULE-01, INV-04): visible tools only, favorites left out unless
+   * `excludeFavorites` is false, at most `max` (default 8). Reactive on visits, clears, pins and unpins.
+   */
+  visibleRecents(visibleIds: VisibleIds, options?: VisibleRecentsOptions): ReadonlySignal<RecentVisit[]>;
+  /** RULE-13: the recorded dates within the last 14 days, today included (today from the clock when read). */
+  readonly daysUsedLast14: ReadonlySignal<number>;
+  /** F-006.R1/R2: the tool moves to the top of recents with the current time (callers decide when). */
+  recordVisit(toolId: string): void;
+  /** F-006.R6: records today's local date once (RULE-13). Writes nothing when it is already recorded. */
+  recordDay(): void;
+  /** F-006.R4: empties recents (the caller confirms first). */
+  clearRecents(): void;
   /** Write-through mutation of the whole document (ADR-0010). The recipe must return a new document. */
   update(recipe: (current: PersonalData) => PersonalData): void;
   setTheme(theme: ThemePreference): void;
@@ -86,6 +112,7 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
   const available = signal(storage !== null);
 
   let newerOnDisk = false;
+  const now = env.now ?? (() => new Date());
 
   const read = (): PersonalData => {
     if (!storage) return data.peek();
@@ -118,6 +145,7 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
   const data = signal<PersonalData>(parseDocument(null));
   data.value = read();
   const favorites = computed(() => data.value.favorites);
+  const recents = computed(() => data.value.recents);
 
   const store: PersonalDataStore = {
     data,
@@ -136,6 +164,22 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
     },
     unpin(toolId) {
       if (isFavorite(data.peek(), toolId)) store.update((doc) => unpinFavorite(doc, toolId));
+    },
+    recents,
+    visibleRecents: (visibleIds, options) => {
+      const visible = new Set(visibleIds);
+      return computed(() => visibleRecents(data.value, visible, options));
+    },
+    daysUsedLast14: computed(() => daysUsedInLast14(data.value.daysUsed, localDate(now()))),
+    recordVisit(toolId) {
+      store.update((doc) => recordRecentVisit(doc, toolId, now().toISOString()));
+    },
+    recordDay() {
+      const today = localDate(now());
+      if (recordDayUsed(data.peek(), today) !== data.peek()) store.update((doc) => recordDayUsed(doc, today));
+    },
+    clearRecents() {
+      store.update(clearRecentVisits);
     },
     update(recipe) {
       const next = normalizeDocument(recipe(structuredClone(data.peek())));

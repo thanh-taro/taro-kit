@@ -12,7 +12,7 @@ status: draft
 | F-003 | Open a tool | M-1 | P0 | shipped |
 | F-004 | Search with the command palette | M-1 | P0 | ready |
 | F-005 | Pin favorite tools | M-1 | P0 | shipped |
-| F-006 | Track recent tools | M-1 | P0 | ready |
+| F-006 | Track recent tools | M-1 | P0 | building |
 | F-007 | Home dashboard | M-1 | P0 | ready |
 | F-008 | About the Owner | M-1 | P0 | shipped |
 | F-009 | Showcase projects | M-1 | P1 | shipped |

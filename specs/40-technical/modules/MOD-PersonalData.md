@@ -36,5 +36,17 @@ All on the page's store, `personalData()` (`src/modules/personal-data/`). `visib
 - Pure versions for tests and other rule callers (`favorites.ts`): `pinFavorite(doc, id, visibleIds, pinnedAt)`, `unpinFavorite(doc, id)`, `visibleFavorites(favorites, visibleIds)`, `isFavorite(doc, id)`, `FAVORITES_LIMIT` (24).
 - With storage unavailable every command works in memory for the session; `storageAvailable` is false and MOD-Shell shows the notice (F-005.R5).
 
+### Recents and days used (F-006)
+On the same store. Visibility works as for favorites; stored recents are never filtered at write time.
+- `recents`: signal of every stored visit (`{ toolId, openedAt }`), newest first, including unknown or hidden tools (RULE-01, INV-04).
+- `visibleRecents(visibleIds, { excludeFavorites = true, max = 8 })`: signal of the recents that may be shown, newest first: visible tools only, stored favorites left out, at most `max` (RULE-01). Hidden entries keep their place, so a tool shown again returns to its original position (F-006.R5).
+- `recordVisit(id)`: the tool moves to the top with the current time, never duplicated; past 20 the oldest entry goes, whatever its visibility (RULE-01). Callers decide when a visit happens (F-006.R1).
+- `recordDay()`: records today's local date once (RULE-13), newest first, the latest 60 kept; writes nothing when today is already recorded. A clock moved backward records its date as it is.
+- `daysUsedLast14`: signal of the recorded dates within the last 14 days, today included; future dates are not counted.
+- `clearRecents()`: empties recents (callers confirm first, F-006.R4).
+- `createPersonalDataStore({ storage, events, now })`: `now` is the clock (default `new Date()`), injectable for tests.
+- Pure versions (`recents.ts`, `days-used.ts`): `recordRecentVisit(doc, id, openedAt)`, `clearRecentVisits(doc)`, `visibleRecents(doc, visibleIds, options)`, `RECENTS_LIMIT` (20), `RECENTS_SHOWN` (8); `recordDayUsed(doc, today)`, `daysUsedInLast14(daysUsed, today)`, `daysUsedWindow(daysUsed, today)` (the 14 days, oldest first, for the settings strip), `DAYS_USED_LIMIT` (60), `DAYS_USED_WINDOW` (14).
+- Local dates (`dates.ts`, platform-mapping): `localDate(date)` and `daysBetween(from, to)`, shared with MOD-Pages' what's new.
+
 ## Implements
 F-005 (all requirements), F-006.R2, F-006.R3, F-006.R5 and F-006.R6, and the storage part of F-012.R4. It contributes to NFR-05.

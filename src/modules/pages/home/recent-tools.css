@@ -1,0 +1,28 @@
+/* MOD-Pages: the recents region of SCR-Home (design HomeDesktop / HomeMobile, "Recently used"): a muted section
+   heading over compact CMP-ToolCards, four columns on desktop and two on narrow screens. Tokens only.
+   Unlayered on purpose: it is bundled with the island, possibly ahead of global.css's layer order statement. */
+.tk-recents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tk-space-3);
+}
+.tk-recents__heading {
+  color: var(--tk-color-muted);
+  font-family: var(--tk-font-family-body);
+  font-size: var(--tk-font-size-md);
+  font-weight: var(--tk-font-weight-bold);
+  letter-spacing: 0.02em;
+}
+.tk-recents__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--tk-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 720px) {
+  .tk-recents__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

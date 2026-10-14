@@ -6,7 +6,8 @@
 // - Variants: regular (icon, name, summary, category label, linked marker) and compact (icon, name,
 //   toggle); `unavailable` dims either one and adds COPY-tool.unavailable (F-011.R3 drives it).
 // - Linked tools: the marker (COPY-tool.opensNewTab) is visible on regular cards and screen-reader text on
-//   compact ones; both describe the link (aria-describedby).
+//   compact ones; both describe the link (aria-describedby). The link carries `data-tk-visit` so following it
+//   records the visit (F-006.R1, MOD-ToolHost visits.ts); the card itself holds no state.
 import type { ComponentChildren } from 'preact';
 import { useId } from 'preact/hooks';
 import FavoriteToggle, { type FavoriteToggleLabels } from './FavoriteToggle.tsx';
@@ -74,6 +75,8 @@ export default function ToolCard({
             href={href}
             target={newTab ? '_blank' : undefined}
             rel={newTab ? 'noopener noreferrer' : undefined}
+            // F-006.R1: following a linked tool's link records a visit (MOD-ToolHost's listener reads this mark).
+            data-tk-visit={newTab ? tool.id : undefined}
             aria-describedby={describedBy(newTabId, unavailableId)}
           >
             {tool.name}

@@ -8,12 +8,14 @@
 //   the same frame keeps loading.
 // - Theme hand-off: connected for as long as the frame exists (F-012.R5/R6).
 // - Open-in-new-tab uses the catalog address as is: no theme (F-012.R5).
+// - Visits: showing the view records the tool in recents (F-006.R1), offline or slow included.
 // Strings, icons and attributes arrive as build-time props, so the island ships no copy catalog or icon set.
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { FrameAttributes } from '../security-policy/frame.ts';
 import FavoriteToggle, { type FavoriteToggleLabels } from '../design-system/FavoriteToggle.tsx';
 import ToolHeader, { type ToolHeaderText } from '../design-system/ToolHeader.tsx';
+import { personalData } from '../personal-data/index.ts';
 import { theme } from '../theme/index.ts';
 import { initialPhase, SLOW_LOAD_MS, type ToolPhase } from './phase.ts';
 import { connectThemeHandoff, embeddedSrc, type HandoffTheme } from './theme-handoff.ts';
@@ -36,6 +38,11 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
   const [src, setSrc] = useState<string | null>(null);
   const srcTheme = useRef<HandoffTheme>('dark');
   const frameRef = useRef<HTMLIFrameElement>(null);
+
+  // F-006.R1: the embedded tool's view is shown, so the visit counts whether or not the tool loads.
+  useEffect(() => {
+    personalData().recordVisit(tool.id);
+  }, [tool.id]);
 
   useEffect(() => {
     const start = () => {
