@@ -51,6 +51,7 @@ if (check) {
 
 // Notices (build output).
 const registry = parseRegistry(read('specs/40-technical/dependencies.md'));
+mkdirSync(join(root, 'public'), { recursive: true });
 writeFileSync(
   join(root, 'public/third-party-notices.txt'),
   renderNotices(registry, (name) => readInstalledPackage(root, name)),

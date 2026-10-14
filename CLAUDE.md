@@ -23,6 +23,11 @@ This project is built with the **build-my-app** workflow. Progress lives in
 Follow the dependency and asset policy in `specs/40-technical/dependencies.md` and its ADR.
 Register every dependency and asset before use.
 
+## Local setup
+- `pnpm install`
+- `python3 -m venv .venv && .venv/bin/pip install -r requirements-build.txt` (fonttools and brotli for build-time font subsetting, ADR-0003)
+- `pnpm gen && pnpm build`, `pnpm test`, `pnpm exec playwright test --project=chromium`
+
 ## Checks
 - `python3 tools/spec_lint.py` must report 0 errors after any spec change.
 - `python3 tools/spec_lint.py --coverage <tests-dir>` lists acceptance criteria without tests.
