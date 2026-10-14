@@ -46,13 +46,16 @@ describe('document (ADR-0010, RULE-08 defaults)', () => {
   });
 
   test('drops duplicate tool ids and caps lists at the schema limits', () => {
-    const favorites = Array.from({ length: 30 }, (_, i) => ({ toolId: `t${i % 26}`, pinnedAt: 'x' }));
+    const favorites = Array.from({ length: 30 }, (_, i) => ({
+      toolId: `t${i % 26}`,
+      pinnedAt: '2026-10-01T00:00:00Z',
+    }));
     expect(normalizeDocument({ favorites }).favorites).toHaveLength(24);
     const recents = [
-      { toolId: 'a', openedAt: '1' },
-      { toolId: 'a', openedAt: '2' },
+      { toolId: 'a', openedAt: '2026-10-01T00:00:01Z' },
+      { toolId: 'a', openedAt: '2026-10-01T00:00:02Z' },
     ];
-    expect(normalizeDocument({ recents }).recents).toEqual([{ toolId: 'a', openedAt: '1' }]);
+    expect(normalizeDocument({ recents }).recents).toEqual([{ toolId: 'a', openedAt: '2026-10-01T00:00:01Z' }]);
   });
 });
 

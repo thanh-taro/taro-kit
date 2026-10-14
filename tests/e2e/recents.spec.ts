@@ -308,6 +308,82 @@ test.describe('F-006.R6 RULE-13 days used', () => {
   });
 });
 
+test.describe('F-006 round 1: midnight and unsaved clears', () => {
+  const UNSAVED =
+    "I cleared your recent tools for now, but couldn't save that on this device, so they may come back next time.";
+  const clear = async (page: Page) => {
+    await page.getByRole('button', { name: 'Clear recent tools' }).click();
+    await page.getByRole('alertdialog').getByRole('button', { name: 'Confirm' }).click();
+    await expect(page.getByRole('alertdialog')).toBeHidden();
+  };
+
+  test('RULE-13 a page left open past midnight records the new day when shown again, and the count follows', async ({
+    page,
+  }) => {
+    await page.clock.install({ time: new Date(2026, 9, 14, 23, 58) });
+    await seed(page, { daysUsed: ['2026-10-10'] });
+    await page.goto(SETTINGS);
+    await expect(page.getByText("You've used TaroKit on 2 of the last 14 days")).toBeVisible();
+    await page.clock.runFor(5 * 60_000);
+    await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await expect(page.getByText("You've used TaroKit on 3 of the last 14 days")).toBeVisible();
+    expect((await stored(page)).daysUsed).toEqual(['2026-10-15', '2026-10-14', '2026-10-10']);
+    await expect(page.getByTestId('days-strip').locator('[data-used]')).toHaveCount(3);
+    // Focus records too, and writes nothing more once today is recorded.
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    expect((await stored(page)).daysUsed).toEqual(['2026-10-15', '2026-10-14', '2026-10-10']);
+  });
+
+  test('F-006.R4 when the device refuses the write, the clear says it was not saved', async ({ page }) => {
+    await seed(page, { recents: ['fx-01'] });
+    await page.goto(SETTINGS);
+    await expect(page.getByRole('button', { name: 'Clear recent tools' })).toBeEnabled();
+    await page.evaluate(() => {
+      Storage.prototype.setItem = () => {
+        throw new DOMException('quota', 'QuotaExceededError');
+      };
+    });
+    await clear(page);
+    await expect(page.getByRole('alert').filter({ hasText: UNSAVED })).toBeVisible();
+    expect(await storedRecents(page)).toEqual(['fx-01']);
+    await expect(page.getByRole('button', { name: 'Clear recent tools' })).toBeFocused();
+  });
+
+  test('F-006.R4 with a newer version’s document on disk, the clear says so and never overwrites it', async ({
+    page,
+  }) => {
+    const newer = JSON.stringify({
+      schemaVersion: 2,
+      favorites: [],
+      recents: [{ toolId: 'fx-01', openedAt: '2026-10-10T12:00:00.000Z' }],
+      preferences: { theme: 'system' },
+      daysUsed: ['2026-10-10'],
+      addedLater: { keep: true },
+    });
+    await page.addInitScript(
+      ([key, text]) => {
+        if (window === window.top && !sessionStorage.getItem('seeded')) {
+          localStorage.setItem(key, text);
+          sessionStorage.setItem('seeded', '1');
+        }
+      },
+      [STORAGE_KEY, newer] as const,
+    );
+    await page.goto(SETTINGS);
+    await expect(page.getByRole('button', { name: 'Clear recent tools' })).toBeEnabled();
+    await clear(page);
+    await expect(page.getByRole('alert').filter({ hasText: UNSAVED })).toBeVisible();
+    expect(await page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)).toBe(newer);
+  });
+
+  test('F006_AC7 a saved clear shows no error', async ({ page }) => {
+    await seed(page, { recents: ['fx-01'] });
+    await page.goto(SETTINGS);
+    await clear(page);
+    await expect(page.getByText(UNSAVED)).toHaveCount(0);
+  });
+});
+
 for (const scheme of ['dark', 'light'] as const)
   test(`NFR-03 settings with the clear-recents confirmation and the recents list have no axe violations (${scheme})`, async ({
     page,

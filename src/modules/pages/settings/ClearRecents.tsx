@@ -1,9 +1,12 @@
 // MOD-Pages island on SCR-Settings: clear recents after confirming (F-006.R4, COPY-settings.clearRecents,
 // COPY-settings.clearRecentsConfirm with COPY-common.confirm / COPY-common.cancel).
-// Confirming empties recents through MOD-PersonalData, so every list in every window follows; cancelling, by
-// button or Escape, changes nothing. Focus returns to the button either way. Before hydration the button is
-// disabled, like the other device-data controls.
-import { useRef, useState } from 'preact/hooks';
+// - Confirming empties recents through MOD-PersonalData, so every list in every window follows; cancelling, by
+//   button or Escape, changes nothing. ConfirmDialog returns focus to the button.
+// - When the clear could not be saved on the device (`unsaved`: storage refused or failing, or a newer version's
+//   document, which is never overwritten), it does not look successful: COPY-settings.clearRecentsUnsaved shows
+//   as an alert under the button.
+// Before hydration the button is disabled, like the other device-data controls.
+import { useState } from 'preact/hooks';
 import { personalData } from '../../personal-data/index.ts';
 import { useHydrated } from '../../shell/hydrated.ts';
 import ConfirmDialog from './ConfirmDialog.tsx';
@@ -17,32 +20,46 @@ interface Props {
   confirmLabel: string;
   /** COPY-common.cancel */
   cancelLabel: string;
+  /** COPY-settings.clearRecentsUnsaved */
+  unsaved: string;
 }
 
-export default function ClearRecents({ label, question, confirmLabel, cancelLabel }: Props) {
+export default function ClearRecents({ label, question, confirmLabel, cancelLabel, unsaved }: Props) {
   const hydrated = useHydrated();
   const [open, setOpen] = useState(false);
-  const button = useRef<HTMLButtonElement>(null);
-  const close = () => {
-    setOpen(false);
-    button.current?.focus();
-  };
+  const [failed, setFailed] = useState(false);
   return (
-    <>
-      <button ref={button} type="button" class="action" disabled={!hydrated} onClick={() => setOpen(true)}>
+    <div class="clear-recents">
+      <button
+        type="button"
+        class="action"
+        disabled={!hydrated}
+        onClick={() => {
+          setFailed(false);
+          setOpen(true);
+        }}
+      >
         {label}
       </button>
+      {failed && (
+        <p class="action-error" role="alert">
+          <span class="mark" aria-hidden="true">
+            !
+          </span>
+          <span>{unsaved}</span>
+        </p>
+      )}
       <ConfirmDialog
         open={open}
         title={question}
         confirmLabel={confirmLabel}
         cancelLabel={cancelLabel}
         onConfirm={() => {
-          personalData().clearRecents();
-          close();
+          setFailed(personalData().clearRecents() === 'unsaved');
+          setOpen(false);
         }}
-        onCancel={close}
+        onCancel={() => setOpen(false)}
       />
-    </>
+    </div>
   );
 }

@@ -23,7 +23,26 @@ export const emptyDocument = (): PersonalData => ({
 });
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
-const isString = (v: unknown): v is string => typeof v === 'string' && v.length > 0;
+
+/** A catalog id: the domain schema's `slug` (pattern and 48-character cap, INV-01). */
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const isToolId = (v: unknown): v is string => typeof v === 'string' && v.length <= 48 && SLUG.test(v);
+
+/** A real calendar date as YYYY-MM-DD (no 2026-02-30). */
+export function isCalendarDate(v: unknown): v is string {
+  if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y, m, d] = v.split('-').map(Number) as [number, number, number];
+  const t = new Date(Date.UTC(y, m - 1, d));
+  return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
+}
+
+/** An ISO 8601 date-time with a zone (the schema's `timestamp`) on a real calendar date. */
+const TIMESTAMP = /^(\d{4}-\d{2}-\d{2})T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
+export function isTimestamp(v: unknown): v is string {
+  if (typeof v !== 'string') return false;
+  const m = TIMESTAMP.exec(v);
+  return !!m && isCalendarDate(m[1]) && !Number.isNaN(Date.parse(v));
+}
 export const isThemePreference = (v: unknown): v is ThemePreference => v === 'system' || v === 'light' || v === 'dark';
 
 /** Keeps well-formed items with a unique key, in order, up to the limit. */
@@ -49,6 +68,8 @@ function keepValid<T>(
 /**
  * Reads whatever was stored into a valid document (ADR-0010): an unreadable or invalid document is
  * treated like a damaged backup, so its valid parts are kept and the rest filled with RULE-08 defaults.
+ * Entries are validated one by one and invalid ones dropped: tool ids must be catalog ids, times ISO
+ * timestamps, and days used real calendar dates.
  * Never throws.
  */
 export function normalizeDocument(raw: unknown): PersonalData {
@@ -60,7 +81,7 @@ export function normalizeDocument(raw: unknown): PersonalData {
       raw.favorites,
       LIMITS.favorites,
       (f) =>
-        isRecord(f) && isString(f.toolId) && isString(f.pinnedAt)
+        isRecord(f) && isToolId(f.toolId) && isTimestamp(f.pinnedAt)
           ? { toolId: f.toolId, pinnedAt: f.pinnedAt }
           : undefined,
       (f) => f.toolId,
@@ -69,7 +90,7 @@ export function normalizeDocument(raw: unknown): PersonalData {
       raw.recents,
       LIMITS.recents,
       (r) =>
-        isRecord(r) && isString(r.toolId) && isString(r.openedAt)
+        isRecord(r) && isToolId(r.toolId) && isTimestamp(r.openedAt)
           ? { toolId: r.toolId, openedAt: r.openedAt }
           : undefined,
       (r) => r.toolId,
@@ -78,7 +99,7 @@ export function normalizeDocument(raw: unknown): PersonalData {
     daysUsed: keepValid(
       raw.daysUsed,
       LIMITS.daysUsed,
-      (d) => (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : undefined),
+      (d) => (isCalendarDate(d) ? d : undefined),
       (d) => d,
     ),
   };

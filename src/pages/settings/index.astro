@@ -42,6 +42,7 @@ const choice = {
           question={t('COPY-settings.clearRecentsConfirm')}
           confirmLabel={t('COPY-common.confirm')}
           cancelLabel={t('COPY-common.cancel')}
+          unsaved={t('COPY-settings.clearRecentsUnsaved')}
         />
       </div>
     </section>
@@ -188,6 +189,28 @@ const choice = {
   .data :global(.action:disabled) {
     cursor: default;
   }
+  .data :global(.clear-recents) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--tk-space-3);
+  }
+  /* F-006.R4: a clear that could not be saved (design: the alert style of SettingsDialogs' import error). */
+  .data :global(.action-error) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--tk-space-3);
+    padding: var(--tk-space-3) var(--tk-space-4);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-danger);
+    border-radius: var(--tk-radius-md);
+    font-size: var(--tk-font-size-base);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .data :global(.action-error .mark) {
+    color: var(--tk-color-danger);
+    font-family: var(--tk-font-family-mono);
+    font-weight: var(--tk-font-weight-bold);
+  }
 
   /* ConfirmDialog (design: SettingsDialogsDesktop, a centered card over the scrim). */
   .settings :global(.tk-confirm) {
@@ -235,10 +258,6 @@ const choice = {
     color: var(--tk-color-on-accent);
     border: 0;
   }
-  .settings :global(.tk-confirm[data-tone='danger'] .tk-confirm__confirm) {
-    background: var(--tk-color-danger);
-    color: var(--tk-color-bg);
-  }
 
   .privacy {
     display: flex;
@@ -284,7 +303,8 @@ const choice = {
       font-size: var(--tk-font-size-base);
     }
     /* Your data: full-width actions and a strip that fills the row (SettingsMobile). */
-    .actions {
+    .actions,
+    .data :global(.clear-recents) {
       flex-direction: column;
       align-items: stretch;
     }

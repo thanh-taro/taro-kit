@@ -6,7 +6,10 @@
 // RULE-13 functions alongside.
 export {
   emptyDocument,
+  isCalendarDate,
   isThemePreference,
+  isTimestamp,
+  isToolId,
   normalizeDocument,
   parseDocument,
   SCHEMA_VERSION,
@@ -34,7 +37,20 @@ export {
   type RecentVisit,
   type VisibleRecentsOptions,
 } from './recents.ts';
-export { DAYS_USED_LIMIT, DAYS_USED_WINDOW, daysUsedInLast14, daysUsedWindow, recordDayUsed } from './days-used.ts';
+export {
+  DAYS_USED_FUTURE_TOLERANCE,
+  DAYS_USED_LIMIT,
+  DAYS_USED_WINDOW,
+  daysUsedInLast14,
+  daysUsedWindow,
+  recordDayUsed,
+} from './days-used.ts';
 export { daysBetween, localDate } from './dates.ts';
-export { createPersonalDataStore, personalData, type PersonalDataStore, type StoreEnvironment } from './store.ts';
+export {
+  createPersonalDataStore,
+  personalData,
+  type ClearResult,
+  type PersonalDataStore,
+  type StoreEnvironment,
+} from './store.ts';
 export { readStoredTheme } from './read-stored-theme.ts';

@@ -23,7 +23,7 @@ MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
 - **Connection and updates:** the quiet offline indicator, and the update-ready message whose refresh action asks MOD-Offline to activate the new version.
 - **Storage notice:** when MOD-PersonalData reports device storage unavailable, the one-time notice COPY-storage.unavailable below the header (F-005.R5, SCR-Home error state, ADR-0010): once per browser session (a sessionStorage flag), or once per page if sessionStorage is refused too.
 - **Palette:** mounts the palette bootstrap and island (MOD-Palette).
-- **Visits:** records the day on every page view (`recordDay`, F-006.R6), and installs MOD-ToolHost's linked-visit listener (`connectVisitRecording`, F-006.R1) so cards on any page record a linked tool's visit.
+- **Visits:** records the day on every page view and whenever the page is shown or focused again (`connectDayRecording` calls `recordDay`, F-006.R6), so a page left open past midnight records the new day, and installs MOD-ToolHost's linked-visit listener (`connectVisitRecording`, F-006.R1) so cards on any page record a linked tool's visit.
 - **Variants:** full, compact (tool view) and narrow.
 
 ## Not responsible for

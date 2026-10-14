@@ -5,10 +5,12 @@ import { describe, expect, test, vi } from 'vitest';
 import {
   clearRecentVisits,
   createPersonalDataStore,
+  DAYS_USED_FUTURE_TOLERANCE,
   DAYS_USED_LIMIT,
   daysUsedInLast14,
   daysUsedWindow,
   emptyDocument,
+  normalizeDocument,
   RECENTS_LIMIT,
   RECENTS_SHOWN,
   recordDayUsed,
@@ -115,9 +117,21 @@ describe('RULE-13 days used (pure)', () => {
 
   test('RULE-13 the clock moving backward records the date as it is, and never twice', () => {
     let doc = { ...emptyDocument(), daysUsed: ['2026-10-14', '2026-10-13'] };
-    doc = recordDayUsed(doc, '2026-10-10');
-    expect(doc.daysUsed).toEqual(['2026-10-14', '2026-10-13', '2026-10-10']);
-    expect(recordDayUsed(doc, '2026-10-13')).toBe(doc);
+    doc = recordDayUsed(doc, '2026-10-13');
+    expect(doc.daysUsed).toEqual(['2026-10-14', '2026-10-13']);
+    doc = recordDayUsed(doc, '2026-10-12');
+    // The new date is recorded as it is; one day ahead stays (DAYS_USED_FUTURE_TOLERANCE), two days ahead goes.
+    expect(doc.daysUsed).toEqual(['2026-10-13', '2026-10-12']);
+  });
+
+  test('F-006 edge case: dates more than a day ahead are dropped when recording, so they cannot push today out', () => {
+    const future = Array.from({ length: 60 }, (_, i) => localDate(new Date(2027, 0, 1 + i)));
+    const doc = recordDayUsed({ ...emptyDocument(), daysUsed: [...future].reverse() }, '2026-10-14');
+    expect(DAYS_USED_FUTURE_TOLERANCE).toBe(1);
+    expect(doc.daysUsed).toEqual(['2026-10-14']);
+    expect(
+      recordDayUsed({ ...emptyDocument(), daysUsed: ['2026-10-15', '2026-10-16'] }, '2026-10-14').daysUsed,
+    ).toEqual(['2026-10-15', '2026-10-14']);
   });
 
   test('F006_AC9 3 distinct days in the last 14 and others before that count as 3', () => {
@@ -269,5 +283,151 @@ describe('F-006.R1 visit recording in MOD-ToolHost', () => {
     expect(visitTarget(link({ href: 'https://x/', 'data-tk-visit': 'gh' }))).toBe('gh');
     expect(visitTarget(link({ href: 'https://x/' }, { 'data-tk-visit-links': 'gh' }))).toBe('gh');
     expect(visitTarget(link({ href: '/t/json/' }))).toBeNull();
+  });
+});
+
+describe('ADR-0010 stored data is validated entry by entry on read', () => {
+  const ts = '2026-10-14T09:30:00.000Z';
+  test('INV-01 tool ids must be catalog ids (slug pattern, at most 48 characters)', () => {
+    const doc = normalizeDocument({
+      recents: [
+        { toolId: 'json-formatter', openedAt: ts },
+        { toolId: 'Bad Id', openedAt: ts },
+        { toolId: '../etc', openedAt: ts },
+        { toolId: 'a'.repeat(49), openedAt: ts },
+        { toolId: 'a'.repeat(48), openedAt: ts },
+        { toolId: 'trailing-', openedAt: ts },
+      ],
+      favorites: [
+        { toolId: '<script>', pinnedAt: ts },
+        { toolId: 'ok', pinnedAt: ts },
+      ],
+    });
+    expect(doc.recents.map((r) => r.toolId)).toEqual(['json-formatter', 'a'.repeat(48)]);
+    expect(doc.favorites.map((f) => f.toolId)).toEqual(['ok']);
+  });
+
+  test('ADR-0010 openedAt and pinnedAt must be ISO timestamps on real dates', () => {
+    const doc = normalizeDocument({
+      recents: [
+        { toolId: 'a', openedAt: 'yesterday' },
+        { toolId: 'b', openedAt: '2026-10-14' },
+        { toolId: 'c', openedAt: '2026-02-30T10:00:00Z' },
+        { toolId: 'd', openedAt: '2026-10-14T25:00:00Z' },
+        { toolId: 'e', openedAt: '2026-10-14T09:30:00+07:00' },
+        { toolId: 'f', openedAt: ts },
+      ],
+      favorites: [
+        { toolId: 'a', pinnedAt: 12345 },
+        { toolId: 'b', pinnedAt: ts },
+      ],
+    });
+    expect(doc.recents.map((r) => r.toolId)).toEqual(['e', 'f']);
+    expect(doc.favorites.map((f) => f.toolId)).toEqual(['b']);
+  });
+
+  test('RULE-13 days used must be real calendar dates', () => {
+    const doc = normalizeDocument({
+      daysUsed: ['2026-10-14', '2026-02-30', '2026-13-01', '2024-02-29', '2025-02-29', '2026-1-5', 20261014],
+    });
+    expect(doc.daysUsed).toEqual(['2026-10-14', '2024-02-29']);
+  });
+
+  test('ADR-0010 an invalid entry is dropped and never fatal: the store still starts', () => {
+    const storage = new FakeStorage();
+    storage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        recents: [
+          { toolId: 'BAD', openedAt: 'x' },
+          { toolId: 'ok', openedAt: ts },
+        ],
+      }),
+    );
+    const store = createPersonalDataStore({ storage: () => storage });
+    expect(store.recents.value.map((r) => r.toolId)).toEqual(['ok']);
+  });
+});
+
+describe('F-006.R4 a clear that is not saved says so', () => {
+  test('F006_AC7 a saved clear reports saved', () => {
+    const store = createPersonalDataStore({ storage: () => new FakeStorage() });
+    store.recordVisit('a');
+    expect(store.clearRecents()).toBe('saved');
+  });
+
+  test('F-006.R4 a failing write reports unsaved; recents are cleared for this session only', () => {
+    const storage = new FakeStorage();
+    const store = createPersonalDataStore({ storage: () => storage });
+    store.recordVisit('a');
+    storage.failWrites = true;
+    expect(store.clearRecents()).toBe('unsaved');
+    expect(store.recents.value).toEqual([]);
+    expect(JSON.parse(storage.getItem(STORAGE_KEY)!).recents.map((r: { toolId: string }) => r.toolId)).toEqual(['a']);
+    expect(store.storageAvailable.value).toBe(false);
+  });
+
+  test('F-006.R4 with a newer schema on disk the clear reports unsaved and the document is never overwritten', () => {
+    const storage = new FakeStorage();
+    const newer = JSON.stringify({
+      schemaVersion: 2,
+      favorites: [],
+      recents: [{ toolId: 'a', openedAt: '2026-10-14T09:30:00.000Z' }],
+      preferences: { theme: 'dark' },
+      daysUsed: [],
+      somethingNew: { kept: true },
+    });
+    storage.setItem(STORAGE_KEY, newer);
+    const store = createPersonalDataStore({ storage: () => storage });
+    expect(store.recents.value.map((r) => r.toolId)).toEqual(['a']);
+    expect(store.clearRecents()).toBe('unsaved');
+    store.recordVisit('b');
+    store.recordDay();
+    expect(storage.getItem(STORAGE_KEY)).toBe(newer);
+  });
+
+  test('F-005.R5 with storage unavailable from the start, clearing reports unsaved', () => {
+    const store = createPersonalDataStore({ storage: () => null });
+    store.recordVisit('a');
+    expect(store.clearRecents()).toBe('unsaved');
+  });
+});
+
+describe('RULE-13 across midnight on an open page', () => {
+  test('RULE-13 recordDay after midnight records the new day and daysUsedLast14 moves with today', () => {
+    let clock = new Date(2026, 9, 14, 23, 59);
+    const storage = new FakeStorage();
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...emptyDocument(), daysUsed: ['2026-10-01', '2026-09-30'] }));
+    const store = createPersonalDataStore({ storage: () => storage, now: () => clock });
+    store.recordDay();
+    expect(store.today.value).toBe('2026-10-14');
+    expect(store.daysUsedLast14.value).toBe(2);
+    clock = new Date(2026, 9, 15, 0, 1);
+    store.recordDay();
+    expect(store.today.value).toBe('2026-10-15');
+    // 2026-10-01 left the window; today and yesterday are in it.
+    expect(store.data.value.daysUsed).toEqual(['2026-10-15', '2026-10-14', '2026-10-01', '2026-09-30']);
+    expect(store.daysUsedLast14.value).toBe(2);
+  });
+
+  test('RULE-13 the count follows the day even when no data changes (refresh on focus)', () => {
+    let clock = new Date(2026, 9, 14, 12);
+    const storage = new FakeStorage();
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...emptyDocument(), daysUsed: ['2026-10-01'] }));
+    const store = createPersonalDataStore({ storage: () => storage, now: () => clock });
+    expect(store.daysUsedLast14.value).toBe(1);
+    clock = new Date(2026, 9, 15, 12);
+    store.refresh();
+    expect(store.daysUsedLast14.value).toBe(0);
+  });
+
+  test('RULE-13 recordDay writes nothing once today is recorded', () => {
+    const storage = new FakeStorage();
+    const store = createPersonalDataStore({ storage: () => storage, now: () => new Date(2026, 9, 14) });
+    store.recordDay();
+    const spy = vi.spyOn(storage, 'setItem');
+    for (let i = 0; i < 3; i++) store.recordDay();
+    expect(spy).not.toHaveBeenCalled();
   });
 });

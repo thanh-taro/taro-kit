@@ -3,7 +3,7 @@
 // Confirm above Cancel).
 // - A native modal <dialog> named by its question (role alertdialog): focus moves into it, starting on Cancel,
 //   stays inside while open, and Escape cancels (SCR-Settings accessibility: reachable by keyboard).
-// - On close, focus goes back to the control that opened it (the caller's `returnFocus`).
+// - It owns focus return: the element focused when it opened gets focus back when it closes.
 // Strings arrive as props (COPY ids rendered at build).
 import { useEffect, useId, useRef } from 'preact/hooks';
 
@@ -15,8 +15,6 @@ export interface ConfirmDialogProps {
   confirmLabel: string;
   /** COPY-common.cancel */
   cancelLabel: string;
-  /** `danger` for erase (design: the danger-filled Confirm); `accent` otherwise. */
-  tone?: 'accent' | 'danger';
   onConfirm(): void;
   onCancel(): void;
 }
@@ -26,28 +24,32 @@ export default function ConfirmDialog({
   title,
   confirmLabel,
   cancelLabel,
-  tone = 'accent',
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
   const titleId = useId();
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
     if (open && !dialog.open) {
+      opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       dialog.showModal();
       cancelRef.current?.focus();
-    } else if (!open && dialog.open) dialog.close();
+    } else if (!open && dialog.open) {
+      dialog.close();
+      opener.current?.focus();
+      opener.current = null;
+    }
   }, [open]);
 
   return (
     <dialog
       ref={ref}
       class="tk-confirm"
-      data-tone={tone}
       role="alertdialog"
       aria-modal="true"
       aria-labelledby={titleId}

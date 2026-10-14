@@ -25,7 +25,7 @@ The portal remembers which tools were opened lately, so returning to yesterday's
 - **R1** A visit is recorded when an embedded tool's view is shown for a visible tool, whether or not the tool loads, or when a linked tool's own address is opened. Showing the linked note or the not-found state records nothing.
 - **R2** Recents follow RULE-01: newest first, one entry per tool, at most 20 stored.
 - **R3** Recents persist on the device and are never sent over the network (INV-05).
-- **R4** The user can clear all recents from settings after confirming (COPY-settings.clearRecentsConfirm).
+- **R4** The user can clear all recents from settings after confirming (COPY-settings.clearRecentsConfirm). When the cleared recents can't be saved on the device, settings says so (COPY-settings.clearRecentsUnsaved) instead of looking successful, and a stored document from a newer version is never overwritten.
 - **R5** Recents for hidden or unknown tools are not shown and, while still stored, reappear if the tool becomes visible again (INV-04).
 - **R6** Each local day the portal is opened is recorded (RULE-13), and settings shows the days used in the last 14 days (COPY-settings.daysUsed).
 
@@ -44,4 +44,6 @@ The portal remembers which tools were opened lately, so returning to yesterday's
 Recents show on SCR-Home and in the palette's empty-query view. Clearing and days used are in SCR-Settings. Privacy follows NFR-05.
 
 ## Edge cases
-- The device clock moves backward. Dates are recorded as they are; a duplicate date is not added twice.
+- The device clock moves backward. Dates are recorded as they are; a duplicate date is not added twice. When today is recorded, stored dates more than one day ahead of it are dropped, so they can't push today out of the latest 60 (RULE-13).
+- The portal stays open past midnight. The new day is recorded when the page is shown or focused again, and the days-used count follows it.
+- Known limitation: opening a linked tool's link through the browser's context menu (or dragging it to a new tab) is not recorded as a visit, because the page is not told about it.
