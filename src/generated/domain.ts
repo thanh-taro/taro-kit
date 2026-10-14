@@ -48,7 +48,7 @@ export interface Link {
  * via the `definition` "entryBase".
  */
 export interface EntryBase {
-  id: Slug;
+  id: string;
   kind: "tool" | "project";
   name: string;
   summary: string;
@@ -63,7 +63,7 @@ export interface EntryBase {
 }
 export interface Tool {
   kind?: "tool";
-  category: Slug;
+  category: string;
   url: SecureUrl;
   origin: "own" | "external";
   openMode?: "embedded" | "linked";
@@ -88,7 +88,7 @@ export interface Project {
  * via the `definition` "category".
  */
 export interface Category {
-  id: Slug;
+  id: string;
   name: string;
   order: number;
   intro: string;

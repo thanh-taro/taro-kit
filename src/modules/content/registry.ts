@@ -132,7 +132,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     if (validate(target)) return;
     const seen = new Set<string>();
     for (const err of validate.errors ?? []) {
-      const m = mapAjvError(err, isObj(target) ? target : undefined);
+      const m = mapAjvError(err, isObj(target) ? target : undefined, schemaPath, def);
       if (!m) continue;
       const key = `${m.rule}|${m.message}`;
       if (seen.has(key)) continue;
