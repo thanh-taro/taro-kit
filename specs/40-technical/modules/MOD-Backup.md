@@ -22,7 +22,7 @@ The module is lazy-loaded, so it costs nothing on home.
 - Tool data, which is never included (F-013.R6).
 
 ## Public surface
-- `exportBackup(now) → void`, which triggers the download.
+- `exportBackup(now) → void`, which triggers the download. Built with F-004 (the palette's export action): `exportBackup(now = new Date(), env?)` with an injectable `{ snapshot, download }`, plus `backupFile(data, now)` (`{ format: "tarokit-backup", exportedAt, data }`) and `backupFileName(now)`. The file is pretty-printed JSON.
 - `parseBackup(file) → { ok: true, data } | { ok: false, reason }`.
 - `migrate(raw) → PersonalData`.
 

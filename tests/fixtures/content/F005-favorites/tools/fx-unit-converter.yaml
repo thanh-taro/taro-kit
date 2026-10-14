@@ -1,0 +1,10 @@
+# Test fixture for F-004 (command palette): "uni" finds this tool under Tools, before the project
+# "Unity Game Jam" under Projects (F004_AC4, F004_AC5).
+id: fx-unit-converter
+kind: tool
+name: Unit Converter
+summary: Convert lengths, weights and temperatures.
+category: developer
+url: https://fx-unit-converter.example.com/
+origin: own
+added: 2026-10-01

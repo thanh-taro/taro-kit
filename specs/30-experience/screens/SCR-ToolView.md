@@ -10,7 +10,7 @@ components: [CMP-AppShell, CMP-ToolHeader, CMP-StateMessage]
 Use one tool inside the portal, or get to it.
 
 ## Layout regions
-1. Shell header, compact. On narrow screens the shell header is hidden in the tool view, and the tool header carries back, favorite and open-in-new-tab as labeled icon buttons.
+1. Shell header, compact. On narrow screens the shell header is hidden in the tool view, and the tool header carries back, search (COPY-shell.search, opens the palette), favorite and open-in-new-tab as labeled icon buttons.
 2. CMP-ToolHeader: tool name, favorite toggle, open-in-new-tab.
 3. Tool area: the embedded tool fills the remaining space.
 

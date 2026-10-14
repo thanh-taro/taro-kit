@@ -119,8 +119,34 @@
   line-height: var(--tk-font-line-height-normal);
 }
 
+/* Search (narrow only): opens the palette, since the shell bar with its search control is hidden there. */
+.tk-toolheader__search {
+  display: none;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--tk-size-touch-target);
+  min-block-size: var(--tk-size-touch-target);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--tk-radius-md);
+  color: var(--tk-color-muted);
+  cursor: pointer;
+}
+.tk-toolheader__search:hover {
+  color: var(--tk-color-fg);
+}
+
 /* Narrow (SCR-ToolView): the tool header replaces the shell bar; every action is a labeled 44 px icon button. */
 @media (max-width: 720px) {
+  .tk-toolheader__search {
+    display: inline-flex;
+    margin-inline-start: auto;
+  }
+  .tk-toolheader__search + .tk-toolheader__fav {
+    margin-inline-start: 0;
+  }
   .tk-toolheader {
     border-width: 0 0 var(--tk-border-width-hairline);
     border-radius: 0;

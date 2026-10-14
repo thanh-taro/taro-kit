@@ -3,6 +3,8 @@
 // - Anatomy: back (COPY-tool.back), tool icon and name (the page heading), favorite toggle, open-in-new-tab
 //   (COPY-tool.openNewTab). Open-in-new-tab is always visible, never in a menu; in the slow variant it becomes
 //   the primary button and COPY-tool.slow shows inline below the bar (RULE-11).
+// - Below 720 px the shell bar is hidden, so the header also carries a search icon button (COPY-shell.search,
+//   `data-tk-palette-open`, armed by the palette bootstrap) that opens the palette (F-004.R1, SCR-ToolView narrow).
 // - A toolbar role labeled "<tool> tool" (COPY-tool.frameLabel). Every action keeps its text label; below 720 px
 //   the labels are visually hidden and the actions become 44 px icon buttons (SCR-ToolView, narrow).
 // - The slow hint lives in a polite status that is always in the page, so it is announced when filled.
@@ -20,8 +22,10 @@ export interface ToolHeaderText {
   label: string;
   /** COPY-tool.slow for this tool. */
   slow: string;
-  /** Build-time SVG markup from the icon set (DEP-15): back chevron and new-tab arrow. */
-  icons: { back: string; newTab: string };
+  /** COPY-shell.search: the narrow-only search button's label. */
+  search: string;
+  /** Build-time SVG markup from the icon set (DEP-15): back chevron, new-tab arrow and search. */
+  icons: { back: string; newTab: string; search: string };
 }
 
 export interface ToolHeaderProps {
@@ -55,6 +59,9 @@ export default function ToolHeader({ name, openHref, slow = false, text, childre
           {monogram(name)}
         </span>
         <h1 class="tk-toolheader__name">{name}</h1>
+        <button type="button" class="tk-toolheader__search" data-tk-palette-open aria-label={text.search}>
+          <Svg markup={text.icons.search} />
+        </button>
         <span class="tk-toolheader__fav">{children}</span>
         {openHref && (
           <a

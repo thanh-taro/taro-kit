@@ -17,7 +17,7 @@ MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
   - the skip link;
   - the banner with name and logo;
   - the navigation, with the current page marked and a collapsed menu on narrow screens;
-  - the search control showing the shortcut hint;
+  - the search control showing the shortcut hint (a button marked `data-tk-palette-open`, armed by the palette bootstrap before any island loads; full: the placeholder text and a `data-tk-shortcut` key cap; compact: COPY-shell.search and the key cap; narrow: an icon button named COPY-shell.search; on the narrow tool view the shell bar is hidden and CMP-ToolHeader carries the search icon button);
   - the theme quick toggle;
   - the settings link.
 - **Connection and updates:** the quiet offline indicator, and the update-ready message whose refresh action asks MOD-Offline to activate the new version.

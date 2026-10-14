@@ -71,6 +71,7 @@ export const COPY = {
   "COPY-palette.close": "Cancel",
   "COPY-palette.copied": "Link copied",
   "COPY-palette.dialogLabel": "Search TaroKit",
+  "COPY-palette.exportFailed": "I couldn't save your backup just now. Please try again.",
   "COPY-palette.groupActions": "Actions",
   "COPY-palette.groupFavorites": "Favorites",
   "COPY-palette.groupPages": "Pages",
@@ -80,6 +81,9 @@ export const COPY = {
   "COPY-palette.hints": "↑↓ to move · Enter to open · Esc to close",
   "COPY-palette.noResults": "I couldn't find \"{query}\".",
   "COPY-palette.placeholder": "What are you looking for? ({shortcut})",
+  "COPY-palette.resultCount": "{count} results",
+  "COPY-palette.resultCountOne": "1 result",
+  "COPY-palette.unavailable": "I couldn't load my tools and projects just now. Pages and actions still work; reload the page to try again.",
   "COPY-projects.empty": "I'm putting my projects together. Check back soon.",
   "COPY-projects.imageAlt": "Screenshot of {name}",
   "COPY-projects.title": "Things I've built",
@@ -106,6 +110,7 @@ export const COPY = {
   "COPY-shell.brand": "TaroKit",
   "COPY-shell.offline": "You're offline. Tools that need the internet are paused.",
   "COPY-shell.refresh": "Refresh",
+  "COPY-shell.search": "Search",
   "COPY-shell.skip": "Skip to content",
   "COPY-shell.themeToggle": "Switch to {theme} theme",
   "COPY-shell.updateReady": "I've shipped an update to TaroKit.",
@@ -139,6 +144,7 @@ export interface CopyParams {
   "COPY-now.updated": { date: string | number };
   "COPY-palette.noResults": { query: string | number };
   "COPY-palette.placeholder": { shortcut: string | number };
+  "COPY-palette.resultCount": { count: string | number };
   "COPY-projects.imageAlt": { name: string | number };
   "COPY-settings.daysUsed": { count: string | number };
   "COPY-settings.importInvalid": { reason: string | number };

@@ -69,6 +69,18 @@ const securityHeaders: AstroIntegration = {
   },
 };
 
+// MOD-Palette: `client:palette`, idle hydration that also starts at once when the palette opens (directive.ts).
+const paletteDirective: AstroIntegration = {
+  name: 'tarokit:palette-directive',
+  hooks: {
+    'astro:config:setup': ({ addClientDirective }) =>
+      addClientDirective({
+        name: 'palette',
+        entrypoint: fileURLToPath(new URL('./src/modules/palette/directive.ts', import.meta.url)),
+      }),
+  },
+};
+
 // MOD-Content: the hashed catalog data file `/data/catalog.<hash>.json` that islands fetch (ADR-0002, F-002).
 const catalogDataEmit: AstroIntegration = {
   name: 'tarokit:catalog-data',
@@ -84,7 +96,7 @@ export default defineConfig({
   trailingSlash: 'always',
   // Silences the syntax-highlighter-vs-CSP warning: no Markdown pages are rendered.
   markdown: { syntaxHighlight: false },
-  integrations: [preact(), securityHeaders, catalogDataEmit, ...(fixtures ? [fixturePages] : [])],
+  integrations: [preact(), paletteDirective, securityHeaders, catalogDataEmit, ...(fixtures ? [fixturePages] : [])],
   vite: {
     // MOD-Content: `virtual:tarokit/visible-tool-ids` for islands (RULE-02, INV-04).
     plugins: [

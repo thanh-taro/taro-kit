@@ -69,6 +69,12 @@ describe('ADR-0009 response headers', () => {
     );
   });
 
+  it('F-004.R5 the portal keeps clipboard-write for itself (copy-address), delegated to no frame by default', () => {
+    expect(permissionsPolicy([tool('https://plain.tarokit.app/')])).toBe(
+      'clipboard-read=(), clipboard-write=(self), fullscreen=(), camera=(), microphone=()',
+    );
+  });
+
   it('NFR-08 NFR-05 every response gets frame-ancestors none, nosniff, the referrer policy, COOP and no-transform', () => {
     const headers = Object.fromEntries(securityHeaders([]));
     expect(headers['Content-Security-Policy']).toBe("frame-ancestors 'none'; object-src 'none'; base-uri 'self'");

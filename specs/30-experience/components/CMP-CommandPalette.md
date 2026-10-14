@@ -18,10 +18,12 @@ Dialog named COPY-palette.dialogLabel; search field (COPY-palette.placeholder); 
 | results | grouped results, with the first one highlighted |
 | no results | COPY-palette.noResults with a browse-catalog action (COPY-palette.browseAll) |
 | copied | COPY-palette.copied after the copy-address action |
+| export failed | COPY-palette.exportFailed when the export action fails; the palette stays open |
+| unavailable | the search data can't load: COPY-palette.unavailable above the results; only pages and actions are offered |
 | touch sheet | on touch-only or narrow screens: a full-screen sheet with the search field on top and a cancel button (COPY-palette.close); no key hints |
 
 ## Behavior
 Up and down keys move through results across groups, and Enter runs one. Actions: COPY-palette.actionTheme, COPY-palette.actionExport, COPY-palette.actionCopy. Escape or a click outside closes the palette and focus returns where it was.
 
 ## Accessibility
-A modal dialog using the combobox and listbox pattern. The number of results is announced.
+A modal dialog using the combobox and listbox pattern. The number of results is announced (COPY-palette.resultCount, COPY-palette.resultCountOne). A linked tool's row says it opens in a new tab (COPY-tool.opensNewTab).

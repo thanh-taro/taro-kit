@@ -1,7 +1,7 @@
 ---
 id: F-004
 title: Search with the command palette
-status: ready
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01]
@@ -46,3 +46,6 @@ CMP-CommandPalette. Action names: COPY-palette.actionTheme, COPY-palette.actionE
 ## Edge cases
 - The shortcut is pressed while focus is inside an embedded tool. The tool keeps the keystroke; the visible search control in the portal header still opens the palette.
 - Hidden entries never appear (RULE-06).
+- The export action fails (its code can't load, or saving fails). The palette stays open and says so (COPY-palette.exportFailed).
+- Keys pressed before the palette is ready (text, Enter) are kept: the Enter runs the chosen result once the search data has loaded.
+- The search data can't load. Pages and actions still show and run, tools and projects are left out, and the palette says so (COPY-palette.unavailable).

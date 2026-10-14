@@ -74,3 +74,6 @@ The portal must also make no third-party requests (NFR-05). Browser enforcement 
 - **Popups**: they open, but `window.open` returns null because of the portal's COOP (`same-origin`). Tools must not depend on the opener reference.
 - **`allow-forms` stays in the base sandbox**: without it Chromium never fires `submit` at all.
 - **Cloudflare zone**: the zone injects the Web Analytics beacon into HTML unless Web Analytics automatic setup is off. Pages also send `Cache-Control: no-transform` as a second guard (NFR-05).
+
+## Amendment (F-004 build, 2026-10-14)
+- The portal page uses `clipboard-write` itself, for the palette's copy-address action (F-004.R5). With `clipboard-write=()` Chromium refused that write on the portal, so the feature now keeps `self` whether or not a tool declares it: `clipboard-write=(self)`, or `(self "https://tool…")` with declaring tools. Frames still receive it only through their own `allow="clipboard-write"`, so the baseline frame keeps refusing clipboard writes (F-003.AC3). Every other undeclared feature stays `()`.

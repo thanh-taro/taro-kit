@@ -22,6 +22,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-shell.updateReady** | I've shipped an update to TaroKit. | update message |
 | **COPY-shell.refresh** | Refresh | update action |
 | **COPY-shell.themeToggle** | Switch to {theme} theme | header quick-toggle label; {theme} is light or dark |
+| **COPY-shell.search** | Search | search control label on the compact and narrow shell; opens the palette |
 | **COPY-home.greetingMorning** | Good morning | 05:00–11:59 |
 | **COPY-home.greetingAfternoon** | Good afternoon | 12:00–17:59 |
 | **COPY-home.greetingEvening** | Good evening | 18:00–04:59 |
@@ -67,6 +68,10 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.dialogLabel** | Search TaroKit | accessible name of the palette dialog |
 | **COPY-palette.close** | Cancel | closes the touch sheet |
 | **COPY-palette.copied** | Link copied | confirmation |
+| **COPY-palette.resultCount** | {count} results | announced result count; singular form is COPY-palette.resultCountOne |
+| **COPY-palette.resultCountOne** | 1 result | singular of COPY-palette.resultCount |
+| **COPY-palette.exportFailed** | I couldn't save your backup just now. Please try again. | when the palette's export action fails |
+| **COPY-palette.unavailable** | I couldn't load my tools and projects just now. Pages and actions still work; reload the page to try again. | when the catalog data can't load |
 | **COPY-about.links** | Find me | section heading |
 | **COPY-about.more** | See what I've built and what I'm up to now. | pointer to Projects and Now |
 | **COPY-about.nickname** | aka {nickname} | under the avatar, when the profile has a nickname |

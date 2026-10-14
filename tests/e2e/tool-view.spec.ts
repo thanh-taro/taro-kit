@@ -5,6 +5,9 @@
 // tests/fixtures/content/F005-favorites (ft-embedded, ft-clipboard, ft-offline, fx-linked, fx-hidden).
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Frame, type Page } from '@playwright/test';
+import { join } from 'node:path';
+import { loadRegistry } from '../../src/modules/content/index.ts';
+import { permissionsPolicy } from '../../src/modules/security-policy/index.ts';
 import { PORTAL, serveSites, toolPage, toolUrl, type Sites } from './support/sites.ts';
 
 const STORAGE_KEY = 'tarokit.personal';
@@ -121,7 +124,7 @@ test.describe('F-003 tool view: embedded tools', () => {
     // The control: the same fixture, granted clipboard-write, can write (the header and frame delegate it).
     await page.frameLocator('iframe').getByRole('button', { name: 'Copy to clipboard' }).click();
     await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('ok');
-    // The clipboard as the rest of the device sees it (the portal itself sends clipboard-write only to tools).
+    // The clipboard as the rest of the device sees it (read from another site: the portal refuses clipboard-read).
     const outside = await context.newPage();
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'https://elsewhere.test' });
     await outside.goto('https://elsewhere.test/clipboard');
@@ -135,6 +138,38 @@ test.describe('F-003 tool view: embedded tools', () => {
     expect(await outside.evaluate(() => navigator.clipboard.readText())).toBe('written elsewhere');
     await expect(page).toHaveURL(toolPage('ft-embedded'));
     await expect(header(page)).toBeVisible();
+  });
+
+  test('NFR-08 with clipboard-write=(self) only (no tool declares it), an embedded tool is refused and the portal can copy', async ({
+    page,
+    context,
+    browserName,
+  }) => {
+    test.skip(browserName !== 'chromium', 'RULE-10: only Chromium can restrict clipboard writes from frames (SP-3)');
+    // A registry where no tool declares clipboard-write: the header keeps it for the portal page only (ADR-0009).
+    const root = join(import.meta.dirname, '../..');
+    const registry = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') });
+    const policy = permissionsPolicy(
+      registry.allTools.map((t) => ({ ...t, permissions: t.permissions.filter((p) => p !== 'clipboard-write') })),
+    );
+    expect(policy).toContain('clipboard-write=(self)');
+    sites.headers['permissions-policy'] = policy;
+    for (const origin of [PORTAL, 'https://ft-embedded.tarokit.test'])
+      await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
+    await page.goto(toolPage('ft-embedded'));
+    await toolFrame(page);
+    await page.frameLocator('iframe').getByRole('button', { name: 'Copy to clipboard' }).click();
+    await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('NotAllowedError');
+    // The portal's own copy-address (F-004.R5) still works under the same header.
+    await page
+      .getByRole('banner')
+      .getByRole('button', { name: /Search/ })
+      .click();
+    const palette = page.getByRole('dialog', { name: 'Search TaroKit' });
+    await expect(palette.locator('.tk-palette')).toHaveAttribute('data-ready', '');
+    await palette.getByRole('combobox').fill('copy');
+    await page.keyboard.press('Enter');
+    await expect(palette.getByText('Link copied')).toBeVisible();
   });
 
   test('F003_AC4 an embedded tool that reads the portal’s stored personal data receives nothing', async ({ page }) => {
