@@ -1,0 +1,11 @@
+# F-001.AC1: one new tool entry, added "today" (the test views it on 2026-10-14), and no other edit.
+# Its category (media) has no other visible tool in the base, so the category page appears because of it.
+id: clip-maker
+kind: tool
+name: Clip Maker
+summary: Fixture tool added today.
+category: media
+url: https://clip.tarokit.app/
+origin: own
+tags: [video]
+added: 2026-10-14

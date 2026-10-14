@@ -28,5 +28,9 @@ MOD-Pages owns the Astro routes and screen composition. Each page is pre-rendere
 ## Public surface
 Routes only. Nothing is imported by other modules.
 
+Internal pure helpers, for its own islands (`src/modules/pages/whats-new.ts`, browser-safe, no imports beyond types):
+- `whatsNew(tools, today) → DatedItem[]`: RULE-04 what's new on the viewer's local date `today` (YYYY-MM-DD). One item per visible tool, labeled and dated by its latest date (`updated` if present, so a same-day update is labeled updated), kept when that date is within the last 30 days counting today, or at most one day ahead (a tolerance for timezone gaps with the build). Newest first, same-date ties by name, at most 6.
+- `localDate(date = new Date()) → string`: the local calendar date as YYYY-MM-DD, from the local year, month and day, never from the UTC timestamp.
+
 ## Implements
 F-002, F-016, F-007 (except R2, which is shared with MOD-Palette), F-008, F-009, F-010, F-003.R7, the settings UI for F-006.R4, F-006.R6, F-012.R2 and F-013.R4 to F-013.R6, and F-011.AC2 and F-011.AC4 (with MOD-Offline). It contributes to NFR-01 and NFR-11.

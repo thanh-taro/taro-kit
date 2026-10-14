@@ -1,0 +1,10 @@
+# INV-07: a tool whose category reference is not a lowercase slug (tagged in the schema).
+id: units
+kind: tool
+name: Units
+summary: Fixture tool with a malformed category.
+category: Converters
+url: https://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02

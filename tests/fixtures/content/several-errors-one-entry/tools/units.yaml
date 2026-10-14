@@ -1,0 +1,11 @@
+# One entry with three mistakes gives three error lines, one per mistake (F-001.R2, ADR-0005).
+id: units
+kind: tool
+name: Units
+summary: Fixture tool with several errors.
+category: Converters
+url: http://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02
+updated: 2026-01-01
