@@ -16,6 +16,15 @@ export {
 } from './registry.ts';
 export { catalogData, type CatalogData, type CatalogProject, type CatalogTool } from './catalog-data.ts';
 export {
+  catalogDataFile,
+  catalogDataPlugin,
+  emitCatalogData,
+  type CatalogDataFile,
+  type CatalogDataFileContent,
+  type IndexedProject,
+  type IndexedTool,
+} from './emit-catalog-data.ts';
+export {
   categoryPath,
   changelog,
   changelogItems,

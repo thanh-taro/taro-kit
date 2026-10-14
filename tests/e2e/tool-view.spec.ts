@@ -188,7 +188,7 @@ test.describe('F-003 tool view: embedded tools', () => {
   test('F003_AC8 after the slow-load threshold the slow hint shows and the tool keeps loading', async ({ page }) => {
     await page.clock.install();
     const held = sites.holdTools();
-    await page.goto(toolPage('ft-embedded'));
+    await page.goto(toolPage('ft-embedded'), { waitUntil: 'domcontentloaded' });
     const loading = toolRegion(page).getByRole('status');
     await expect(loading).toHaveText(`Getting ${EMBEDDED} ready…`);
     const slow = `${EMBEDDED} is taking its time. You can open it in a new tab instead.`;
@@ -345,10 +345,13 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
   }) => {
     await page.emulateMedia({ colorScheme: 'dark' });
     const held = sites.holdTools();
-    await page.goto(toolPage('ft-ready'));
+    // The held tool may be part of the page's load event (when the island hydrates early), so don't wait for it.
+    await page.goto(toolPage('ft-ready'), { waitUntil: 'domcontentloaded' });
     await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark`);
     // The user toggles while the tool is still loading: the message can't reach it yet.
     await page.getByRole('button', { name: 'Switch to light theme' }).click();
+    // The portal must show the new theme before the tool asks for it (no stale answer under load).
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
     held.release();
     const tool = await toolFrame(page, 'ft-ready');
     const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
@@ -363,9 +366,12 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
   }) => {
     await page.emulateMedia({ colorScheme: 'dark' });
     const held = sites.holdTools();
-    await page.goto(toolPage('ft-ready'));
+    // The held tool may be part of the page's load event (when the island hydrates early), so don't wait for it.
+    await page.goto(toolPage('ft-ready'), { waitUntil: 'domcontentloaded' });
     await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark`);
     await page.emulateMedia({ colorScheme: 'light' });
+    // The media change applies at the next rendering opportunity: wait for it before the tool says ready.
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
     held.release();
     const tool = await toolFrame(page, 'ft-ready');
     const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
@@ -373,6 +379,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     // Loaded: a later device switch reaches the tool without reloading it.
     await tool.evaluate(() => ((window as unknown as { marker: number }).marker = 1));
     await page.emulateMedia({ colorScheme: 'dark' });
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect.poll(received).toEqual([
       { type: 'taro:theme', value: 'light' },
       { type: 'taro:theme', value: 'dark' },

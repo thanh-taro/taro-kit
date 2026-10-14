@@ -1,0 +1,10 @@
+# Test fixture for F-002 (catalog search): "json" finds this tool and not Base64 (F002_AC5).
+id: fx-json-formatter
+kind: tool
+name: JSON Formatter
+summary: Pretty-print and validate JSON.
+category: developer
+url: https://fx-json-formatter.example.com/
+origin: own
+tags: [json, formatter]
+added: 2026-10-01

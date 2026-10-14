@@ -5,8 +5,10 @@ import { defineConfig } from 'astro/config';
 import { fileURLToPath } from 'node:url';
 import {
   avatarPlugin,
+  catalogDataPlugin,
   contentDirectory,
   ContentErrors,
+  emitCatalogData,
   getRegistry,
   resetRegistry,
   visibleToolIdsPlugin,
@@ -44,6 +46,11 @@ const fixturePages: AstroIntegration = {
         pattern: '/__fixtures__/recents',
         entrypoint: new URL('./tests/fixtures/pages/F006-recents.astro', import.meta.url),
       });
+      // F-002 SCR-Catalog's empty state (tests/fixtures/content/F010_AC6-no-note-no-tools).
+      injectRoute({
+        pattern: '/__fixtures__/catalog-empty',
+        entrypoint: new URL('./tests/fixtures/pages/F002-catalog-empty.astro', import.meta.url),
+      });
       // F-010 SCR-Now states without a Now note (tests/fixtures/content/F010_*).
       for (const state of ['now-no-note', 'now-empty'])
         injectRoute({
@@ -62,6 +69,14 @@ const securityHeaders: AstroIntegration = {
   },
 };
 
+// MOD-Content: the hashed catalog data file `/data/catalog.<hash>.json` that islands fetch (ADR-0002, F-002).
+const catalogDataEmit: AstroIntegration = {
+  name: 'tarokit:catalog-data',
+  hooks: {
+    'astro:build:done': ({ dir }) => void emitCatalogData(getRegistry(), fileURLToPath(dir)),
+  },
+};
+
 export default defineConfig({
   site: portalOrigin,
   output: 'static',
@@ -69,7 +84,7 @@ export default defineConfig({
   trailingSlash: 'always',
   // Silences the syntax-highlighter-vs-CSP warning: no Markdown pages are rendered.
   markdown: { syntaxHighlight: false },
-  integrations: [preact(), securityHeaders, ...(fixtures ? [fixturePages] : [])],
+  integrations: [preact(), securityHeaders, catalogDataEmit, ...(fixtures ? [fixturePages] : [])],
   vite: {
     // MOD-Content: `virtual:tarokit/visible-tool-ids` for islands (RULE-02, INV-04).
     plugins: [
@@ -81,6 +96,8 @@ export default defineConfig({
       // MOD-Content: `virtual:tarokit/avatar`, the registry's validated avatar file for Astro's image pipeline
       // (F-008.R1).
       avatarPlugin({ file: () => getRegistry().avatarFile, contentDir: contentDirectory() }),
+      // MOD-Content: serves the catalog data file in dev; the build writes it (catalogDataEmit above).
+      catalogDataPlugin(getRegistry),
     ],
   },
   security: {

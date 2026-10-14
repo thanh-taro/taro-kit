@@ -11,7 +11,7 @@
 // - Visits: showing the view records the tool in recents (F-006.R1), offline or slow included.
 // Strings, icons and attributes arrive as build-time props, so the island ships no copy catalog or icon set.
 import type { ComponentChildren } from 'preact';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { FrameAttributes } from '../security-policy/frame.ts';
 import FavoriteToggle, { type FavoriteToggleLabels } from '../design-system/FavoriteToggle.tsx';
 import ToolHeader, { type ToolHeaderText } from '../design-system/ToolHeader.tsx';
@@ -63,7 +63,10 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
     return () => clearTimeout(timer);
   }, [phase, src]);
 
-  useEffect(() => {
+  // F-012.R5, R6: connected in a layout effect, right after the frame is in the DOM and before its tool can load
+  // and say ready. A change sent now reaches only the frame's initial blank page (another origin) and is dropped,
+  // so the tool gets exactly one answer, to its ready, instead of a change plus the same value again.
+  useLayoutEffect(() => {
     if (!src || !frameRef.current) return;
     return connectThemeHandoff({
       frame: frameRef.current,

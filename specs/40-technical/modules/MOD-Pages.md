@@ -45,6 +45,11 @@ Helpers for SCR-Now (`src/modules/pages/now/`):
 - `stale.ts` (browser-safe): `isStale(updated, today)` and `staleToday(updated)`, RULE-09 (more than 90 days) on the viewer's local date, reusing `daysBetween` and `localDate`. The `StaleLabel` island uses it.
 - `now.ts` (build time): `nowView({ now, tools }) → { note?, months, empty }` from MOD-Content's `changelog()`, with dates formatted once (they are absolute) and machine-readable. With no note, the changelog title is the page heading; with no visible tools the changelog section is left out; with neither, `empty` (F-010.R4).
 
+Catalog (`src/modules/pages/catalog/`), for SCR-Catalog:
+- `catalogView(categories, tools) → { groups, nav, total, empty }` (`catalog.ts`): the grouped list from `categoryPages()`, so groups, order and navigation match the category pages (F-002.R1, R3, R6).
+- `CatalogView.astro`: the page body (title, search field, category navigation, groups whose headings link to the category pages, or the empty CMP-StateMessage), rendered by `/tools/` and by a tests-only page for the empty state.
+- `CatalogSearch.tsx` (island, `client:idle`): fetches the catalog data file (`catalogDataFile().path`), keeps text typed before hydration, hides the static groups while a query is entered and shows one `filterCatalog` list with each card's category label, or the no-results CMP-StateMessage with the clear action (focus returns to the field). Favorites break ties as they stand at the keystroke, so pinning a result does not move it. The result count (COPY-category.toolCount or toolCountOne) is announced in a polite live region after filtering, never at load. `catalogSearchText()` (`text.ts`) supplies its build-time strings and icons.
+
 Build-time helpers for SCR-Category (`src/modules/pages/category.ts`):
 - `categoryPages(categories, tools) → { category, path, tools, count, nav }[]`: one entry per category with visible tools, in display order, from MOD-Content's `visibleCategories` and `toolsByCategory` (F-016.R1 to R4). Categories that are unknown or have only hidden tools have no entry, so no page (F-016.R5).
 - `toolCountText(count)`: COPY-category.toolCount, or COPY-category.toolCountOne for one tool (F-016.R2).
