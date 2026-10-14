@@ -3,8 +3,10 @@
 // Regions (SCR-About): 2 avatar, name, headline and location; 3 bio; 4 links (COPY-about.links);
 // 5 pointers to Projects and Now (COPY-about.more). Every sentence is the profile's own words (PRN-04).
 // Design: design/canvas/AboutDesktop.dc.html (avatar, nickname, location and links beside the text) and
-// AboutMobile.dc.html (one column in region order). The DOM follows the desktop board; on narrow screens the
-// two columns dissolve and only non-focusable text moves, so the focus order is the same in both layouts.
+// AboutMobile.dc.html (one column in region order). The DOM puts the name <h1> first, then the side column
+// (avatar, nickname, location, links), then the pointers; grid areas place the side column on the left on
+// wide screens, and on narrow ones only the non-focusable avatar row moves up. Focus order is the same in
+// both layouts: profile links, then Projects and Now.
 // Implements: F-008.R1, F-008.R2, F-008.R3.
 import type { Profile } from '../../generated/domain.ts';
 import { initials, paragraphs, profileLinks, type ProfileLink } from '../content/index.ts';
@@ -29,7 +31,17 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
 ---
 
 <div class="about">
-  <aside class="side">
+  <div class="intro">
+    <h1 id="about-name">{profile.name}</h1>
+    <p class="headline">{profile.headline}</p>
+    <div class="bio">
+      {paragraphs(profile.bio).map((p) => (
+        <p>{p}</p>
+      ))}
+    </div>
+  </div>
+
+  <div class="side">
     <div class="id">
       {avatar ? (
         <img
@@ -82,46 +94,45 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
         ))}
       </ul>
     </section>
-  </aside>
+  </div>
 
-  <article class="main" aria-labelledby="about-name">
-    <h1 id="about-name">{profile.name}</h1>
-    <p class="headline">{profile.headline}</p>
-    <div class="bio">
-      {paragraphs(profile.bio).map((p) => (
-        <p>{p}</p>
-      ))}
+  <div class="more">
+    <p>{t('COPY-about.more')}</p>
+    <div class="more-actions">
+      <a class="primary" href="/projects/">
+        {t('COPY-nav.projects')}
+      </a>
+      <a href="/now/">{t('COPY-nav.now')}</a>
     </div>
-    <div class="more">
-      <p>{t('COPY-about.more')}</p>
-      <div class="more-actions">
-        <a class="primary" href="/projects/">
-          {t('COPY-nav.projects')}
-        </a>
-        <a href="/now/">{t('COPY-nav.now')}</a>
-      </div>
-    </div>
-  </article>
+  </div>
 </div>
 
 <style>
+  /* Wide (AboutDesktop): the side column spans both rows on the left; the pointers sit right under the bio. */
   .about {
     display: grid;
+    grid-template-areas:
+      'side intro'
+      'side more';
     grid-template-columns: minmax(0, calc(var(--tk-space-12) * 7.5)) minmax(0, 1fr);
-    gap: var(--tk-space-12);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--tk-space-12);
+    row-gap: var(--tk-space-5);
     padding-block-start: var(--tk-space-6);
   }
-  .side,
-  .main {
+  .intro,
+  .side {
     display: flex;
     flex-direction: column;
     min-inline-size: 0;
   }
-  .side {
-    gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
-  }
-  .main {
+  .intro {
+    grid-area: intro;
     gap: var(--tk-space-5);
+  }
+  .side {
+    grid-area: side;
+    gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
   }
 
   /* Region 2: the avatar (or initials), nickname and location. */
@@ -263,6 +274,8 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
 
   /* Region 5: pointers to Projects and Now (COPY-about.more). */
   .more {
+    grid-area: more;
+    align-self: start;
     display: flex;
     flex-direction: column;
     gap: var(--tk-space-3);
@@ -308,8 +321,8 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
       gap: calc(var(--tk-space-4) + var(--tk-space-1) / 2);
       padding-block-start: 0;
     }
-    .side,
-    .main {
+    .intro,
+    .side {
       display: contents;
     }
     .id {

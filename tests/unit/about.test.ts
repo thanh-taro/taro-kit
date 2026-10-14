@@ -4,6 +4,8 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import {
+  avatarPlugin,
+  avatarSource,
   ContentErrors,
   initials,
   loadRegistry,
@@ -78,6 +80,29 @@ describe('F-008 profile derivations (MOD-Content)', () => {
       expect((e as Error).message).toContain('profile.yaml');
       expect((e as Error).message).toContain('avatar "missing.png" not found in content/assets/');
     }
+  });
+});
+
+describe('virtual:tarokit/avatar (MOD-Content)', () => {
+  test('serves the avatar import, or null without one', () => {
+    expect(avatarSource('/c/assets/me.png')).toBe('export { default } from "/c/assets/me.png";\n');
+    expect(avatarSource(undefined)).toBe('export default null;\n');
+  });
+
+  test('in dev, only edits inside the content folder rebuild the module', () => {
+    const contentDir = join(root, 'content');
+    const handlers: ((path: string) => void)[] = [];
+    let invalidated = 0;
+    avatarPlugin({ file: () => undefined, contentDir }).configureServer({
+      watcher: { add: () => undefined, on: (_e: string, cb: (path: string) => void) => handlers.push(cb) },
+      moduleGraph: { getModuleById: () => ({}), invalidateModule: () => void invalidated++ },
+      ws: { send: () => undefined },
+    });
+    const edit = (path: string) => handlers.forEach((h) => h(path));
+    edit(`${contentDir}-old/profile.yaml`);
+    expect(invalidated).toBe(0);
+    edit(join(contentDir, 'profile.yaml'));
+    expect(invalidated).toBe(3); // one handler per watcher event, each invalidating once
   });
 });
 

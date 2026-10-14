@@ -3,6 +3,7 @@
 // metadata and optimizes it (DEP-31), or `null` when the profile has none (initials are shown, F-008.R1).
 // The registry has already checked that the file exists (ADR-0005). In dev, content edits rebuild the module.
 // Implements: F-008.R1 (avatar).
+import { sep } from 'node:path';
 import type { DevServerLike } from './visible-tool-ids.ts';
 
 export const AVATAR_MODULE = 'virtual:tarokit/avatar';
@@ -28,7 +29,8 @@ export function avatarPlugin({ file, contentDir }: AvatarOptions) {
     configureServer(server: DevServerLike) {
       // The visible-tool-ids plugin resets the registry and reloads the page; this one forgets its module.
       const onFile = (path: string) => {
-        if (!path.startsWith(contentDir)) return;
+        // Inside the content folder only: "content-old/x" must not match "content".
+        if (!path.startsWith(contentDir + sep)) return;
         const graphs = server.environments
           ? Object.values(server.environments).map((e) => e.moduleGraph)
           : server.moduleGraph

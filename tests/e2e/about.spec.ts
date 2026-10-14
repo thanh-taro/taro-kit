@@ -1,6 +1,6 @@
 // F-008 About the Owner (SCR-About). The production build (PROD) renders whatever content/profile.yaml holds, so
 // its expectations come from that file's registry. Link behavior runs on the fixture build (FX), whose profile
-// (tests/fixtures/content/F005-favorites) has an email link and a website link. The avatar, nickname and
+// (tests/fixtures/content/F005-favorites) has an avatar, an email link and a website link. The nickname and
 // location variants are covered on fixture profiles in tests/unit/about.test.ts.
 import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
@@ -29,16 +29,52 @@ test.describe('F-008 About page', () => {
     await expect(page.getByText(profile.headline, { exact: true })).toBeVisible();
     // Edge case: each bio paragraph is its own paragraph.
     const bio = paragraphs(profile.bio);
-    const article = page.getByRole('article');
-    for (const p of bio) await expect(article.locator('p', { hasText: p.split('\n')[0] })).toHaveCount(1);
+    const main = page.getByRole('main');
+    for (const p of bio) await expect(main.locator('p', { hasText: p.split('\n')[0] })).toHaveCount(1);
   });
 
-  test('F008_AC2 the avatar, or without one the initials of the full name, names the person', async ({ page }) => {
+  test('F008_AC1 the avatar is optimized at build: the image loads and is WebP', async ({ page }) => {
+    await page.goto(`${FX}/about/`);
+    const portrait = page.getByRole('img', { name: `Portrait of ${fxProfile.name}` });
+    await expect(portrait).toBeVisible();
+    await expect.poll(() => portrait.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+    const src = await portrait.getAttribute('src');
+    expect(src).toMatch(/^\/_astro\/avatar\.[\w-]+\.webp$/);
+    const res = await page.request.get(`${FX}${src}`);
+    expect(res.headers()['content-type']).toBe('image/webp');
+    // The WebP signature: "RIFF" .... "WEBP".
+    const head = (await res.body()).subarray(0, 12).toString('latin1');
+    expect(head.slice(0, 4) + head.slice(8)).toBe('RIFFWEBP');
+  });
+
+  test('F008_AC2 without an avatar, the initials of the full name name the person', async ({ page }) => {
+    test.skip(!!profile.avatar, 'content/profile.yaml has an avatar; the initials are covered in unit tests');
     await page.goto(`${PROD}/about/`);
     const portrait = page.getByRole('img', { name: `Portrait of ${profile.name}` });
-    await expect(portrait).toBeVisible();
-    if (profile.avatar) await expect(portrait).toHaveJSProperty('complete', true);
-    else await expect(portrait).toHaveText(initials(profile.name));
+    await expect(portrait).toHaveText(initials(profile.name));
+  });
+
+  test('SCR-About the name heading comes first, and focus order is the same wide and narrow', async ({ page }) => {
+    const focusOrder = async () => {
+      await page.goto(`${FX}/about/`);
+      await page.locator('#main').focus();
+      const hrefs: string[] = [];
+      for (let i = 0; i < 4; i++) {
+        await page.keyboard.press('Tab');
+        hrefs.push(await page.evaluate(() => (document.activeElement as HTMLAnchorElement).getAttribute('href') ?? ''));
+      }
+      return hrefs;
+    };
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const wide = await focusOrder();
+    expect(wide).toEqual([...fxProfile.links.map((l) => l.url), '/projects/', '/now/']);
+    const headings = await page
+      .getByRole('main')
+      .getByRole('heading')
+      .evaluateAll((hs) => hs.map((h) => h.tagName));
+    expect(headings).toEqual(['H1', 'H2']);
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await focusOrder()).toEqual(wide);
   });
 
   test('F008_AC3 a web link opens in a new tab', async ({ page, context }) => {
