@@ -1,7 +1,7 @@
 ---
 id: F-006
 title: Track recent tools
-status: building
+status: shipped
 milestone: M-1
 priority: P0
 personas: [PER-01]
