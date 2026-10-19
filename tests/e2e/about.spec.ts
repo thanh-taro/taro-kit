@@ -54,13 +54,18 @@ test.describe('F-008 About page', () => {
     await expect(portrait).toHaveText(initials(profile.name));
   });
 
-  test('SCR-About the name heading comes first, and focus order is the same wide and narrow', async ({ page }) => {
+  test('SCR-About the name heading comes first, and focus order is the same wide and narrow', async ({
+    page,
+    browserName,
+  }) => {
+    // WebKit's default Tab skips links and buttons; Option+Tab reaches them (adapters/tests.md engine notes).
+    const tab = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
     const focusOrder = async () => {
       await page.goto(`${FX}/about/`);
       await page.locator('#main').focus();
       const hrefs: string[] = [];
       for (let i = 0; i < 4; i++) {
-        await page.keyboard.press('Tab');
+        await page.keyboard.press(tab);
         hrefs.push(await page.evaluate(() => (document.activeElement as HTMLAnchorElement).getAttribute('href') ?? ''));
       }
       return hrefs;

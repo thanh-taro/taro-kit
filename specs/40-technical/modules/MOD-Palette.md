@@ -12,7 +12,8 @@ MOD-Palette provides the command palette (CMP-CommandPalette).
   - It opens the pre-rendered `<dialog>` with `showModal()` and focuses the input immediately (100 ms target, NFR-02).
   - It then loads the island if it hasn't loaded yet.
 - **Island:**
-  - fetches the catalog data, which is prefetched on idle and cached by the service worker;
+  - fetches the catalog data on hydration; MOD-Shell's `<BaseLayout>` preloads the file with every page (`<link rel="preload" as="fetch" crossorigin="anonymous">`), so that fetch reuses the download, and the service worker caches it;
+  - lays out its glyphs once at idle after hydration, hidden, so the system font lookup for glyphs no bundled font has doesn't land in a keystroke;
   - renders the empty-query groups (Favorites, Recents, Pages) and the query groups (Tools, Projects, Pages, Actions) using MOD-Search;
   - implements the combobox and listbox keyboard model across groups;
   - announces the result count;

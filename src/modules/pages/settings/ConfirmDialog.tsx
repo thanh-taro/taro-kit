@@ -2,10 +2,13 @@
 // Confirm above Cancel).
 // - A native modal <dialog> named by its question (role alertdialog): focus moves into it, starting on Cancel,
 //   stays inside while open, and Escape cancels (SCR-Settings accessibility: reachable by keyboard).
-// - It owns focus return: the element focused when it opened gets focus back when it closes.
+// - It owns focus return: `returnFocus` (the control that opened it) gets focus back when it closes; without it,
+//   the element focused when it opened. The explicit target matters where the opener never held focus: Safari
+//   doesn't focus a button on a mouse click, and a file pick can end with focus on the page (QA a11y m9).
 // - `tone='danger'` gives Confirm the danger color (erase, design SettingsDialogs); `detail` is a muted line under
 //   the question (the picked file's name on import).
 // Strings arrive as props (COPY ids rendered at build).
+import type { RefObject } from 'preact';
 import { useEffect, useId, useRef } from 'preact/hooks';
 
 export interface ConfirmDialogProps {
@@ -20,6 +23,8 @@ export interface ConfirmDialogProps {
   detail?: string;
   /** `danger` for an action that can't be undone (erase). */
   tone?: 'danger';
+  /** The control that opened the dialog: focus returns here on close. */
+  returnFocus?: RefObject<HTMLElement>;
   onConfirm(): void;
   onCancel(): void;
 }
@@ -31,6 +36,7 @@ export default function ConfirmDialog({
   cancelLabel,
   detail,
   tone,
+  returnFocus,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -44,7 +50,8 @@ export default function ConfirmDialog({
     const dialog = ref.current;
     if (!dialog) return;
     if (open && !dialog.open) {
-      opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      opener.current =
+        returnFocus?.current ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
       dialog.showModal();
       cancelRef.current?.focus();
     } else if (!open && dialog.open) {

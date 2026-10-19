@@ -12,7 +12,7 @@ MOD-SecurityPolicy turns the registry into the portal's security posture (ADR-00
 - **The `_headers` file:**
   - `frame-ancestors 'none'`;
   - a Permissions-Policy that delegates each feature only to the tool origins that declare it. The portal page keeps `clipboard-write` for itself (`clipboard-write=(self)` when no tool declares it), because the palette's copy-address action writes the clipboard (F-004.R5); frames still get it only through their own `allow` (`PORTAL_FEATURES`);
-  - `Referrer-Policy`, `nosniff` and `COOP`;
+  - `Referrer-Policy`, `nosniff`, `COOP` and `Strict-Transport-Security: max-age=31536000` (no `includeSubDomains`, no `preload`);
   - cache rules: immutable for hashed assets, no-cache for HTML, `sw.js` and the manifest.
 - **Build guard:** fails the build when an embedded tool shares the portal's origin.
 

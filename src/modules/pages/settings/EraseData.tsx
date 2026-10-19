@@ -5,7 +5,7 @@
 // - The confirmation's Confirm has the danger tone (design SettingsDialogs: erase can't be undone).
 // - When the erase can't be saved on the device it does not look successful: COPY-settings.eraseUnsaved shows as an
 //   alert, like clear recents (F-006.R4).
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { personalData } from '../../personal-data/index.ts';
 import { useHydrated } from '../../shell/hydrated.ts';
 import ConfirmDialog from './ConfirmDialog.tsx';
@@ -26,10 +26,12 @@ interface Props {
 export default function EraseData({ label, question, confirmLabel, cancelLabel, unsaved }: Props) {
   const hydrated = useHydrated();
   const [open, setOpen] = useState(false);
+  const button = useRef<HTMLButtonElement>(null);
   const [failed, setFailed] = useState(false);
   return (
     <div class="erase-data">
       <button
+        ref={button}
         type="button"
         class="action action--danger"
         disabled={!hydrated}
@@ -54,6 +56,7 @@ export default function EraseData({ label, question, confirmLabel, cancelLabel, 
         tone="danger"
         confirmLabel={confirmLabel}
         cancelLabel={cancelLabel}
+        returnFocus={button}
         onConfirm={() => {
           setFailed(personalData().eraseAll() === 'unsaved');
           setOpen(false);

@@ -155,9 +155,13 @@ const choice = {
     opacity: 0;
     cursor: pointer;
   }
+  /* A transparent outline is invisible normally and drawn in forced colors, where the fill is removed: the chosen
+     theme keeps a cue that isn't color alone (NFR-03, QA a11y M2). */
   .appearance :global(.options label:has(input:checked)) {
     background: var(--tk-color-accent);
     color: var(--tk-color-on-accent);
+    outline: var(--tk-border-width-focus) solid transparent;
+    outline-offset: calc(-1 * var(--tk-border-width-focus));
   }
   .appearance :global(.options label:has(input:focus-visible)) {
     outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
@@ -196,6 +200,14 @@ const choice = {
   }
   .data :global(.days-strip span[data-used]) {
     background: var(--tk-color-accent);
+  }
+  /* Forced colors remove the fill: used days keep it in the system text color (NFR-03, QA a11y m1). */
+  @media (forced-colors: active) {
+    .data :global(.days-strip span[data-used]) {
+      forced-color-adjust: none;
+      background: CanvasText;
+      border-color: CanvasText;
+    }
   }
   .actions,
   .data :global(.actions) {

@@ -119,9 +119,12 @@
     border-radius: var(--tk-radius-md);
     cursor: pointer;
   }
+  /* The transparent outline shows only in forced colors, where the fill and shadow are removed (NFR-03, QA m2). */
   .tk-palette__option[aria-selected='true'] {
     background: var(--tk-color-selection);
     box-shadow: inset 0 0 0 var(--tk-border-width-hairline) var(--tk-color-selection-line);
+    outline: var(--tk-border-width-focus) solid transparent;
+    outline-offset: calc(-1 * var(--tk-border-width-focus));
   }
   .tk-palette__glyph {
     display: flex;

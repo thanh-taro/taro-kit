@@ -1,7 +1,7 @@
 ---
 // MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
 // Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
-// the link-preview metadata (MOD-Meta <HeadMeta>, F-015), the single font preload (ADR-0003). Body: skip link first, banner, main.
+// the link-preview metadata (MOD-Meta <HeadMeta>, F-015), the single font preload (ADR-0003), the catalog data preload. Body: skip link first, banner, main.
 // Slot: default (page content). Offline and updates (F-011): the manifest link here, the worker registration in
 // the module script below (MOD-Offline), and the status island in AppShell.
 // Palette (MOD-Palette, F-004.R1): the pre-rendered <dialog> with its island after the frame, and the inline
@@ -10,8 +10,9 @@ import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { t } from '../copy/index.ts';
 import HeadMeta from '../meta/HeadMeta.astro';
-import { MANIFEST_PATH } from '../offline/manifest.ts';
+import { FAVICONS, MANIFEST_PATH } from '../offline/manifest.ts';
 import { paletteBootstrap } from '../palette/logic.ts';
+import { paletteDataPath } from '../palette/text.ts';
 import PaletteDialog from '../palette/PaletteDialog.astro';
 import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts';
 import { themeInlineScript } from '../theme/inline.ts';
@@ -48,9 +49,17 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <HeadMeta title={title} description={description} path={path} noindex={noindex} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
+    {/* NFR-01 (QA perf): the catalog data file starts downloading with the page, so the palette and catalog search,
+    which fetch it when they hydrate, are ready sooner on a first visit. Same origin (CSP connect-src 'self');
+    crossorigin="anonymous" matches fetch()'s same-origin credentials, so the fetch reuses this download. */}
+    <link rel="preload" as="fetch" type="application/json" crossorigin="anonymous" href={paletteDataPath()} />
     {/* F-011.R1: installable through the browser's own option (MOD-Offline manifest); the window's color per device
     scheme, which the theme script then sets to the theme showing (MOD-Theme theme-color.ts). */}
     <link rel="manifest" href={MANIFEST_PATH} />
+    {/* DEP-17 favicon: the app icon (SVG) and its 32 px PNG fallback (MOD-Offline FAVICONS). */}
+    {FAVICONS.map((f) => (
+      <link rel="icon" href={f.href} type={f.type} sizes={f.sizes} />
+    ))}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content={THEME_COLORS.light} />
     <meta name="theme-color" content={THEME_COLORS.dark} />
   </head>

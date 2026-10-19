@@ -16,7 +16,7 @@ The design phase will deliver W3C DTCG tokens in `specs/30-experience/tokens.jso
 
 ## Decision
 - Write **plain CSS**: Astro component-scoped styles plus a small global layer stack (`reset, tokens, base, components, utilities`) using `@layer`.
-- **Style Dictionary 5** (Apache-2.0, dev only) compiles `tokens.json` into `tokens.css`. The output is custom properties under `:root`, with theme overrides under `[data-theme="dark"]` and a `prefers-color-scheme` block for `system`. It also emits a typed `tokens.ts` for the rare script needs.
+- **Style Dictionary 5** (Apache-2.0, dev only) compiles `tokens.json` into `tokens.css`. The output is custom properties under `:root`, with theme overrides under `[data-theme="dark"]` and a `prefers-color-scheme` block for `system`. It also emits a typed `tokens.ts` for the rare script needs. Type sizes go to `tokens.css` in `rem` (px ÷ 16) so they follow the browser's text size; `tokens.json` and `tokens.ts` keep px (QA amendment, 2026-10-19).
 - The theme is applied by setting `data-theme` on `<html>` from an inline, CSP-hashed head script (MOD-Theme). `color-scheme` is declared so native controls follow.
 - Icons are SVGs taken from the icon set (ADR-0008) and **inlined at build**, so there are no icon fonts and no sprite requests. Fonts are self-hosted WOFF2 files, subset to Latin + Latin Extended + Vietnamese, with `font-display: swap` and a preload for the single primary face.
 

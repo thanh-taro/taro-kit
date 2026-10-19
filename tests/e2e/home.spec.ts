@@ -57,6 +57,17 @@ async function openHome(page: Page, base = FX) {
   await expect(page.locator('[data-tk-whatsnew-ready]')).toBeAttached();
 }
 
+/**
+ * Waits until every font face the laid-out page uses has loaded, so a later font swap can't move what is measured.
+ * Not `document.fonts.ready`: WebKit doesn't resolve it while a held script keeps the load event pending.
+ */
+const fontsLoaded = (page: Page) =>
+  page.evaluate(async () => {
+    document.body.getBoundingClientRect(); // layout starts the loads of the faces in use
+    await Promise.all([...document.fonts].filter((f) => f.status === 'loading').map((f) => f.loaded));
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  });
+
 const region = (page: Page, name: string) => page.getByRole('region', { name, exact: true });
 const cardNames = (page: Page, name: string) => region(page, name).locator('.tk-toolcard__link').allTextContents();
 const invitation = (page: Page) => page.locator('main .tk-state').locator('visible=true');
@@ -104,13 +115,29 @@ test.describe('F-007 greeting and time', () => {
 });
 
 test.describe('F-007 search entry', () => {
-  test('F007_AC3 activating the search entry opens the command palette with the field focused', async ({ page }) => {
+  test('F007_AC3 activating the search entry opens the command palette with the field focused', async ({
+    page,
+    browserName,
+  }) => {
     await page.goto(`${PROD}/`);
     const entry = searchEntry(page);
     await expect(entry).toBeVisible();
     await expect(entry).toContainText('What are you looking for?');
-    await entry.click();
     const dialog = page.getByRole('dialog', { name: 'Search TaroKit' });
+    if (browserName === 'webkit') {
+      // Safari doesn't focus a button on a mouse click, so after a click focus has no opener to return to
+      // (CMP-CommandPalette: focus returns where it was). The click still opens the palette; the focus return is
+      // checked from the keyboard below.
+      await entry.click();
+      await expect(dialog).toBeVisible();
+      await expect(page.getByRole('combobox')).toBeFocused();
+      await page.keyboard.press('Escape');
+      await expect(dialog).toBeHidden();
+      await entry.focus();
+      await page.keyboard.press('Enter');
+    } else {
+      await entry.click();
+    }
     await expect(dialog).toBeVisible();
     await expect(page.getByRole('combobox')).toBeFocused();
     await page.keyboard.press('Escape');
@@ -236,7 +263,7 @@ test.describe('F-007 no layout jump', () => {
     await expect(invitation(page)).toHaveCount(0);
     await expect(page.locator('[data-tk-home-reserve] .tk-toolcard')).toHaveCount(8);
     await expect(page.locator('[data-tk-home-reserve]')).toHaveAttribute('aria-hidden', 'true');
-    await page.evaluate(() => document.fonts.ready);
+    await fontsLoaded(page);
     const before = await page.getByRole('region', { name: CATEGORIES }).boundingBox();
     release();
     await expect(page.locator('[data-tk-home-ready]')).toBeAttached();
@@ -261,7 +288,7 @@ test.describe('F-007 no layout jump', () => {
     });
     await page.goto(`${PROD}/`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('[data-tk-home-reserve] .tk-toolcard')).toHaveCount(4);
-    await page.evaluate(() => document.fonts.ready);
+    await fontsLoaded(page);
     const before = await page.getByRole('region', { name: CATEGORIES }).boundingBox();
     release();
     await expect.poll(() => cardNames(page, RECENTS)).toHaveLength(2);

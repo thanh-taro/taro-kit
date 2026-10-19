@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { loadRegistry, projectPath } from '../../src/modules/content/index.ts';
 import { localDate } from '../../src/modules/personal-data/index.ts';
+import { PROD } from './ports.ts';
 import { PORTAL, serveSites, toolPage, type Sites } from './support/sites.ts';
 
 const root = join(import.meta.dirname, '../..');
@@ -459,4 +460,37 @@ test.describe('F-004 command palette', () => {
       await expect(dialog(page).getByText('Browse all my tools')).toBeVisible();
       expect((await scan()).violations).toEqual([]);
     });
+});
+
+test.describe('NFR-01 catalog data starts loading with the page (QA perf)', () => {
+  test('NFR-01 every page preloads the catalog data file, and the palette uses that one download', async ({
+    page,
+    browserName,
+  }) => {
+    const DATA = /\/data\/catalog\.[0-9a-f]+\.json$/;
+    const dataRequests: string[] = [];
+    page.on('request', (r) => {
+      if (DATA.test(new URL(r.url()).pathname)) dataRequests.push(new URL(r.url()).pathname);
+    });
+    await page.goto(`${PROD}/`);
+    const preload = page.locator('head link[rel="preload"][as="fetch"]');
+    await expect(preload).toHaveCount(1);
+    const href = (await preload.getAttribute('href'))!;
+    expect(href).toMatch(DATA);
+    // The palette's fetch() is same-origin with credentials: a matching preload needs crossorigin="anonymous".
+    await expect(preload).toHaveAttribute('crossorigin', 'anonymous');
+    await expect(preload).toHaveAttribute('type', 'application/json');
+    await page.locator('header [data-tk-palette-open]:visible').first().click();
+    await expect(page.locator('.tk-palette[data-ready]')).toBeAttached();
+    await expect(page.locator('.tk-palette[data-failed]')).toHaveCount(0);
+    // The preload is the first request for the file, made while the page loads.
+    expect(dataRequests[0]).toBe(href);
+    // Chromium's fetch() reuses the preload. WebKit asks again (it doesn't match fetch() to an `as=fetch` preload);
+    // in production that second request is served from the HTTP cache, since the hashed file is immutable (ADR-0007).
+    if (browserName === 'chromium') expect(dataRequests).toEqual([href]);
+    for (const path of ['/tools/', '/about/', '/t/sample-dev/', '/t/does-not-exist/']) {
+      await page.goto(`${PROD}${path}`);
+      await expect(page.locator('head link[rel="preload"][as="fetch"]'), path).toHaveAttribute('href', href);
+    }
+  });
 });

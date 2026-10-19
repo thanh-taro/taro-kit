@@ -242,12 +242,14 @@ test.describe('F-002 catalog', () => {
     expect((await page.getByRole('button', { name: 'Clear search' }).boundingBox())?.height).toBeGreaterThanOrEqual(44);
   });
 
-  test('PRN-02 the search field and the results are reachable from the keyboard', async ({ page }) => {
+  test('PRN-02 the search field and the results are reachable from the keyboard', async ({ page, browserName }) => {
+    // WebKit's default Tab skips links and buttons; Option+Tab reaches them (adapters/tests.md engine notes).
+    const tab = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
     await openCatalog(page);
     await search(page).focus();
     await page.keyboard.type('json');
     // Reading order: the search field, the category navigation (region 3), then the results.
-    for (let i = 0; i <= registry.categories.length; i++) await page.keyboard.press('Tab');
+    for (let i = 0; i <= registry.categories.length; i++) await page.keyboard.press(tab);
     await expect(results(page).getByRole('link', { name: 'JSON Formatter' })).toBeFocused();
   });
 

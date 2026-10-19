@@ -2,7 +2,7 @@
 // - Permissions-Policy: each policy-controlled feature is delegated only to the visible embedded tools that
 //   declare it, always with `self` first (SP-3: without it Chromium delegates nothing), and `()` otherwise, except
 //   the portal's own features (PORTAL_FEATURES: clipboard-write for F-004.R5), which keep `(self)`.
-// - frame-ancestors 'none', object-src and base-uri as a header policy; Referrer-Policy, nosniff, COOP, and
+// - frame-ancestors 'none', object-src and base-uri as a header policy; Referrer-Policy, nosniff, COOP, HSTS, and
 //   Cache-Control: no-transform (the privacy guard from SP-3).
 // - Cache rules (ADR-0007, F-011): pages, sw.js and the manifest are revalidated on every load (`no-cache`), so a
 //   published version is found at once and the service worker decides what is offline; content-hashed files
@@ -55,6 +55,9 @@ export function securityHeaders(tools: readonly PolicyTool[]): [name: string, va
     ['Referrer-Policy', 'strict-origin-when-cross-origin'],
     ['X-Content-Type-Options', 'nosniff'],
     ['Cross-Origin-Opener-Policy', 'same-origin'],
+    // ADR-0009 (QA I-1): HTTPS only for a year. No includeSubDomains or preload: tools live on their own subdomains
+    // and are separate projects (PRN-01), so the portal doesn't commit them.
+    ['Strict-Transport-Security', 'max-age=31536000'],
     // ADR-0009 (SP-3 amendment): stops the host injecting analytics beacons into pages (NFR-05). The cache part
     // is the default rule of cacheRules().
     ['Cache-Control', REVALIDATE],

@@ -64,6 +64,8 @@ The neutral layers (00 to 30, 50) describe behavior without naming technology. T
 | First painted screen already in the chosen theme (F-012.R4) | A blocking inline script as the first element of `<body>` (after Astro's CSP meta, so the hash applies), setting `data-theme` on `<html>` before any content paints | MOD-Theme |
 | Bundled fonts, icons and images; zero third-party requests (NFR-05) | Self-hosted WOFF2 and inline SVG; CSP `default-src 'self'`, `connect-src 'self'`, `img-src 'self' data:`, `font-src 'self'` | ADR-0003, ADR-0009 |
 | No cookies (NFR-05) | The portal sets none. The host's cookie-setting features are off (ADR-0007), and a smoke test asserts that no `Set-Cookie` header is sent. | ADR-0007 |
+| Text zooms without loss and follows the browser's text size (NFR-07) | Type-size tokens are emitted to `tokens.css` in `rem` (px ÷ 16, so the default renders the same); spacing, radii and targets stay in px | MOD-DesignSystem |
+| A cue that isn't color alone survives forced colors (NFR-03) | Selected or current states add a transparent `outline`, which only forced-colors mode paints; filled indicators use `CanvasText` under `@media (forced-colors: active)` | MOD-DesignSystem, MOD-Pages, MOD-Palette, MOD-Shell |
 | Touch targets of at least 44 × 44 CSS px (NFR-09) | `min-block-size` and `min-inline-size` set to 44px under `@media (pointer: coarse)` | MOD-DesignSystem |
 
 ## Publishing

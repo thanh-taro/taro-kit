@@ -1,0 +1,5 @@
+<!-- TaroKit app icon (DEP-17): the logo mark, an Unbounded 700 "T" (outline, OFL-1.1) in on-accent on the dark accent (tokens.json). -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="150" fill="#A47BFF"/>
+  <path fill="#0F0B16" transform="translate(151.3 352) scale(0.256 -0.256)" d="M305 659H512.6V0H305ZM19 750H798.6V565.6H19Z"/>
+</svg>

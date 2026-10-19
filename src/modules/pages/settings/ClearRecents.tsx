@@ -6,7 +6,7 @@
 //   document, which is never overwritten), it does not look successful: COPY-settings.clearRecentsUnsaved shows
 //   as an alert under the button.
 // Before hydration the button is disabled, like the other device-data controls.
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { personalData } from '../../personal-data/index.ts';
 import { useHydrated } from '../../shell/hydrated.ts';
 import ConfirmDialog from './ConfirmDialog.tsx';
@@ -27,10 +27,12 @@ interface Props {
 export default function ClearRecents({ label, question, confirmLabel, cancelLabel, unsaved }: Props) {
   const hydrated = useHydrated();
   const [open, setOpen] = useState(false);
+  const button = useRef<HTMLButtonElement>(null);
   const [failed, setFailed] = useState(false);
   return (
     <div class="clear-recents">
       <button
+        ref={button}
         type="button"
         class="action"
         disabled={!hydrated}
@@ -54,6 +56,7 @@ export default function ClearRecents({ label, question, confirmLabel, cancelLabe
         title={question}
         confirmLabel={confirmLabel}
         cancelLabel={cancelLabel}
+        returnFocus={button}
         onConfirm={() => {
           setFailed(personalData().clearRecents() === 'unsaved');
           setOpen(false);

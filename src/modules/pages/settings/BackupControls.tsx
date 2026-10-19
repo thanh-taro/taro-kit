@@ -49,6 +49,7 @@ const loadBackup = () => import('../../backup/index.ts');
 export default function BackupControls(props: Props) {
   const hydrated = useHydrated();
   const input = useRef<HTMLInputElement>(null);
+  const importControl = useRef<HTMLButtonElement>(null);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [pending, setPending] = useState<{ data: PersonalData; name: string } | null>(null);
@@ -103,6 +104,7 @@ export default function BackupControls(props: Props) {
           {props.exportLabel}
         </button>
         <button
+          ref={importControl}
           type="button"
           class="action"
           disabled={!hydrated}
@@ -139,6 +141,7 @@ export default function BackupControls(props: Props) {
         detail={pending?.name}
         confirmLabel={props.confirmLabel}
         cancelLabel={props.cancelLabel}
+        returnFocus={importControl}
         onConfirm={() => {
           if (pending && personalData().replaceAll(pending.data) === 'unsaved') setProblem({ kind: 'unsaved' });
           setPending(null);
