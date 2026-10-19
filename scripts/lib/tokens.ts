@@ -43,7 +43,21 @@ export async function flattenTokens(tokensJson: Record<string, unknown>): Promis
   });
 }
 
-const decls = (list: FlatToken[], indent: string) => list.map((t) => `${indent}${t.cssVar}: ${t.value};`).join('\n');
+/** The browser's default text size, the rem base. */
+export const REM_BASE_PX = 16;
+
+/**
+ * Type sizes go to CSS in rem (px / 16), so they follow the browser's text size setting and render the same at
+ * the default 16 px (NFR-07, QA a11y m6). tokens.json and tokens.ts keep px; every other dimension stays px.
+ */
+export function cssValue(t: FlatToken): string {
+  const px = /^(\d+(?:\.\d+)?)px$/.exec(t.value);
+  if (!px || !t.cssVar.startsWith('--tk-font-size-')) return t.value;
+  return `${Number(px[1]) / REM_BASE_PX}rem`;
+}
+
+const decls = (list: FlatToken[], indent: string) =>
+  list.map((t) => `${indent}${t.cssVar}: ${cssValue(t)};`).join('\n');
 
 export function renderTokensCss(flat: FlatToken[]): string {
   const base = flat.filter((t) => !t.theme);

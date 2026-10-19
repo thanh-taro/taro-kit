@@ -44,6 +44,20 @@ describe('tokens.json -> tokens.css', () => {
     expect(css).toContain("--tk-font-family-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;");
   });
 
+  it('NFR-07 emits type sizes in rem (px / 16), so they follow the browser text size; tokens.ts keeps px', async () => {
+    const flat = await flattenTokens(tokensJson());
+    const css = renderTokensCss(flat);
+    // Same rendered size at the default 16 px root (QA a11y m6).
+    expect(css).toContain('--tk-font-size-base: 0.9375rem;');
+    expect(css).toContain('--tk-font-size-xs: 0.75rem;');
+    expect(css).toContain('--tk-font-size-6xl: 4.5rem;');
+    expect(css).not.toMatch(/--tk-font-size-[\w-]+: [\d.]+px;/);
+    // Everything else (spacing, radii, touch targets) stays in px.
+    expect(css).toContain('--tk-space-4: 16px;');
+    expect(css).toContain('--tk-size-touch-target: 44px;');
+    expect(renderTokensTs(flat)).toContain('"font-size-base": "15px"');
+  });
+
   it('fails when the two themes define different roles', () => {
     expect(() => checkThemesMatch([{ cssVar: '--tk-color-bg', value: '#000', theme: 'dark' }], [])).toThrow(
       /--tk-color-bg \(light\)/,

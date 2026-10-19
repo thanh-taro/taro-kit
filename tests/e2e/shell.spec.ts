@@ -26,7 +26,9 @@ test.describe('CMP-AppShell narrow menu', () => {
     await expect(tools).toBeHidden();
   });
 
-  test('clicking outside or tabbing past the panel closes it', async ({ page }) => {
+  test('clicking outside or tabbing past the panel closes it', async ({ page, browserName }) => {
+    // WebKit's default Tab skips links and buttons; Option+Tab reaches them (adapters/tests.md engine notes).
+    const tab = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
     await page.goto('/');
     await page.waitForLoadState('load');
     const menu = page.getByRole('button', { name: 'Menu' });
@@ -36,10 +38,10 @@ test.describe('CMP-AppShell narrow menu', () => {
     await expect(menu).toHaveAttribute('aria-expanded', 'false');
     await menu.click();
     await expect(page.getByRole('navigation').getByRole('link', { name: 'Home' })).toBeFocused();
-    for (let i = 0; i < 5; i++) await page.keyboard.press('Tab');
+    for (let i = 0; i < 5; i++) await page.keyboard.press(tab);
     await expect(page.getByRole('navigation').getByRole('link', { name: 'Settings' })).toBeFocused();
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
-    await page.keyboard.press('Tab');
+    await page.keyboard.press(tab);
     await expect(menu).toHaveAttribute('aria-expanded', 'false');
   });
 

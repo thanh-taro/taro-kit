@@ -128,9 +128,12 @@
   font-size: var(--tk-font-size-xs);
   font-weight: var(--tk-font-weight-bold);
 }
-/* The stretched link: the whole row opens the tool. */
+/* The stretched link: the whole row opens the tool. It may shrink and wrap, so a long name is never clipped on
+   a narrow screen (NFR-07, QA a11y m4). */
 .tk-whatsnew__link {
-  flex: none;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow-wrap: break-word;
   color: var(--tk-color-fg);
   font-size: var(--tk-font-size-base);
   font-weight: var(--tk-font-weight-semibold);
@@ -167,11 +170,9 @@
     gap: calc(var(--tk-space-1) + var(--tk-space-1) / 2) var(--tk-space-2);
     padding: var(--tk-space-3) calc(var(--tk-space-3) + var(--tk-space-1) / 2);
   }
+  /* The name wraps in its column rather than being clipped (NFR-07, QA a11y m4). */
   .tk-whatsnew__link {
     min-inline-size: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .tk-whatsnew__summary {
     grid-column: 1 / -1;

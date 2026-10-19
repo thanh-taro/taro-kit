@@ -79,8 +79,12 @@ const header: ToolHeaderText = {
     border: var(--tk-border-width-hairline) solid var(--tk-color-line);
     border-radius: var(--tk-radius-md);
   }
-  :global(.tk-toolarea:focus) {
+  /* The skip link's target (SCR-ToolView). NFR-04 (QA a11y m7): keyboard focus shows the ring, inside the edge. */
+  :global(.tk-toolarea:focus:not(:focus-visible)) {
     outline: none;
+  }
+  :global(.tk-toolarea:focus-visible) {
+    outline-offset: calc(-1 * var(--tk-border-width-focus));
   }
   :global(.tk-toolarea[data-phase='offline']),
   :global(.tk-toolarea[data-linked]) {

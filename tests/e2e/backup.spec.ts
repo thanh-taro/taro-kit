@@ -206,6 +206,41 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   });
 
+  test('F013_AC7 from the keyboard alone: Enter on Import, then Escape or Cancel, returns focus to Import (QA m9)', async ({
+    page,
+  }) => {
+    await seed(page);
+    await page.goto(SETTINGS);
+    await expect(importButton(page)).toBeEnabled();
+    for (const close of ['Escape', 'Cancel'] as const) {
+      await importButton(page).focus();
+      const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.keyboard.press('Enter')]);
+      await chooser.setFiles(fixturePath('F013_AC6-valid.json'));
+      await expect(importDialog(page).getByRole('button', { name: 'Cancel' })).toBeFocused();
+      if (close === 'Escape') await page.keyboard.press('Escape');
+      else {
+        await page.keyboard.press('Enter'); // on Cancel
+      }
+      await expect(importDialog(page)).toBeHidden();
+      await expect(importButton(page), close).toBeFocused();
+    }
+    expect(await stored(page)).toEqual(CURRENT);
+  });
+
+  test('F013_AC7 after a programmatic file pick, cancelling still returns focus to Import (QA m9)', async ({
+    page,
+  }) => {
+    await seed(page);
+    await page.goto(SETTINGS);
+    await expect(importButton(page)).toBeEnabled();
+    // The file arrives without the button ever holding focus (as when a picker gives focus back late).
+    await page.getByTestId('import-file').setInputFiles(fixturePath('F013_AC6-valid.json'));
+    await expect(importDialog(page).getByRole('button', { name: 'Cancel' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(importDialog(page)).toBeHidden();
+    await expect(importButton(page)).toBeFocused();
+  });
+
   test('F-013 edge case: another open window picks up the imported data', async ({ page, context }) => {
     await seed(page);
     await page.goto(SETTINGS);

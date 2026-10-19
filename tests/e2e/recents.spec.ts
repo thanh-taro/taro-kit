@@ -269,16 +269,18 @@ test.describe('F-006.R4 clearing recents in settings', () => {
     expect(await storedRecents(page)).toEqual(['fx-01']);
   });
 
-  test('F-006.R4 the confirmation is reachable and usable from the keyboard alone', async ({ page }) => {
+  test('F-006.R4 the confirmation is reachable and usable from the keyboard alone', async ({ page, browserName }) => {
     await seed(page, { recents: ['fx-01'] });
     await page.goto(SETTINGS);
     await clearButton(page).focus();
     await page.keyboard.press('Enter');
     await expect(dialog(page).getByRole('button', { name: 'Cancel' })).toBeFocused();
-    await page.keyboard.press('Tab');
+    // WebKit's default Tab reaches only text fields; Option+Tab reaches buttons and links (adapters/tests.md).
+    await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
     await expect(dialog(page).getByRole('button', { name: 'Confirm' })).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(dialog(page)).toBeHidden();
+    await expect(clearButton(page)).toBeFocused();
     expect(await storedRecents(page)).toEqual([]);
   });
 });

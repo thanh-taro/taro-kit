@@ -360,9 +360,12 @@ const status = shellStatusText();
     }
   }
 
+  /* The transparent outline shows only in forced colors, where the fill is removed (NFR-03, QA a11y m2). */
   .settings[aria-current='page'] {
     background: var(--tk-color-surface2);
     color: var(--tk-color-fg);
+    outline: var(--tk-border-width-focus) solid transparent;
+    outline-offset: calc(-1 * var(--tk-border-width-focus));
   }
 
   /* NavMenu island markup (not scoped: islands render outside Astro's scoping). */
@@ -471,6 +474,15 @@ const status = shellStatusText();
     }
     .shell-wrap[data-variant='compact'] {
       gap: 0;
+    }
+  }
+  /* NFR-07 (QA a11y M1): from 320 px the logo, search, theme toggle and Menu fit without sideways scrolling. */
+  @media (max-width: 359px) {
+    .shell {
+      padding-inline-start: var(--tk-space-3);
+    }
+    .shell :global(.nav .menu) {
+      padding-inline: var(--tk-space-2);
     }
   }
 </style>

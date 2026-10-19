@@ -8,9 +8,13 @@
   border: var(--tk-border-width-hairline) solid var(--tk-color-line);
   border-radius: var(--tk-radius-md);
 }
-.tk-toolheader:focus {
-  /* Focus lands here on entry (SCR-ToolView); the controls inside carry the visible focus rings. */
+/* Focus lands here on entry (SCR-ToolView). NFR-04 (QA a11y m7): keyboard focus shows the accent ring, drawn
+   inside the edge because the header is full-bleed on narrow screens. */
+.tk-toolheader:focus:not(:focus-visible) {
   outline: none;
+}
+.tk-toolheader:focus-visible {
+  outline-offset: calc(-1 * var(--tk-border-width-focus));
 }
 .tk-toolheader[data-slow] {
   border-radius: var(--tk-radius-lg);
@@ -72,15 +76,14 @@
   font-weight: var(--tk-font-weight-semibold);
 }
 
+/* The h1 wraps on narrow screens rather than being cut off (NFR-07, QA a11y m3). */
 .tk-toolheader__name {
   min-inline-size: 0;
-  overflow: hidden;
   font-family: var(--tk-font-family-body);
   font-size: var(--tk-font-size-base);
   font-weight: var(--tk-font-weight-semibold);
   line-height: var(--tk-font-line-height-tight);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
 }
 
 .tk-toolheader__fav {
