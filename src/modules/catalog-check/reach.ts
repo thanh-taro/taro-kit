@@ -10,7 +10,7 @@ export interface ReachOptions {
   userAgent?: string;
 }
 
-export type ReachReason = 'ok' | 'timeout' | 'network-error' | 'too-many-redirects' | 'status';
+export type ReachReason = 'ok' | 'timeout' | 'network-error' | 'too-many-redirects' | 'unsupported-redirect' | 'status';
 
 export interface ReachResult {
   ok: boolean;
@@ -63,7 +63,11 @@ async function attemptOnce(address: string, opts: Required<ReachOptions>): Promi
       if (res.status >= 300 && res.status < 400 && location) {
         if (hops >= opts.maxRedirects)
           return { ok: false, reason: 'too-many-redirects', status: res.status, finalUrl: url };
-        url = new URL(location, url).href;
+        const next = new URL(location, url);
+        // Only web addresses can be followed (data:, file:, mailto: and the rest are refused, never retried).
+        if (next.protocol !== 'http:' && next.protocol !== 'https:')
+          return { ok: false, reason: 'unsupported-redirect', status: res.status, finalUrl: next.href };
+        url = next.href;
         continue;
       }
       return { ok: res.ok, reason: res.ok ? 'ok' : 'status', status: res.status, finalUrl: url, headers: res.headers };

@@ -71,6 +71,11 @@ export interface Finding {
 
 export interface CheckOptions extends ReachOptions {
   portalOrigin: string;
+  /**
+   * Test hook only (the CLI never sets it): accept a final address that is http, so unit tests can use a
+   * local plain-HTTP server. In production every final address must be https (INV-02).
+   */
+  allowHttp?: boolean;
   /** Checks running at once. */
   concurrency?: number;
 }
@@ -85,6 +90,8 @@ export function reachReason(r: ReachResult, timeoutMs: number): string {
       return `timeout: no answer within ${timeoutMs / 1000} s${tries}`;
     case 'too-many-redirects':
       return 'more than 5 redirects';
+    case 'unsupported-redirect':
+      return `unsupported-redirect: redirected to ${r.finalUrl.split(':')[0]}:, which is not a web address`;
     case 'network-error':
       return `network error${r.error ? ` (${r.error})` : ''}${tries}`;
     default:
@@ -98,6 +105,11 @@ async function checkOne(target: Target, opts: CheckOptions): Promise<Finding> {
   const blocking = target.kind === 'tool';
   if (!reach.ok) {
     return { target, outcome: blocking ? 'fail' : 'warn', reason: reachReason(reach, timeoutMs), notes: [], reach };
+  }
+  // A secure address that ends on an insecure one breaks INV-02 (F-014 edge case): tools fail, links warn.
+  if (!opts.allowHttp && new URL(reach.finalUrl).protocol !== 'https:') {
+    const reason = `insecure-redirect: the final address ${reach.finalUrl} is not https`;
+    return { target, outcome: blocking ? 'fail' : 'warn', reason, notes: [], reach };
   }
   if (!target.embedded) return { target, outcome: 'pass', reason: '', notes: [], reach };
   const verdict = classifyEmbedding(reach.headers ?? new Headers(), opts.portalOrigin, new URL(reach.finalUrl).origin);
@@ -142,12 +154,15 @@ export interface Report {
   summary: string;
 }
 
+/** One line per finding: newlines in a content-authored label never split a report line. */
+const oneLine = (s: string | undefined): string => (s ?? '').replace(/[\r\n]+/g, ' ');
+
 const who = (t: { kind: TargetKind; entryId: string; label?: string }): string =>
   t.kind === 'tool'
     ? `tool ${t.entryId}`
     : t.kind === 'project'
-      ? `project ${t.entryId} link "${t.label}"`
-      : `profile link "${t.label}"`;
+      ? `project ${t.entryId} link "${oneLine(t.label)}"`
+      : `profile link "${oneLine(t.label)}"`;
 
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? '' : one.endsWith('s') ? 'es' : 's'}`;
 

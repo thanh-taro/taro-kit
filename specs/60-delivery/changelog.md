@@ -54,3 +54,4 @@ status: draft
 
 ## 2026-10-19
 - F-014 build: MOD-CatalogCheck wording aligned with RULE-12 (10 s per attempt, not total); documents exit codes (0 pass, 1 blocking failure, 2 can't run), skipped hidden tools and non-web links (`mailto:`), CI annotations and the built surface. Behavior unchanged. F-014 set to building.
+- F-014 review round 1: F-014 edge cases clarified (following INV-02): a redirect to an address that isn't secure, or to something that isn't a web address, counts as unreachable (tools fail, links warn). MOD-CatalogCheck documents `unsupported-redirect`, `insecure-redirect`, exit 2 on a crash, and that a `frame-ancestors` source's path is ignored.

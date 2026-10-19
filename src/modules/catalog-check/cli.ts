@@ -4,7 +4,7 @@
 // 2 = the check could not run (bad arguments or invalid content).
 import { appendFileSync } from 'node:fs';
 import { ContentErrors, loadRegistry, PORTAL_ORIGIN, type Registry } from '../content/index.ts';
-import { buildReport, planCheck, reportMarkdown, runCheck } from './check.ts';
+import { buildReport, planCheck, reportMarkdown, runCheck, type Finding, type Report } from './check.ts';
 import type { ReachOptions } from './reach.ts';
 
 export interface CliArgs {
@@ -37,8 +37,15 @@ export interface CliDeps {
   err: (line: string) => void;
   /** Content loading; tests inject a registry here. */
   load?: (root: string) => Pick<Registry, 'allTools' | 'projects' | 'profile'>;
-  reach?: ReachOptions;
+  /** Reach options, plus the `allowHttp` test hook (CheckOptions). */
+  reach?: ReachOptions & { allowHttp?: boolean };
+  /** Test hook: replaces `runCheck` (to prove a crash exits 2). */
+  run?: typeof runCheck;
 }
+
+/** Escapes a workflow-command message the way @actions/core does (`%`, CR, LF). */
+export const escapeAnnotation = (s: string): string =>
+  s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
 
 export async function runCli(argv: readonly string[], deps: CliDeps): Promise<0 | 1 | 2> {
   let args: CliArgs;
@@ -50,9 +57,18 @@ export async function runCli(argv: readonly string[], deps: CliDeps): Promise<0 
     deps.err(`catalog check: could not run: ${e instanceof ContentErrors ? e.message : (e as Error).message}`);
     return 2;
   }
-  const plan = planCheck(registry);
-  const findings = await runCheck(plan.targets, { ...deps.reach, portalOrigin: args.portalOrigin });
-  const report = buildReport(findings, plan.skipped, args.weekly);
+  // A crash is "could not run" (2), never mistaken for a tool failure (1).
+  let plan: ReturnType<typeof planCheck>;
+  let findings: Finding[];
+  let report: Report;
+  try {
+    plan = planCheck(registry);
+    findings = await (deps.run ?? runCheck)(plan.targets, { ...deps.reach, portalOrigin: args.portalOrigin });
+    report = buildReport(findings, plan.skipped, args.weekly);
+  } catch (e) {
+    deps.err(`catalog check: could not run: ${(e as Error)?.stack ?? String(e)}`);
+    return 2;
+  }
 
   if (args.json) {
     deps.out(
@@ -90,8 +106,8 @@ export async function runCli(argv: readonly string[], deps: CliDeps): Promise<0 
   // GitHub Actions: failures and warnings become annotations, and the summary goes to the job summary.
   if (deps.env.GITHUB_ACTIONS === 'true') {
     for (const l of report.lines) {
-      if (l.startsWith('FAIL')) deps.err(`::error title=Catalog check::${l.slice(6)}`);
-      else if (l.startsWith('WARN')) deps.err(`::warning title=Catalog check::${l.slice(6)}`);
+      if (l.startsWith('FAIL')) deps.err(`::error title=Catalog check::${escapeAnnotation(l.slice(6))}`);
+      else if (l.startsWith('WARN')) deps.err(`::warning title=Catalog check::${escapeAnnotation(l.slice(6))}`);
     }
   }
   if (deps.env.GITHUB_STEP_SUMMARY) appendFileSync(deps.env.GITHUB_STEP_SUMMARY, reportMarkdown(report));

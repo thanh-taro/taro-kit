@@ -12,6 +12,7 @@ import {
   buildReport,
   checkReachability,
   classifyEmbedding,
+  escapeAnnotation,
   planCheck,
   runCheck,
   runCli,
@@ -20,7 +21,10 @@ import {
 
 const root = join(import.meta.dirname, '../..');
 const PORTAL = 'https://tarokit.app';
-const FAST = { timeoutMs: 1000 } as const; // generous for loaded CI machines; the hang test waits 2 attempts
+// The 10 s default everywhere (no timing-sensitive tests); only the /hang case uses a short limit.
+// `allowHttp` is the test hook that lets a plain-HTTP local server stand in for https tools.
+const LOCAL = { allowHttp: true } as const;
+const HANG_MS = 300;
 
 // ---------- local server ----------
 type Route = (req: IncomingMessage, res: ServerResponse, hit: number) => void;
@@ -52,6 +56,9 @@ routes.set(
   send(200, { 'x-frame-options': 'SAMEORIGIN', 'content-security-policy': `frame-ancestors 'self' ${PORTAL}` }),
 );
 routes.set('/report-only-none', send(200, { 'content-security-policy-report-only': "frame-ancestors 'none'" }));
+routes.set('/to-data', send(302, { location: 'data:text/html,hi' }));
+routes.set('/to-file', send(302, { location: 'file:///etc/passwd' }));
+routes.set('/to-mailto', send(301, { location: 'mailto:x@example.com' }));
 routes.set('/redirect-to-deny', send(302, { location: '/xfo-deny' }));
 routes.set('/deny-redirect-to-ok', send(302, { location: '/ok', 'x-frame-options': 'DENY' }));
 for (let n = 1; n <= 6; n++) routes.set(`/chain/${n}`, send(302, { location: n === 1 ? '/ok' : `/chain/${n - 1}` }));
@@ -80,7 +87,8 @@ const tool = (id: string, path: string, embedded = false): Target => ({
   address: url(path),
   embedded,
 });
-const check = (targets: Target[]) => runCheck(targets, { ...FAST, portalOrigin: PORTAL });
+const check = (targets: Target[], extra: { timeoutMs?: number; allowHttp?: boolean } = {}) =>
+  runCheck(targets, { ...LOCAL, ...extra, portalOrigin: PORTAL });
 
 /** A registry-shaped object for the CLI, with addresses on the local server. */
 function registry(parts: {
@@ -112,7 +120,7 @@ async function cli(argv: string[], reg: ReturnType<typeof registry>) {
     out: (l) => out.push(l),
     err: (l) => err.push(l),
     load: () => reg,
-    reach: FAST,
+    reach: LOCAL,
   });
   return { code, out, err, all: [...out, ...err].join('\n') };
 }
@@ -135,12 +143,12 @@ describe('F-014 catalog check', () => {
 
   it('F014_AC2 fails with a timeout reason when the tool does not answer, even after one retry', async () => {
     const before = hits.get('/hang') ?? 0;
-    const [f] = await check([tool('slow-tool', '/hang')]);
+    const [f] = await check([tool('slow-tool', '/hang')], { timeoutMs: HANG_MS });
     expect(f.outcome).toBe('fail');
     expect(f.reach.reason).toBe('timeout');
     expect(f.reach.attempts).toBe(2);
     expect((hits.get('/hang') ?? 0) - before).toBe(2);
-    expect(f.reason).toMatch(/^timeout: no answer within 1 s after 2 attempts$/);
+    expect(f.reason).toMatch(/^timeout: no answer within 0.3 s after 2 attempts$/);
     const report = buildReport([f], []);
     expect(report.lines[0]).toBe(`FAIL  tool slow-tool  ${url('/hang')}  ${f.reason}`);
     expect(report.exitCode).toBe(1);
@@ -168,12 +176,97 @@ describe('F-014 catalog check', () => {
   });
 
   it('RULE-12 reports a network error when nothing listens', async () => {
-    const [f] = await runCheck([{ kind: 'tool', entryId: 'nobody', address: 'http://127.0.0.1:9/', embedded: false }], {
-      ...FAST,
-      portalOrigin: PORTAL,
-    });
+    // A port that was just free: listen on port 0, note it, close it.
+    const probe = createServer();
+    await new Promise<void>((r) => probe.listen(0, '127.0.0.1', r));
+    const { port } = probe.address() as AddressInfo;
+    await new Promise((r) => probe.close(r));
+    const [f] = await check([
+      { kind: 'tool', entryId: 'nobody', address: `http://127.0.0.1:${port}/`, embedded: false },
+    ]);
     expect(f.outcome).toBe('fail');
     expect(f.reason).toMatch(/^network error/);
+  });
+
+  it('RULE-12 refuses a redirect to anything but a web address, without retrying', async () => {
+    const before = hits.get('/to-data') ?? 0;
+    const [data, file, mailto] = await check([
+      tool('to-data', '/to-data'),
+      tool('to-file', '/to-file'),
+      tool('to-mailto', '/to-mailto'),
+    ]);
+    for (const f of [data, file, mailto]) {
+      expect(f.outcome).toBe('fail');
+      expect(f.reach.reason).toBe('unsupported-redirect');
+      expect(f.reach.attempts).toBe(1);
+    }
+    expect((hits.get('/to-data') ?? 0) - before).toBe(1);
+    expect(data.reason).toBe('unsupported-redirect: redirected to data:, which is not a web address');
+    expect(file.reason).toBe('unsupported-redirect: redirected to file:, which is not a web address');
+  });
+
+  it('INV-02 fails a tool whose final address is not https, and only warns for links', async () => {
+    const reg = registry({
+      tools: [{ id: 'plain-http', path: '/ok', embedded: true }],
+      projects: [{ id: 'proj', links: [{ label: 'Live', path: '/chain/1' }] }],
+      profileLinks: [{ label: 'Site', path: '/ok' }],
+    });
+    const out: string[] = [];
+    const code = await runCli([], { root, env: {}, out: (l) => out.push(l), err: (l) => out.push(l), load: () => reg });
+    expect(code).toBe(1);
+    expect(out).toContain(
+      `FAIL  tool plain-http  ${url('/ok')}  insecure-redirect: the final address ${url('/ok')} is not https`,
+    );
+    expect(out).toContain(
+      `WARN  project proj link "Live"  ${url('/chain/1')}  insecure-redirect: the final address ${url('/ok')} is not https`,
+    );
+    expect(out.some((l) => l.startsWith('WARN  profile link "Site"') && l.includes('insecure-redirect'))).toBe(true);
+  });
+
+  it('MOD-CatalogCheck exits 2, not 1, when the check itself crashes', async () => {
+    const err: string[] = [];
+    const code = await runCli([], {
+      root,
+      env: {},
+      out: () => {},
+      err: (l) => err.push(l),
+      load: () => registry({ tools: [{ id: 'a', path: '/ok' }] }),
+      run: async () => {
+        throw new Error('boom');
+      },
+    });
+    expect(code).toBe(2);
+    expect(err[0]).toMatch(/^catalog check: could not run: Error: boom/);
+    // buildReport crashing on a malformed finding is also "could not run".
+    const code2 = await runCli([], {
+      root,
+      env: {},
+      out: () => {},
+      err: () => {},
+      load: () => registry({ tools: [{ id: 'a', path: '/ok' }] }),
+      run: async () => [null as never],
+    });
+    expect(code2).toBe(2);
+  });
+
+  it('MOD-CatalogCheck keeps a label with a newline on one line, and escapes annotations', async () => {
+    const out: string[] = [];
+    const err: string[] = [];
+    const code = await runCli([], {
+      root,
+      env: { GITHUB_ACTIONS: 'true' },
+      out: (l) => out.push(l),
+      err: (l) => err.push(l),
+      load: () => registry({ profileLinks: [{ label: 'Git\nHub 100%', path: '/not-found' }] }),
+      reach: LOCAL,
+    });
+    expect(code).toBe(0);
+    expect(out).toContain(`WARN  profile link "Git Hub 100%"  ${url('/not-found')}  status 404`);
+    for (const l of [...out, ...err]) expect(l).not.toMatch(/[\r\n]/);
+    expect(err).toContain(
+      `::warning title=Catalog check::profile link "Git Hub 100%25"  ${url('/not-found')}  status 404`,
+    );
+    expect(escapeAnnotation('a%b\r\nc')).toBe('a%25b%0D%0Ac');
   });
 
   it('F014_AC3 skips a hidden tool with a dead address', async () => {
@@ -348,7 +441,7 @@ describe('F-014 catalog check', () => {
         out: () => {},
         err: () => {},
         load: () => registry({ tools: [{ id: 'down', path: '/not-found' }] }),
-        reach: FAST,
+        reach: LOCAL,
       });
       expect(code).toBe(1);
       const md = readFileSync(file, 'utf8');
@@ -377,7 +470,7 @@ describe('F-014 catalog check', () => {
       ua = String(q.headers['user-agent']);
       res.end();
     });
-    expect((await checkReachability(url('/ua'), FAST)).ok).toBe(true);
+    expect((await checkReachability(url('/ua'))).ok).toBe(true);
     expect(ua).toMatch(/^TaroKit-CatalogCheck\//);
   });
 });

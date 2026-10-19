@@ -24,4 +24,4 @@ export {
   type Target,
   type TargetKind,
 } from './check.ts';
-export { parseArgs, runCli, type CliDeps, type CliArgs } from './cli.ts';
+export { escapeAnnotation, parseArgs, runCli, type CliDeps, type CliArgs } from './cli.ts';
