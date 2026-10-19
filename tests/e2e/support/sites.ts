@@ -56,8 +56,15 @@ export async function serveSites(context: BrowserContext): Promise<Sites> {
 
   const portal = async (route: Route) => {
     const url = new URL(route.request().url());
-    const response = await route.fetch({ url: `${BUILD}${url.pathname}${url.search}` });
-    await route.fulfill({ response, headers: { ...response.headers(), ...headers } });
+    try {
+      const response = await route.fetch({ url: `${BUILD}${url.pathname}${url.search}` });
+      await route.fulfill({ response, headers: { ...response.headers(), ...headers } });
+    } catch (e) {
+      // A request the page abandoned mid-flight (it navigated away, e.g. a preload or the worker's precache):
+      // nothing is left to answer. Any other failure still fails the test.
+      if (/disposed|closed|Request context/i.test(String(e))) return;
+      throw e;
+    }
   };
   await context.route(/^https:\/\/(tarokit|elsewhere-portal)\.test\//, portal);
 
