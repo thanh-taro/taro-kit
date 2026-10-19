@@ -1,7 +1,7 @@
 ---
 id: F-014
 title: Check the catalog before publishing
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-01]
@@ -45,3 +45,4 @@ No portal interface. Output appears wherever the Owner's publishing checks repor
 
 ## Edge cases
 - A tool that is down temporarily blocks publishing. The Owner can hide it or retry.
+- An address that redirects to an address that isn't secure (INV-02), or to something that isn't a web address, counts as unreachable: a tool fails, a project or profile link gets a warning.
