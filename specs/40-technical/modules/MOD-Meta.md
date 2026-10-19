@@ -12,7 +12,7 @@ MOD-Meta produces each page's head metadata:
 - Open Graph tags (`og:title`, `og:description`, `og:image` with width and height, `og:url`, `og:type`, `og:site_name`) and `twitter:card=summary_large_image`;
 - the shared preview image, 1200 × 630 (NFR-12, F-015.R1).
 
-Tool pages use the tool's name in COPY-meta.toolTitle and its summary as the description (F-015.R2). The not-found page declares COPY-notFound.title, `noindex`, and nothing about any tool (F-015.R4). It answers at any unknown address, so it declares no canonical URL and no `og:url`. A hidden or unknown tool, and an unknown or empty category, get the not-found metadata.
+Tool pages use the tool's name in COPY-meta.toolTitle and its summary as the description (F-015.R2). The not-found page declares COPY-notFound.title, `noindex`, and nothing about any tool (F-015.R4). It answers at any unknown address, so it declares no canonical URL and no `og:url`. A hidden or unknown tool, and an unknown or empty category, get the not-found metadata. The settings page declares `noindex` too: it is personal to each device and not in the site index (COPY-meta.settingsTitle); it keeps its canonical URL.
 
 The shared preview image (`/preview.png`) is generated at build from the dark theme tokens (DEP-17): the logo (accent square with "T" and COPY-shell.brand), COPY-meta.homeDescription, the portal host, and one dot per category tint. `pnpm gen` extracts the text as glyph outlines from the fontsource faces with fonttools (`scripts/preview-glyphs.py`), and sharp (DEP-31) rasterizes the SVG, so the image does not depend on system fonts.
 

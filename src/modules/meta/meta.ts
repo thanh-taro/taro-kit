@@ -46,6 +46,8 @@ const STATIC: Record<Exclude<MetaRoute['page'], 'category' | 'tool' | 'notFound'
     title: t('COPY-meta.settingsTitle'),
     description: t('COPY-meta.settingsDescription'),
     path: '/settings/',
+    // Personal to each device and not in the site index (COPY-meta.settingsTitle), so kept out of search results.
+    noindex: true,
   },
 };
 
@@ -111,17 +113,17 @@ export function headTags(meta: PageMeta, origin: string): HeadTag[] {
     tag: 'meta',
     attrs: { [key]: name, content },
   });
-  const url = `${origin}${path}`;
+  // The not-found page answers at any address, so it names none; every other page names its own.
+  const url = path === NOT_FOUND.path ? undefined : `${origin}${path}`;
   return [
     m('name', 'description', description),
-    ...(noindex
-      ? [m('name', 'robots', 'noindex')]
-      : [{ tag: 'link' as const, attrs: { rel: 'canonical', href: url } }]),
+    ...(noindex ? [m('name', 'robots', 'noindex')] : []),
+    ...(url ? [{ tag: 'link' as const, attrs: { rel: 'canonical', href: url } }] : []),
     m('property', 'og:type', 'website'),
     m('property', 'og:site_name', t('COPY-shell.brand')),
     m('property', 'og:title', title),
     m('property', 'og:description', description),
-    ...(noindex ? [] : [m('property', 'og:url', url)]),
+    ...(url ? [m('property', 'og:url', url)] : []),
     m('property', 'og:image', `${origin}${PREVIEW_IMAGE.path}`),
     m('property', 'og:image:type', PREVIEW_IMAGE.type),
     m('property', 'og:image:width', String(PREVIEW_IMAGE.width)),

@@ -156,7 +156,8 @@ test.describe('F-015 link previews', () => {
       expect(h.meta.get('og:description')?.length, path).toBeLessThanOrEqual(160);
       expect(h.meta.get('og:description'), path).toBe(h.meta.get('description'));
       expect(h.meta.get('og:url'), path).toBe(`${PORTAL_ORIGIN}${path}`);
-      expect(h.meta.get('robots'), path).toBeUndefined();
+      // Settings is personal to each device, so it is kept out of search results (MOD-Meta).
+      expect(h.meta.get('robots'), path).toBe(path === '/settings/' ? 'noindex' : undefined);
       expectSharedImage(h);
     }
   });

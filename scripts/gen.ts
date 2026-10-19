@@ -63,7 +63,7 @@ console.log('gen: wrote public/third-party-notices.txt');
 const fontsrc = join(root, 'node_modules/@fontsource-variable');
 const fontsOut = join(root, 'src/generated/fonts');
 const stampFile = join(fontsOut, '.stamp');
-const hash = createHash('sha256').update(read('scripts/subset-fonts.py'));
+const hash = createHash('sha256').update(read('scripts/subset-fonts.py')).update(read('requirements-build.txt'));
 for (const family of ['manrope', 'unbounded', 'jetbrains-mono'])
   hash.update(readFileSync(join(fontsrc, family, 'package.json')));
 const stamp = hash.digest('hex');
@@ -88,18 +88,22 @@ if (fontsFresh) {
 // the fontsource faces (scripts/preview-glyphs.py). Skipped when the script, the strings and the fonts are unchanged.
 {
   const { COPY } = await import('../src/generated/copy.ts');
-  const { PORTAL_ORIGIN } = await import('../src/modules/content/registry.ts');
+  // The same origin as the registry's portalOrigin, which og:image and every other address use.
+  const { portalOriginFor } = await import('../src/modules/content/registry.ts');
   const { previewGlyphRequest } = await import('../src/modules/meta/preview-image.ts');
   const request = JSON.stringify(
     previewGlyphRequest({
       brand: COPY['COPY-shell.brand'],
       lead: COPY['COPY-meta.homeDescription'],
-      host: new URL(PORTAL_ORIGIN).host,
+      host: new URL(portalOriginFor()).host,
     }),
   );
   const out = join(root, 'src/generated/preview-glyphs.json');
   const stampPath = join(root, 'src/generated/.preview-glyphs.stamp');
-  const h = createHash('sha256').update(read('scripts/preview-glyphs.py')).update(request);
+  const h = createHash('sha256')
+    .update(read('scripts/preview-glyphs.py'))
+    .update(read('requirements-build.txt'))
+    .update(request);
   for (const family of ['manrope', 'unbounded', 'jetbrains-mono'])
     h.update(readFileSync(join(fontsrc, family, 'package.json')));
   const previewStamp = h.digest('hex');

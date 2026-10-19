@@ -3,7 +3,9 @@
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadRegistry, PORTAL_ORIGIN, toolPath } from '../../src/modules/content/index.ts';
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { t } from '../../src/modules/copy/index.ts';
+import HeadMeta from '../../src/modules/meta/HeadMeta.astro';
 import {
   headTags,
   metaFor,
@@ -61,9 +63,33 @@ describe('F-015 page metadata', () => {
     ] as const;
     for (const [page, path, title, description] of pages) {
       const meta = metaFor({ page }, registry);
-      expect(meta).toEqual({ title: t(title), description: t(description), path });
-      expect(content(headTags(meta, PORTAL_ORIGIN), 'og:image')).toBe(sharedImage);
+      const noindex = page === 'settings' ? { noindex: true } : {};
+      expect(meta).toEqual({ title: t(title), description: t(description), path, ...noindex });
+      const tags = headTags(meta, PORTAL_ORIGIN);
+      expect(content(tags, 'og:image')).toBe(sharedImage);
+      expect(content(tags, 'og:url')).toBe(`${PORTAL_ORIGIN}${path}`);
+      expect(content(tags, 'robots')).toBe(page === 'settings' ? 'noindex' : undefined);
     }
+  });
+
+  it('F-015.R1 tool names and descriptions are escaped in <title> and in every attribute', async () => {
+    const tricky = { title: 'A "q" & <b> — TaroKit', description: 'Sum "x" & <y> > z.', path: '/t/tricky/' };
+    const container = await AstroContainer.create({ astroConfig: { site: PORTAL_ORIGIN } });
+    const html = await container.renderToString(HeadMeta, {
+      props: tricky,
+      request: new Request(`${PORTAL_ORIGIN}/t/tricky/`),
+    });
+    // Text content: every special character is escaped.
+    expect(html).toContain('<title>A &quot;q&quot; &amp; &lt;b&gt; — TaroKit</title>');
+    // Attributes: quotes and ampersands are escaped, so a value cannot end its attribute early; inside a quoted
+    // value, < and > are plain text (HTML spec), and Astro leaves them as they are.
+    const attrs = [...html.matchAll(/<meta (?:name|property)="([^"]+)" content="([^"]*)">/g)];
+    const decoded = Object.fromEntries(attrs.map((m) => [m[1], m[2]!.replace(/&quot;/g, '"').replace(/&amp;/g, '&')]));
+    for (const key of ['description', 'og:description']) expect(decoded[key]).toBe(tricky.description);
+    expect(decoded['og:title']).toBe(tricky.title);
+    expect(html).toContain('content="Sum &quot;x&quot; &amp; ');
+    // Outside attribute values, no markup from the text survives.
+    expect(html.replace(/"[^"]*"/g, '""')).not.toMatch(/<b>|<y>/);
   });
 
   it('F015_AC2 the tool "json" declares its name in the title and its summary as the description', () => {

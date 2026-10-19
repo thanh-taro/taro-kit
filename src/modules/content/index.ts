@@ -7,6 +7,7 @@ export {
   resetRegistry,
   loadRegistry,
   PORTAL_ORIGIN,
+  portalOriginFor,
   type ChangelogEvent,
   type LoadOptions,
   type RegCategory,
