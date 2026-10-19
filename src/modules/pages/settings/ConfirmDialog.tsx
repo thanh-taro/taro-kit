@@ -8,7 +8,8 @@
 // - `tone='danger'` gives Confirm the danger color (erase, design SettingsDialogs); `detail` is a muted line under
 //   the question (the picked file's name on import).
 // Strings arrive as props (COPY ids rendered at build).
-import { useEffect, useId, useRef, type RefObject } from 'preact/hooks';
+import type { RefObject } from 'preact';
+import { useEffect, useId, useRef } from 'preact/hooks';
 
 export interface ConfirmDialogProps {
   open: boolean;

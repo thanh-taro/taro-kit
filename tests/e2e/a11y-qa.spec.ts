@@ -99,7 +99,7 @@ test.describe('NFR-07 reflow at 320 px', () => {
     await expect(links.filter({ hasText: 'Fixture clipboard tool' })).toBeVisible();
     for (const link of await links.all()) {
       const [scroll, client] = await link.evaluate((el) => [el.scrollWidth, el.clientWidth]);
-      expect(scroll, await link.textContent()).toBeLessThanOrEqual(client);
+      expect(scroll, (await link.textContent()) ?? '').toBeLessThanOrEqual(client);
     }
   });
 });
