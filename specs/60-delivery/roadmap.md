@@ -16,6 +16,7 @@ Candidates, not yet specified:
 - a visible "external" label on third-party tools (they can already be listed, as linked tools, in M-1);
 - richer home widgets;
 - a per-tool preview image.
+- keep the offline copy small as the catalog grows: each tool page is precached separately (~35 KB each), projected at ~17 MB for 500 tools against SP-4's 5 MB bar; one shared tool page would fix it (QA perf audit, `perf-qa.md`).
 
 ## M-3 — Ecosystem
 Candidates, not yet specified:

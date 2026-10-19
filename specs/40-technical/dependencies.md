@@ -49,7 +49,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-14** | style-dictionary | ^5.6 | Compile DTCG tokens to CSS custom properties | dev | Apache-2.0 | approved | ADR-0003 |
 | **DEP-15** | lucide-static | ^1.55 | SVG icon set, inlined at build | runtime (asset) | ISC | approved | ADR-0003 |
 | **DEP-16** | ~~UI typeface placeholder~~, replaced by DEP-33 to DEP-35 once the style was chosen (D-019) | n/a | n/a | n/a | n/a | removed | D-019 |
-| **DEP-17** | TaroKit brand assets (app icons, maskable icon, preview image 1200 × 630, favicon) | n/a | Install icons and link previews | runtime (asset) | Owner's own work. Provenance: created for TaroKit by the Owner or generated from the Night Market tokens; source files kept in `assets/brand/` | approved | ADR-0004 |
+| **DEP-17** | TaroKit brand assets (app icons, maskable icon, preview image 1200 × 630, favicon) | n/a | Install icons and link previews | runtime (asset) | Owner's own work. Provenance: created for TaroKit by the Owner or generated from the Night Market tokens. App-icon sources are kept in `assets/brand/` (rasterized by `scripts/brand-icons.ts`); the favicon is derived from the same source; the preview image is generated at build time (`src/pages/preview.png.ts`, MOD-Meta). The brand mark's "T" is a glyph outline from Unbounded (DEP-33, OFL) | approved | ADR-0004 |
 
 ## Testing and quality
 
