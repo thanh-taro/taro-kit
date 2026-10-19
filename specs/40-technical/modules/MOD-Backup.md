@@ -14,7 +14,7 @@ MOD-Backup handles backup files (RULE-08).
   - Older or partial files are migrated with defaults (`migrate`), then validated.
   - Over 24 favorites or 20 recents: too large. Over 60 days used: damaged (F-013 edge case).
   - The rest reuses MOD-PersonalData's document rules rather than a second validator: the migrated data is valid only when `normalizeDocument` leaves it unchanged, so duplicate tool ids or dates, ids that aren't catalog ids, times that aren't ISO timestamps on real dates, and wrong types are all damaged. Matching the schema, unknown fields in entries and preferences are damaged; unknown top-level or data keys are ignored. The result is that normalized copy, which holds only known fields (prototype-pollution safe).
-  - Recents that aren't newest first (RULE-01) are damaged.
+  - Recents are imported in list order; timestamps aren't required to be in order (the clock can move backward, RULE-13/F-006).
   - A file the browser can't read is `unreadable` (COPY-settings.importFailed), not damaged.
 - **Replace:** returns a validated payload, so the caller can confirm before `replaceAll`.
 

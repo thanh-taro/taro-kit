@@ -143,8 +143,12 @@ describe('F-013.R2 RULE-08 an invalid file is rejected with its reason', () => {
     );
   });
 
-  test('RULE-01 a file whose recents are not newest first is damaged', () => {
-    expect(reason(parse('RULE-01-damaged-recents-oldest-first.json'))).toBe('damaged');
+  test('RULE-01 recents whose times are out of order (the clock moved backward) import in the list order as-is', () => {
+    const file = JSON.parse(fixture('F013_AC6-valid.json'));
+    file.data.recents[0].openedAt = '2026-09-01T08:00:00.000Z';
+    const data = ok(parseBackupText(JSON.stringify(file)));
+    expect(data.recents).toEqual(file.data.recents);
+    expect(data.recents.map((r) => r.toolId)).toEqual(['fx-03', 'fx-01', 'fx-linked']);
   });
 
   test('NFR-05 import is prototype-pollution safe: only known fields are copied', () => {

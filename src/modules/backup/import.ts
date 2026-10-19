@@ -90,11 +90,9 @@ export function validateBackup(raw: unknown): ImportResult {
   // Normalizing drops anything invalid: duplicates, bad ids, times or dates, unknown fields, wrong types.
   // If it changed anything, the file is damaged; otherwise its normalized copy holds only known fields.
   const normalized = normalizeDocument(candidate);
-  if (!same(normalized, candidate)) return fail('damaged');
-  // RULE-01: recents are stored newest first; a file in any other order is damaged.
-  const times = normalized.recents.map((r) => Date.parse(r.openedAt));
-  if (times.some((t, i) => i > 0 && t > times[i - 1]!)) return fail('damaged');
-  return { ok: true, data: normalized };
+  // Recents keep the file's list order (RULE-01's newest first is the list's order); their times may be out of order
+  // after the clock moved backward (F-006), and the portal always accepts its own exports.
+  return same(normalized, candidate) ? { ok: true, data: normalized } : fail('damaged');
 }
 
 /** RULE-08 on the file's text. */

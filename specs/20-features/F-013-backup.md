@@ -54,5 +54,5 @@ Controls are in SCR-Settings (COPY-settings.export, COPY-settings.import, COPY-s
 - The export from settings fails (for example, its code can't load offline). Settings says so (COPY-settings.exportFailed).
 - Other open windows pick up imported or erased data, as they do favorites (F-005 edge case).
 - The picked file can't be read, or the import's code can't load (for example, offline before it was cached). Nothing changes, and settings says so (COPY-settings.importFailed) rather than calling the file damaged.
-- The recents in the file are not newest first (RULE-01). The file is damaged (COPY-import.damaged).
+- The recents' times in the file are out of order, as after the clock moved backward (F-006 edge case). The file is valid, and recents keep the file's list order, which is RULE-01's newest first; the portal always accepts its own exports.
 - Writing the erased data fails. The stored data is removed instead, so it is really gone; only if that fails too does settings say the erase wasn't saved.
