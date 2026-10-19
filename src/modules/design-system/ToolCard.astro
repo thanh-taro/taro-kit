@@ -13,7 +13,10 @@ interface Props {
   variant?: 'regular' | 'compact';
   /** The category's name, shown as a label on regular cards (F-002.R2). */
   categoryName?: string;
-  /** Offline, and the tool is linked or not offline-capable (F-011.R3). Default false. */
+  /**
+   * Force the unavailable state. Default: decided live in the browser, offline and the tool needs the internet
+   * (F-011.R3, tool-card-availability.ts).
+   */
   unavailable?: boolean;
   /** A bundled icon's address; without it the card shows the tool's monogram (style.md). */
   iconSrc?: string;
@@ -24,6 +27,6 @@ const { hydrate = 'idle', ...props } = Astro.props;
 const { tool, variant = 'regular' } = props;
 ---
 
-<ToolCardView {...props} text={toolCardText()}>
+<ToolCardView {...props} liveAvailability text={toolCardText()}>
   <FavoriteToggle toolId={tool.id} appearance="plain" size={variant === 'regular' ? 'md' : 'sm'} hydrate={hydrate} />
 </ToolCardView>

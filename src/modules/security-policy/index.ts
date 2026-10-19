@@ -10,6 +10,13 @@ export {
   type FrameAttributes,
   type Permission,
 } from './frame.ts';
-export { headersFile, permissionsPolicy, securityHeaders, writeHeaders, type PolicyTool } from './headers.ts';
+export {
+  cacheRules,
+  headersFile,
+  permissionsPolicy,
+  securityHeaders,
+  writeHeaders,
+  type PolicyTool,
+} from './headers.ts';
 export { inlineScriptHash } from './hash.ts';
 export { secureOrigin } from './origin.ts';

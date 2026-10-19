@@ -3,11 +3,14 @@
 // favorites left out, unknown or hidden tools never shown (INV-04); F-007.R3's "shown only when it has items".
 // - `tools` are the visible tools (MOD-Content `visibleTools`, build-time props): they are both the card data and
 //   the visible ids, so a tool hidden in a later build simply drops out while its visit stays stored.
-// - Each entry is a compact CMP-ToolCard; a linked tool's card records its visit when followed (F-006.R1).
+// - Each entry is a compact CMP-ToolCard; a linked tool's card records its visit when followed (F-006.R1), and is
+//   marked unavailable while offline when the tool needs the internet (F-011.R3; pass `offline` with each tool).
 // - Before hydration (the build has no device) nothing renders, like the other device-data lists.
 // - Reactive: visits, clears, pins and unpins from any island or window update it at once (F-005.R1).
 import { useEffect, useId, useMemo, useState } from 'preact/hooks';
 import ToolCard, { type ToolCardText, type ToolCardTool } from '../../design-system/ToolCard.tsx';
+import { needsInternet } from '../../design-system/tool-card.ts';
+import { online } from '../../offline/index.ts';
 import { personalData, type RecentVisit } from '../../personal-data/index.ts';
 import './recent-tools.css';
 
@@ -42,7 +45,13 @@ export default function RecentTools({ tools, text, heading }: RecentToolsProps) 
       <ul class="tk-recents__list">
         {shown.map((tool) => (
           <li key={tool.id}>
-            <ToolCard tool={tool} variant="compact" text={text} />
+            <ToolCard
+              tool={tool}
+              variant="compact"
+              // F-011.R3: offline, tools that need the internet are marked unavailable (MOD-Offline signal).
+              unavailable={!online.value && needsInternet(tool)}
+              text={text}
+            />
           </li>
         ))}
       </ul>

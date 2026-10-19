@@ -2,9 +2,10 @@
 // CMP-AppShell header (MOD-Shell): logo, navigation with the current page marked, theme quick toggle
 // (F-012.R3) and settings link. Variants: full, and narrow below 720 px, where the navigation and the
 // settings link collapse behind the Menu button (NavMenu island).
-// Slots, rendered only when filled (F-011 fills them):
-//   "offline": the quiet offline indicator (COPY-shell.offline), shown in the header;
-//   "update":  the update-ready message (COPY-shell.updateReady + COPY-shell.refresh), below the header.
+// Connection and updates (F-011.R3, R4): the ShellStatus island, from MOD-Offline's signals, in two places:
+//   in the header, the quiet offline indicator (COPY-shell.offline) on wide screens;
+//   below the header, the same indicator on narrow screens, and the update-ready message (COPY-shell.updateReady +
+//   COPY-shell.refresh). Both are empty, and take no space, while online with no new version waiting.
 // Below the header, the StorageNotice island shows COPY-storage.unavailable when device storage is refused
 // (F-005.R5); it renders nothing otherwise.
 // Variant `compact` (the tool view, F-003): logo mark, theme toggle and status only, to leave the most space for
@@ -19,6 +20,8 @@ import { iconSvg } from '../design-system/icons.ts';
 import { SHORTCUT_LABELS } from '../palette/logic.ts';
 import { searchControlLead } from '../palette/text.ts';
 import NavMenu, { type NavItem } from './NavMenu.tsx';
+import ShellStatus from './ShellStatus.tsx';
+import { shellStatusText } from './status-text.ts';
 import StorageNotice from './StorageNotice.tsx';
 import ThemeToggle from './ThemeToggle.tsx';
 
@@ -56,11 +59,7 @@ const toggle = {
   },
   icons: { light: iconSvg('sun'), dark: iconSvg('moon') },
 };
-// A forwarded slot counts as present even when empty, so presence is decided by rendered content.
-// set:html below re-emits markup Astro already rendered from the page's own slot, never runtime data.
-const filled = async (name: string) => (Astro.slots.has(name) ? (await Astro.slots.render(name)).trim() : '');
-const offline = await filled('offline');
-const update = await filled('update');
+const status = shellStatusText();
 ---
 
 <div class="shell-wrap" data-variant={variant}>
@@ -78,7 +77,7 @@ const update = await filled('update');
       <kbd data-tk-shortcut>{SHORTCUT_LABELS.other}</kbd>
     </button>
     <div class="end">
-      {offline && <div class="offline" set:html={offline} />}
+      <ShellStatus client:load place="header" text={status} />
       {!compact && (
         <button type="button" class="tk-iconbtn search-icon" data-tk-palette-open aria-label={t('COPY-shell.search')}>
           <Icon name="search" />
@@ -97,7 +96,7 @@ const update = await filled('update');
       )}
     </div>
   </header>
-  {update && <div class="update" set:html={update} />}
+  <ShellStatus client:load place="below" text={status} />
   <StorageNotice client:idle message={t('COPY-storage.unavailable')} />
 </div>
 
@@ -236,6 +235,124 @@ const update = await filled('update');
     }
     .shell-wrap[data-variant='full'] .end {
       margin-inline-start: auto;
+    }
+  }
+
+  /* ShellStatus island (design CMP-AppShell offline and update ready; not scoped: islands render outside it).
+     The pill sits in the bar only where it fits beside the navigation: from 1120 px on the full shell (where the
+     search control then collapses to its icon, as below 880 px), from 720 px on the compact tool-view bar.
+     Elsewhere the same message shows as a notice below the bar (design HomeStatesMobile). */
+  .shell-wrap :global(.tk-status:empty) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .shell-wrap :global(.tk-status__icon) {
+    display: inline-flex;
+    flex: none;
+  }
+  .shell-wrap :global(.tk-status__icon svg) {
+    inline-size: var(--tk-font-size-md);
+    block-size: var(--tk-font-size-md);
+  }
+  .shell :global(.tk-status--pill) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--tk-space-2);
+    margin-inline-end: var(--tk-space-2);
+    padding: calc(var(--tk-space-1) * 1.5) calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-sm);
+    font-size: var(--tk-font-size-sm);
+    white-space: nowrap;
+  }
+  .shell-wrap :global(.tk-status--notice) {
+    align-items: center;
+    gap: var(--tk-space-2);
+    margin: 0;
+    padding: calc(var(--tk-space-2) + var(--tk-space-1) / 2) var(--tk-space-3);
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-md);
+    font-size: var(--tk-font-size-sm);
+  }
+  .shell-wrap :global(.tk-status--notice:not(:empty)) {
+    display: none;
+  }
+  @media (min-width: 1120px) {
+    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .search {
+      display: none;
+    }
+    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .search-icon {
+      display: inline-flex;
+    }
+    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .end {
+      margin-inline-start: auto;
+    }
+  }
+  @media (max-width: 1119px) {
+    .shell-wrap[data-variant='full'] .shell :global(.tk-status--pill:not(:empty)) {
+      display: none;
+    }
+    .shell-wrap[data-variant='full'] :global(.tk-status--notice:not(:empty)) {
+      display: flex;
+    }
+  }
+  .shell-wrap :global(.tk-status--update:not(:empty)) {
+    display: flex;
+    align-items: center;
+    gap: var(--tk-space-3);
+    min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-3));
+    padding: calc(var(--tk-space-1) * 1.5) var(--tk-space-2) calc(var(--tk-space-1) * 1.5) var(--tk-space-4);
+    background: var(--tk-color-selection);
+    color: var(--tk-color-fg);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-selection-line);
+    border-radius: var(--tk-radius-lg);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-semibold);
+  }
+  .shell-wrap :global(.tk-status--update .tk-status__icon) {
+    color: var(--tk-color-accent);
+  }
+  .shell-wrap :global(.tk-status__refresh) {
+    flex: none;
+    min-block-size: var(--tk-size-touch-target);
+    margin-inline-start: auto;
+    padding-inline: var(--tk-space-4);
+    background: var(--tk-color-accent);
+    color: var(--tk-color-on-accent);
+    border: 0;
+    border-radius: var(--tk-radius-md);
+    font: inherit;
+    font-weight: var(--tk-font-weight-semibold);
+    cursor: pointer;
+  }
+  /* Narrow: the update message stacks its action under it. On the narrow tool view the shell bar is hidden and
+     the tool area itself says the tool is paused (F-003.R6), so no notice is added there. */
+  @media (max-width: 720px) {
+    .shell-wrap[data-variant='compact'] :global(.tk-status--notice:not(:empty)) {
+      display: none;
+    }
+    .shell-wrap :global(.tk-status--update:not(:empty)) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--tk-space-3);
+      padding: var(--tk-space-3) calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+      font-size: var(--tk-font-size-base);
+    }
+    .shell-wrap :global(.tk-status--update .tk-status__icon) {
+      display: none;
+    }
+    .shell-wrap :global(.tk-status__refresh) {
+      min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-1));
+      margin-inline-start: 0;
+      font-weight: var(--tk-font-weight-bold);
     }
   }
 

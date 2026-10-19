@@ -4,7 +4,9 @@
 //   the portal's own features (PORTAL_FEATURES: clipboard-write for F-004.R5), which keep `(self)`.
 // - frame-ancestors 'none', object-src and base-uri as a header policy; Referrer-Policy, nosniff, COOP, and
 //   Cache-Control: no-transform (the privacy guard from SP-3).
-// Cache rules belong with the offline worker and publishing (F-011, ADR-0007) and are added there.
+// - Cache rules (ADR-0007, F-011): pages, sw.js and the manifest are revalidated on every load (`no-cache`), so a
+//   published version is found at once and the service worker decides what is offline; content-hashed files
+//   (`/_astro/`, `/data/catalog.<hash>.json`) are immutable. Every rule keeps `no-transform`.
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { POLICY_FEATURE_FOR, POLICY_FEATURES, type Permission } from './frame.ts';
@@ -42,6 +44,9 @@ export function permissionsPolicy(tools: readonly PolicyTool[]): string {
   }).join(', ');
 }
 
+const REVALIDATE = 'no-cache, no-transform';
+const IMMUTABLE = 'public, max-age=31536000, immutable, no-transform';
+
 /** Headers for every response (ADR-0009, "Response headers"). */
 export function securityHeaders(tools: readonly PolicyTool[]): [name: string, value: string][] {
   return [
@@ -50,14 +55,33 @@ export function securityHeaders(tools: readonly PolicyTool[]): [name: string, va
     ['Referrer-Policy', 'strict-origin-when-cross-origin'],
     ['X-Content-Type-Options', 'nosniff'],
     ['Cross-Origin-Opener-Policy', 'same-origin'],
-    // ADR-0009 (SP-3 amendment): stops the host injecting analytics beacons into pages (NFR-05).
-    ['Cache-Control', 'no-transform'],
+    // ADR-0009 (SP-3 amendment): stops the host injecting analytics beacons into pages (NFR-05). The cache part
+    // is the default rule of cacheRules().
+    ['Cache-Control', REVALIDATE],
   ];
 }
 
-/** The `_headers` file (Cloudflare static assets format): one rule for every path. */
+/** Cache-Control per path (ADR-0007): the `/*` default, then the paths that override it. */
+export function cacheRules(): { path: string; cacheControl: string }[] {
+  return [
+    { path: '/*', cacheControl: REVALIDATE },
+    { path: '/sw.js', cacheControl: REVALIDATE },
+    { path: '/manifest.webmanifest', cacheControl: REVALIDATE },
+    { path: '/_astro/*', cacheControl: IMMUTABLE },
+    { path: '/data/*', cacheControl: IMMUTABLE },
+  ];
+}
+
+/**
+ * The `_headers` file (Cloudflare static assets format): the security headers for every path, then one block per
+ * cache rule. Cloudflare applies every matching block, so each override detaches the default first
+ * (`! Cache-Control`) and a path never gets two Cache-Control values.
+ */
 export function headersFile(tools: readonly PolicyTool[]): string {
-  return ['/*', ...securityHeaders(tools).map(([n, v]) => `  ${n}: ${v}`), ''].join('\n');
+  const overrides = cacheRules()
+    .filter((r) => r.path !== '/*')
+    .flatMap((r) => [r.path, '  ! Cache-Control', `  Cache-Control: ${r.cacheControl}`]);
+  return ['/*', ...securityHeaders(tools).map(([n, v]) => `  ${n}: ${v}`), ...overrides, ''].join('\n');
 }
 
 /** Writes `<distDir>/_headers` after the build. */

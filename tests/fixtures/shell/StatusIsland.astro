@@ -1,0 +1,13 @@
+---
+// Renders MOD-Shell's ShellStatus island without hydration, so unit tests see its markup for the current
+// MOD-Offline signal values (tests/unit/offline.test.ts).
+import ShellStatus from '../../../src/modules/shell/ShellStatus.tsx';
+import { shellStatusText } from '../../../src/modules/shell/status-text.ts';
+
+interface Props {
+  place: 'header' | 'below';
+}
+const { place } = Astro.props;
+---
+
+<ShellStatus place={place} text={shellStatusText()} />

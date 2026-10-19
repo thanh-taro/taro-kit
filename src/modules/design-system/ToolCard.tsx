@@ -4,14 +4,23 @@
 // - One stretched link whose name is the tool name; the favorite toggle is a separate button above it,
 //   so it never opens the tool (CMP-ToolCard behavior).
 // - Variants: regular (icon, name, summary, category label, linked marker) and compact (icon, name,
-//   toggle); `unavailable` dims either one and adds COPY-tool.unavailable (F-011.R3 drives it).
+//   toggle); `unavailable` dims either one and adds COPY-tool.unavailable (F-011.R3). Islands pass it from
+//   MOD-Offline's `online` signal. Static cards (`liveAvailability`, ToolCard.astro) can't know at build: a card
+//   whose tool needs the internet carries the note hidden, and tool-card-availability.ts switches the state live.
 // - Linked tools: the marker (COPY-tool.opensNewTab) is visible on regular cards and screen-reader text on
 //   compact ones; both describe the link (aria-describedby). The link carries `data-tk-visit` so following it
 //   records the visit (F-006.R1, MOD-ToolHost visits.ts); the card itself holds no state.
 import type { ComponentChildren } from 'preact';
 import { useId } from 'preact/hooks';
 import FavoriteToggle, { type FavoriteToggleLabels } from './FavoriteToggle.tsx';
-import { describedBy, monogram, toolCardLink, type ToolCardTool, type ToolCardVariant } from './tool-card.ts';
+import {
+  describedBy,
+  monogram,
+  needsInternet,
+  toolCardLink,
+  type ToolCardTool,
+  type ToolCardVariant,
+} from './tool-card.ts';
 
 export type { ToolCardTool, ToolCardVariant };
 
@@ -34,6 +43,11 @@ export interface ToolCardProps {
   categoryName?: string;
   /** Offline, and the tool is linked or not offline-capable: dimmed, with COPY-tool.unavailable (F-011.R3). */
   unavailable?: boolean;
+  /**
+   * Static cards only (ToolCard.astro): when the tool needs the internet, render the unavailable note hidden and
+   * mark the card `data-tk-needs-internet` with the note's id, for tool-card-availability.ts to switch offline.
+   */
+  liveAvailability?: boolean;
   /** A bundled icon's address; without it the card shows the tool's monogram (style.md). */
   iconSrc?: string;
   text: ToolCardText;
@@ -54,6 +68,7 @@ export default function ToolCard({
   variant = 'regular',
   categoryName,
   unavailable = false,
+  liveAvailability = false,
   iconSrc,
   text,
   children,
@@ -62,9 +77,17 @@ export default function ToolCard({
   const { href, newTab } = toolCardLink(tool);
   const regular = variant === 'regular';
   const newTabId = newTab ? `${uid}-newtab` : undefined;
-  const unavailableId = unavailable ? `${uid}-unavailable` : undefined;
+  const live = liveAvailability && !unavailable && needsInternet(tool);
+  const noteId = unavailable || live ? `${uid}-unavailable` : undefined;
+  // The note describes the link only while it is shown.
+  const unavailableId = unavailable ? noteId : undefined;
   return (
-    <div class="tk-toolcard" data-variant={variant} data-unavailable={unavailable ? '' : undefined}>
+    <div
+      class="tk-toolcard"
+      data-variant={variant}
+      data-unavailable={unavailable ? '' : undefined}
+      data-tk-needs-internet={live ? noteId : undefined}
+    >
       <div class="tk-toolcard__head">
         <span class="tk-toolcard__icon" aria-hidden="true">
           {iconSrc ? <img src={iconSrc} alt="" /> : monogram(tool.name)}
@@ -100,8 +123,8 @@ export default function ToolCard({
           {text.opensNewTab}
         </span>
       )}
-      {unavailable && (
-        <span id={unavailableId} class="tk-toolcard__unavailable">
+      {(unavailable || live) && (
+        <span id={noteId} class="tk-toolcard__unavailable" hidden={live}>
           <Svg markup={text.icons.offline} />
           {text.unavailable}
         </span>
