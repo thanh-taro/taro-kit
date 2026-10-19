@@ -32,3 +32,5 @@ Waves run up to 3 features in parallel, in separate worktrees. Merges happen one
 - **F-011 / QA**: project images are copied unoptimized to `/projects/images/<id>.<ext>`; add an optimization step (DEP-31 sharp) if NFR-01 budgets need it.
 - **QA**: re-take F-009 screenshots (taken before the round-1 fixes).
 - **F-011**: precache `/data/catalog.<hash>.json` (written in `astro:build:done`); the manifest step must run after it.
+- **Release**: the weekly catalog check fails until the sample tools (`*.tarokit.app` hosts that don't exist) are replaced or hidden; json-formatter passes the check and is ready to unhide (user decision, publishing).
+- **F-011 / release**: `publish.yml` must call `catalog-check.yml` via `workflow_call` with `pre_deploy: true`.
