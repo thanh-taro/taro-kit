@@ -1,0 +1,14 @@
+{
+  "format": "tarokit-backup",
+  "exportedAt": "2026-10-13T09:30:00.000Z",
+  "__proto__": { "polluted": true },
+  "data": {
+    "schemaVersion": 1,
+    "__proto__": { "polluted": true },
+    "favorites": [],
+    "recents": [],
+    "preferences": { "theme": "light" },
+    "daysUsed": [],
+    "constructor": { "prototype": { "polluted": true } }
+  }
+}

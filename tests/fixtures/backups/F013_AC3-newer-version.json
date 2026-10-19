@@ -1,0 +1,15 @@
+{
+  "format": "tarokit-backup",
+  "exportedAt": "2026-10-13T09:30:00.000Z",
+  "data": {
+    "schemaVersion": 2,
+    "favorites": [],
+    "recents": [],
+    "preferences": {
+      "theme": "light",
+      "accent": "teal"
+    },
+    "daysUsed": [],
+    "addedLater": true
+  }
+}

@@ -115,6 +115,9 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-settings.clearRecentsConfirm** | Clear your recent tools? | confirm |
 | **COPY-settings.clearRecentsUnsaved** | I cleared your recent tools for now, but couldn't save that on this device, so they may come back next time. | clear-recents error (F-006.R4) |
 | **COPY-settings.eraseConfirm** | Erase all your TaroKit data on this device? This can't be undone. | confirm |
+| **COPY-settings.eraseUnsaved** | I erased your data for now, but couldn't save that on this device, so it may come back next time. | erase error (F-013 edge case) |
+| **COPY-settings.importUnsaved** | I imported that file for now, but couldn't save it on this device, so your old data may come back next time. | import error (F-013 edge case) |
+| **COPY-settings.exportFailed** | I couldn't save your backup just now. Please try again. | when settings' export fails (F-013 edge case) |
 | **COPY-settings.privacy** | No accounts, no tracking. Everything you do here stays in your browser, and I never see it. | privacy statement |
 | **COPY-notFound.title** | I can't find that page | not-found heading |
 | **COPY-notFound.body** | It may have moved, or I took it down. | not-found body |

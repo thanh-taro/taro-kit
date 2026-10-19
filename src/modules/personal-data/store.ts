@@ -16,6 +16,7 @@ import {
   type VisibleIds,
 } from './favorites.ts';
 import {
+  emptyDocument,
   normalizeDocument,
   parseDocument,
   SCHEMA_VERSION,
@@ -46,8 +47,9 @@ export interface StoreEnvironment {
   now?: () => Date;
 }
 
-/** `clearRecents` outcome: saved on the device, or for this session only. */
+/** `clearRecents`, `replaceAll` and `eraseAll` outcome: saved on the device, or for this session only. */
 export type ClearResult = 'saved' | 'unsaved';
+export type SaveResult = ClearResult;
 
 export interface PersonalDataStore {
   /** The whole document, always valid (normalized on read). */
@@ -101,6 +103,14 @@ export interface PersonalDataStore {
    */
   update(recipe: (current: PersonalData) => PersonalData): boolean;
   setTheme(theme: ThemePreference): void;
+  /**
+   * F-013.R4: replaces all personal data with a validated backup's (the caller confirms first). The user asked for
+   * exactly this, so it also replaces a newer version's document on disk. `unsaved` when the device refuses the
+   * write: the data is replaced for this session only, and the caller must say so.
+   */
+  replaceAll(data: PersonalData): SaveResult;
+  /** F-013.R5: erases all personal data (the caller confirms first): empty lists, theme system. As `replaceAll`. */
+  eraseAll(): SaveResult;
   /** A deep copy of the current document (for export, F-013). */
   snapshot(): PersonalData;
   /** Re-reads storage (another window may have written). */
@@ -146,11 +156,15 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
     return doc;
   };
 
-  /** True when the document is now on the device. */
-  const write = (doc: PersonalData): boolean => {
-    if (!storage || newerOnDisk) return false;
+  /**
+   * True when the document is now on the device. A newer version's document is overwritten only with `replace`,
+   * the user's explicit import or erase (F-013 edge case).
+   */
+  const write = (doc: PersonalData, replace = false): boolean => {
+    if (!storage || (newerOnDisk && !replace)) return false;
     try {
       storage.setItem(STORAGE_KEY, JSON.stringify(doc));
+      newerOnDisk = false;
       return true;
     } catch {
       // Storage went away or is full: keep going in memory for the rest of the session.
@@ -167,6 +181,17 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
   const today = signal(localDate(now()));
   const tick = () => {
     today.value = localDate(now());
+  };
+
+  /** Write-through of a whole new document (ADR-0010); true when it is on the device. */
+  const commit = (doc: PersonalData, replace = false): boolean => {
+    const next = normalizeDocument(doc);
+    let saved = false;
+    batch(() => {
+      data.value = next;
+      saved = write(next, replace);
+    });
+    return saved;
   };
 
   const store: PersonalDataStore = {
@@ -206,17 +231,13 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
       return store.update(clearRecentVisits) ? 'saved' : 'unsaved';
     },
     update(recipe) {
-      const next = normalizeDocument(recipe(structuredClone(data.peek())));
-      let saved = false;
-      batch(() => {
-        data.value = next;
-        saved = write(next);
-      });
-      return saved;
+      return commit(recipe(structuredClone(data.peek())));
     },
     setTheme(theme) {
       store.update((doc) => ({ ...doc, preferences: { ...doc.preferences, theme } }));
     },
+    replaceAll: (doc) => (commit(structuredClone(doc), true) ? 'saved' : 'unsaved'),
+    eraseAll: () => (commit(emptyDocument(), true) ? 'saved' : 'unsaved'),
     snapshot: () => structuredClone(data.peek()),
     refresh() {
       tick();

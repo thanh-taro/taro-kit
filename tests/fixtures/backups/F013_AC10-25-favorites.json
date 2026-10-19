@@ -1,0 +1,127 @@
+{
+  "format": "tarokit-backup",
+  "exportedAt": "2026-10-13T09:30:00.000Z",
+  "data": {
+    "schemaVersion": 1,
+    "favorites": [
+      {
+        "toolId": "fx-01",
+        "pinnedAt": "2026-10-01T00:00:00.000Z"
+      },
+      {
+        "toolId": "fx-02",
+        "pinnedAt": "2026-10-01T00:01:00.000Z"
+      },
+      {
+        "toolId": "fx-03",
+        "pinnedAt": "2026-10-01T00:02:00.000Z"
+      },
+      {
+        "toolId": "fx-04",
+        "pinnedAt": "2026-10-01T00:03:00.000Z"
+      },
+      {
+        "toolId": "fx-05",
+        "pinnedAt": "2026-10-01T00:04:00.000Z"
+      },
+      {
+        "toolId": "fx-06",
+        "pinnedAt": "2026-10-01T00:05:00.000Z"
+      },
+      {
+        "toolId": "fx-07",
+        "pinnedAt": "2026-10-01T00:06:00.000Z"
+      },
+      {
+        "toolId": "fx-08",
+        "pinnedAt": "2026-10-01T00:07:00.000Z"
+      },
+      {
+        "toolId": "fx-09",
+        "pinnedAt": "2026-10-01T00:08:00.000Z"
+      },
+      {
+        "toolId": "fx-10",
+        "pinnedAt": "2026-10-01T00:09:00.000Z"
+      },
+      {
+        "toolId": "fx-11",
+        "pinnedAt": "2026-10-01T00:10:00.000Z"
+      },
+      {
+        "toolId": "fx-12",
+        "pinnedAt": "2026-10-01T00:11:00.000Z"
+      },
+      {
+        "toolId": "fx-13",
+        "pinnedAt": "2026-10-01T00:12:00.000Z"
+      },
+      {
+        "toolId": "fx-14",
+        "pinnedAt": "2026-10-01T00:13:00.000Z"
+      },
+      {
+        "toolId": "fx-15",
+        "pinnedAt": "2026-10-01T00:14:00.000Z"
+      },
+      {
+        "toolId": "fx-16",
+        "pinnedAt": "2026-10-01T00:15:00.000Z"
+      },
+      {
+        "toolId": "fx-17",
+        "pinnedAt": "2026-10-01T00:16:00.000Z"
+      },
+      {
+        "toolId": "fx-18",
+        "pinnedAt": "2026-10-01T00:17:00.000Z"
+      },
+      {
+        "toolId": "fx-19",
+        "pinnedAt": "2026-10-01T00:18:00.000Z"
+      },
+      {
+        "toolId": "fx-20",
+        "pinnedAt": "2026-10-01T00:19:00.000Z"
+      },
+      {
+        "toolId": "fx-21",
+        "pinnedAt": "2026-10-01T00:20:00.000Z"
+      },
+      {
+        "toolId": "fx-22",
+        "pinnedAt": "2026-10-01T00:21:00.000Z"
+      },
+      {
+        "toolId": "fx-23",
+        "pinnedAt": "2026-10-01T00:22:00.000Z"
+      },
+      {
+        "toolId": "fx-24",
+        "pinnedAt": "2026-10-01T00:23:00.000Z"
+      },
+      {
+        "toolId": "fx-25",
+        "pinnedAt": "2026-10-01T00:24:00.000Z"
+      }
+    ],
+    "recents": [
+      {
+        "toolId": "fx-03",
+        "openedAt": "2026-10-10T12:59:00.000Z"
+      },
+      {
+        "toolId": "fx-01",
+        "openedAt": "2026-10-10T12:58:00.000Z"
+      },
+      {
+        "toolId": "fx-linked",
+        "openedAt": "2026-10-10T12:57:00.000Z"
+      }
+    ],
+    "preferences": {
+      "theme": "dark"
+    },
+    "daysUsed": ["2026-10-12", "2026-10-11", "2026-10-09"]
+  }
+}

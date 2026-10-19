@@ -4,6 +4,7 @@
 // Recents and days used (F-006): `store.recents`, `store.visibleRecents(ids, { excludeFavorites, max })`,
 // `store.daysUsedLast14`, `store.recordVisit(id)`, `store.recordDay()`, `store.clearRecents()`; pure RULE-01 /
 // RULE-13 functions alongside.
+// Backup (F-013): `store.replaceAll(data)` and `store.eraseAll()`, after the caller confirms.
 export {
   emptyDocument,
   isCalendarDate,
@@ -50,6 +51,7 @@ export {
   createPersonalDataStore,
   personalData,
   type ClearResult,
+  type SaveResult,
   type PersonalDataStore,
   type StoreEnvironment,
 } from './store.ts';
