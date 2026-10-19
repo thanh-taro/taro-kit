@@ -3,8 +3,11 @@
 // the shortcut works before this island has loaded; the field is uncontrolled, so text typed before hydration
 // is kept. Design: design/canvas/CMP-CommandPalette, PaletteDesktop, PaletteMobile.
 // - Data: the hashed catalog data file (visible entries only, with pre-normalized keys), fetched on hydration,
-//   which is idle time. If it can't load, pages and actions still work and the palette says so
-//   (COPY-palette.unavailable, F-004 edge case).
+//   which is idle time; BaseLayout preloads it with the page, so the fetch usually reuses that download. If it
+//   can't load, pages and actions still work and the palette says so (COPY-palette.unavailable, F-004 edge case).
+// - Glyph warm-up (NFR-02, QA perf): some action glyphs (⤓, ⧉) are in no bundled font, and the browser's first
+//   search for a system font that has them took ~60 ms (4x CPU) inside the first keystroke that showed them. At
+//   hydration, outside the closed dialog, every glyph is laid out once, hidden, so that search is done at idle.
 // - Empty query: Favorites, Recents, Pages (F-004.R2); a query: Tools, Projects, Pages, Actions (F-004.R3).
 // - Keyboard (F-004.R4, ARIA combobox + listbox): focus stays in the field; Up and Down move the highlighted
 //   option across groups (aria-activedescendant), Enter runs it, Esc closes (native dialog cancel). The first
@@ -59,6 +62,16 @@ const GLYPHS: Record<string, string> = {
   export: '⤓',
   copy: '⧉',
 };
+/** Lays out every glyph once, hidden and outside the (closed, so unrendered) dialog, then removes it. */
+function warmGlyphs() {
+  const warm = document.createElement('span');
+  warm.className = 'tk-palette__glyph tk-visually-hidden';
+  warm.setAttribute('aria-hidden', 'true');
+  warm.textContent = Object.values(GLYPHS).join('');
+  document.body.append(warm);
+  void warm.offsetWidth; // forces the layout that resolves each glyph's font
+  warm.remove();
+}
 const fill = (template: string, name: string, value: string | number) =>
   template.split(`{${name}}`).join(String(value));
 const flatten = (groups: ViewGroup[]) => groups.flatMap((g) => g.items.map((entry) => ({ group: g.id, entry })));
@@ -103,6 +116,8 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
     }
     const stop = personalData().data.subscribe(setDoc);
     let live = true;
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1));
+    idle(() => live && warmGlyphs());
     fetch(dataUrl)
       .then((r) => (r.ok ? (r.json() as Promise<Data>) : Promise.reject(new Error(`${r.status}`))))
       .then((d) => live && setData(d))
