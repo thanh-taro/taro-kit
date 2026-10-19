@@ -2,17 +2,20 @@
 // MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
 // Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
 // the link-preview metadata (MOD-Meta <HeadMeta>, F-015), the single font preload (ADR-0003). Body: skip link first, banner, main.
-// Slots: default (page content), "offline" and "update" (CMP-AppShell status, F-011).
+// Slot: default (page content). Offline and updates (F-011): the manifest link here, the worker registration in
+// the module script below (MOD-Offline), and the status island in AppShell.
 // Palette (MOD-Palette, F-004.R1): the pre-rendered <dialog> with its island after the frame, and the inline
 // bootstrap last in <body>, after every search control it arms; its hash is registered here, before <head>.
 import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { t } from '../copy/index.ts';
 import HeadMeta from '../meta/HeadMeta.astro';
+import { MANIFEST_PATH } from '../offline/manifest.ts';
 import { paletteBootstrap } from '../palette/logic.ts';
 import PaletteDialog from '../palette/PaletteDialog.astro';
 import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts';
 import { themeInlineScript } from '../theme/inline.ts';
+import { THEME_COLORS } from '../theme/theme-color.ts';
 import AppShell from './AppShell.astro';
 
 interface Props {
@@ -45,6 +48,11 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <HeadMeta title={title} description={description} path={path} noindex={noindex} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
+    {/* F-011.R1: installable through the browser's own option (MOD-Offline manifest); the window's color per device
+    scheme, which the theme script then sets to the theme showing (MOD-Theme theme-color.ts). */}
+    <link rel="manifest" href={MANIFEST_PATH} />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content={THEME_COLORS.light} />
+    <meta name="theme-color" content={THEME_COLORS.dark} />
   </head>
   <body>
     {/* First element of <body>: runs before any content paints (F-012.R4), and after Astro's CSP meta in <head>, so its hash governs it. */}
@@ -54,10 +62,7 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
       {t('COPY-shell.skip')}
     </a>
     <div class="frame" data-variant={variant}>
-      <AppShell path={path} variant={variant}>
-        <slot name="offline" slot="offline" />
-        <slot name="update" slot="update" />
-      </AppShell>
+      <AppShell path={path} variant={variant} />
       <main id="main" tabindex="-1">
         <slot />
       </main>
@@ -67,6 +72,8 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     <script is:inline set:html={paletteBootstrap} />
     <script>
       // MOD-Theme after first paint: follow the device setting live and apply every change (F-012.R1, R2).
+      import { connectCardAvailability } from '../design-system/tool-card-availability.ts';
+      import { connectOffline, online } from '../offline/index.ts';
       import { theme } from '../theme/index.ts';
       import { connectVisitRecording } from '../tool-host/visits.ts';
       import { connectDayRecording } from './day-recording.ts';
@@ -75,6 +82,9 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
       connectDayRecording();
       // F-006.R1: following a link to a linked tool's own address records the visit (cards, the linked note).
       connectVisitRecording();
+      // F-011: the offline worker and update checks (MOD-Offline), and the live unavailable state of static cards.
+      connectOffline();
+      connectCardAvailability(online);
     </script>
   </body>
 </html>

@@ -46,3 +46,6 @@ Astro emits HTML only at the end of its build, so a service worker's precache li
 - **Measured**: the precache for 500 tools is 728 KB gzip (1.69 MB raw). "Update ready" appears 0.3–2.6 s after a deploy, never auto-reloads, and refresh reloads exactly once.
 - **Static page per tool stays.** The generic-shell fallback is dropped, because one static shell cannot carry a per-tool `frame-src`.
 - **Known cost (inferred)**: a layout change invalidates every page, so about 0.75 MB is downloaded before the update message.
+
+## Erratum (2026-10-19, F-011 build)
+- The amendment's "network-first with a precache fallback" is wrong. Navigation is precache-first, as in the Decision, the SP-4 prototype and MOD-Offline: a precached page answers its clean URL from the precache, and only other same-origin navigations go to the network, falling back to the precached `404.html`.

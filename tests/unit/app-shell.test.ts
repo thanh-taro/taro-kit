@@ -3,7 +3,6 @@ import preact from '@astrojs/preact/server.js';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, test } from 'vitest';
 import AppShell from '../../src/modules/shell/AppShell.astro';
-import ShellWithStatus from '../fixtures/shell/ShellWithStatus.astro';
 
 async function render(component: Parameters<AstroContainer['renderToString']>[0], props = {}) {
   const container = await AstroContainer.create();
@@ -12,19 +11,7 @@ async function render(component: Parameters<AstroContainer['renderToString']>[0]
 }
 
 describe('CMP-AppShell', () => {
-  test('the offline indicator and update message render nothing until a page fills them', async () => {
-    const html = await render(AppShell, { path: '/' });
-    expect(html).not.toContain('class="offline"');
-    expect(html).not.toContain('class="update"');
-  });
-
-  test('filled status slots render in the header and below it', async () => {
-    const html = await render(ShellWithStatus);
-    expect(html).toMatch(/<div class="offline"[^>]*><span[^>]*data-test="offline"/);
-    expect(html).toMatch(/<div class="update"[^>]*><span[^>]*data-test="update"/);
-    expect(html.indexOf('data-test="offline"')).toBeLessThan(html.indexOf('</header>'));
-    expect(html.indexOf('data-test="update"')).toBeGreaterThan(html.indexOf('</header>'));
-  });
+  // The offline indicator and update message (ShellStatus island): tests/unit/offline.test.ts (F-011).
 
   test('the current page is marked, settings included', async () => {
     const html = await render(AppShell, { path: '/settings/' });

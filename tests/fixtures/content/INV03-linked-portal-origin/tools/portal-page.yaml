@@ -1,0 +1,10 @@
+# INV-03: a linked tool whose address is on the portal's own origin (F-011 review: the service worker serves that
+# origin, so a "tool" there would be a portal page, not a separate site).
+id: portal-page
+kind: tool
+name: Portal page
+summary: Fixture linked tool on the portal origin.
+category: developer
+url: https://tarokit.app/elsewhere/
+origin: external
+added: 2026-02-06

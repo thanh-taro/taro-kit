@@ -1,7 +1,7 @@
 ---
 id: F-011
 title: Install and work offline
-status: ready
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01]

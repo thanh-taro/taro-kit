@@ -81,7 +81,8 @@ describe('ADR-0009 response headers', () => {
     expect(headers['X-Content-Type-Options']).toBe('nosniff');
     expect(headers['Referrer-Policy']).toBe('strict-origin-when-cross-origin');
     expect(headers['Cross-Origin-Opener-Policy']).toBe('same-origin');
-    expect(headers['Cache-Control']).toBe('no-transform');
+    // F-011 adds the default cache rule (ADR-0007) to the same header; no-transform stays on every response.
+    expect(headers['Cache-Control']).toBe('no-cache, no-transform');
     expect(headersFile([]).split('\n')[0]).toBe('/*');
     expect(headersFile([])).toContain('  Permissions-Policy: clipboard-read=(), ');
   });

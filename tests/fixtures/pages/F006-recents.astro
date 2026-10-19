@@ -13,12 +13,13 @@ import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
 import F006RecentsHost from './F006RecentsHost.tsx';
 
 const registry = getRegistry();
-const tools = registry.visibleTools.map(({ id, name, summary, openMode, url }) => ({
+const tools = registry.visibleTools.map(({ id, name, summary, openMode, url, offline }) => ({
   id,
   name,
   summary,
   openMode,
   url,
+  offline,
 }));
 ---
 

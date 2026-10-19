@@ -25,6 +25,7 @@ MOD-SecurityPolicy turns the registry into the portal's security posture (ADR-00
 - `frameAttributesFor(tool) → { sandbox, allow, referrerpolicy }`.
 - `cspDirectives(registry) → string[]`.
 - `permissionsPolicy(registry) → string`.
+- `cacheRules() → { path, cacheControl }[]`: `no-cache, no-transform` for every path by default, `sw.js` and the manifest; `public, max-age=31536000, immutable, no-transform` for `/_astro/*` and the hashed catalog data file `/data/catalog.*.json`. Each override detaches the default (`! Cache-Control`), so a path never gets two values.
 - `writeHeaders(registry, distDir)`.
 
 All are pure except the writer, and are unit-tested against RULE-10.

@@ -78,7 +78,7 @@ The theme: `system`, `light` or `dark` (RULE-03).
 ## Invariants
 - **INV-01** Catalog entry ids are unique across tools and projects. They are lowercase slugs (letters, digits, hyphens), never change once published, and are never reused for a different entry.
 - **INV-02** Every tool address, project link and profile link uses a secure web address (https), except email links.
-- **INV-03** A tool whose open mode is `embedded` has origin `own` and is served from its own site address, never the portal's own address (otherwise it could not be isolated). Its permission set defaults to none (RULE-10) and its offline-capable flag defaults to false.
+- **INV-03** A tool whose open mode is `embedded` has origin `own` and is served from its own site address, never the portal's own address (otherwise it could not be isolated). Its permission set defaults to none (RULE-10) and its offline-capable flag defaults to false. A linked tool is never at the portal's own address either: that address belongs to the portal's own pages (and its offline worker).
 - **INV-04** Favorites and recents may hold ids of tools that are unknown or hidden. Such entries are never shown to the user. They stay in storage until the RULE-01 or RULE-02 limits remove them, and while stored they reappear if the tool becomes visible again.
 - **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme currently showing (light or dark) is passed to an embedded tool's own address (F-012.R5, D-039).
 - **INV-06** Every catalog entry has an `added` date. If it has an `updated` date, that date is on or after `added`.

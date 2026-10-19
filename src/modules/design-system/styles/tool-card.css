@@ -121,6 +121,10 @@
   inline-size: var(--tk-font-size-sm);
   block-size: var(--tk-font-size-sm);
 }
+/* Static cards carry the note hidden until the device goes offline (F-011.R3, tool-card-availability.ts). */
+.tk-toolcard__unavailable[hidden] {
+  display: none;
+}
 
 /* The favorite toggle sits above the stretched link, so it never opens the tool. */
 .tk-toolcard__fav {

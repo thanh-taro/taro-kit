@@ -9,6 +9,8 @@ export interface ToolCardTool {
   openMode: 'embedded' | 'linked';
   /** The tool's own address (used by linked tools). */
   url: string;
+  /** The offline-capable flag (ENT-Tool, default false). */
+  offline?: boolean;
 }
 
 export type ToolCardVariant = 'regular' | 'compact';
@@ -24,6 +26,14 @@ export function toolCardLink(tool: Pick<ToolCardTool, 'id' | 'openMode' | 'url'>
   newTab: boolean;
 } {
   return tool.openMode === 'linked' ? { href: tool.url, newTab: true } : { href: toolPath(tool.id), newTab: false };
+}
+
+/**
+ * F-011.R3: offline, a card is marked unavailable when its tool needs the internet: every linked tool, and every
+ * embedded tool that is not offline-capable (CMP-ToolCard unavailable state).
+ */
+export function needsInternet(tool: Pick<ToolCardTool, 'openMode' | 'offline'>): boolean {
+  return tool.openMode === 'linked' || !tool.offline;
 }
 
 /** style.md: a tool without an icon shows its monogram in mono, the initials of its first two words. */

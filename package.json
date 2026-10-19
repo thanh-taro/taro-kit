@@ -11,7 +11,7 @@
     "gen": "node scripts/gen.ts",
     "gen:check": "node scripts/gen.ts --check",
     "content:validate": "node scripts/content-validate.ts",
-    "build": "pnpm run gen && TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= pnpm run content:validate && TAROKIT_FIXTURES= TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= astro build && node scripts/check-dist-fonts.ts && node scripts/check-dist-clean.ts",
+    "build": "pnpm run gen && TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= pnpm run content:validate && TAROKIT_FIXTURES= TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= astro build && pnpm run sw:build && node scripts/check-dist-fonts.ts && node scripts/check-dist-clean.ts",
     "build:fixtures": "pnpm run gen && TAROKIT_FIXTURES=1 TAROKIT_CONTENT_DIR=tests/fixtures/content/F005-favorites astro build",
     "preview": "astro preview",
     "test": "vitest run",
@@ -21,7 +21,8 @@
     "check": "astro check && pnpm run gen:check",
     "licenses:check": "node scripts/check-licenses.ts",
     "fonts:check": "node scripts/check-dist-fonts.ts",
-    "catalog:check": "node scripts/catalog-check.ts"
+    "catalog:check": "node scripts/catalog-check.ts",
+    "sw:build": "node scripts/build-sw.ts"
   },
   "dependencies": {
     "@astrojs/preact": "^6.0.6",
@@ -35,6 +36,11 @@
     "lucide-static": "^1.55.0",
     "preact": "~10.29.8",
     "sharp": "^0.35.5",
+    "workbox-core": "^7.4.1",
+    "workbox-precaching": "^7.4.1",
+    "workbox-routing": "^7.4.1",
+    "workbox-strategies": "^7.4.1",
+    "workbox-window": "^7.4.1",
     "yaml": "^2.9.1"
   },
   "devDependencies": {
@@ -51,6 +57,7 @@
     "style-dictionary": "^5.6.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.1",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "workbox-build": "^7.4.1"
   }
 }

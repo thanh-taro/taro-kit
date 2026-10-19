@@ -17,6 +17,8 @@ import type { ComponentChildren } from 'preact';
 import { useEffect, useId, useMemo, useRef, useState } from 'preact/hooks';
 import type { CatalogDataFileContent, IndexedTool } from '../../content/emit-catalog-data.ts';
 import ToolCard, { type ToolCardText } from '../../design-system/ToolCard.tsx';
+import { needsInternet } from '../../design-system/tool-card.ts';
+import { online } from '../../offline/index.ts';
 import StateMessage from '../../design-system/StateMessage.tsx';
 import { personalData } from '../../personal-data/index.ts';
 import { filterCatalog, normalize } from '../../search/index.ts';
@@ -157,7 +159,13 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
           <ul class="tk-catalog__grid" data-testid="catalog-results" aria-labelledby={titleId}>
             {results.map((tool) => (
               <li key={tool.id}>
-                <ToolCard tool={tool} categoryName={categoryName.get(tool.category)} text={text.card} />
+                <ToolCard
+                  tool={tool}
+                  categoryName={categoryName.get(tool.category)}
+                  // F-011.R3: offline, tools that need the internet are marked unavailable (MOD-Offline signal).
+                  unavailable={!online.value && needsInternet(tool)}
+                  text={text.card}
+                />
               </li>
             ))}
           </ul>

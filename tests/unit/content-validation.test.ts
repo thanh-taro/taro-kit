@@ -104,6 +104,12 @@ describe('MOD-Content validation', () => {
     ]);
   });
 
+  it('INV-03 fails on a linked tool whose address is on the portal origin', () => {
+    expect(failures('INV03-linked-portal-origin')).toEqual([
+      'content/tools/portal-page.yaml:8 › portal-page › INV-03: a linked tool must not be served from the portal origin https://tarokit.app',
+    ]);
+  });
+
   it('reports every error at once, not only the first', () => {
     const lines = failures('two-errors');
     expect(lines).toHaveLength(2);
