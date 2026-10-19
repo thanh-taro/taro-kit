@@ -267,7 +267,7 @@
         "intro": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 200
+          "maxLength": 160
         },
         "icon": {
           "$ref": "#/$defs/assetPath"

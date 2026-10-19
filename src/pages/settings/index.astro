@@ -9,6 +9,8 @@ import ClearRecents from '../../modules/pages/settings/ClearRecents.tsx';
 import DaysUsed from '../../modules/pages/settings/DaysUsed.tsx';
 import ThemeChoice from '../../modules/pages/settings/ThemeChoice.tsx';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
+import { metaFor } from '../../modules/meta/index.ts';
+import { getRegistry } from '../../modules/content/index.ts';
 
 // F-012.R2: the three choices, in RULE-03 order.
 const choice = {
@@ -21,7 +23,7 @@ const choice = {
 };
 ---
 
-<BaseLayout title={t('COPY-meta.settingsTitle')} description={t('COPY-meta.settingsDescription')} path="/settings/">
+<BaseLayout {...metaFor({ page: 'settings' }, getRegistry())}>
   <div class="settings">
     <h1>{t('COPY-settings.title')}</h1>
 

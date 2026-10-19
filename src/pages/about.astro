@@ -6,9 +6,9 @@
 import { getImage } from 'astro:assets';
 import avatarImage from 'virtual:tarokit/avatar';
 import { getRegistry } from '../modules/content/index.ts';
-import { t } from '../modules/copy/index.ts';
 import About from '../modules/pages/About.astro';
 import BaseLayout from '../modules/shell/BaseLayout.astro';
+import { metaFor } from '../modules/meta/index.ts';
 
 const { profile } = getRegistry();
 const AVATAR_PX = 720;
@@ -17,7 +17,7 @@ const avatar = avatarImage
   : undefined;
 ---
 
-<BaseLayout title={t('COPY-meta.aboutTitle')} description={t('COPY-meta.aboutDescription')} path="/about/">
+<BaseLayout {...metaFor({ page: 'about' }, getRegistry())}>
   <About
     profile={profile}
     avatar={

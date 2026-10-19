@@ -3,8 +3,8 @@
 // portal address built from its id (F-003.R1). Hidden and unknown ids get no page, so the host's not-found
 // page answers (F-003.R7, RULE-06). Only an embedded tool's page may frame anything, and only that tool's
 // origin (ADR-0009 frame-src).
-import { getRegistry, toolPath, type RegTool } from '../../modules/content/index.ts';
-import { t } from '../../modules/copy/index.ts';
+import { getRegistry, type RegTool } from '../../modules/content/index.ts';
+import { metaFor } from '../../modules/meta/index.ts';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
 import ToolView from '../../modules/tool-host/ToolView.astro';
 
@@ -20,9 +20,7 @@ const embedded = tool.openMode === 'embedded';
 ---
 
 <BaseLayout
-  title={t('COPY-meta.toolTitle', { tool: tool.name })}
-  description={tool.summary}
-  path={toolPath(tool.id)}
+  {...metaFor({ page: 'tool', id: tool.id }, getRegistry())}
   variant="compact"
   embeddedToolUrl={embedded ? tool.url : undefined}
   skipTo={embedded ? '#tool' : '#main'}

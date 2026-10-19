@@ -1,13 +1,14 @@
 ---
 // MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
 // Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
-// the single font preload (ADR-0003). Body: skip link first, banner, main.
+// the link-preview metadata (MOD-Meta <HeadMeta>, F-015), the single font preload (ADR-0003). Body: skip link first, banner, main.
 // Slots: default (page content), "offline" and "update" (CMP-AppShell status, F-011).
 // Palette (MOD-Palette, F-004.R1): the pre-rendered <dialog> with its island after the frame, and the inline
 // bootstrap last in <body>, after every search control it arms; its hash is registered here, before <head>.
 import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { t } from '../copy/index.ts';
+import HeadMeta from '../meta/HeadMeta.astro';
 import { paletteBootstrap } from '../palette/logic.ts';
 import PaletteDialog from '../palette/PaletteDialog.astro';
 import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts';
@@ -19,6 +20,8 @@ interface Props {
   description: string;
   /** Current route path, e.g. "/". */
   path: string;
+  /** Kept out of search results (MOD-Meta: the not-found page). Pages pass `{...metaFor(route, registry)}`. */
+  noindex?: boolean;
   /** Set only on /t/<id>/ for an embedded tool: the page's frame-src becomes that tool's origin. */
   embeddedToolUrl?: string;
   /** CMP-AppShell variant: `full` (default) or `compact` (the tool view, SCR-ToolView). */
@@ -26,7 +29,7 @@ interface Props {
   /** Where the skip link jumps: the main region (default), or into the tool on the tool view. */
   skipTo?: string;
 }
-const { title, description, path, embeddedToolUrl, variant = 'full', skipTo = '#main' } = Astro.props;
+const { title, description, path, noindex, embeddedToolUrl, variant = 'full', skipTo = '#main' } = Astro.props;
 
 // The CSP meta renders with <head>, so inline-script hashes and the page's frame-src go in here (SP-6).
 if (!Astro.csp) throw new Error('security.csp must be enabled (ADR-0009)');
@@ -40,8 +43,7 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <HeadMeta title={title} description={description} path={path} noindex={noindex} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
   </head>
   <body>

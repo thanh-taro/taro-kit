@@ -20,6 +20,10 @@ import { type Def, defaultSchemaPath, mapAjvError, validatorFor } from './schema
 /** The portal's own origin (ADR-0001, D-025). */
 export const PORTAL_ORIGIN = 'https://tarokit.app';
 
+/** The origin this build serves from: $TAROKIT_PORTAL_ORIGIN when set and not empty, else the production origin. */
+export const portalOriginFor = (override?: string): string =>
+  override ?? (process.env.TAROKIT_PORTAL_ORIGIN || PORTAL_ORIGIN);
+
 // ---------- normalized registry types (strict, unlike the generated ones; ADR-0005) ----------
 type Permission = NonNullable<Tool['permissions']>[number];
 /** json-schema-to-typescript drops `allOf` beside sibling keywords, so the entry base is composed here. */
@@ -116,7 +120,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   const contentDir = opts.contentDir ?? (process.env.TAROKIT_CONTENT_DIR || join(root, 'content'));
   const schemaPath = opts.schemaPath ?? defaultSchemaPath(root);
   // An empty TAROKIT_PORTAL_ORIGIN (as `pnpm build` sets it) means the production origin.
-  const portalOrigin = opts.portalOrigin ?? (process.env.TAROKIT_PORTAL_ORIGIN || PORTAL_ORIGIN);
+  const portalOrigin = portalOriginFor(opts.portalOrigin);
   const relRoot = join(contentDir, '..'); // errors read "content/tools/x.yaml" wherever the folder lives
   const errors: ContentError[] = [];
   const load = (abs: string) => loadYaml(relRoot, abs, errors);
