@@ -48,6 +48,7 @@ The portal must also make no third-party requests (NFR-05). Browser enforcement 
   - `Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'`. This second policy only adds what a meta tag can't express.
   - `Permissions-Policy`, listing per feature exactly the tool origins that declare it, for example `camera=("https://scan.example")`, and `()` for undeclared features. This lets a granted frame actually receive the feature.
   - `Referrer-Policy: strict-origin-when-cross-origin`, `X-Content-Type-Options: nosniff` and `Cross-Origin-Opener-Policy: same-origin`. COEP is not set, so tools need no CORP headers.
+  - `Strict-Transport-Security: max-age=31536000`, without `includeSubDomains` or `preload`, because tools on subdomains are separate projects (PRN-01) (QA amendment, 2026-10-19).
 - **Build guard (proposed, see "Consequences"):** an embedded tool whose origin equals the portal's origin is a build error. Combining `allow-scripts` with `allow-same-origin` on a same-origin frame would let the frame remove its own sandbox.
 
 ## Alternatives considered

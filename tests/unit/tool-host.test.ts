@@ -86,6 +86,11 @@ describe('ADR-0009 response headers', () => {
     expect(headersFile([]).split('\n')[0]).toBe('/*');
     expect(headersFile([])).toContain('  Permissions-Policy: clipboard-read=(), ');
   });
+  it('NFR-08 every response gets Strict-Transport-Security for one year, without subdomains or preload (QA I-1)', () => {
+    const headers = Object.fromEntries(securityHeaders([]));
+    expect(headers['Strict-Transport-Security']).toBe('max-age=31536000');
+    expect(headersFile([])).toContain('  Strict-Transport-Security: max-age=31536000\n');
+  });
 });
 
 describe('MOD-ToolHost', () => {
