@@ -51,3 +51,6 @@ status: draft
 - F-004 review round 1: CMP-ToolHeader and SCR-ToolView narrow gain a search icon button (COPY-shell.search) that opens the palette, since the shell bar is hidden there (design clarification). F-004 edge cases: keys pressed before the palette is ready are kept (a pending Enter runs once the data loads); a failed export keeps the palette open with the new COPY-palette.exportFailed (CMP-CommandPalette "export failed" state). Mod+Shift+K no longer opens the palette. MOD-Palette documents the `client:palette` directive (hydrates on open), the pending Enter and the close-ordered `hashchange`.
 - F-004 shipped (wave 4): command palette (⌘K / Ctrl+K, header search, phone tool-header search), export ahead of F-013, portal Permissions-Policy clipboard-write=(self). Wave 4 complete.
 - User decision: search keeps phrase matching (RULE-05 unchanged); multi-token matching declined for M-1. MOD-Palette updated.
+
+## 2026-10-19
+- F-014 build: MOD-CatalogCheck wording aligned with RULE-12 (10 s per attempt, not total); documents exit codes (0 pass, 1 blocking failure, 2 can't run), skipped hidden tools and non-web links (`mailto:`), CI annotations and the built surface. Behavior unchanged. F-014 set to building.

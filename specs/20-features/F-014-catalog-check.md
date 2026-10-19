@@ -1,7 +1,7 @@
 ---
 id: F-014
 title: Check the catalog before publishing
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-01]

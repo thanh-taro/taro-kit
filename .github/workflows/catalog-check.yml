@@ -1,4 +1,5 @@
-# Catalog check (F-014, MOD-CatalogCheck, ADR-0007) — STUB until F-014 is built.
+# Catalog check (F-014, MOD-CatalogCheck, ADR-0007). `pnpm catalog:check` exits 1 when a visible tool is
+# unreachable or an embedded tool refuses the portal (RULE-12); project and profile links only warn.
 #   weekly:     runs against main (the published content); a failure fails the run, and GitHub's
 #               failed-workflow email notifies the Owner (F-014.R5). It never deploys.
 #   pre-deploy: called by publish.yml so the deploy job can `needs:` it (F-014.R1, F-014.R2).
@@ -12,14 +13,20 @@ on:
   schedule:
     - cron: '17 3 * * 1' # weekly, Monday 03:17 UTC
   workflow_dispatch:
+  # In a called workflow, github.event_name is the caller's event (push), never 'workflow_call', so the
+  # jobs tell the two modes apart by this input, which is only set when publish.yml calls the workflow.
   workflow_call:
+    inputs:
+      pre_deploy:
+        type: boolean
+        default: true
 
 permissions:
   contents: read
 
 jobs:
   weekly:
-    if: github.event_name != 'workflow_call'
+    if: ${{ !inputs.pre_deploy }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -33,15 +40,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Catalog check (weekly)
-        run: |
-          if node -e "process.exit(require('./package.json').scripts['catalog:check'] ? 0 : 1)"; then
-            pnpm catalog:check --weekly
-          else
-            echo "::warning::MOD-CatalogCheck is not built yet (F-014); nothing was checked."
-          fi
+        run: pnpm catalog:check --weekly
 
   pre-deploy:
-    if: github.event_name == 'workflow_call'
+    if: ${{ inputs.pre_deploy }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -53,12 +55,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Catalog check (blocks the publish)
-        run: |
-          if node -e "process.exit(require('./package.json').scripts['catalog:check'] ? 0 : 1)"; then
-            pnpm catalog:check
-          else
-            echo "::warning::MOD-CatalogCheck is not built yet (F-014); nothing was checked."
-          fi
+        run: pnpm catalog:check
 
 # Placeholder for publish.yml (not scaffolded):
 #   deploy:

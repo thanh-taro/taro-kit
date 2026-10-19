@@ -9,15 +9,17 @@ depends_on: [MOD-Content]
 MOD-CatalogCheck is a Node 24 CLI (`pnpm catalog:check`) that runs in CI before every publish and weekly (ADR-0007). It loads the registry (MOD-Content) and checks addresses.
 
 **Visible tools** (blocking):
-- **Reachability (RULE-12):** a GET with manual redirect following, at most 5 hops, a 10 s total timeout, and one retry. The response body is cancelled after the headers arrive.
+- **Reachability (RULE-12):** a GET with manual redirect following, at most 5 hops, a 10 s timeout per attempt (covering every hop of that attempt), and one retry. The response body is cancelled after the headers arrive.
 - **Embeddability (embedded tools only):** read the **final** response's `X-Frame-Options` and enforced `Content-Security-Policy` headers (Report-Only is ignored), then decide whether `frame-ancestors` admits the portal origin.
   - Policies separated by commas are split, and every policy must admit the portal.
   - Source expressions are matched by scheme, host (including `*.` wildcards) and port. `'self'` means the tool's own origin, and `'none'` blocks.
   - When `frame-ancestors` is present, it overrides XFO. Otherwise `DENY` or `SAMEORIGIN` blocks (the portal is cross-origin), and invalid XFO values are reported as warnings.
 
-**Project and profile links** (warnings only): reachability.
+**Project and profile links** (warnings only): reachability. Links that are not web addresses (`mailto:`) can't be fetched and are listed as skipped.
 
-**Output:** a pass or failure per entry, with the id, address and reason. Exit code 1 on any blocking failure. A summary line gives the count of entries checked, and the same summary goes to the CI job summary. The User-Agent identifies the checker, and checks run with bounded concurrency.
+**Hidden tools** are skipped and listed as skipped (F-014.AC3). Unhiding a tool in a change makes the next check cover it.
+
+**Output:** a pass or failure per entry, with the id, address and reason. Exit code 0 when nothing blocks (warnings allowed), 1 on any blocking failure, 2 when the check can't run (bad arguments or content that fails MOD-Content validation). A summary line gives the count of entries checked, and the same summary goes to the CI job summary. The User-Agent identifies the checker, and checks run with bounded concurrency.
 
 ## Not responsible for
 - Schema and invariant validation (MOD-Content).
@@ -25,7 +27,8 @@ MOD-CatalogCheck is a Node 24 CLI (`pnpm catalog:check`) that runs in CI before 
 - Checking content inside tools.
 
 ## Public surface
-- The CLI, with `--weekly` (label only), `--json` and `--portal-origin`.
+- The CLI (`scripts/catalog-check.ts`, core in `src/modules/catalog-check/cli.ts`), with `--weekly` (label only), `--json` and `--portal-origin`. On GitHub Actions, failures and warnings are also printed as annotations.
+- `planCheck(registry)`, `runCheck(targets, options)` and `buildReport(findings, skipped, weekly)`.
 - `classifyEmbedding(headers, portalOrigin, toolOrigin) → { embeddable, reason }`, a pure function and the core under test in SP-2.
 
 ## Implements
