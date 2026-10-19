@@ -250,12 +250,17 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
     await seed(page);
     await page.goto(SETTINGS);
     await expect(importButton(page)).toBeEnabled();
+    // Background loads of the portal's own static files (e.g. the catalog data the palette fetches when
+    // idle) may happen at any time; what must never happen is a request that could carry the file.
     const requests: string[] = [];
-    page.on('request', (r) => requests.push(`${r.method()} ${r.url()}`));
+    page.on('request', (r) => {
+      const ownStatic = r.method() === 'GET' && new URL(r.url()).origin === PORTAL && r.postData() === null;
+      if (!ownStatic) requests.push(`${r.method()} ${r.url()}`);
+    });
     await pick(page, 'F013_AC6-valid.json');
     await importDialog(page).getByRole('button', { name: 'Confirm' }).click();
     await expect(importDialog(page)).toBeHidden();
-    expect(requests.filter((r) => !r.startsWith(`GET ${PORTAL}/_astro/`))).toEqual([]);
+    expect(requests).toEqual([]);
     expect(page.url()).toBe(SETTINGS);
   });
 });
