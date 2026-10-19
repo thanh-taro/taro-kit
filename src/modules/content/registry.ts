@@ -287,17 +287,18 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
         rule: 'INV-07',
         message: `category "${d.category}" does not exist in content/categories.yaml`,
       });
-    // INV-03: an embedded tool is never served from the portal's own origin (ADR-0009 build guard). The
-    // production origin is always refused too, whatever origin this build is configured with.
+    // INV-03: no tool is served from the portal's own origin: an embedded one could not be isolated (ADR-0009 build
+    // guard), and a linked one would be a portal page under the portal's service worker (F-011). The production
+    // origin is always refused too, whatever origin this build is configured with.
     const mode = d.openMode ?? (d.origin === 'own' ? 'embedded' : 'linked');
     const toolOrigin = typeof d.url === 'string' && URL.canParse(d.url) ? new URL(d.url).origin : undefined;
-    if (mode === 'embedded' && toolOrigin && (toolOrigin === portalOrigin || toolOrigin === PORTAL_ORIGIN))
+    if (toolOrigin && (toolOrigin === portalOrigin || toolOrigin === PORTAL_ORIGIN))
       errors.push({
         file: l.file,
         line: l.lineOf(['url']),
         entryId: idOf(d),
         rule: 'INV-03',
-        message: `an embedded tool must not be served from the portal origin ${toolOrigin}`,
+        message: `${mode === 'embedded' ? 'an embedded' : 'a linked'} tool must not be served from the portal origin ${toolOrigin}`,
       });
   }
 

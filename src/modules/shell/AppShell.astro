@@ -221,6 +221,10 @@ const status = shellStatusText();
     margin-inline-start: 0;
     gap: var(--tk-space-2);
   }
+  /* The compact control is a fixed width: its short label must not push the key cap past the border. */
+  .shell-wrap[data-variant='compact'] .search-text {
+    min-inline-size: 0;
+  }
   .shell-wrap[data-variant='compact'] .search ~ .end {
     margin-inline-start: auto;
   }

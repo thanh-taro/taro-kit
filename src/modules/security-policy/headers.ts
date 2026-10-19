@@ -68,7 +68,8 @@ export function cacheRules(): { path: string; cacheControl: string }[] {
     { path: '/sw.js', cacheControl: REVALIDATE },
     { path: '/manifest.webmanifest', cacheControl: REVALIDATE },
     { path: '/_astro/*', cacheControl: IMMUTABLE },
-    { path: '/data/*', cacheControl: IMMUTABLE },
+    // Only the content-hashed catalog data file (MOD-Content); anything else under /data/ is revalidated.
+    { path: '/data/catalog.*.json', cacheControl: IMMUTABLE },
   ];
 }
 

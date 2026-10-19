@@ -108,6 +108,25 @@ test.describe('F-011 offline after one online visit (production build)', () => {
     await expect(page.locator('iframe')).toHaveCount(0);
   });
 
+  test('F011_AC3 offline, a tool address without its trailing slash still opens the tool view', async ({
+    page,
+    context,
+  }) => {
+    await visitOnline(page, `${PROD}/`);
+    await goOffline(context, page);
+    const res = await page.goto(`${PROD}/t/sample-dev`);
+    expect(res?.status()).toBe(200);
+    await expect(
+      page.getByRole('heading', {
+        name: "Sample developer tool needs the internet. I'll load it as soon as you're back online.",
+      }),
+    ).toBeVisible();
+    // A category page too, and an unknown address without the slash is still not found.
+    expect((await page.goto(`${PROD}/tools/media`))?.status()).toBe(200);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools');
+    expect((await page.goto(`${PROD}/t/does-not-exist`))?.status()).toBe(404);
+  });
+
   test('F011_AC4 offline, an unknown tool address shows the not-found state', async ({ page, context }) => {
     await visitOnline(page, `${PROD}/`);
     await goOffline(context, page);
@@ -269,6 +288,8 @@ test.describe('F-011 a new version (versioned host)', () => {
     await visitOnline(page, `${host.origin}/`);
     await page.reload();
     await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
+    // MOD-Offline has attached its update checks (visibility, hourly) for this page.
+    await expect(page.locator('html')).toHaveAttribute('data-tk-worker', 'registered');
     await page.evaluate(() => ((window as unknown as { tkSamePage: boolean }).tkSamePage = true));
     host.publish();
     await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
@@ -324,7 +345,8 @@ test.describe('F-011 a new version (versioned host)', () => {
     const message = page.getByRole('status').filter({ hasText: UPDATE }).locator('visible=true');
     await message.getByRole('button', { name: 'Refresh' }).click();
     await expect(page.locator('html')).toHaveAttribute('data-tk-e2e-version', '2');
-    expect(loads).toBe(1);
+    // The load event can land after the new page's markup is visible.
+    await expect.poll(() => loads).toBe(1);
     await expect(page.getByText(UPDATE)).toHaveCount(0);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     const after = JSON.parse((await page.evaluate(() => localStorage.getItem('tarokit.personal'))) ?? '{}');

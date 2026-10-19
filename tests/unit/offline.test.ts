@@ -142,7 +142,8 @@ describe('F-011 cache rules in _headers (ADR-0007, MOD-SecurityPolicy)', () => {
     expect(rules['/manifest.webmanifest']).toBe('no-cache, no-transform');
     expect(rules['/*']).toBe('no-cache, no-transform');
     expect(rules['/_astro/*']).toBe('public, max-age=31536000, immutable, no-transform');
-    expect(rules['/data/*']).toBe('public, max-age=31536000, immutable, no-transform');
+    expect(rules['/data/catalog.*.json']).toBe('public, max-age=31536000, immutable, no-transform');
+    expect(rules['/data/*']).toBeUndefined();
   });
 
   test('ADR-0007 each path gets exactly one Cache-Control: later rules detach the default first', () => {

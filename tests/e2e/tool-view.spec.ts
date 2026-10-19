@@ -8,6 +8,7 @@ import { expect, test, type Frame, type Page } from '@playwright/test';
 import { join } from 'node:path';
 import { loadRegistry } from '../../src/modules/content/index.ts';
 import { permissionsPolicy } from '../../src/modules/security-policy/index.ts';
+import { SLOW_LOAD_MS } from '../../src/modules/tool-host/phase.ts';
 import { PORTAL, serveSites, toolPage, toolUrl, type Sites } from './support/sites.ts';
 
 const STORAGE_KEY = 'tarokit.personal';
@@ -221,15 +222,23 @@ test.describe('F-003 tool view: embedded tools', () => {
   });
 
   test('F003_AC8 after the slow-load threshold the slow hint shows and the tool keeps loading', async ({ page }) => {
-    await page.clock.install();
+    // The page clock runs until the island has started RULE-11's timer, then is paused well before the threshold, so
+    // real time on a busy machine can't fire it early: only runFor moves it from there.
+    await page.clock.install({ time: new Date(2026, 9, 14, 10, 0) });
     const held = sites.holdTools();
     await page.goto(toolPage('ft-embedded'), { waitUntil: 'domcontentloaded' });
     const loading = toolRegion(page).getByRole('status');
     await expect(loading).toHaveText(`Getting ${EMBEDDED} ready…`);
+    await expect(toolRegion(page)).toHaveAttribute('data-slow-since', /^\d+$/);
+    const since = Number(await toolRegion(page).getAttribute('data-slow-since'));
+    const margin = 5_000;
+    await page.clock.pauseAt(since + margin);
     const slow = `${EMBEDDED} is taking its time. You can open it in a new tab instead.`;
-    await page.clock.runFor(9_000);
+    // `since` is read just before the timer is scheduled, so the page clock may have moved by a millisecond in
+    // between: the hint is absent at the threshold minus 2 ms and present 1 ms after it.
+    await page.clock.runFor(SLOW_LOAD_MS - margin - 2);
     await expect(header(page).getByText(slow)).toBeHidden();
-    await page.clock.runFor(1_000);
+    await page.clock.runFor(3);
     await expect(header(page).getByRole('status').filter({ hasText: slow })).toBeVisible();
     await expect(header(page).getByRole('link', { name: 'Open in new tab' })).toHaveAttribute('data-primary', '');
     // Still loading: the same frame is waiting for the tool, and the loading state stays.

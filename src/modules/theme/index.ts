@@ -1,9 +1,11 @@
 // MOD-Theme: resolves and applies the theme (RULE-03, F-012).
 // Before first paint the inline script (inline.ts) sets data-theme (F-012.R4). After that, this module
 // owns it: `preference` comes from MOD-PersonalData, `system` follows the device setting live through
-// matchMedia (F-012.R1), and every change of `shownTheme` is applied to the root element at once (F-012.R2).
+// matchMedia (F-012.R1), and every change of `shownTheme` is applied to the root element at once (F-012.R2), and to
+// the browser's theme color (theme-color.ts, F-011.R1).
 import { computed, effect, signal, type ReadonlySignal } from '@preact/signals';
 import { personalData, type PersonalDataStore, type ThemePreference } from '../personal-data/index.ts';
+import { applyThemeColor } from './theme-color.ts';
 
 export type { ThemePreference };
 export type ShownTheme = 'light' | 'dark';
@@ -14,6 +16,8 @@ export interface ThemeEnvironment {
   matchMedia: (query: string) => MediaQueryList;
   /** The element carrying `data-theme` (the root element). */
   root: Pick<Element, 'setAttribute'>;
+  /** Applies the theme showing to the browser's theme color (theme-color.ts); left out where there is none. */
+  themeColor?: (shown: ShownTheme) => void;
 }
 
 export interface Theme {
@@ -39,7 +43,10 @@ export function createTheme(env: ThemeEnvironment): Theme {
 
   const preference = computed<ThemePreference>(() => env.store.preferences.value.theme ?? 'system');
   const shownTheme = computed<ShownTheme>(() => (preference.value === 'system' ? system.value : preference.value));
-  const stopApplying = effect(() => env.root.setAttribute('data-theme', shownTheme.value));
+  const stopApplying = effect(() => {
+    env.root.setAttribute('data-theme', shownTheme.value);
+    env.themeColor?.(shownTheme.value);
+  });
 
   return {
     preference,
@@ -61,6 +68,7 @@ export function theme(): Theme {
     store: personalData(),
     matchMedia: (q) => window.matchMedia(q),
     root: document.documentElement,
+    themeColor: (shown) => applyThemeColor(document, shown),
   });
   return shared;
 }

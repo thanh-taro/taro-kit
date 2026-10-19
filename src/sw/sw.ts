@@ -10,8 +10,10 @@
 //   cross-origin) match no route, so the worker never answers them and the browser handles them as usual.
 // - Prompt updates: a new worker waits until the user's refresh sends SKIP_WAITING (F-011.R4).
 // - It reads and writes only its own caches, never the portal's personal data (localStorage, ADR-0010).
+// - It takes no orders from pages beyond SKIP_WAITING from the portal's own windows: its own Router listens to
+//   fetches only (Workbox's default router would also cache any URL a page posts in a CACHE_URLS message).
 import { cleanupOutdatedCaches, PrecacheController, PrecacheRoute } from 'workbox-precaching';
-import { registerRoute, setCatchHandler } from 'workbox-routing';
+import { Route, Router } from 'workbox-routing';
 import { NetworkOnly } from 'workbox-strategies';
 
 declare const self: ServiceWorkerGlobalScope & {
@@ -31,7 +33,8 @@ self.addEventListener('install', (event) => {
   const worker = async () => {
     for (let item = queue.shift(); item; item = queue.shift()) {
       const [url, cacheKey] = item;
-      const request = new Request(url, { credentials: 'same-origin' });
+      // `reload`: always from the network, never a stale or poisoned HTTP-cache copy (revisions name the version).
+      const request = new Request(url, { credentials: 'same-origin', cache: 'reload' });
       await Promise.all(precache.strategy.handleAll({ event, request, params: { cacheKey } }));
     }
   };
@@ -41,20 +44,35 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => void precache.activate(event));
 cleanupOutdatedCaches();
 
-// Precached files, pages by clean URL (directoryIndex index.html). Query strings don't select another page.
-registerRoute(new PrecacheRoute(precache, { ignoreURLParametersMatching: [/.*/] }));
+const router = new Router();
+
+// Precached files, pages by clean URL (directoryIndex index.html), also without the trailing slash
+// (`/t/json` → t/json/index.html). Query strings don't select another page.
+router.registerRoute(
+  new PrecacheRoute(precache, {
+    ignoreURLParametersMatching: [/.*/],
+    urlManipulation: ({ url }) =>
+      url.pathname.endsWith('/') || /\.[^/]*$/.test(url.pathname) ? [] : [new URL(`${url.pathname}/index.html`, url)],
+  }),
+);
 
 // Other same-origin pages: the network (online, the host's own 404 answers), then the precached 404.html.
 // A route is needed: the catch handler runs only for requests some route handled (SP-4).
-registerRoute(({ request, url }) => request.mode === 'navigate' && sameOrigin(url), new NetworkOnly());
-setCatchHandler(async ({ request }) => {
+router.registerRoute(
+  new Route(({ request, url }) => request.mode === 'navigate' && sameOrigin(url), new NetworkOnly()),
+);
+router.setCatchHandler(async ({ request }) => {
   if (request.mode === 'navigate') {
     const page = await precache.matchPrecache('/404.html');
     if (page) return new Response(page.body, { status: 404, statusText: 'Not Found', headers: page.headers });
   }
   return Response.error();
 });
+router.addFetchListener();
 
+// Only the portal's own windows may activate a waiting version (the user's refresh, F-011.R4).
 self.addEventListener('message', (event) => {
+  const source = event.source as Client | null;
+  if (!source || !('url' in source) || new URL(source.url).origin !== self.location.origin) return;
   if ((event.data as { type?: string } | null)?.type === 'SKIP_WAITING') void self.skipWaiting();
 });

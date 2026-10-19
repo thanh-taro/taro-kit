@@ -15,6 +15,7 @@ import { paletteBootstrap } from '../palette/logic.ts';
 import PaletteDialog from '../palette/PaletteDialog.astro';
 import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts';
 import { themeInlineScript } from '../theme/inline.ts';
+import { THEME_COLORS } from '../theme/theme-color.ts';
 import AppShell from './AppShell.astro';
 
 interface Props {
@@ -47,8 +48,11 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <HeadMeta title={title} description={description} path={path} noindex={noindex} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
-    {/* F-011.R1: installable through the browser's own option (MOD-Offline manifest). */}
+    {/* F-011.R1: installable through the browser's own option (MOD-Offline manifest); the window's color per device
+    scheme, which the theme script then sets to the theme showing (MOD-Theme theme-color.ts). */}
     <link rel="manifest" href={MANIFEST_PATH} />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content={THEME_COLORS.light} />
+    <meta name="theme-color" content={THEME_COLORS.dark} />
   </head>
   <body>
     {/* First element of <body>: runs before any content paints (F-012.R4), and after Astro's CSP meta in <head>, so its hash governs it. */}

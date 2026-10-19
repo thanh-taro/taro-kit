@@ -38,6 +38,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
   const [src, setSrc] = useState<string | null>(null);
   const srcTheme = useRef<HandoffTheme>('dark');
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const areaRef = useRef<HTMLElement>(null);
 
   // F-006.R1: the embedded tool's view is shown, so the visit counts whether or not the tool loads.
   useEffect(() => {
@@ -56,11 +57,19 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
     return () => window.removeEventListener('online', start);
   }, [tool.url, tool.offline]);
 
-  // RULE-11: the slow hint; the frame is left alone and keeps loading.
+  // RULE-11: the slow hint; the frame is left alone and keeps loading. While the threshold runs, the tool area
+  // carries `data-slow-since` (when it started, in ms): the server-rendered `data-phase="loading"` can't tell that
+  // the timer started, and tests time the threshold from it.
   useEffect(() => {
     if (phase !== 'loading' || !src) return;
+    const area = areaRef.current;
+    // Read before scheduling, so the threshold is never earlier than `since + SLOW_LOAD_MS`.
+    area?.setAttribute('data-slow-since', String(Date.now()));
     const timer = setTimeout(() => setPhase((p) => (p === 'loading' ? 'slow' : p)), SLOW_LOAD_MS);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      area?.removeAttribute('data-slow-since');
+    };
   }, [phase, src]);
 
   // F-012.R5, R6: connected in a layout effect, right after the frame is in the DOM and before its tool can load
@@ -86,7 +95,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
           <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: favorite.star }} />
         </FavoriteToggle>
       </ToolHeader>
-      <section id="tool" class="tk-toolarea" aria-label={frame.title} tabindex={-1} data-phase={phase}>
+      <section ref={areaRef} id="tool" class="tk-toolarea" aria-label={frame.title} tabindex={-1} data-phase={phase}>
         {phase === 'offline' ? (
           children
         ) : (

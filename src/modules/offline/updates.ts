@@ -26,6 +26,8 @@ export function registerServiceWorker(scriptUrl = '/sw.js'): void {
         if (document.visibilityState === 'visible') void workbox.update().catch(() => {});
       });
       setInterval(() => void workbox.update().catch(() => {}), HOURLY);
+      // The update checks are in place: a mark on <html> that e2e tests wait on before publishing a version.
+      document.documentElement.dataset.tkWorker = 'registered';
     })
     .catch(() => {
       // No worker (for example a build without sw.js): the portal still works as a website (F-011 edge case).

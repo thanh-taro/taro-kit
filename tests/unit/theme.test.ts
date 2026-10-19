@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { createPersonalDataStore, emptyDocument, STORAGE_KEY } from '../../src/modules/personal-data/index.ts';
 import { createTheme } from '../../src/modules/theme/index.ts';
 import { themeInlineScript } from '../../src/modules/theme/inline.ts';
+import { THEME_COLORS } from '../../src/modules/theme/theme-color.ts';
 import { FakeMedia, FakeRoot, FakeStorage } from './fakes.ts';
 
 /** A theme over a fake device: `deviceLight` is the device's light/dark setting. */
@@ -87,9 +88,17 @@ describe('F-012 theme', () => {
 });
 
 describe('F-012.R4 inline script', () => {
+  /** The page's two theme-color metas (BaseLayout), as the inline script sees them. */
+  let metas: { content?: string; setAttribute(n: string, v: string): void }[] = [];
   /** Runs the inline script against a fake page and returns the data-theme it set. */
   function run(stored: string | null, deviceLight: boolean, storageThrows = false): string | undefined {
     const root = new FakeRoot();
+    metas = [0, 1].map(() => ({
+      content: undefined as string | undefined,
+      setAttribute(n: string, v: string) {
+        if (n === 'content') this.content = v;
+      },
+    }));
     const localStorage = {
       getItem: (k: string) => {
         if (storageThrows) throw new DOMException('denied', 'SecurityError');
@@ -99,6 +108,7 @@ describe('F-012.R4 inline script', () => {
     const matchMedia = (q: string) => ({ matches: q === '(prefers-color-scheme: light)' && deviceLight });
     new Function('localStorage', 'matchMedia', 'document', themeInlineScript)(localStorage, matchMedia, {
       documentElement: root,
+      querySelectorAll: (q: string) => (q === 'meta[name="theme-color"]' ? metas : []),
     });
     return root.theme;
   }
@@ -114,5 +124,39 @@ describe('F-012.R4 inline script', () => {
     expect(run(null, false)).toBe('dark');
     expect(run('{oops', true)).toBe('light');
     expect(run(null, true, true)).toBe('light');
+  });
+
+  test('F-011.R1 the window color is the theme showing: a stored choice overrides the device', () => {
+    expect(run(doc('light'), false)).toBe('light');
+    expect(metas.map((m) => m.content)).toEqual([THEME_COLORS.light, THEME_COLORS.light]);
+    run(doc('dark'), true);
+    expect(metas.map((m) => m.content)).toEqual([THEME_COLORS.dark, THEME_COLORS.dark]);
+    run(doc('system'), true);
+    expect(metas.map((m) => m.content)).toEqual([THEME_COLORS.light, THEME_COLORS.light]);
+  });
+});
+
+describe('F-011.R1 theme color', () => {
+  test('F-011.R1 the colors are the tokens’ bg for each theme', () => {
+    expect(THEME_COLORS).toEqual({ light: '#FBFAFE', dark: '#0F0B16' });
+  });
+
+  test('F-011.R1 every change of the theme showing reaches the theme color at once', () => {
+    const storage = new FakeStorage();
+    const media = new FakeMedia(false);
+    const shown: string[] = [];
+    const store = createPersonalDataStore({ storage: () => storage });
+    const theme = createTheme({
+      store,
+      matchMedia: () => media as unknown as MediaQueryList,
+      root: new FakeRoot(),
+      themeColor: (t) => shown.push(t),
+    });
+    theme.toggle(); // dark device, system → light chosen
+    theme.setPreference('dark');
+    media.set(true);
+    theme.setPreference('system'); // now follows the light device
+    expect(shown).toEqual(['dark', 'light', 'dark', 'light']);
+    theme.dispose();
   });
 });

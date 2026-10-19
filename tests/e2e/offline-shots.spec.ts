@@ -77,6 +77,7 @@ for (const [size, viewport] of Object.entries(sizes))
         try {
           await visitOnline(page, `${host.origin}/`);
           await page.reload();
+          await expect(page.locator('html')).toHaveAttribute('data-tk-worker', 'registered');
           host.publish();
           await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
           await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
