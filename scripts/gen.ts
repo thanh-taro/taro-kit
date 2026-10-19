@@ -2,7 +2,8 @@
 //   committed (CI fails if stale, ADR-0003 / ADR-0005 / MOD-Copy):
 //     src/generated/tokens.css, src/generated/tokens.ts, src/generated/domain.ts, src/generated/copy.ts
 //   build outputs (gitignored):
-//     public/third-party-notices.txt (ADR-0008), src/generated/fonts/*.woff2 (ADR-0003 amendment)
+//     public/third-party-notices.txt (ADR-0008), src/generated/fonts/*.woff2 (ADR-0003 amendment),
+//     src/generated/preview-glyphs.json (MOD-Meta, F-015)
 // `pnpm gen:check` regenerates in memory and exits 1 if a committed file is stale.
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -81,4 +82,40 @@ if (fontsFresh) {
     process.exit(1);
   }
   writeFileSync(stampFile, stamp);
+}
+
+// Link-preview glyph outlines (build output, MOD-Meta, F-015): the shared preview image's text as outlines, from
+// the fontsource faces (scripts/preview-glyphs.py). Skipped when the script, the strings and the fonts are unchanged.
+{
+  const { COPY } = await import('../src/generated/copy.ts');
+  const { PORTAL_ORIGIN } = await import('../src/modules/content/registry.ts');
+  const { previewGlyphRequest } = await import('../src/modules/meta/preview-image.ts');
+  const request = JSON.stringify(
+    previewGlyphRequest({
+      brand: COPY['COPY-shell.brand'],
+      lead: COPY['COPY-meta.homeDescription'],
+      host: new URL(PORTAL_ORIGIN).host,
+    }),
+  );
+  const out = join(root, 'src/generated/preview-glyphs.json');
+  const stampPath = join(root, 'src/generated/.preview-glyphs.stamp');
+  const h = createHash('sha256').update(read('scripts/preview-glyphs.py')).update(request);
+  for (const family of ['manrope', 'unbounded', 'jetbrains-mono'])
+    h.update(readFileSync(join(fontsrc, family, 'package.json')));
+  const previewStamp = h.digest('hex');
+  if (existsSync(out) && existsSync(stampPath) && readFileSync(stampPath, 'utf8') === previewStamp) {
+    console.log('gen: preview glyphs up to date');
+  } else {
+    const venv = join(root, '.venv/bin/python');
+    const python = process.env.PYTHON ?? (existsSync(venv) ? venv : 'python3');
+    const r = spawnSync(python, [join(root, 'scripts/preview-glyphs.py'), fontsrc, out], {
+      input: request,
+      stdio: ['pipe', 'inherit', 'inherit'],
+    });
+    if (r.status !== 0) {
+      console.error('gen: preview glyphs failed. Install the build tools: pip install -r requirements-build.txt');
+      process.exit(1);
+    }
+    writeFileSync(stampPath, previewStamp);
+  }
 }

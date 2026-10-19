@@ -15,6 +15,7 @@ import { svgFromFile } from '../../modules/design-system/icons.ts';
 import ToolCard from '../../modules/design-system/ToolCard.astro';
 import { categoryPages } from '../../modules/pages/category.ts';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
+import { metaFor } from '../../modules/meta/index.ts';
 
 export const getStaticPaths = (() => {
   const registry = getRegistry();
@@ -29,14 +30,11 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const { page, icons } = Astro.props;
+const registry = getRegistry();
 const { category, tools, count, nav } = page;
 ---
 
-<BaseLayout
-  title={t('COPY-meta.categoryTitle', { category: category.name })}
-  description={category.intro}
-  path={page.path}
->
+<BaseLayout {...metaFor({ page: 'category', id: category.id }, registry)}>
   <div class="category">
     <section class="hero" data-tint={category.tint} data-testid="category-hero" aria-labelledby="category-name">
       <span class="hero-icon" aria-hidden="true" set:html={icons[category.id]} />

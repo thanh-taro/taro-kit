@@ -4,10 +4,10 @@
 // Design: design/canvas/ProjectsDesktop.dc.html, ProjectsMobile.dc.html, EmptyPagesDesktop.dc.html.
 // Implements: F-009.R1, F-009.R2, F-009.R3, F-009.R4.
 import { getRegistry } from '../../modules/content/index.ts';
-import { t } from '../../modules/copy/index.ts';
 import { projectImagePath } from '../../modules/pages/projects/index.ts';
 import ProjectsView from '../../modules/pages/projects/ProjectsView.astro';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
+import { metaFor } from '../../modules/meta/index.ts';
 
 const { projects } = getRegistry();
 const images = Object.fromEntries(
@@ -18,6 +18,6 @@ const images = Object.fromEntries(
 );
 ---
 
-<BaseLayout title={t('COPY-meta.projectsTitle')} description={t('COPY-meta.projectsDescription')} path="/projects/">
+<BaseLayout {...metaFor({ page: 'projects' }, getRegistry())}>
   <ProjectsView projects={projects} images={images} />
 </BaseLayout>

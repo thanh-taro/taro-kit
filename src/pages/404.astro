@@ -8,9 +8,11 @@
 import { t } from '../modules/copy/index.ts';
 import StateMessage from '../modules/design-system/StateMessage.astro';
 import BaseLayout from '../modules/shell/BaseLayout.astro';
+import { metaFor } from '../modules/meta/index.ts';
+import { getRegistry } from '../modules/content/index.ts';
 ---
 
-<BaseLayout title={t('COPY-notFound.title')} description={t('COPY-notFound.body')} path="/404/">
+<BaseLayout {...metaFor({ page: 'notFound' }, getRegistry())}>
   <div class="not-found">
     {/* The large status code is decoration only; the heading below says what happened. */}
     <span class="code" aria-hidden="true">

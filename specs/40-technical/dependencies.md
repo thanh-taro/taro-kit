@@ -23,7 +23,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-04** | @preact/signals | ^2.11 | Shared reactive stores across islands | runtime | MIT | approved | ADR-0002 |
 | **DEP-05** | typescript | ~6.0 (pinned until astro check supports 7) | Type checking | dev | Apache-2.0 | approved | ADR-0002 |
 | **DEP-06** | @astrojs/check | ^0.9 | Type-checks `.astro` files | dev | MIT | approved | ADR-0002 |
-| **DEP-31** | sharp (pulls @img/sharp-libvips) | ^0.35.5 (direct: pnpm does not hoist astro's optional sharp, and Astro's bundled image service resolves it from the project root) | Image optimization for avatar and project images | build | Apache-2.0; libvips binaries LGPL-3.0-or-later (build-only exception) | approved | ADR-0008 |
+| **DEP-31** | sharp (pulls @img/sharp-libvips) | ^0.35.5 (direct: pnpm does not hoist astro's optional sharp, and Astro's bundled image service resolves it from the project root) | Image optimization for avatar and project images; rasterizing the shared link-preview image (MOD-Meta) | build | Apache-2.0; libvips binaries LGPL-3.0-or-later (build-only exception) | approved | ADR-0008 |
 
 ## Content and validation
 
@@ -110,6 +110,6 @@ Note (SP-6): DEP-33 to DEP-35 are source fonts only. The shipped files are fontt
 | ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
 |---|---|---|---|---|---|---|---|
 | **DEP-41** | @types/node | ^24 | Node type definitions for build scripts, the content loader and tests (`astro check`) | dev | MIT | approved | ADR-0002 |
-| **DEP-42** | fonttools (Python, `requirements-build.txt`) | 4.66.x | Build-time font subsetting (`scripts/subset-fonts.py`) | build | MIT | approved | ADR-0003 |
+| **DEP-42** | fonttools (Python, `requirements-build.txt`) | 4.66.x | Build-time font subsetting (`scripts/subset-fonts.py`) and the link-preview image's glyph outlines (`scripts/preview-glyphs.py`) | build | MIT | approved | ADR-0003 |
 | **DEP-43** | brotli (Python, `requirements-build.txt`) | 1.2.x | WOFF2 compression for fonttools | build | MIT | approved | ADR-0003 |
 | **DEP-44** | Lucide icons copied into `content/assets/icons/` (category icons) | from DEP-15 | Bundled category icons (ENT-Category) | runtime (asset) | ISC (notice via DEP-15) | approved | ADR-0003 |

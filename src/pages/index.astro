@@ -3,9 +3,11 @@
 // voice, that the tools are on their way. Every string is a COPY id.
 import { t } from '../modules/copy/index.ts';
 import BaseLayout from '../modules/shell/BaseLayout.astro';
+import { metaFor } from '../modules/meta/index.ts';
+import { getRegistry } from '../modules/content/index.ts';
 ---
 
-<BaseLayout title={t('COPY-meta.homeTitle')} description={t('COPY-meta.homeDescription')} path="/">
+<BaseLayout {...metaFor({ page: 'home' }, getRegistry())}>
   <section class="hero" aria-labelledby="hero-title">
     <h1 id="hero-title">{t('COPY-meta.homeTitle')}</h1>
     <p class="lead">{t('COPY-meta.homeDescription')}</p>

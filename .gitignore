@@ -13,6 +13,8 @@ node_modules/
 dist/
 dist-fixtures/
 src/generated/fonts/
+src/generated/preview-glyphs.json
+src/generated/.preview-glyphs.stamp
 public/third-party-notices.txt
 
 # Test outputs

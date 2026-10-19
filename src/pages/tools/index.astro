@@ -5,11 +5,11 @@
 // Implements: F-002.R1 to F-002.R6.
 import { join } from 'node:path';
 import { catalogDataFile, contentDirectory, getRegistry } from '../../modules/content/index.ts';
-import { t } from '../../modules/copy/index.ts';
 import { svgFromFile } from '../../modules/design-system/icons.ts';
 import { catalogView } from '../../modules/pages/catalog/catalog.ts';
 import CatalogView from '../../modules/pages/catalog/CatalogView.astro';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
+import { metaFor } from '../../modules/meta/index.ts';
 
 const registry = getRegistry();
 const view = catalogView(registry.categories, registry.visibleTools);
@@ -18,6 +18,6 @@ const icons = Object.fromEntries(
 );
 ---
 
-<BaseLayout title={t('COPY-meta.toolsTitle')} description={t('COPY-meta.toolsDescription')} path="/tools/">
+<BaseLayout {...metaFor({ page: 'tools' }, registry)}>
   <CatalogView view={view} icons={icons} dataUrl={catalogDataFile(registry).path} />
 </BaseLayout>

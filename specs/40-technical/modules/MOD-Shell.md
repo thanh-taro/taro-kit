@@ -31,7 +31,7 @@ MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
 - Service worker logic (MOD-Offline). The shell only shows its signals.
 
 ## Public surface
-- `<BaseLayout title description path variant="full|compact">` with a default slot.
+- `<BaseLayout title description path noindex variant="full|compact">` with a default slot; pages pass `{...metaFor(route, registry)}` (MOD-Meta).
 - Shell islands: `ShellStatus` (offline indicator and update message), `StorageNotice` and `ThemeToggle`.
 
 ## Implements
