@@ -16,7 +16,7 @@ Logo/name (COPY-shell.brand, links home); navigation (Home, Tools, Projects, Abo
 |---|---|
 | full | default pages |
 | compact | tool view, to leave the most space for the tool |
-| narrow | small screens: navigation collapses into a menu (COPY-nav.menu) |
+| narrow | small screens: navigation collapses into a menu (COPY-nav.menu); below 360 px the logo shows its mark only and COPY-shell.brand stays its accessible name, so the bar fits from 320 px (NFR-07) |
 | offline | shows the offline indicator |
 | update ready | shows the update message (COPY-shell.updateReady) with a refresh action (COPY-shell.refresh); it never reloads by itself |
 

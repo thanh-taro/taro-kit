@@ -476,13 +476,16 @@ const status = shellStatusText();
       gap: 0;
     }
   }
-  /* NFR-07 (QA a11y M1): from 320 px the logo, search, theme toggle and Menu fit without sideways scrolling. */
+  /* NFR-07 (QA a11y M1): below 360 px the logo, search, theme toggle and Menu don't fit with the wordmark, so the
+     bar shows the logo mark only and the name stays the link's accessible name, as on the compact bar. */
   @media (max-width: 359px) {
-    .shell {
-      padding-inline-start: var(--tk-space-3);
-    }
-    .shell :global(.nav .menu) {
-      padding-inline: var(--tk-space-2);
+    .word {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 </style>

@@ -30,6 +30,12 @@ const widths = (page: Page) => page.evaluate(() => [document.documentElement.scr
 async function expectNoSidewaysScroll(page: Page, label: string) {
   const [scroll, inner] = await widths(page);
   expect(scroll, `${label}: scrollWidth ${scroll} > innerWidth ${inner}`).toBeLessThanOrEqual(inner);
+  // The shell bar's own controls stay inside its border, too (not only inside the window).
+  const bar = page.locator('header.shell');
+  if (await bar.isVisible()) {
+    const [barScroll, barClient] = await bar.evaluate((el) => [el.scrollWidth, el.clientWidth]);
+    expect(barScroll, `${label}: header controls overflow the bar`).toBeLessThanOrEqual(barClient);
+  }
 }
 
 /** The outline a forced-colors user sees: style, width and (forced) color. */
