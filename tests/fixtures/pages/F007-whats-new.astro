@@ -1,0 +1,49 @@
+---
+// Tests-only page (built with TAROKIT_FIXTURES=1 into dist-fixtures/, never into dist/; astro.config.ts).
+// F-007.AC6–AC8 need tools with chosen dates, which the shared fixture content doesn't have, so this page renders
+// the real home WhatsNew island (MOD-Pages) over fixed sets of tools. The tests set the viewer's date to
+// 2026-10-04 (tests/e2e/home.spec.ts):
+//   ac6  one tool added 3 days before, one added 60 days before;
+//   ac7  eight tools added within the last 30 days;
+//   ac8  a tool added 10 days before and updated 2 days before, and one added 3 days before;
+//   none a tool added a year before (the section is not shown).
+import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
+import { whatsNewProps } from '../../../src/modules/pages/home/home.ts';
+import WhatsNew from '../../../src/modules/pages/home/WhatsNew.tsx';
+
+const tool = (id: string, name: string, added: string, updated?: string) => ({
+  id,
+  name,
+  summary: `${name} summary.`,
+  added,
+  ...(updated ? { updated } : {}),
+});
+const sets = {
+  ac6: [tool('three-days', 'Three days old', '2026-10-01'), tool('sixty-days', 'Sixty days old', '2026-08-05')],
+  ac7: Array.from({ length: 8 }, (_, i) => tool(`tool-${i + 1}`, `Tool ${i + 1}`, `2026-09-2${i}`)),
+  ac8: [
+    tool('updated-tool', 'Updated tool', '2026-09-24', '2026-10-02'),
+    tool('added-three', 'Added three days ago', '2026-10-01'),
+  ],
+  none: [tool('old', 'Old tool', '2025-10-04')],
+};
+---
+
+<BaseLayout title="F-007 what's new fixture" description="Tests-only page." path="/__fixtures__/whats-new/">
+  <div class="fx">
+    <h1>What's new fixture</h1>
+    {Object.entries(sets).map(([id, tools]) => (
+      <div data-testid={id}>
+        <WhatsNew client:load {...whatsNewProps(tools)} />
+      </div>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .fx {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-8);
+  }
+</style>

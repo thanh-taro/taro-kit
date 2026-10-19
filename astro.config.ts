@@ -46,6 +46,11 @@ const fixturePages: AstroIntegration = {
         pattern: '/__fixtures__/recents',
         entrypoint: new URL('./tests/fixtures/pages/F006-recents.astro', import.meta.url),
       });
+      // F-007 home what's new over tools with chosen dates (F-007.AC6 to AC8).
+      injectRoute({
+        pattern: '/__fixtures__/whats-new',
+        entrypoint: new URL('./tests/fixtures/pages/F007-whats-new.astro', import.meta.url),
+      });
       // F-002 SCR-Catalog's empty state (tests/fixtures/content/F010_AC6-no-note-no-tools).
       injectRoute({
         pattern: '/__fixtures__/catalog-empty',

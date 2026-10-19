@@ -1,0 +1,186 @@
+/* MOD-Pages: SCR-Home's island parts (HomePersonal, WhatsNew) and the personal region's states (design
+   HomeDesktop / HomeMobile / HomeStatesDesktop / HomeStatesMobile). Tokens only.
+   Unlayered on purpose, like recent-tools.css: it is bundled with the islands, possibly ahead of global.css's
+   layer order statement. */
+
+/* The personal region (index.astro) and its placeholders are layout-transparent: their sections are flex items of
+   the page column, exactly like the island's own sections. */
+.tk-home-personal,
+.tk-home-personal [data-tk-home-reserve] {
+  display: contents;
+}
+.tk-home-personal [data-tk-home-reserve] > * {
+  visibility: hidden;
+}
+.tk-home-personal:has([data-tk-home-ready]) [data-tk-home-reserve] {
+  display: none;
+}
+
+/* Before the island is ready: the invitation the reserve script chose (keyboard without scripts), or none in the
+   default state, where the placeholders hold the sections' place. */
+.tk-home-invite[data-pending='touch'],
+.tk-home-personal[data-input='touch'] .tk-home-invite[data-pending='keyboard'],
+.tk-home-personal[data-state='default'] .tk-home-invite[data-pending] {
+  display: none;
+}
+.tk-home-personal[data-input='touch'][data-state='empty'] .tk-home-invite[data-pending='touch'] {
+  display: block;
+}
+.tk-home-invite {
+  max-inline-size: calc(var(--tk-size-palette-width) + var(--tk-space-16));
+}
+.tk-home-invite .tk-state__title {
+  font-size: var(--tk-font-size-lg);
+  font-weight: var(--tk-font-weight-medium);
+  line-height: var(--tk-font-line-height-normal);
+}
+.tk-home-invite kbd {
+  padding: calc(var(--tk-space-1) / 4) calc(var(--tk-space-1) + var(--tk-space-1) / 2);
+  background: var(--tk-color-surface2);
+  border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+  border-block-end-width: var(--tk-border-width-focus);
+  border-radius: var(--tk-radius-sm);
+  color: var(--tk-color-fg);
+  font-family: var(--tk-font-family-mono);
+  font-size: var(--tk-font-size-xs);
+  font-weight: var(--tk-font-weight-medium);
+  white-space: nowrap;
+}
+
+/* Favorites: the same section as recents (recent-tools.css), with the count beside the heading. */
+.tk-favorites {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tk-space-3);
+}
+.tk-favorites__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.tk-favorites__heading,
+.tk-whatsnew__heading {
+  color: var(--tk-color-muted);
+  font-family: var(--tk-font-family-body);
+  font-size: var(--tk-font-size-md);
+  font-weight: var(--tk-font-weight-bold);
+  letter-spacing: 0.02em;
+}
+.tk-favorites__count {
+  color: var(--tk-color-muted);
+  font-family: var(--tk-font-family-mono);
+  font-size: var(--tk-font-size-xs);
+  line-height: var(--tk-font-line-height-tight);
+}
+.tk-favorites__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--tk-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 720px) {
+  .tk-favorites__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* What's new: a list of rows; on narrow screens the summary moves under the kind, name and date. */
+.tk-whatsnew {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tk-space-3);
+}
+.tk-whatsnew__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tk-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tk-whatsnew__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--tk-space-3);
+  min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-2));
+  padding-inline: var(--tk-space-4);
+  background: var(--tk-color-surface);
+  border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+  border-radius: var(--tk-radius-md);
+  transition: background-color var(--tk-motion-duration-fast) var(--tk-motion-easing-standard);
+}
+.tk-whatsnew__item:hover {
+  background: var(--tk-color-surface2);
+}
+.tk-whatsnew__item:has(.tk-whatsnew__link:focus-visible) {
+  outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+  outline-offset: var(--tk-border-width-focus);
+}
+.tk-whatsnew__kind {
+  flex: none;
+  padding: calc(var(--tk-space-1) - var(--tk-border-width-hairline)) var(--tk-space-2);
+  border-radius: var(--tk-radius-sm);
+  background: var(--tk-color-tint2);
+  color: var(--tk-color-accent2-fg);
+  font-size: var(--tk-font-size-xs);
+  font-weight: var(--tk-font-weight-bold);
+}
+/* The stretched link: the whole row opens the tool. */
+.tk-whatsnew__link {
+  flex: none;
+  color: var(--tk-color-fg);
+  font-size: var(--tk-font-size-base);
+  font-weight: var(--tk-font-weight-semibold);
+  text-decoration: none;
+}
+.tk-whatsnew__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--tk-radius-md);
+}
+.tk-whatsnew__link:focus-visible {
+  outline: none;
+}
+.tk-whatsnew__summary {
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--tk-color-muted);
+  font-size: var(--tk-font-size-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tk-whatsnew__date {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--tk-color-muted);
+  font-family: var(--tk-font-family-mono);
+  font-size: var(--tk-font-size-xs);
+}
+@media (max-width: 720px) {
+  .tk-whatsnew__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: calc(var(--tk-space-1) + var(--tk-space-1) / 2) var(--tk-space-2);
+    padding: var(--tk-space-3) calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+  }
+  .tk-whatsnew__link {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tk-whatsnew__summary {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    white-space: normal;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tk-whatsnew__item {
+    transition: none;
+  }
+}

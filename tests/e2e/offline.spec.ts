@@ -241,6 +241,86 @@ test.describe('F-011 unavailable tools offline (fixture build: linked and offlin
     ).not.toHaveAccessibleDescription(new RegExp(UNAVAILABLE));
   });
 
+  /** Personal data stored before the first load only, replacing this block's recents (its own flag). */
+  const seedHome = (page: Page, favorites: string[], recents: string[]) =>
+    page.addInitScript(
+      ([favs, recs]) => {
+        if (sessionStorage.getItem('home-seeded')) return;
+        const at = (i: number) => new Date(Date.UTC(2026, 9, 10, 12, 59 - i)).toISOString();
+        localStorage.setItem(
+          'tarokit.personal',
+          JSON.stringify({
+            schemaVersion: 1,
+            favorites: favs.map((toolId, i) => ({ toolId, pinnedAt: at(i) })),
+            recents: recs.map((toolId, i) => ({ toolId, openedAt: at(i) })),
+            preferences: { theme: 'system' },
+            daysUsed: [],
+          }),
+        );
+        sessionStorage.setItem('home-seeded', '1');
+      },
+      [favorites, recents] as const,
+    );
+  const homeCard = (page: Page, scope: ReturnType<Page['locator']>, name: string) =>
+    scope.locator('.tk-toolcard').filter({ has: page.getByRole('link', { name, exact: true }) });
+
+  test('F011_AC5 offline, the real home’s favorite and recent cards mark tools that need the internet', async ({
+    page,
+    context,
+  }) => {
+    // F-007's home on the fixture build (a linked, an embedded and an offline-capable tool). The fixture build has
+    // no service worker, so this goes offline in place; loading home offline is the production test below.
+    await seedHome(page, ['fx-linked', 'ft-offline'], ['ft-embedded', 'ft-offline']);
+    await page.goto(`${FX}/`);
+    await expect(page.locator('[data-tk-home-ready]')).toBeAttached();
+    const favorites = page.getByRole('region', { name: 'Your favorites' });
+    const recents = page.getByRole('region', { name: 'Recently used' });
+    await expect(favorites.locator('.tk-toolcard')).toHaveCount(2);
+    await expect(recents.locator('.tk-toolcard')).toHaveCount(1);
+    await expect(page.locator('main [data-unavailable]')).toHaveCount(0);
+    await goOffline(context, page);
+    await expect(indicator(page)).toBeVisible();
+    await expect(homeCard(page, favorites, 'Fixture linked tool')).toHaveAttribute('data-unavailable', '');
+    await expect(homeCard(page, favorites, 'Fixture linked tool').getByText(UNAVAILABLE)).toBeVisible();
+    await expect(homeCard(page, favorites, 'Fixture offline tool')).not.toHaveAttribute('data-unavailable', '');
+    await expect(homeCard(page, recents, 'Fixture embedded tool')).toHaveAttribute('data-unavailable', '');
+    await context.setOffline(false);
+    await expect(page.locator('main [data-unavailable]')).toHaveCount(0);
+  });
+
+  test('F011_AC5 the real home loaded offline shows its personal sections from device data', async ({
+    page,
+    context,
+  }) => {
+    // Production build (with the service worker): every sample tool is embedded and not offline-capable.
+    await seedHome(page, ['sample-dev'], ['sample-media']);
+    await visitOnline(page, `${PROD}/`);
+    await goOffline(context, page);
+    await page.reload();
+    await expect(page.locator('[data-tk-home-ready]')).toBeAttached();
+    await expect(indicator(page)).toBeVisible();
+    const favorites = page.getByRole('region', { name: 'Your favorites' });
+    await expect(homeCard(page, favorites, 'Sample developer tool')).toHaveAttribute('data-unavailable', '');
+    const recents = page.getByRole('region', { name: 'Recently used' });
+    await expect(homeCard(page, recents, 'Sample media tool')).toHaveAttribute('data-unavailable', '');
+    await expect(page.getByRole('region', { name: 'Browse by category' })).toBeVisible();
+  });
+
+  for (const scheme of ['dark', 'light'] as const) {
+    test(`NFR-03 the offline home has no axe violations (${scheme})`, async ({ page, context }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await seedHome(page, ['sample-dev'], ['sample-media']);
+      await visitOnline(page, `${PROD}/`);
+      await goOffline(context, page);
+      await page.reload();
+      await expect(page.locator('[data-tk-home-ready]')).toBeAttached();
+      await expect(indicator(page)).toBeVisible();
+      await expect(page.locator('html')).toHaveAttribute('data-theme', scheme);
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+    });
+  }
+
   test('F011_AC5 offline, catalog search results mark tools that need the internet', async ({ page, context }) => {
     await page.goto(`${FX}/tools/`);
     await expect(page.getByTestId('catalog')).toHaveAttribute('data-ready', '');

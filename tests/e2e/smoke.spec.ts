@@ -1,4 +1,4 @@
-// Scaffold smoke test: the home page renders, the skip link is the first focusable element,
+// Smoke test: the home page renders, the skip link is the first focusable element,
 // no CSP violations, no third-party requests (NFR-05), and axe finds no serious issues in either theme (NFR-03).
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
@@ -18,13 +18,13 @@ async function watchCsp(page: Page): Promise<string[]> {
   return violations;
 }
 
-test.describe('home (scaffold)', () => {
-  test('renders the placeholder in Taro’s voice inside the app shell', async ({ page }) => {
+test.describe('home', () => {
+  test('renders SCR-Home inside the app shell, with Home marked in the navigation', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle("TaroKit — Taro's tools and work");
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText("TaroKit — Taro's tools and work");
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Good (morning|afternoon|evening)$/);
     await expect(page.getByRole('banner')).toBeVisible();
-    await expect(page.getByRole('main')).toContainText("I'm still building my first tools. Check back soon.");
+    await expect(page.getByRole('region', { name: 'Browse by category' })).toBeVisible();
     await expect(page.getByRole('navigation').getByRole('link', { name: 'Home' })).toHaveAttribute(
       'aria-current',
       'page',

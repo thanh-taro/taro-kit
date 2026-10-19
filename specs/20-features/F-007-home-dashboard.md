@@ -1,7 +1,7 @@
 ---
 id: F-007
 title: Home dashboard
-status: ready
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]

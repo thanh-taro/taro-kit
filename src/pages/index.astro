@@ -1,40 +1,262 @@
 ---
-// Placeholder home (scaffold). SCR-Home itself is built by F-007; until then this page says, in Taro's
-// voice, that the tools are on their way. Every string is a COPY id.
-import { t } from '../modules/copy/index.ts';
-import BaseLayout from '../modules/shell/BaseLayout.astro';
-import { metaFor } from '../modules/meta/index.ts';
+// SCR-Home (MOD-Pages), the portal root. Design: design/canvas/HomeDesktop, HomeMobile, HomeStatesDesktop,
+// HomeStatesMobile. Regions in reading order: 1 shell header; 2 greeting with date and time, and the introduction
+// linking to About; 3 the search entry; 4 favorites and 5 recents (or, with neither, the first-visit invitation);
+// 6 browse by category; 7 what's new.
+// - Greeting and clock: the clock inline script right after them sets both before first paint and on every minute
+//   (inline.ts). The static heading text is COPY-nav.home, kept only when scripts don't run.
+// - The search entry is a control the palette bootstrap arms (`data-tk-palette-open`, key cap `data-tk-shortcut`).
+// - Regions 4 and 5: the HomePersonal island inside the personal region, whose state the reserve inline script
+//   predicts before first paint (empty or default, keyboard or touch), with invisible placeholders until the island
+//   is ready, so nothing below moves and nothing wrong shows.
+// - Region 6 is static (category row, regular CMP-CategoryTile). Region 7: the WhatsNew island.
+// Implements: F-007.R1, F-007.R2, F-007.R3, F-007.R4, F-007.R5, F-007.R6, F-007.R7.
 import { getRegistry } from '../modules/content/index.ts';
+import { t } from '../modules/copy/index.ts';
+import CategoryTile from '../modules/design-system/CategoryTile.astro';
+import Icon from '../modules/design-system/Icon.astro';
+import { iconSvg } from '../modules/design-system/icons.ts';
+import { toolCardText } from '../modules/design-system/text.ts';
+import { needsInternet } from '../modules/design-system/tool-card.ts';
+import { metaFor } from '../modules/meta/index.ts';
+import { firstVisitText, homeView } from '../modules/pages/home/home.ts';
+import HomePersonal, { type HomePersonalText } from '../modules/pages/home/HomePersonal.tsx';
+import { HOME_IDS, homeClockScript, homeReserveScript } from '../modules/pages/home/inline.ts';
+import WhatsNew from '../modules/pages/home/WhatsNew.tsx';
+import { SHORTCUT_LABELS } from '../modules/palette/logic.ts';
+import { searchControlLead } from '../modules/palette/text.ts';
+import { inlineScriptHash } from '../modules/security-policy/index.ts';
+import BaseLayout from '../modules/shell/BaseLayout.astro';
+
+const registry = getRegistry();
+const view = homeView(registry);
+const headings = { favorites: t('COPY-home.favorites'), recents: t('COPY-home.recents') };
+const clockScript = homeClockScript();
+const reserveScript = homeReserveScript(
+  Object.fromEntries(view.tools.map((tool) => [tool.id, [tool.name, needsInternet(tool) ? 1 : 0]])),
+  headings,
+);
+// Page frontmatter runs before the layout's, so these hashes reach the CSP meta (ADR-0009).
+if (!Astro.csp) throw new Error('security.csp must be enabled (ADR-0009)');
+Astro.csp.insertScriptHash(inlineScriptHash(clockScript));
+Astro.csp.insertScriptHash(inlineScriptHash(reserveScript));
+
+const personalText: HomePersonalText = {
+  ...headings,
+  invite: firstVisitText(),
+  browse: { label: t('COPY-notFound.toCatalog'), href: '/tools/' },
+  inviteIcon: iconSvg('sparkles'),
+  cards: toolCardText(),
+};
 ---
 
-<BaseLayout {...metaFor({ page: 'home' }, getRegistry())}>
-  <section class="hero" aria-labelledby="hero-title">
-    <h1 id="hero-title">{t('COPY-meta.homeTitle')}</h1>
-    <p class="lead">{t('COPY-meta.homeDescription')}</p>
-    <p class="note">{t('COPY-catalog.empty')}</p>
-  </section>
+<BaseLayout {...metaFor({ page: 'home' }, registry)}>
+  <div class="home">
+    <section class="greet" aria-labelledby={HOME_IDS.greeting}>
+      <p class="when" data-testid="home-clock">
+        <time id={HOME_IDS.clock}>
+          <span id={HOME_IDS.date}></span>
+          <span class="sep" aria-hidden="true">
+            ·
+          </span>
+          <span id={HOME_IDS.time}></span>
+        </time>
+      </p>
+      <h1 id={HOME_IDS.greeting}>{t('COPY-nav.home')}</h1>
+      {/* set:html on a build-time constant only (homeClockScript, hashed for the CSP above). */}
+      <script is:inline set:html={clockScript} />
+      {/* One line: whitespace between the parts would show before the period. */}
+      <!-- prettier-ignore -->
+      <p class="intro" data-testid="home-intro">{view.intro.before}<span class="name">{view.intro.name}</span>{view.intro.after}</p>
+      <a class="about" href="/about/">
+        {t('COPY-nav.about')}
+        <span aria-hidden="true">→</span>
+      </a>
+      <button type="button" class="search" data-tk-palette-open data-testid="home-search">
+        <Icon name="search" />
+        <span class="search-text">{searchControlLead()}</span>
+        <kbd data-tk-shortcut>{SHORTCUT_LABELS.other}</kbd>
+      </button>
+    </section>
+
+    <div id={HOME_IDS.personal} class="tk-home-personal">
+      <div data-tk-home-reserve aria-hidden="true"></div>
+      <HomePersonal client:load tools={view.tools} text={personalText} />
+    </div>
+    {/* set:html on a build-time constant only (homeReserveScript, hashed for the CSP above). */}
+    <script is:inline set:html={reserveScript} />
+    {view.categories.length > 0 && (
+      <section class="cats" aria-labelledby="home-categories">
+        <h2 id="home-categories" class="section-title">
+          {t('COPY-home.categories')}
+        </h2>
+        <ul class="cat-row">
+          {view.categories.map((c) => (
+            <li>
+              <CategoryTile
+                variant="regular"
+                name={c.name}
+                href={c.href}
+                count={c.count}
+                tint={c.tint}
+                iconSvg={c.iconSvg}
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <WhatsNew client:load {...view.whatsNew} />
+  </div>
 </BaseLayout>
 
 <style>
-  .hero {
+  .home {
     display: flex;
     flex-direction: column;
-    gap: var(--tk-space-4);
+    gap: var(--tk-space-10);
+  }
+  .greet {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
     padding-block-start: var(--tk-space-8);
-    max-inline-size: var(--tk-size-palette-width);
+  }
+  .when {
+    min-block-size: calc(var(--tk-font-size-sm) * var(--tk-font-line-height-normal));
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-medium);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .sep {
+    margin-inline: var(--tk-space-2);
   }
   h1 {
-    font-size: clamp(var(--tk-font-size-3xl), 6vw, var(--tk-font-size-5xl));
+    font-size: var(--tk-font-size-5xl);
+    line-height: var(--tk-font-line-height-tight);
     letter-spacing: -0.03em;
   }
-  .lead {
+  .intro {
+    max-inline-size: calc(var(--tk-size-palette-width) - var(--tk-space-5));
+    color: var(--tk-color-muted);
     font-size: var(--tk-font-size-lg);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .name {
+    color: var(--tk-color-accent);
+    font-weight: var(--tk-font-weight-bold);
+  }
+  .about {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: calc(var(--tk-space-1) + var(--tk-space-1) / 2);
+    min-block-size: var(--tk-size-touch-target);
+    color: var(--tk-color-accent);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-bold);
+    text-decoration: none;
+  }
+  .about:hover {
+    text-decoration: underline;
+  }
+  /* The search entry (design HomeDesktop): a large field-like button with the shortcut's key cap. */
+  .search {
+    display: flex;
+    align-items: center;
+    gap: var(--tk-space-3);
+    inline-size: 100%;
+    max-inline-size: var(--tk-size-palette-width);
+    min-block-size: calc(var(--tk-size-touch-target) + var(--tk-space-3));
+    margin-block-start: var(--tk-space-3);
+    padding-inline: calc(var(--tk-space-4) + var(--tk-space-1) / 2) calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    background: var(--tk-color-surface);
+    color: var(--tk-color-muted);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-lg);
+    box-shadow: var(--tk-shadow-glow);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-medium);
+    text-align: start;
+    cursor: pointer;
+  }
+  .search:hover {
     color: var(--tk-color-fg);
   }
-  .note {
-    padding: var(--tk-space-4);
-    border: var(--tk-border-width-hairline) dashed var(--tk-color-line-strong);
-    border-radius: var(--tk-radius-lg);
+  .search:focus-visible {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: var(--tk-border-width-focus);
+  }
+  .search-text {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .search kbd {
+    flex: none;
+    margin-inline-start: auto;
+    padding: calc(var(--tk-space-1) / 2) var(--tk-space-2);
+    background: var(--tk-color-surface2);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-block-end-width: var(--tk-border-width-focus);
+    border-radius: var(--tk-radius-sm);
+    color: var(--tk-color-fg);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-medium);
+  }
+  .section-title {
     color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-body);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-bold);
+    letter-spacing: 0.02em;
+  }
+  .cats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+  }
+  .cat-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--tk-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cat-row li {
+    display: flex;
+  }
+  @media (max-width: 720px) {
+    .home {
+      gap: calc(var(--tk-space-6) + var(--tk-space-1));
+    }
+    .greet {
+      gap: var(--tk-space-3);
+      padding-block-start: var(--tk-space-3);
+    }
+    h1 {
+      font-size: var(--tk-font-size-3xl);
+    }
+    .intro {
+      font-size: var(--tk-font-size-base);
+    }
+    .search {
+      margin-block-start: var(--tk-space-2);
+      box-shadow: none;
+    }
+    /* Narrow screens are mostly touch: no key cap (design HomeMobile). */
+    .search kbd {
+      display: none;
+    }
+    .cat-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--tk-space-2);
+    }
   }
 </style>

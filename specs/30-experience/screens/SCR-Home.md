@@ -22,7 +22,7 @@ Launch pad for the Owner and front door for visitors.
 | State | When | What the user sees |
 |---|---|---|
 | default | has favorites or recents | the regions above |
-| empty | no favorites and no recents | greeting, search, the first-visit invitation (COPY-home.firstVisit, or COPY-home.firstVisitTouch on touch-only devices) via CMP-StateMessage, browse by category, then what's new |
+| empty | no favorites and no recents | greeting, search, the first-visit invitation (COPY-home.firstVisit, or COPY-home.firstVisitTouch on touch-only devices) via CMP-StateMessage with a browse-the-catalog action (COPY-notFound.toCatalog), browse by category, then what's new |
 | loading | n/a | content is local, so there is no loading state |
 | error | storage unavailable | the session's favorites and recents, plus a one-time notice (COPY-storage.unavailable) |
 
