@@ -103,7 +103,8 @@ describe('F-011 precache (NFR-06)', () => {
     ])
       put(p);
     // Never precached: the worker itself, host config, and files no page loads.
-    for (const p of ['sw.js', '_headers', 'sitemap.xml', 'robots.txt', 'third-party-notices.txt']) put(p);
+    for (const p of ['sw.js', '_headers', 'sitemap.xml', 'robots.txt', 'third-party-notices.txt', 'preview.png'])
+      put(p);
 
     const entries = await precacheEntries(dist);
     const urls = entries.map((e) => e.url).sort();

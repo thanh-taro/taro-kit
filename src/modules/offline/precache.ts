@@ -3,7 +3,7 @@
 // including `astro:build:done` output such as /data/catalog.<hash>.json (MOD-Content).
 // Precached: every page (404.html included), all CSS, JS and fonts, the catalog data file, the manifest and icons,
 // the avatar and project images: "every portal page and all catalog content" (NFR-06).
-// Not precached: sw.js itself, host config and files no page loads.
+// Not precached: sw.js itself, host config, and files no page loads (sitemap, robots.txt, the link-preview image).
 // Node only (build); the CLI is scripts/build-sw.ts (`pnpm sw:build`).
 import { readFileSync, rmSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { brotliCompressSync, gzipSync } from 'node:zlib';
 import { getManifest, injectManifest } from 'workbox-build';
+import { PREVIEW_IMAGE } from '../meta/meta.ts';
 
 /** The part of Vite's build API this step uses (Vite has no types of its own here: it is not a direct dependency). */
 type ViteBuild = (config: Record<string, unknown>) => Promise<unknown>;
@@ -26,7 +27,16 @@ async function viteBuild(): Promise<ViteBuild> {
 export const PRECACHE_CONCURRENCY = 6;
 
 export const PRECACHE_PATTERNS = ['**/*.{html,js,css,woff2,json,webmanifest,png,jpg,jpeg,webp,avif,gif,svg}'];
-export const PRECACHE_IGNORES = ['sw.js', '_headers', 'sitemap*.xml', 'robots.txt', '*.txt', '**/*.map'];
+// The link-preview image (MOD-Meta) is fetched by other sites' crawlers, never by a portal page.
+export const PRECACHE_IGNORES = [
+  'sw.js',
+  '_headers',
+  'sitemap*.xml',
+  'robots.txt',
+  '*.txt',
+  '**/*.map',
+  PREVIEW_IMAGE.path.slice(1),
+];
 
 const globConfig = (distDir: string) => ({
   globDirectory: distDir,
