@@ -137,10 +137,14 @@ describe('F-013.R2 RULE-08 an invalid file is rejected with its reason', () => {
     expect(reason(await parseBackup(asFile(fixture('F013_AC3-newer-version.json'))))).toBe('newerVersion');
   });
 
-  test('F-013.R2 a file that cannot be read is damaged', async () => {
+  test('F-013 edge case: a file that cannot be read is unreadable, not damaged', async () => {
     expect(reason(await parseBackup({ size: 10, text: () => Promise.reject(new Error('NotReadableError')) }))).toBe(
-      'damaged',
+      'unreadable',
     );
+  });
+
+  test('RULE-01 a file whose recents are not newest first is damaged', () => {
+    expect(reason(parse('RULE-01-damaged-recents-oldest-first.json'))).toBe('damaged');
   });
 
   test('NFR-05 import is prototype-pollution safe: only known fields are copied', () => {
@@ -233,15 +237,36 @@ describe('F-013.R4 / R5 replacing and erasing in the store', () => {
     expect(JSON.parse(storage.getItem(STORAGE_KEY)!)).toEqual(emptyDocument());
   });
 
-  test('F-013 edge case: when the device refuses the write, replace and erase report unsaved and apply for the session', () => {
+  test('F-013 edge case: when the device refuses the write, replace reports unsaved and applies for the session', () => {
     const { storage, store } = seeded();
     storage.failWrites = true;
     const data = ok(parse('F013_AC6-valid.json'));
     expect(store.replaceAll(data)).toBe('unsaved');
     expect(store.snapshot()).toEqual(data);
     expect(JSON.parse(storage.getItem(STORAGE_KEY)!)).toEqual(current());
+  });
+
+  test('F013_AC8 when writing the erased data fails, the stored document is removed and the erase is saved', () => {
+    const { storage, store } = seeded();
+    storage.failWrites = true;
+    expect(store.eraseAll()).toBe('saved');
+    expect(storage.getItem(STORAGE_KEY)).toBeNull();
+    expect(store.snapshot()).toEqual(emptyDocument());
+    // A fresh page finds nothing stored, so the data is really gone.
+    expect(createPersonalDataStore({ storage: () => storage }).snapshot()).toEqual(emptyDocument());
+  });
+
+  test('F-013 edge case: when writing and removing both fail, erase reports unsaved and applies for the session', () => {
+    const { storage, store } = seeded();
+    storage.failWrites = true;
+    storage.failRemoves = true;
     expect(store.eraseAll()).toBe('unsaved');
     expect(store.snapshot()).toEqual(emptyDocument());
+    expect(JSON.parse(storage.getItem(STORAGE_KEY)!)).toEqual(current());
+  });
+
+  test('F-013 edge case: with storage unavailable from the start, erase reports unsaved', () => {
+    expect(createPersonalDataStore({ storage: () => null }).eraseAll()).toBe('unsaved');
   });
 
   test('F-013 edge case: a confirmed import or erase replaces a newer version’s document; other changes never do', () => {

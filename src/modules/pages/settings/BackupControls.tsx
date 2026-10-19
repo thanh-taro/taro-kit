@@ -3,7 +3,8 @@
 //   (COPY-settings.exportFailed).
 // - Import picks a file with a native file input (File API only; nothing is uploaded or put in an address) and
 //   MOD-Backup validates it whole while the import control shows progress (SCR-Settings loading state).
-//   - An invalid file shows COPY-settings.importInvalid with its reason, announced, and nothing changes.
+//   - An invalid file shows COPY-settings.importInvalid with its reason, announced, and nothing changes. When the
+//     file can't be read or the validator's code can't load, COPY-settings.importFailed says so instead.
 //   - A valid file opens the confirmation (COPY-settings.importConfirm, with the file's name); only Confirm replaces
 //     the personal data (MOD-PersonalData `replaceAll`), so every island and other open windows follow. Cancel or
 //     Escape changes nothing. When the replace can't be saved on the device, COPY-settings.importUnsaved says so.
@@ -36,9 +37,12 @@ interface Props {
   unsaved: string;
   /** COPY-settings.exportFailed */
   exportFailed: string;
+  /** COPY-settings.importFailed */
+  importFailed: string;
 }
 
-type Problem = { kind: 'invalid'; reason: ImportReason } | { kind: 'unsaved' } | { kind: 'exportFailed' };
+type Problem =
+  { kind: 'invalid'; reason: ImportReason } | { kind: 'unsaved' } | { kind: 'exportFailed' } | { kind: 'importFailed' };
 
 const loadBackup = () => import('../../backup/index.ts');
 
@@ -71,10 +75,11 @@ export default function BackupControls(props: Props) {
     try {
       const result = await (await loadBackup()).parseBackup(file);
       if (result.ok) setPending({ data: result.data, name: file.name });
+      else if (result.reason === 'unreadable') setProblem({ kind: 'importFailed' });
       else setProblem({ kind: 'invalid', reason: result.reason });
     } catch {
       // The validator's code could not load (e.g. offline before it was cached): nothing was read or changed.
-      setProblem({ kind: 'invalid', reason: 'damaged' });
+      setProblem({ kind: 'importFailed' });
     } finally {
       setBusy(false);
     }
@@ -87,7 +92,9 @@ export default function BackupControls(props: Props) {
         ? props.unsaved
         : problem?.kind === 'exportFailed'
           ? props.exportFailed
-          : null;
+          : problem?.kind === 'importFailed'
+            ? props.importFailed
+            : null;
 
   return (
     <div class="backup">

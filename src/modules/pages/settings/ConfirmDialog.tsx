@@ -38,6 +38,7 @@ export default function ConfirmDialog({
   const cancelRef = useRef<HTMLButtonElement>(null);
   const opener = useRef<HTMLElement | null>(null);
   const titleId = useId();
+  const detailId = useId();
 
   useEffect(() => {
     const dialog = ref.current;
@@ -60,6 +61,7 @@ export default function ConfirmDialog({
       role="alertdialog"
       aria-modal="true"
       aria-labelledby={titleId}
+      aria-describedby={detail ? detailId : undefined}
       // Escape: the browser fires `cancel`; the caller closes it through `open`.
       onCancel={(e) => {
         e.preventDefault();
@@ -69,7 +71,11 @@ export default function ConfirmDialog({
       <h2 id={titleId} class="tk-confirm__title">
         {title}
       </h2>
-      {detail && <p class="tk-confirm__detail">{detail}</p>}
+      {detail && (
+        <p id={detailId} class="tk-confirm__detail">
+          {detail}
+        </p>
+      )}
       <div class="tk-confirm__actions">
         <button ref={cancelRef} type="button" class="tk-confirm__cancel" onClick={onCancel}>
           {cancelLabel}

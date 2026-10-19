@@ -117,6 +117,21 @@ test.describe('F-013.R2 an invalid file is rejected with its reason and nothing 
     });
 });
 
+test.describe('F-013 edge case: a file that cannot be opened', () => {
+  test('F-013 edge case: when the import cannot load, settings says so (not damaged) and nothing changes', async ({
+    page,
+  }) => {
+    await seed(page);
+    await page.route('**/_astro/backup.*.js', (route) => route.abort());
+    await page.goto(SETTINGS);
+    await pick(page, 'F013_AC6-valid.json');
+    await expect(page.getByRole('alert')).toHaveText(/I couldn't open that file just now\. Please try again\./);
+    await expect(page.getByText(REASONS.damaged)).toHaveCount(0);
+    await expect(page.getByRole('alertdialog')).toHaveCount(0);
+    expect(await stored(page)).toEqual(CURRENT);
+  });
+});
+
 test.describe('F-013.R3 / R4 a valid file replaces the data only after confirming', () => {
   test('F-013.R2 the import control shows progress while the file is checked (SCR-Settings loading)', async ({
     page,
@@ -146,6 +161,8 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
     await pick(page, 'F013_AC6-valid.json');
     await expect(importDialog(page)).toBeVisible();
     await expect(importDialog(page)).toContainText('F013_AC6-valid.json');
+    // The file name is the dialog's description, so screen readers hear it.
+    await expect(importDialog(page)).toHaveAccessibleDescription('F013_AC6-valid.json');
     // Focus moves into the confirmation, on Cancel (SCR-Settings accessibility).
     await expect(importDialog(page).getByRole('button', { name: 'Cancel' })).toBeFocused();
     expect(await stored(page)).toEqual(CURRENT);
@@ -182,6 +199,7 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
     expect(await stored(page)).toEqual(CURRENT);
     await pick(page, 'F013_AC6-valid.json');
     await expect(importDialog(page)).toBeVisible();
+    await expect(importDialog(page).getByRole('button', { name: 'Cancel' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(importDialog(page)).toBeHidden();
     expect(await stored(page)).toEqual(CURRENT);
@@ -266,6 +284,29 @@ test.describe('F-013.R5 erase', () => {
     await expect(page.getByText("You've used TaroKit on 0 of the last 14 days")).toBeVisible();
   });
 
+  test('F013_AC8 erasing in one window empties favorites and recents in the other open windows', async ({
+    page,
+    context,
+  }) => {
+    await seed(page);
+    await page.goto(SETTINGS);
+    // The tests-only favorites and recents pages (fixture build) list what each window shows.
+    const favorites = await context.newPage();
+    await favorites.goto(`${PORTAL}/__fixtures__/favorites/`);
+    await expect(
+      favorites.getByTestId('home').getByRole('link', { name: 'Fixture tool 09', exact: true }),
+    ).toBeVisible();
+    const recents = await context.newPage();
+    await recents.goto(`${PORTAL}/__fixtures__/recents/`);
+    await expect(recents.getByRole('region', { name: 'Recently used' })).toBeVisible();
+    await page.bringToFront();
+    await page.getByRole('button', { name: 'Erase your data' }).click();
+    await eraseDialog(page).getByRole('button', { name: 'Confirm' }).click();
+    await expect(eraseDialog(page)).toBeHidden();
+    await expect(favorites.getByTestId('home').getByRole('link')).toHaveCount(0);
+    await expect(recents.getByRole('region', { name: 'Recently used' })).toHaveCount(0);
+  });
+
   test('F-013.R5 cancelling erase, by button or Escape, changes nothing', async ({ page }) => {
     await seed(page);
     await page.goto(SETTINGS);
@@ -274,12 +315,14 @@ test.describe('F-013.R5 erase', () => {
     await eraseDialog(page).getByRole('button', { name: 'Cancel' }).click();
     await expect(eraseDialog(page)).toBeHidden();
     await erase.click();
+    // Escape only once the confirmation has opened and taken focus.
+    await expect(eraseDialog(page).getByRole('button', { name: 'Cancel' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(eraseDialog(page)).toBeHidden();
     expect(await stored(page)).toEqual(CURRENT);
   });
 
-  test('F-013 edge case: when the device refuses the write, the erase says it was not saved', async ({ page }) => {
+  test('F-013 edge case: when writing fails, erase removes the stored data instead', async ({ page }) => {
     await seed(page);
     await page.goto(SETTINGS);
     const erase = page.getByRole('button', { name: 'Erase your data' });
@@ -287,6 +330,28 @@ test.describe('F-013.R5 erase', () => {
     await page.evaluate(() => {
       Storage.prototype.setItem = () => {
         throw new DOMException('quota', 'QuotaExceededError');
+      };
+    });
+    await erase.click();
+    await eraseDialog(page).getByRole('button', { name: 'Confirm' }).click();
+    await expect(eraseDialog(page)).toBeHidden();
+    expect(await stored(page)).toBeNull();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+  });
+
+  test('F-013 edge case: when the device refuses writing and removing, the erase says it was not saved', async ({
+    page,
+  }) => {
+    await seed(page);
+    await page.goto(SETTINGS);
+    const erase = page.getByRole('button', { name: 'Erase your data' });
+    await expect(erase).toBeEnabled();
+    await page.evaluate(() => {
+      Storage.prototype.setItem = () => {
+        throw new DOMException('quota', 'QuotaExceededError');
+      };
+      Storage.prototype.removeItem = () => {
+        throw new DOMException('blocked', 'SecurityError');
       };
     });
     await erase.click();
@@ -313,7 +378,9 @@ for (const scheme of ['dark', 'light'] as const)
     await pick(page, 'F013_AC6-valid.json');
     await expect(importDialog(page)).toBeVisible();
     expect(await violations()).toEqual([]);
+    await expect(importDialog(page).getByRole('button', { name: 'Cancel' })).toBeFocused();
     await page.keyboard.press('Escape');
+    await expect(importDialog(page)).toBeHidden();
     await page.getByRole('button', { name: 'Erase your data' }).click();
     await expect(eraseDialog(page)).toBeVisible();
     expect(await violations()).toEqual([]);

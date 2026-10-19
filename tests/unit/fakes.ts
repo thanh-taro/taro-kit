@@ -4,6 +4,8 @@
 export class FakeStorage implements Storage {
   map = new Map<string, string>();
   failWrites = false;
+  /** Makes every removeItem throw. */
+  failRemoves = false;
   get length() {
     return this.map.size;
   }
@@ -17,6 +19,7 @@ export class FakeStorage implements Storage {
     return [...this.map.keys()][i] ?? null;
   }
   removeItem(key: string) {
+    if (this.failRemoves) throw new DOMException('blocked', 'SecurityError');
     this.map.delete(key);
   }
   setItem(key: string, value: string) {

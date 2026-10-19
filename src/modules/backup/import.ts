@@ -21,7 +21,9 @@ import { BACKUP_FORMAT } from './export.ts';
 
 /** Why a file was rejected; each has its COPY-import string (F-013.R2). */
 export type ImportReason = 'notBackup' | 'damaged' | 'newerVersion' | 'tooLarge';
-export type ImportResult = { ok: true; data: PersonalData } | { ok: false; reason: ImportReason };
+/** Every import failure: an invalid file's reason, or `unreadable` when the file couldn't be read at all. */
+export type ImportFailure = ImportReason | 'unreadable';
+export type ImportResult = { ok: true; data: PersonalData } | { ok: false; reason: ImportFailure };
 
 /**
  * Larger than any backup can be: a full one (24 favorites, 20 recents, 60 dates, pretty-printed) is under 10 KB.
@@ -30,7 +32,7 @@ export type ImportResult = { ok: true; data: PersonalData } | { ok: false; reaso
 export const MAX_BACKUP_BYTES = 256 * 1024;
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
-const fail = (reason: ImportReason): ImportResult => ({ ok: false, reason });
+const fail = (reason: ImportFailure): ImportResult => ({ ok: false, reason });
 
 /**
  * RULE-08 migration: the file's personal data with what is missing filled in with defaults (empty favorites,
@@ -88,7 +90,11 @@ export function validateBackup(raw: unknown): ImportResult {
   // Normalizing drops anything invalid: duplicates, bad ids, times or dates, unknown fields, wrong types.
   // If it changed anything, the file is damaged; otherwise its normalized copy holds only known fields.
   const normalized = normalizeDocument(candidate);
-  return same(normalized, candidate) ? { ok: true, data: normalized } : fail('damaged');
+  if (!same(normalized, candidate)) return fail('damaged');
+  // RULE-01: recents are stored newest first; a file in any other order is damaged.
+  const times = normalized.recents.map((r) => Date.parse(r.openedAt));
+  if (times.some((t, i) => i > 0 && t > times[i - 1]!)) return fail('damaged');
+  return { ok: true, data: normalized };
 }
 
 /** RULE-08 on the file's text. */
@@ -109,7 +115,8 @@ export async function parseBackup(file: Pick<Blob, 'size' | 'text'>): Promise<Im
   try {
     text = await file.text();
   } catch {
-    return fail('damaged');
+    // The browser couldn't read it (moved, permissions): nothing about the file is known (COPY-settings.importFailed).
+    return fail('unreadable');
   }
   return parseBackupText(text);
 }

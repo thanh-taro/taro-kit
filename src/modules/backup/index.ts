@@ -7,6 +7,7 @@ export {
   parseBackup,
   parseBackupText,
   validateBackup,
+  type ImportFailure,
   type ImportReason,
   type ImportResult,
 } from './import.ts';

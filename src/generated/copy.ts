@@ -100,6 +100,7 @@ export const COPY = {
   "COPY-settings.exportFailed": "I couldn't save your backup just now. Please try again.",
   "COPY-settings.import": "Import from file",
   "COPY-settings.importConfirm": "Replace your favorites, recents, theme and days used with the ones in this file?",
+  "COPY-settings.importFailed": "I couldn't open that file just now. Please try again.",
   "COPY-settings.importInvalid": "I couldn't import that file because {reason}. Nothing changed.",
   "COPY-settings.importUnsaved": "I imported that file for now, but couldn't save it on this device, so your old data may come back next time.",
   "COPY-settings.privacy": "No accounts, no tracking. Everything you do here stays in your browser, and I never see it.",

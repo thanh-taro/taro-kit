@@ -48,8 +48,7 @@ export interface StoreEnvironment {
 }
 
 /** `clearRecents`, `replaceAll` and `eraseAll` outcome: saved on the device, or for this session only. */
-export type ClearResult = 'saved' | 'unsaved';
-export type SaveResult = ClearResult;
+export type SaveResult = 'saved' | 'unsaved';
 
 export interface PersonalDataStore {
   /** The whole document, always valid (normalized on read). */
@@ -96,7 +95,7 @@ export interface PersonalDataStore {
    * device (storage unavailable or failing, or a newer schema version on disk, which is never overwritten):
    * recents are then cleared for this session only, and the caller must say so.
    */
-  clearRecents(): ClearResult;
+  clearRecents(): SaveResult;
   /**
    * Write-through mutation of the whole document (ADR-0010). The recipe must return a new document.
    * Returns true when the document was saved on the device, false when it lasts for this session only.
@@ -109,7 +108,10 @@ export interface PersonalDataStore {
    * write: the data is replaced for this session only, and the caller must say so.
    */
   replaceAll(data: PersonalData): SaveResult;
-  /** F-013.R5: erases all personal data (the caller confirms first): empty lists, theme system. As `replaceAll`. */
+  /**
+   * F-013.R5: erases all personal data (the caller confirms first): empty lists, theme system. As `replaceAll`, but
+   * when writing the empty document fails, the stored document is removed instead, so the data is really gone.
+   */
   eraseAll(): SaveResult;
   /** A deep copy of the current document (for export, F-013). */
   snapshot(): PersonalData;
@@ -237,7 +239,21 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
       store.update((doc) => ({ ...doc, preferences: { ...doc.preferences, theme } }));
     },
     replaceAll: (doc) => (commit(structuredClone(doc), true) ? 'saved' : 'unsaved'),
-    eraseAll: () => (commit(emptyDocument(), true) ? 'saved' : 'unsaved'),
+    eraseAll() {
+      const device = storage;
+      if (commit(emptyDocument(), true)) return 'saved';
+      if (!device) return 'unsaved';
+      // The write failed (e.g. storage full): removing the document still erases it, and frees the space.
+      try {
+        device.removeItem(STORAGE_KEY);
+      } catch {
+        return 'unsaved';
+      }
+      storage = device;
+      available.value = true;
+      newerOnDisk = false;
+      return 'saved';
+    },
     snapshot: () => structuredClone(data.peek()),
     refresh() {
       tick();

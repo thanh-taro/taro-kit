@@ -96,6 +96,9 @@ for (const [size, viewport] of Object.entries(sizes))
           Storage.prototype.setItem = () => {
             throw new DOMException('quota', 'QuotaExceededError');
           };
+          Storage.prototype.removeItem = () => {
+            throw new DOMException('blocked', 'SecurityError');
+          };
         });
         await page.getByRole('button', { name: 'Erase your data' }).click();
         await page.getByRole('alertdialog').getByRole('button', { name: 'Confirm' }).click();

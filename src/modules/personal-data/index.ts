@@ -50,7 +50,6 @@ export { daysBetween, localDate } from './dates.ts';
 export {
   createPersonalDataStore,
   personalData,
-  type ClearResult,
   type SaveResult,
   type PersonalDataStore,
   type StoreEnvironment,
