@@ -1,7 +1,7 @@
 ---
 id: F-015
 title: Share rich link previews
-status: building
+status: shipped
 milestone: M-1
 priority: P2
 personas: [PER-02]

@@ -21,7 +21,7 @@ status: draft
 | F-012 | Choose a theme | M-1 | P1 | shipped |
 | F-013 | Export and import personal data | M-1 | P1 | ready |
 | F-014 | Check the catalog before publishing | M-1 | P1 | shipped |
-| F-015 | Share rich link previews | M-1 | P2 | building |
+| F-015 | Share rich link previews | M-1 | P2 | shipped |
 | F-016 | Browse a category | M-1 | P0 | shipped |
 
 ## Dependency order (M-1)
