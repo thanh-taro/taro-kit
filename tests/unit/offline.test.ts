@@ -4,11 +4,12 @@ import preact from '@astrojs/preact/server.js';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { brotliCompressSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { afterAll, beforeEach, describe, expect, test } from 'vitest';
 import ToolCard from '../../src/modules/design-system/ToolCard.astro';
 import { needsInternet } from '../../src/modules/design-system/tool-card.ts';
-import { MANIFEST_ICONS, webManifest } from '../../src/modules/offline/manifest.ts';
+import { FAVICONS, MANIFEST_ICONS, webManifest } from '../../src/modules/offline/manifest.ts';
 import { precacheEntries, PRECACHE_IGNORES } from '../../src/modules/offline/precache.ts';
 import { online, updateReady } from '../../src/modules/offline/state.ts';
 import { cacheRules, headersFile } from '../../src/modules/security-policy/index.ts';
@@ -37,6 +38,28 @@ const tool = (over: Partial<{ openMode: 'embedded' | 'linked'; offline: boolean 
   openMode: 'embedded' as const,
   url: 'https://units.tarokit.app/',
   ...over,
+});
+
+describe('DEP-17 favicon (MOD-Shell <BaseLayout>, QA)', () => {
+  test('DEP-17 the favicon is the app icon as SVG plus a 32 px PNG fallback, both committed in public/icons/', () => {
+    expect(FAVICONS.map((f) => f.href)).toEqual(['/icons/favicon.svg', '/icons/favicon-32.png']);
+    // Copied as-is from the brand source (scripts/brand-icons.ts), so it can't drift from the app icon.
+    expect(readFileSync(join(root, 'public/icons/favicon.svg'), 'utf8')).toBe(
+      readFileSync(join(root, 'assets/brand/app-icon.svg'), 'utf8'),
+    );
+    expect(FAVICONS[0]).toMatchObject({ type: 'image/svg+xml' });
+    expect(FAVICONS[1]).toMatchObject({ type: 'image/png', sizes: '32x32' });
+    expect(pngSize(join(root, 'public/icons/favicon-32.png')).join('x')).toBe('32x32');
+  });
+
+  test('NFR-11 the favicons and the manifest stay well inside the 8 KB "manifest, favicon, workbox-window" budget', () => {
+    const br = (b: Buffer | string) => brotliCompressSync(b).length;
+    const total =
+      br(JSON.stringify(webManifest())) +
+      FAVICONS.reduce((n, f) => n + br(readFileSync(join(root, 'public', f.href))), 0);
+    // workbox-window takes about 2.5 KB of the 8 KB (architecture.md performance baselines).
+    expect(total).toBeLessThanOrEqual(4 * 1024);
+  });
 });
 
 describe('F-011 web app manifest', () => {

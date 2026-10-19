@@ -96,3 +96,38 @@ test.describe('CMP-AppShell wide', () => {
     await expect(page.locator('.offline, .update')).toHaveCount(0);
   });
 });
+
+// DEP-17 favicon (QA): every page links the brand icon, so browsers never fall back to a missing /favicon.ico.
+const ALL_PAGES = [
+  '/',
+  '/tools/',
+  '/tools/developer/',
+  '/projects/',
+  '/about/',
+  '/now/',
+  '/settings/',
+  '/t/sample-dev/',
+  '/t/does-not-exist/',
+];
+
+test('DEP-17 every page links the SVG favicon and its 32 px PNG fallback, and both are served', async ({ page }) => {
+  const icoRequests: string[] = [];
+  page.on('request', (r) => {
+    if (new URL(r.url()).pathname === '/favicon.ico') icoRequests.push(r.url());
+  });
+  for (const path of ALL_PAGES) {
+    await page.goto(path);
+    await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute('href', '/icons/favicon.svg');
+    await expect(page.locator('link[rel="icon"][type="image/png"]')).toHaveAttribute('href', '/icons/favicon-32.png');
+    await expect(page.locator('link[rel="icon"][type="image/png"]')).toHaveAttribute('sizes', '32x32');
+  }
+  for (const [href, type] of [
+    ['/icons/favicon.svg', 'image/svg+xml'],
+    ['/icons/favicon-32.png', 'image/png'],
+  ]) {
+    const res = await page.request.get(href);
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain(type);
+  }
+  expect(icoRequests).toEqual([]);
+});

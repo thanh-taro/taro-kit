@@ -11,7 +11,7 @@ MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
   - the CSP meta tag (Astro);
   - the theme inline script (MOD-Theme);
   - the head metadata (MOD-Meta);
-  - the manifest link;
+  - the manifest link and the favicon links (DEP-17, MOD-Offline `FAVICONS`);
   - the font preload.
 - **Frame:**
   - the skip link;

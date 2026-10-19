@@ -10,7 +10,7 @@ import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { t } from '../copy/index.ts';
 import HeadMeta from '../meta/HeadMeta.astro';
-import { MANIFEST_PATH } from '../offline/manifest.ts';
+import { FAVICONS, MANIFEST_PATH } from '../offline/manifest.ts';
 import { paletteBootstrap } from '../palette/logic.ts';
 import PaletteDialog from '../palette/PaletteDialog.astro';
 import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts';
@@ -51,6 +51,10 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     {/* F-011.R1: installable through the browser's own option (MOD-Offline manifest); the window's color per device
     scheme, which the theme script then sets to the theme showing (MOD-Theme theme-color.ts). */}
     <link rel="manifest" href={MANIFEST_PATH} />
+    {/* DEP-17 favicon: the app icon (SVG) and its 32 px PNG fallback (MOD-Offline FAVICONS). */}
+    {FAVICONS.map((f) => (
+      <link rel="icon" href={f.href} type={f.type} sizes={f.sizes} />
+    ))}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content={THEME_COLORS.light} />
     <meta name="theme-color" content={THEME_COLORS.dark} />
   </head>

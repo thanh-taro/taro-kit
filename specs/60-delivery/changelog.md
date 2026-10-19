@@ -71,3 +71,4 @@ status: draft
 - F-007 review round 1: home's before-first-paint prediction uses MOD-PersonalData's entry checks (now in `entry-checks.ts`, shared) and its write probe, so storage that is full predicts the empty session (MOD-Pages). Behavior unchanged.
 - F-007 shipped (wave 6): home dashboard with a pre-paint prediction that follows the store's rules. Wave 6 complete; all 16 M-1 features shipped.
 - QA phase 5 fixes (security I-1): ADR-0009 and MOD-SecurityPolicy add `Strict-Transport-Security: max-age=31536000` to every response, without `includeSubDomains` or `preload` (tools on subdomains are separate projects, PRN-01).
+- QA phase 5 fixes (coordinator request): every page links a favicon, the DEP-17 app icon as SVG plus a 32 px PNG fallback, written by `scripts/brand-icons.ts` (MOD-Offline `FAVICONS`, MOD-Shell head), and precached with the other icons.

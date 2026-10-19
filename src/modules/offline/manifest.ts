@@ -21,6 +21,21 @@ export const MANIFEST_ICONS: readonly ManifestIcon[] = [
   { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
 ];
 
+export interface FaviconLink {
+  href: string;
+  type: 'image/svg+xml' | 'image/png';
+  sizes?: string;
+}
+
+/**
+ * The favicon (DEP-17), linked from every page by <BaseLayout> so browsers never ask for a missing /favicon.ico:
+ * the app icon as SVG, and a 32 px PNG for browsers without SVG favicons. Precached like the other icons.
+ */
+export const FAVICONS: readonly FaviconLink[] = [
+  { href: '/icons/favicon.svg', type: 'image/svg+xml' },
+  { href: '/icons/favicon-32.png', type: 'image/png', sizes: '32x32' },
+];
+
 export function webManifest() {
   const name = t('COPY-shell.brand');
   return {
