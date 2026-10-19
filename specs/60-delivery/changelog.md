@@ -61,3 +61,4 @@ status: draft
 - F-015 shipped (wave 5): per-page link previews, shared preview image, sitemap.xml and robots.txt.
 - F-011 build (no behavior change): MOD-Offline documents the manifest source (COPY-shell.brand, tokens, DEP-17 icons), the precache contents and its post-build step, and `connectOffline()`; MOD-SecurityPolicy documents `cacheRules()`.
 - F-011 review round 1: INV-03 extended: a linked tool is never at the portal's own address either (the build refuses it, like an embedded one), since that address belongs to the portal's pages and its offline worker. ADR-0004 erratum: navigation is precache-first, not network-first as its SP-4 amendment said. MOD-SecurityPolicy's immutable rule narrowed to `/data/catalog.*.json`. MOD-Theme gives the browser's theme color the theme showing (token `bg`).
+- F-011 shipped (wave 5): service worker (precache-first, portal origin only), install manifest, offline indicator and update prompt, theme-color. Wave 5 complete.

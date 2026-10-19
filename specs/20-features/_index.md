@@ -17,7 +17,7 @@ status: draft
 | F-008 | About the Owner | M-1 | P0 | shipped |
 | F-009 | Showcase projects | M-1 | P1 | shipped |
 | F-010 | Now and changelog | M-1 | P1 | shipped |
-| F-011 | Install and work offline | M-1 | P0 | building |
+| F-011 | Install and work offline | M-1 | P0 | shipped |
 | F-012 | Choose a theme | M-1 | P1 | shipped |
 | F-013 | Export and import personal data | M-1 | P1 | ready |
 | F-014 | Check the catalog before publishing | M-1 | P1 | shipped |

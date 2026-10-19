@@ -34,3 +34,5 @@ Waves run up to 3 features in parallel, in separate worktrees. Merges happen one
 - **F-011**: precache `/data/catalog.<hash>.json` (written in `astro:build:done`); the manifest step must run after it.
 - **Release**: the weekly catalog check fails until the sample tools (`*.tarokit.app` hosts that don't exist) are replaced or hidden; json-formatter passes the check and is ready to unhide (user decision, publishing).
 - **F-011 / release**: `publish.yml` must call `catalog-check.yml` via `workflow_call` with `pre_deploy: true`.
+- **F-007**: re-cite F-011.AC5 (offline home cards) on the real home page; it is currently tested on the recents fixture page.
+- **QA**: F-011.AC1 (installed window) and offline in WebKit/Firefox are manual checks; the compact search key cap overflows its border (F-004).
