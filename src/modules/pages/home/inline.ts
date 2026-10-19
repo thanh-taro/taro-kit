@@ -10,6 +10,7 @@
 //   what they will show; in the default state it adds invisible placeholders the size of the favorites and recents
 //   sections, so the rows below don't move when the island fills them in.
 import { t } from '../../copy/index.ts';
+import { isTimestamp, isToolId } from '../../personal-data/entry-checks.ts';
 
 /** JSON for an inline script: `<` escaped, so content (a tool name) can never close the script element. */
 const json = (value: unknown): string => JSON.stringify(value).replace(/</g, '\\u003c');
@@ -84,30 +85,38 @@ export function homeClockScript(): string {
  * F-007.R3 before first paint: the favorites and recents home will show (tool ids, in order), from the stored
  * document (`tarokit.personal`, equal to MOD-PersonalData's STORAGE_KEY). Mirrors MOD-PersonalData: entries with a
  * catalog id and a time are kept, the first of each tool, up to the stored limits (24 favorites, 20 recents); then
- * the visible favorites, and the visible recents that are not favorites, at most 8 (RULE-01). Unreadable or refused
- * storage predicts nothing stored. A unit test keeps it in step with `visibleFavorites` and `visibleRecents`.
+ * the visible favorites, and the visible recents that are not favorites, at most 8 (RULE-01). Entries are checked
+ * with MOD-PersonalData's own `isToolId` and `isTimestamp` (entry-checks.ts, passed in when inlined). Storage that
+ * fails the store's write probe (refused, or full) is what the store treats as unavailable, so the island starts with
+ * an empty session: nothing is predicted, as for unreadable text. A unit test keeps it in step with the store.
  */
-export function predictHome(visibleIds: readonly string[]): { favorites: string[]; recents: string[] } {
+export function predictHome(
+  visibleIds: readonly string[],
+  toolId: (v: unknown) => boolean = isToolId,
+  timestamp: (v: unknown) => boolean = isTimestamp,
+): { favorites: string[]; recents: string[] } {
   try {
-    const doc = JSON.parse(localStorage.getItem('tarokit.personal') || 'null');
-    const visible: Record<string, boolean> = {};
+    const storage = localStorage;
+    storage.setItem('tarokit.probe', '1');
+    storage.removeItem('tarokit.probe');
+    const doc = JSON.parse(storage.getItem('tarokit.personal') || 'null');
+    const visible: Record<string, boolean> = Object.create(null);
     for (let i = 0; i < visibleIds.length; i++) visible[visibleIds[i]!] = true;
     const kept = (list: unknown, at: string, limit: number): string[] => {
       const out: string[] = [];
-      const seen: Record<string, boolean> = {};
+      const seen: Record<string, boolean> = Object.create(null);
       if (!Array.isArray(list)) return out;
       for (let i = 0; i < list.length && out.length < limit; i++) {
         const e = list[i];
         const id = e && e.toolId;
-        if (typeof id !== 'string' || id.length > 48 || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)) continue;
-        if (typeof e[at] !== 'string' || isNaN(Date.parse(e[at])) || seen[id]) continue;
+        if (!toolId(id) || !timestamp(e[at]) || seen[id]) continue;
         seen[id] = true;
         out.push(id);
       }
       return out;
     };
     const favs = kept(doc && doc.favorites, 'pinnedAt', 24);
-    const isFav: Record<string, boolean> = {};
+    const isFav: Record<string, boolean> = Object.create(null);
     for (let i = 0; i < favs.length; i++) isFav[favs[i]!] = true;
     const recs = kept(doc && doc.recents, 'openedAt', 20).filter((id) => visible[id] && !isFav[id]);
     return { favorites: favs.filter((id) => visible[id]), recents: recs.slice(0, 8) };
@@ -185,5 +194,6 @@ function homeReserveMain(c: ReserveConfig, predict: typeof predictHome): void {
 /** The reserve script's source, with this build's visible tools and the section headings (build-time copy). */
 export function homeReserveScript(tools: Record<string, ReserveTool>, headings: ReserveConfig['headings']): string {
   const config: ReserveConfig = { id: HOME_IDS.personal, tools, headings, unavailable: t('COPY-tool.unavailable') };
-  return `(${homeReserveMain})(${json(config)},${predictHome})`.replace(/\s+/g, ' ');
+  const predict = `function(ids){return (${predictHome})(ids,${isToolId},${isTimestamp})}`;
+  return `(${homeReserveMain})(${json(config)},${predict})`.replace(/\s+/g, ' ');
 }

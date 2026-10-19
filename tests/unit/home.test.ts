@@ -12,7 +12,16 @@ import {
   homeReserveScript,
   predictHome,
 } from '../../src/modules/pages/home/inline.ts';
-import { emptyDocument, STORAGE_KEY, visibleFavorites, visibleRecents } from '../../src/modules/personal-data/index.ts';
+import {
+  createPersonalDataStore,
+  emptyDocument,
+  isCalendarDate,
+  isTimestamp,
+  parseDocument,
+  STORAGE_KEY,
+  visibleFavorites,
+  visibleRecents,
+} from '../../src/modules/personal-data/index.ts';
 
 const root = join(import.meta.dirname, '../..');
 const prod = loadRegistry({ root, contentDir: join(root, 'content') });
@@ -138,8 +147,15 @@ describe('F-007.R3 predicting the personal sections before first paint', () => {
   });
   const stub = (doc: unknown) => {
     storage.set(STORAGE_KEY, JSON.stringify(doc));
-    vi.stubGlobal('localStorage', { getItem: (k: string) => storage.get(k) ?? null });
+    vi.stubGlobal('localStorage', memoryStorage());
   };
+  /** A working storage, as the store's write probe expects (setItem, then removeItem). */
+  const memoryStorage = (overrides: Partial<Storage> = {}) => ({
+    getItem: (k: string) => storage.get(k) ?? null,
+    setItem: (k: string, v: string) => void storage.set(k, v),
+    removeItem: (k: string) => void storage.delete(k),
+    ...overrides,
+  });
   const at = (i: number) => new Date(Date.UTC(2026, 9, 10, 12, 59 - i)).toISOString();
   const doc = (favorites: string[], recents: string[]) => ({
     ...emptyDocument(),
@@ -164,24 +180,44 @@ describe('F-007.R3 predicting the personal sections before first paint', () => {
     });
   });
 
+  /** What MOD-PersonalData itself would show for the stored text: its parser, then its visibility rules. */
+  const fromStore = (visible: string[]) => {
+    const parsed = parseDocument(storage.get(STORAGE_KEY) ?? null);
+    return {
+      favorites: visibleFavorites(parsed.favorites, visible).map((f) => f.toolId),
+      recents: visibleRecents(parsed, visible).map((r) => r.toolId),
+    };
+  };
+
   it('F-007.R3 agrees with MOD-PersonalData for hidden, unknown, duplicated and malformed entries', () => {
     const visible = ids.slice(0, 10);
     const raw = doc(['t-1', 't-20', 'unknown', 't-1'], ['t-2', 't-1', 't-21', 't-3', 't-2', 'BAD ID']);
     raw.recents.push({ toolId: 't-4', openedAt: 'yesterday' });
     stub(raw);
-    const normalized = doc(['t-1', 't-20', 'unknown'], ['t-2', 't-1', 't-21', 't-3']);
-    expect(predictHome(visible)).toEqual({
-      favorites: visibleFavorites(normalized.favorites, visible).map((f) => f.toolId),
-      recents: visibleRecents(normalized, visible).map((r) => r.toolId),
-    });
+    expect(predictHome(visible)).toEqual(fromStore(visible));
     expect(predictHome(visible)).toEqual({ favorites: ['t-1'], recents: ['t-2', 't-3'] });
+  });
+
+  it('F-007.R3 agrees with MOD-PersonalData on timestamps: impossible dates, date-only and zone-less times', () => {
+    const visible = ids.slice(0, 10);
+    const raw = doc(['t-1'], ['t-2', 't-3', 't-4', 't-5', 't-6', 't-7', 't-8']);
+    raw.favorites.push({ toolId: 't-9', pinnedAt: '2026-02-30T10:00:00Z' });
+    raw.recents[0]!.openedAt = '2026-02-30T10:00:00Z';
+    raw.recents[1]!.openedAt = '2026-10-10';
+    raw.recents[2]!.openedAt = '2026-10-10T10:00:00';
+    raw.recents[3]!.openedAt = '2026-10-10T10:00+07:00';
+    raw.recents[4]!.openedAt = '2026-13-01T10:00:00Z';
+    raw.recents[5]!.openedAt = '2026-10-10 10:00:00Z';
+    stub(raw);
+    expect(predictHome(visible)).toEqual(fromStore(visible));
+    expect(predictHome(visible)).toEqual({ favorites: ['t-1'], recents: ['t-5', 't-8'] });
   });
 
   it('F-007.R3 nothing stored, unreadable text or refused storage predict the empty state', () => {
     const none = { favorites: [], recents: [] };
-    vi.stubGlobal('localStorage', { getItem: () => null });
+    vi.stubGlobal('localStorage', memoryStorage());
     expect(predictHome(ids)).toEqual(none);
-    vi.stubGlobal('localStorage', { getItem: () => '{nope' });
+    storage.set(STORAGE_KEY, '{nope');
     expect(predictHome(ids)).toEqual(none);
     vi.stubGlobal('localStorage', {
       getItem: () => {
@@ -189,6 +225,45 @@ describe('F-007.R3 predicting the personal sections before first paint', () => {
       },
     });
     expect(predictHome(ids)).toEqual(none);
+  });
+
+  it('F-007.R3 the shared timestamp check agrees with the calendar check', () => {
+    for (const day of [
+      '2026-02-28',
+      '2026-02-29',
+      '2028-02-29',
+      '2026-02-30',
+      '2026-04-31',
+      '2026-12-31',
+      '2026-00-10',
+    ])
+      expect(isTimestamp(`${day}T00:00:00Z`), day).toBe(isCalendarDate(day));
+  });
+
+  it('F-007.R3 lookups ignore inherited names: a tool with the id "constructor" is predicted like any other', () => {
+    stub(doc(['constructor'], ['toString', 'constructor', 'valueof']));
+    expect(predictHome(['constructor'])).toEqual({ favorites: ['constructor'], recents: [] });
+    expect(predictHome(['valueof'])).toEqual({ favorites: [], recents: ['valueof'] });
+    expect(predictHome([])).toEqual({ favorites: [], recents: [] });
+  });
+
+  it('F-007.R3 storage that refuses writes (full) predicts the empty session the island will show', () => {
+    stub(doc(['t-1'], ['t-2']));
+    vi.stubGlobal(
+      'localStorage',
+      memoryStorage({
+        setItem: () => {
+          throw new DOMException('Quota exceeded', 'QuotaExceededError');
+        },
+      }),
+    );
+    expect(predictHome(ids)).toEqual({ favorites: [], recents: [] });
+    // As the store sees it: the write probe fails, so it reads nothing and starts an empty session.
+    const store = createPersonalDataStore({ storage: () => localStorage });
+    expect(store.storageAvailable.value).toBe(false);
+    expect(store.visibleFavorites(ids).value).toEqual([]);
+    expect(store.visibleRecents(ids).value).toEqual([]);
+    store.dispose();
   });
 
   it('F-007.R3 the reserve script is self-contained, reads the same storage key and escapes content', () => {

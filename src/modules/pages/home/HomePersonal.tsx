@@ -108,7 +108,10 @@ export default function HomePersonal({ tools, text }: HomePersonalProps) {
             <h2 id={headingId} class="tk-favorites__heading">
               {text.favorites}
             </h2>
-            <span class="tk-favorites__count">{shown.length}</span>
+            {/* Visual only: the list itself tells assistive technology how many there are. */}
+            <span class="tk-favorites__count" aria-hidden="true">
+              {shown.length}
+            </span>
           </div>
           <ul class="tk-favorites__list">
             {shown.map((tool) => (

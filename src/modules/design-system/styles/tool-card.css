@@ -134,7 +134,9 @@
   inset-inline-end: calc(var(--tk-space-3) / 2);
 }
 
-/* compact: home favorites and recents. Icon, name and favorite toggle. */
+/* compact: home favorites and recents. Icon, name and favorite toggle.
+   Home's before-first-paint placeholders (src/modules/pages/home/inline.ts) copy the compact markup and rely on
+   these sizes: keep them in step. */
 .tk-toolcard[data-variant='compact'] {
   gap: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
   padding: var(--tk-space-3);

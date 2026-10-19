@@ -3,6 +3,8 @@
 // directly; static pages use ToolCard.astro, which renders it without hydration around a FavoriteToggle island.
 // - One stretched link whose name is the tool name; the favorite toggle is a separate button above it,
 //   so it never opens the tool (CMP-ToolCard behavior).
+// - Home's before-first-paint placeholders (src/modules/pages/home/inline.ts) copy the compact markup (card, head,
+//   icon, text, link, unavailable note) to take the same space: keep them in step when it changes.
 // - Variants: regular (icon, name, summary, category label, linked marker) and compact (icon, name,
 //   toggle); `unavailable` dims either one and adds COPY-tool.unavailable (F-011.R3). Islands pass it from
 //   MOD-Offline's `online` signal. Static cards (`liveAvailability`, ToolCard.astro) can't know at build: a card

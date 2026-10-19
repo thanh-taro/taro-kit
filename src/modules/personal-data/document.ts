@@ -2,6 +2,9 @@
 // exactly like `personalData` in the domain schema, schema version 1 (RULE-08).
 // Pure functions only: no storage access here, so the rules stay trivially unit-testable.
 import type { PersonalData } from '../../generated/domain.ts';
+import { isCalendarDate, isTimestamp, isToolId } from './entry-checks.ts';
+
+export { isCalendarDate, isTimestamp, isToolId };
 
 export type { PersonalData };
 export type ThemePreference = NonNullable<PersonalData['preferences']['theme']>;
@@ -24,25 +27,7 @@ export const emptyDocument = (): PersonalData => ({
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 
-/** A catalog id: the domain schema's `slug` (pattern and 48-character cap, INV-01). */
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-export const isToolId = (v: unknown): v is string => typeof v === 'string' && v.length <= 48 && SLUG.test(v);
-
-/** A real calendar date as YYYY-MM-DD (no 2026-02-30). */
-export function isCalendarDate(v: unknown): v is string {
-  if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
-  const [y, m, d] = v.split('-').map(Number) as [number, number, number];
-  const t = new Date(Date.UTC(y, m - 1, d));
-  return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
-}
-
-/** An ISO 8601 date-time with a zone (the schema's `timestamp`) on a real calendar date. */
-const TIMESTAMP = /^(\d{4}-\d{2}-\d{2})T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
-export function isTimestamp(v: unknown): v is string {
-  if (typeof v !== 'string') return false;
-  const m = TIMESTAMP.exec(v);
-  return !!m && isCalendarDate(m[1]) && !Number.isNaN(Date.parse(v));
-}
+// Entry checks (tool id, calendar date, timestamp) live in entry-checks.ts, shared with home's inline prediction.
 export const isThemePreference = (v: unknown): v is ThemePreference => v === 'system' || v === 'light' || v === 'dark';
 
 /** Keeps well-formed items with a unique key, in order, up to the limit. */
