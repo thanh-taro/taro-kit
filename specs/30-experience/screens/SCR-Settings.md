@@ -24,6 +24,9 @@ Theme, backup and privacy controls.
 | loading | importing | progress on the import control |
 | error | invalid import | COPY-settings.importInvalid |
 | error | cleared recents could not be saved on the device | COPY-settings.clearRecentsUnsaved, announced (F-006.R4) |
+| error | an import or erase could not be saved on the device | COPY-settings.importUnsaved or COPY-settings.eraseUnsaved, announced (F-013 edge cases) |
+| error | the picked file couldn't be read, or the import couldn't load | COPY-settings.importFailed, announced, nothing changed (F-013 edge cases) |
+| error | export failed | COPY-settings.exportFailed, announced (F-013 edge cases) |
 
 Confirmations: COPY-settings.importConfirm, COPY-settings.clearRecentsConfirm, COPY-settings.eraseConfirm, each with COPY-common.confirm and COPY-common.cancel. Import reasons: COPY-import.notBackup, COPY-import.damaged, COPY-import.newerVersion, COPY-import.tooLarge.
 

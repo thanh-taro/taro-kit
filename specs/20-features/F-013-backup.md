@@ -1,12 +1,12 @@
 ---
 id: F-013
 title: Export and import personal data
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-01]
 entities: [ENT-PersonalData]
-rules: [RULE-08]
+rules: [RULE-01, RULE-08, RULE-13]
 screens: [SCR-Settings]
 components: []
 nfr: [NFR-05]
@@ -46,3 +46,13 @@ Controls are in SCR-Settings (COPY-settings.export, COPY-settings.import, COPY-s
 
 ## Edge cases
 - The file has favorites for tools that don't exist here. They are kept and hidden under INV-04.
+- The file is larger than any backup can be (over 256 KB). It is rejected as not a backup (COPY-import.notBackup) without being read.
+- The file holds more than 60 days used (RULE-13). An exported file never does, so it is rejected as damaged (COPY-import.damaged); COPY-import.tooLarge names only favorites and recents.
+- A file without a schema version is from before version 1 and is migrated (R3). A schema version that isn't a whole number of at least 1 is damaged.
+- The device refuses the write on import or erase. The change lasts for this session only, and settings says so (COPY-settings.importUnsaved, COPY-settings.eraseUnsaved) instead of looking successful.
+- A document from a newer version of the portal is on the device. Other changes never overwrite it (F-006.R4), but a confirmed import or erase replaces it, because that is what the user asked for.
+- The export from settings fails (for example, its code can't load offline). Settings says so (COPY-settings.exportFailed).
+- Other open windows pick up imported or erased data, as they do favorites (F-005 edge case).
+- The picked file can't be read, or the import's code can't load (for example, offline before it was cached). Nothing changes, and settings says so (COPY-settings.importFailed) rather than calling the file damaged.
+- The recents' times in the file are out of order, as after the clock moved backward (F-006 edge case). The file is valid, and recents keep the file's list order, which is RULE-01's newest first; the portal always accepts its own exports.
+- Writing the erased data fails. The stored data is removed instead, so it is really gone; only if that fails too does settings say the erase wasn't saved.

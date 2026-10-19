@@ -1,11 +1,14 @@
 ---
 // SCR-Settings (MOD-Pages). Regions: 1 shell header, 1b page heading, 2 Appearance with the theme
-// choice (F-012.R2), 3 Your data, 4 Privacy statement. Region 3 holds days used (F-006.R6) and clear recents
-// with its confirmation (F-006.R4); export, import and erase arrive with F-013 (design: SettingsDesktop,
-// SettingsMobile, SettingsDialogs*).
+// choice (F-012.R2), 3 Your data, 4 Privacy statement. Region 3 holds days used (F-006.R6), export and import with
+// the backup scope note (F-013.R1, R2, R4, R6), then clear recents (F-006.R4) and erase (F-013.R5), each with its
+// confirmation (design: SettingsDesktop, SettingsMobile, SettingsDialogs*).
 import { t } from '../../modules/copy/index.ts';
 import Icon from '../../modules/design-system/Icon.astro';
+import BackupControls from '../../modules/pages/settings/BackupControls.tsx';
 import ClearRecents from '../../modules/pages/settings/ClearRecents.tsx';
+import EraseData from '../../modules/pages/settings/EraseData.tsx';
+import { importReasons } from '../../modules/pages/settings/import-text.ts';
 import DaysUsed from '../../modules/pages/settings/DaysUsed.tsx';
 import ThemeChoice from '../../modules/pages/settings/ThemeChoice.tsx';
 import BaseLayout from '../../modules/shell/BaseLayout.astro';
@@ -37,6 +40,21 @@ const choice = {
       {/* The count is filled in on the device (RULE-13); `{count}` stays a placeholder at build. */}
       <DaysUsed client:load template={t('COPY-settings.daysUsed', { count: '{count}' })} />
       <hr />
+      <BackupControls
+        client:load
+        exportLabel={t('COPY-settings.export')}
+        importLabel={t('COPY-settings.import')}
+        scope={t('COPY-settings.backupScope')}
+        invalidTemplate={t('COPY-settings.importInvalid', { reason: '{reason}' })}
+        reasons={importReasons()}
+        question={t('COPY-settings.importConfirm')}
+        confirmLabel={t('COPY-common.confirm')}
+        cancelLabel={t('COPY-common.cancel')}
+        unsaved={t('COPY-settings.importUnsaved')}
+        exportFailed={t('COPY-settings.exportFailed')}
+        importFailed={t('COPY-settings.importFailed')}
+      />
+      <hr />
       <div class="actions">
         <ClearRecents
           client:load
@@ -45,6 +63,14 @@ const choice = {
           confirmLabel={t('COPY-common.confirm')}
           cancelLabel={t('COPY-common.cancel')}
           unsaved={t('COPY-settings.clearRecentsUnsaved')}
+        />
+        <EraseData
+          client:load
+          label={t('COPY-settings.erase')}
+          question={t('COPY-settings.eraseConfirm')}
+          confirmLabel={t('COPY-common.confirm')}
+          cancelLabel={t('COPY-common.cancel')}
+          unsaved={t('COPY-settings.eraseUnsaved')}
         />
       </div>
     </section>
@@ -171,7 +197,8 @@ const choice = {
   .data :global(.days-strip span[data-used]) {
     background: var(--tk-color-accent);
   }
-  .actions {
+  .actions,
+  .data :global(.actions) {
     display: flex;
     flex-wrap: wrap;
     gap: var(--tk-space-3);
@@ -191,7 +218,53 @@ const choice = {
   .data :global(.action:disabled) {
     cursor: default;
   }
-  .data :global(.clear-recents) {
+  /* Export is the primary action; erase can't be undone (design: SettingsDesktop / SettingsMobile). */
+  .data :global(.action--primary) {
+    background: var(--tk-color-accent);
+    color: var(--tk-color-on-accent);
+    border-color: var(--tk-color-accent);
+  }
+  .data :global(.action--danger) {
+    color: var(--tk-color-danger);
+    border-color: var(--tk-color-danger);
+  }
+  .data :global(.action[aria-busy='true']) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--tk-space-2);
+    cursor: progress;
+  }
+  /* SCR-Settings loading: progress on the import control while the file is read and checked. */
+  .data :global(.spinner) {
+    inline-size: var(--tk-space-4);
+    block-size: var(--tk-space-4);
+    border: var(--tk-border-width-focus) solid var(--tk-color-line);
+    border-block-start-color: var(--tk-color-accent);
+    border-radius: 50%;
+    animation: tk-spin calc(var(--tk-motion-duration-slow) * 3) linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .data :global(.spinner) {
+      animation: none;
+    }
+  }
+  @keyframes tk-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  .data :global(.backup) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-4);
+  }
+  .data :global(.scope) {
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-md);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .data :global(.clear-recents),
+  .data :global(.erase-data) {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -236,6 +309,12 @@ const choice = {
     font-size: var(--tk-font-size-xl);
     line-height: var(--tk-font-line-height-tight);
   }
+  .settings :global(.tk-confirm__detail) {
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-sm);
+    overflow-wrap: anywhere;
+  }
   .settings :global(.tk-confirm__actions) {
     display: flex;
     justify-content: flex-end;
@@ -259,6 +338,10 @@ const choice = {
     background: var(--tk-color-accent);
     color: var(--tk-color-on-accent);
     border: 0;
+  }
+  .settings :global(.tk-confirm__confirm--danger) {
+    background: var(--tk-color-danger);
+    color: var(--tk-color-bg);
   }
 
   .privacy {
@@ -306,7 +389,9 @@ const choice = {
     }
     /* Your data: full-width actions and a strip that fills the row (SettingsMobile). */
     .actions,
-    .data :global(.clear-recents) {
+    .data :global(.actions),
+    .data :global(.clear-recents),
+    .data :global(.erase-data) {
       flex-direction: column;
       align-items: stretch;
     }

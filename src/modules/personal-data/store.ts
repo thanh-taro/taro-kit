@@ -16,6 +16,7 @@ import {
   type VisibleIds,
 } from './favorites.ts';
 import {
+  emptyDocument,
   normalizeDocument,
   parseDocument,
   SCHEMA_VERSION,
@@ -46,8 +47,8 @@ export interface StoreEnvironment {
   now?: () => Date;
 }
 
-/** `clearRecents` outcome: saved on the device, or for this session only. */
-export type ClearResult = 'saved' | 'unsaved';
+/** `clearRecents`, `replaceAll` and `eraseAll` outcome: saved on the device, or for this session only. */
+export type SaveResult = 'saved' | 'unsaved';
 
 export interface PersonalDataStore {
   /** The whole document, always valid (normalized on read). */
@@ -94,13 +95,24 @@ export interface PersonalDataStore {
    * device (storage unavailable or failing, or a newer schema version on disk, which is never overwritten):
    * recents are then cleared for this session only, and the caller must say so.
    */
-  clearRecents(): ClearResult;
+  clearRecents(): SaveResult;
   /**
    * Write-through mutation of the whole document (ADR-0010). The recipe must return a new document.
    * Returns true when the document was saved on the device, false when it lasts for this session only.
    */
   update(recipe: (current: PersonalData) => PersonalData): boolean;
   setTheme(theme: ThemePreference): void;
+  /**
+   * F-013.R4: replaces all personal data with a validated backup's (the caller confirms first). The user asked for
+   * exactly this, so it also replaces a newer version's document on disk. `unsaved` when the device refuses the
+   * write: the data is replaced for this session only, and the caller must say so.
+   */
+  replaceAll(data: PersonalData): SaveResult;
+  /**
+   * F-013.R5: erases all personal data (the caller confirms first): empty lists, theme system. As `replaceAll`, but
+   * when writing the empty document fails, the stored document is removed instead, so the data is really gone.
+   */
+  eraseAll(): SaveResult;
   /** A deep copy of the current document (for export, F-013). */
   snapshot(): PersonalData;
   /** Re-reads storage (another window may have written). */
@@ -146,11 +158,15 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
     return doc;
   };
 
-  /** True when the document is now on the device. */
-  const write = (doc: PersonalData): boolean => {
-    if (!storage || newerOnDisk) return false;
+  /**
+   * True when the document is now on the device. A newer version's document is overwritten only with `replace`,
+   * the user's explicit import or erase (F-013 edge case).
+   */
+  const write = (doc: PersonalData, replace = false): boolean => {
+    if (!storage || (newerOnDisk && !replace)) return false;
     try {
       storage.setItem(STORAGE_KEY, JSON.stringify(doc));
+      newerOnDisk = false;
       return true;
     } catch {
       // Storage went away or is full: keep going in memory for the rest of the session.
@@ -167,6 +183,17 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
   const today = signal(localDate(now()));
   const tick = () => {
     today.value = localDate(now());
+  };
+
+  /** Write-through of a whole new document (ADR-0010); true when it is on the device. */
+  const commit = (doc: PersonalData, replace = false): boolean => {
+    const next = normalizeDocument(doc);
+    let saved = false;
+    batch(() => {
+      data.value = next;
+      saved = write(next, replace);
+    });
+    return saved;
   };
 
   const store: PersonalDataStore = {
@@ -206,16 +233,26 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
       return store.update(clearRecentVisits) ? 'saved' : 'unsaved';
     },
     update(recipe) {
-      const next = normalizeDocument(recipe(structuredClone(data.peek())));
-      let saved = false;
-      batch(() => {
-        data.value = next;
-        saved = write(next);
-      });
-      return saved;
+      return commit(recipe(structuredClone(data.peek())));
     },
     setTheme(theme) {
       store.update((doc) => ({ ...doc, preferences: { ...doc.preferences, theme } }));
+    },
+    replaceAll: (doc) => (commit(structuredClone(doc), true) ? 'saved' : 'unsaved'),
+    eraseAll() {
+      const device = storage;
+      if (commit(emptyDocument(), true)) return 'saved';
+      if (!device) return 'unsaved';
+      // The write failed (e.g. storage full): removing the document still erases it, and frees the space.
+      try {
+        device.removeItem(STORAGE_KEY);
+      } catch {
+        return 'unsaved';
+      }
+      storage = device;
+      available.value = true;
+      newerOnDisk = false;
+      return 'saved';
     },
     snapshot: () => structuredClone(data.peek()),
     refresh() {

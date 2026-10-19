@@ -30,7 +30,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
 |---|---|---|---|---|---|---|---|
 | **DEP-07** | yaml | ^2.9 | Parse content files | build | ISC | approved | ADR-0005 |
-| **DEP-08** | ajv | ^8.20 | Validate content against the domain JSON Schema. Its standalone output is the backup validator. | build (+ standalone validator shipped) | MIT | approved | ADR-0005 |
+| **DEP-08** | ajv | ^8.20 | Validate content against the domain JSON Schema. Backup import reuses MOD-PersonalData's document rules instead (MOD-Backup). | build (+ standalone validator shipped) | MIT | approved | ADR-0005 |
 | **DEP-09** | ajv-formats | ^3.0 | `date`, `date-time` and `uri` format checks | build (+ shipped inside the standalone validator) | MIT | approved | ADR-0005 |
 | **DEP-10** | json-schema-to-typescript | ^16.0 | Generate TS types from the domain schema | dev | MIT | approved | ADR-0005 |
 

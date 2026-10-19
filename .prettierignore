@@ -17,3 +17,5 @@ tools/
 .build-my-app/
 .idea/
 CLAUDE.md
+# Deliberately unparseable backup fixture (RULE-08 damaged).
+tests/fixtures/backups/RULE-08-damaged-unparseable.json
