@@ -1,6 +1,7 @@
 // MOD-Pages: SCR-Category data, one static page per visible category (F-016). Pure, over normalized entries;
 // it reuses MOD-Content's derivations, so hidden tools and empty categories never get a page (RULE-06).
-// Implements: F-016.R1, F-016.R2 (count), F-016.R3 (order), F-016.R4 (navigation), F-016.R5 (no page).
+// Implements: F-016.R1, F-016.R2 (count), F-016.R3 (order), F-016.R4 (navigation), F-016.R5 (no page), and the
+// home category row (F-007.R7).
 import type { Category } from '../../generated/domain.ts';
 import { categoryPath, toolsByCategory, visibleCategories } from '../content/derive.ts';
 import { t } from '../copy/index.ts';
@@ -40,6 +41,23 @@ export const toolCountText = (count: number): string =>
   count === 1 ? t('COPY-category.toolCountOne') : t('COPY-category.toolCount', { count });
 
 /**
+ * The visible categories as tiles, in display order, each with its visible tool count: the category navigation
+ * (F-016.R4) and home's browse-by-category row (F-007.R7, RULE-14). Categories with no visible tools are left out.
+ */
+export function categoryRow<C extends CategoryLike>(
+  categories: readonly C[],
+  tools: readonly ToolLike[],
+): CategoryNavItem[] {
+  return visibleCategories(categories, tools).map((c) => ({
+    id: c.id,
+    name: c.name,
+    tint: c.tint,
+    href: categoryPath(c.id),
+    count: toolCountText(toolsByCategory(tools, c.id).length),
+  }));
+}
+
+/**
  * One page per category with at least one visible tool, in display order. An unknown category or one whose
  * tools are all hidden has no entry, so no page is built and the host serves the not-found page (F-016.R5).
  */
@@ -47,22 +65,9 @@ export function categoryPages<C extends CategoryLike, T extends ToolLike>(
   categories: readonly C[],
   tools: readonly T[],
 ): CategoryPage<C, T>[] {
-  const shown = visibleCategories(categories, tools).map((category) => ({
-    category,
-    tools: toolsByCategory(tools, category.id),
-  }));
-  const nav: CategoryNavItem[] = shown.map(({ category: c, tools: list }) => ({
-    id: c.id,
-    name: c.name,
-    tint: c.tint,
-    href: categoryPath(c.id),
-    count: toolCountText(list.length),
-  }));
-  return shown.map(({ category, tools: list }) => ({
-    category,
-    path: categoryPath(category.id),
-    tools: list,
-    count: toolCountText(list.length),
-    nav,
-  }));
+  const nav = categoryRow(categories, tools);
+  return visibleCategories(categories, tools).map((category) => {
+    const list = toolsByCategory(tools, category.id);
+    return { category, path: categoryPath(category.id), tools: list, count: toolCountText(list.length), nav };
+  });
 }

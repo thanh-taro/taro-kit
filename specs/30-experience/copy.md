@@ -122,7 +122,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-settings.privacy** | No accounts, no tracking. Everything you do here stays in your browser, and I never see it. | privacy statement |
 | **COPY-notFound.title** | I can't find that page | not-found heading |
 | **COPY-notFound.body** | It may have moved, or I took it down. | not-found body |
-| **COPY-notFound.toCatalog** | Browse my tools | not-found action |
+| **COPY-notFound.toCatalog** | Browse my tools | not-found action; also the home first-visit invitation's action (SCR-Home empty) |
 | **COPY-meta.homeTitle** | TaroKit — Taro's tools and work | home preview title |
 | **COPY-meta.homeDescription** | Hi, I'm Taro. These are the tools I build for work and life, and a bit about me. | home preview description |
 | **COPY-meta.toolsTitle** | Tools — TaroKit | catalog preview title |

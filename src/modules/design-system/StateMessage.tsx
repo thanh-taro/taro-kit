@@ -12,7 +12,8 @@ export type StateMessageVariant = 'empty' | 'no-results' | 'offline' | 'info' | 
 
 export interface StateMessageProps {
   variant: StateMessageVariant;
-  title: string;
+  /** Text, or inline markup from an island (such as a key cap, F-007.R6). */
+  title: ComponentChildren;
   body?: string;
   /** The next best action (PRN-05). */
   action?: { href: string; label: string; newTab?: boolean };
