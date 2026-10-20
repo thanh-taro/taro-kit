@@ -109,6 +109,8 @@ skills:
     level: 5
   - name: Prompt engineering
     level: 5
+  - name: Claude AI (Chat, Code, Design)
+    level: 5
 languages:
   - name: Vietnamese
     level: Native
