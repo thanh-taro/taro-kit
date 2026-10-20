@@ -1,7 +1,7 @@
-// F-016 Browse a category (SCR-Category, SCR-NotFound). Runs against the fixture build on port 4322
+// F-016 Browse a category (SCR-Category, SCR-NotFound). Runs against the fixture build on FIXTURES_PORT
 // (playwright.config.ts), whose content is tests/fixtures/content/F005-favorites: Media tools holds three visible
 // tools (Audio Trimmer, Clip Maker, Image Resizer), Converters holds only a hidden tool, and Developer tools and
-// Productivity hold the F-005 tools. The production build (port 4321) is checked for its sample categories.
+// Productivity hold the F-005 tools. The production build (samples) is checked for its sample categories.
 import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
 import { expect, test, type Locator, type Page } from '@playwright/test';

@@ -75,7 +75,7 @@ test.describe('FLOW-02 visitor first visit', () => {
   }) => {
     await serveSites(page.context());
     // Step 1: the preview a link shows is in the served HTML (F-015.R1), read without running scripts.
-    const html = await (await request.get(`http://localhost:${process.env.TK_E2E_PORT ?? 4321}/`)).text();
+    const html = await (await request.get(`http://localhost:${process.env.TK_E2E_PORT ?? 4421}/`)).text();
     expect(html).toMatch(/<meta property="og:title" content="[^"]+"/);
     expect(html).toMatch(/<meta property="og:image" content="[^"]+"/);
 

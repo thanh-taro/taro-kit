@@ -279,7 +279,7 @@ test.describe('F-002 catalog', () => {
     });
 });
 
-test.describe('F-002 production build (port 4321)', () => {
+test.describe('F-002 production build (samples)', () => {
   test('F002_AC5 search works on the static build from the hashed catalog data, with no CSP violations', async ({
     page,
   }) => {

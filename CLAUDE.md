@@ -26,7 +26,7 @@ Register every dependency and asset before use.
 ## Local setup
 - `pnpm install`
 - `python3 -m venv .venv && .venv/bin/pip install -r requirements-build.txt` (fonttools and brotli for build-time font subsetting, ADR-0003)
-- `pnpm gen && pnpm build`, `pnpm test`, `pnpm exec playwright test --project=chromium` (set `TK_E2E_PORT` / `TK_E2E_FIXTURES_PORT` when another worktree holds ports 4321/4322)
+- `pnpm gen && pnpm build`, `pnpm test`, `pnpm exec playwright test --project=chromium` (set `TK_E2E_PORT` / `TK_E2E_FIXTURES_PORT` when another worktree holds the default test ports 4421/4422; 4321 stays free for `pnpm dev`)
 
 ## Checks
 - `python3 tools/spec_lint.py` must report 0 errors after any spec change.

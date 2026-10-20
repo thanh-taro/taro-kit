@@ -1,5 +1,5 @@
 // F-005 Pin favorite tools, end to end on the tests-only fixture page (tests/fixtures/pages/F005-favorites.astro),
-// served from its own build on port 4322 (playwright.config.ts). Home, the catalog and the tool view arrive with
+// served from its own build on FIXTURES_PORT (playwright.config.ts). Home, the catalog and the tool view arrive with
 // F-007, F-002 and F-003; the fixture page composes the same shared pieces (CMP-ToolCard, CMP-FavoriteToggle,
 // MOD-PersonalData) the way those pages will. Fixture content: fx-01 … fx-26 (own, embedded), fx-linked
 // (external, linked) and fx-hidden (hidden).
@@ -326,7 +326,7 @@ test.describe('CMP-ToolCard and CMP-FavoriteToggle', () => {
     });
 });
 
-test('the production build (port 4321) has no tests-only fixture page', async ({ request }) => {
+test('the production build (samples) has no tests-only fixture page', async ({ request }) => {
   const res = await request.get(`${PROD}/__fixtures__/favorites/`);
   expect(res.status()).toBe(404);
 });
