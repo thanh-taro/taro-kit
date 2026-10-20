@@ -12,7 +12,7 @@ Legend: **C** = Claude does it (after you say go), **U** = user-owned hard stop.
 
 1. **(Resolved by C-1.) Blocker for C-1: the test suites read the sample content.** 11 test files depend on `content/` (the e2e specs `shell`, `home`, `home-shots`, `catalog`, `projects`, `palette`, `offline`, `offline-shots`, `a11y-qa`; the unit tests `content-validation.test.ts:213` and `offline.test.ts:116,147`). `pnpm build` builds the real `content/`, so replacing the samples turns CI red. Unhiding json-formatter also fails `content-validation.test.ts:213` ("every visible tool is a sample"). Claude must move the samples to test fixtures before you replace them (C-1).
 2. **(Resolved by C-2: wrangler 4.147.0, DEP-45.) Wrangler is not installed.** `wrangler` (DEP-28, approved) is not in `package.json` or `pnpm-lock.yaml`, and there is no `wrangler.jsonc`. Needed: C-2.
-3. **The commit counts differ from the brief.** `main` has 156 commits, 92 with the work email `[work email]` and 64 with the personal one. The "101" count is across all branches (165 commits, 101 work). If you push only `main`, 92 of 156 are affected. The email also appears as text in `.build-my-app/reports/security-qa.md`. A rewrite of authors does not remove it from file contents.
+3. **The commit counts differ from the brief.** `main` has 156 commits, 92 with the work email and 64 with the personal one. The "101" count is across all branches (165 commits, 101 work). If you push only `main`, 92 of 156 are affected. The email also appears as text in `.build-my-app/reports/security-qa.md`. A rewrite of authors does not remove it from file contents.
 4. **`gh` is logged in as `er-thanhnt`** (keyring, SSH protocol). Check this is the account you want to own a personal project before you create the repo (U-3).
 5. **Future commits are already personal.** `~/.gitconfig` has `includeIf gitdir:~/Documents/personals/` that loads the personal email. A fresh clone must live under that folder or its commits will use the work email again.
 6. **The domain and zone already exist** (spikes SP-1/SP-3 ran on `lab.tarokit.app` and `labtool.tarokit.app`; D-035 says Always Use HTTPS is on). So Cloudflare steps below are "verify and clean", not "buy". The spikes may have left Workers and DNS records behind (U-8).
@@ -72,15 +72,17 @@ Steps for A, using a throwaway single-branch clone so no spike or worktree branc
 1. Commit or stash everything on `main` first (`.build-my-app/state.json` is modified; C-3 commits it). Make a safety copy: `cp -R ~/Documents/personals/taro-kit ~/Documents/personals/taro-kit.backup` (it keeps all branches and worktrees).
 2. `brew install git-filter-repo` (not installed today).
 3. Create the mailmap file outside the repo, `~/mailmap-taro.txt`, one line:
-   `Thanh Nguyen Tri <adamnguyen.itdn@gmail.com> <[work email]>`
+   `Thanh Nguyen Tri <adamnguyen.itdn@gmail.com> <WORK_EMAIL>` (type your work address in place of WORK_EMAIL)
+   Also create `~/replace-taro.txt`, one line, so the address is scrubbed from file contents in every old commit too:
+   `WORK_EMAIL==>[work email]`
 4. Clone only main, under the personals folder (so the personal email applies):
    `git clone --single-branch --branch main --no-local ~/Documents/personals/taro-kit ~/Documents/personals/taro-kit-release`
-5. `cd ~/Documents/personals/taro-kit-release && git filter-repo --mailmap ~/mailmap-taro.txt` (rewrites author and committer).
+5. `cd ~/Documents/personals/taro-kit-release && git filter-repo --mailmap ~/mailmap-taro.txt --replace-text ~/replace-taro.txt` (rewrites author and committer, and the address in old file versions).
 6. Remove any leftover mention of the work email in file contents (security-qa.md line about I-3; C-3 does this before the clone, in which case nothing remains).
 Verify:
 - `git log --format='%ae %ce' | sort | uniq -c` shows only `adamnguyen.itdn@gmail.com`.
 - `git rev-list --count HEAD` is 156 or more (plus later commits).
-- `git branch -a` shows only `main`. `git grep -i est-rouge $(git rev-list --all)` prints nothing.
+- `git branch -a` shows only `main`. `git grep -i <work domain> $(git rev-list --all)` prints nothing.
 - `git log -1 --format=%H` differs from 8a7c4d2 (expected).
 - `pnpm install --frozen-lockfile && pnpm build` still passes in the clone.
 Rollback: delete `taro-kit-release`. The original and the backup are untouched. Continue with the clone as the working repo from here on (the old folder keeps the spike branches; never push from it).
