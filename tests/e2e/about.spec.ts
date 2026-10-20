@@ -64,7 +64,8 @@ test.describe('F-008 About page', () => {
       await page.goto(`${FX}/about/`);
       await page.locator('#main').focus();
       const hrefs: string[] = [];
-      for (let i = 0; i < 4; i++) {
+      // The profile links, then the Now pointer.
+      for (let i = 0; i < fxProfile.links.length + 1; i++) {
         await page.keyboard.press(tab);
         hrefs.push(await page.evaluate(() => (document.activeElement as HTMLAnchorElement).getAttribute('href') ?? ''));
       }
