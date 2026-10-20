@@ -103,6 +103,9 @@ export default defineConfig({
   markdown: { syntaxHighlight: false },
   integrations: [preact(), paletteDirective, securityHeaders, catalogDataEmit, ...(fixtures ? [fixturePages] : [])],
   vite: {
+    // workbox-window has no `exports` map, so Node would load its UMD build during dev server rendering and the
+    // named `Workbox` import fails. Bundling it uses its ES module build, as the production build already does.
+    ssr: { noExternal: ['workbox-window'] },
     // MOD-Content: `virtual:tarokit/visible-tool-ids` for islands (RULE-02, INV-04).
     plugins: [
       visibleToolIdsPlugin({
