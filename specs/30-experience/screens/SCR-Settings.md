@@ -14,7 +14,7 @@ Theme, backup and privacy controls.
 1b. Page heading (COPY-settings.title).
 2. Appearance (COPY-settings.appearance): theme choice (COPY-settings.theme; options COPY-settings.themeSystem, COPY-settings.themeLight, COPY-settings.themeDark). Page title and description: COPY-meta.settingsTitle, COPY-meta.settingsDescription.
 3. Your data (COPY-settings.yourData): export (COPY-settings.export) with the backup scope note (COPY-settings.backupScope), import (COPY-settings.import), days used (COPY-settings.daysUsed), clear recents (COPY-settings.clearRecents), erase all (COPY-settings.erase).
-4. Privacy (COPY-settings.privacyTitle): statement (COPY-settings.privacy).
+4. Privacy (COPY-settings.privacyTitle): statement in three paragraphs (COPY-settings.privacy, COPY-settings.privacyTools, COPY-settings.privacyHosting).
 
 ## States
 | State | When | What the user sees |

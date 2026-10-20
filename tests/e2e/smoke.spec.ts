@@ -86,3 +86,15 @@ test.describe('home', () => {
     });
   }
 });
+
+test.describe('settings', () => {
+  test('SCR-Settings privacy statement covers the device, tools and hosting (COPY-settings.privacy*)', async ({
+    page,
+  }) => {
+    await page.goto('/settings/');
+    const privacy = page.getByRole('region', { name: 'Privacy' });
+    await expect(privacy.getByText(/stay in this browser/)).toBeVisible();
+    await expect(privacy.getByText(/Each tool is its own site/)).toBeVisible();
+    await expect(privacy.getByText(/Cloudflare hosts TaroKit/)).toBeVisible();
+  });
+});

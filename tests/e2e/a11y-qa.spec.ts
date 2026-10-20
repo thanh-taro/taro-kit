@@ -132,7 +132,7 @@ test.describe('NFR-04 SCR-ToolView focus is visible', () => {
   }) => {
     await serveSites(context);
     await page.goto(toolPage('ft-embedded'));
-    const header = page.getByRole('toolbar', { name: `${EMBEDDED} tool` });
+    const header = page.getByRole('toolbar', { name: `${EMBEDDED} controls` });
     await expect(header).toBeFocused();
     const entry = await outline(page, '.tk-toolheader');
     expect(entry.style).toBe('solid');

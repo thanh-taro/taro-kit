@@ -47,7 +47,8 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-tool.slow** | {tool} is taking its time. You can open it in a new tab instead. | after the slow-load threshold |
 | **COPY-tool.offline** | {tool} needs the internet. I'll load it as soon as you're back online. | offline state |
 | **COPY-tool.linkedNote** | {tool} lives on its own site. Open it there. | linked tool view |
-| **COPY-tool.frameLabel** | {tool} tool | accessible name of the tool header toolbar, the embedded tool region and its frame (SCR-ToolView, ADR-0009) |
+| **COPY-tool.frameLabel** | {tool} tool | accessible name of the embedded tool region and its frame (SCR-ToolView, ADR-0009) |
+| **COPY-tool.toolbarLabel** | {tool} controls | accessible name of the tool header toolbar (SCR-ToolView) |
 | **COPY-fav.add** | Add to favorites | toggle label (off) |
 | **COPY-fav.remove** | Remove from favorites | toggle label (on) |
 | **COPY-fav.full** | You can keep up to {limit} favorites. Unpin one to make room. | limit reached; {limit} from RULE-02 |
@@ -119,7 +120,9 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-settings.importUnsaved** | I imported that file for now, but couldn't save it on this device, so your old data may come back next time. | import error (F-013 edge case) |
 | **COPY-settings.importFailed** | I couldn't open that file just now. Please try again. | when settings can't read the picked file or load the import (F-013 edge case) |
 | **COPY-settings.exportFailed** | I couldn't save your backup just now. Please try again. | when settings' export fails (F-013 edge case) |
-| **COPY-settings.privacy** | No accounts, no tracking. Everything you do here stays in your browser, and I never see it. | privacy statement |
+| **COPY-settings.privacy** | No accounts, no tracking, no cookies. Your favorites, recent tools, days used and theme stay in this browser, and they only leave it if you export a backup. | privacy statement, paragraph 1: what stays on the device (INV-05) |
+| **COPY-settings.privacyTools** | Each tool is its own site, with its own privacy policy. The only thing I tell a tool inside TaroKit is which theme you're using. | privacy statement, paragraph 2: tools (INV-05 exception, F-012.R5) |
+| **COPY-settings.privacyHosting** | Cloudflare hosts TaroKit and, like any host, handles request data such as your IP address to serve it. I don't use its analytics. | privacy statement, paragraph 3: hosting (D-037) |
 | **COPY-notFound.title** | I can't find that page | not-found heading |
 | **COPY-notFound.body** | It may have moved, or I took it down. | not-found body |
 | **COPY-notFound.toCatalog** | Browse my tools | not-found action; also the home first-visit invitation's action (SCR-Home empty) |

@@ -246,7 +246,9 @@ test.describe('F-004 command palette', () => {
     await page.goto(toolPage(embedded.id));
     await page.waitForLoadState('load');
     await expect(page.getByRole('banner')).toBeHidden();
-    const search = page.getByRole('toolbar', { name: `${embedded.name} tool` }).getByRole('button', { name: 'Search' });
+    const search = page
+      .getByRole('toolbar', { name: `${embedded.name} controls` })
+      .getByRole('button', { name: 'Search' });
     const box = (await search.boundingBox())!;
     expect(box.width).toBeGreaterThanOrEqual(44);
     expect(box.height).toBeGreaterThanOrEqual(44);

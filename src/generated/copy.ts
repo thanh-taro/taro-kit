@@ -103,8 +103,10 @@ export const COPY = {
   "COPY-settings.importFailed": "I couldn't open that file just now. Please try again.",
   "COPY-settings.importInvalid": "I couldn't import that file because {reason}. Nothing changed.",
   "COPY-settings.importUnsaved": "I imported that file for now, but couldn't save it on this device, so your old data may come back next time.",
-  "COPY-settings.privacy": "No accounts, no tracking. Everything you do here stays in your browser, and I never see it.",
+  "COPY-settings.privacy": "No accounts, no tracking, no cookies. Your favorites, recent tools, days used and theme stay in this browser, and they only leave it if you export a backup.",
+  "COPY-settings.privacyHosting": "Cloudflare hosts TaroKit and, like any host, handles request data such as your IP address to serve it. I don't use its analytics.",
   "COPY-settings.privacyTitle": "Privacy",
+  "COPY-settings.privacyTools": "Each tool is its own site, with its own privacy policy. The only thing I tell a tool inside TaroKit is which theme you're using.",
   "COPY-settings.theme": "Theme",
   "COPY-settings.themeDark": "Dark",
   "COPY-settings.themeLight": "Light",
@@ -127,6 +129,7 @@ export const COPY = {
   "COPY-tool.openNewTab": "Open in new tab",
   "COPY-tool.opensNewTab": "Opens in a new tab",
   "COPY-tool.slow": "{tool} is taking its time. You can open it in a new tab instead.",
+  "COPY-tool.toolbarLabel": "{tool} controls",
   "COPY-tool.unavailable": "Needs the internet",
 } as const;
 
@@ -158,4 +161,5 @@ export interface CopyParams {
   "COPY-tool.loading": { tool: string | number };
   "COPY-tool.offline": { tool: string | number };
   "COPY-tool.slow": { tool: string | number };
+  "COPY-tool.toolbarLabel": { tool: string | number };
 }

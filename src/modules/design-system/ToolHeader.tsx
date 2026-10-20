@@ -5,7 +5,7 @@
 //   the primary button and COPY-tool.slow shows inline below the bar (RULE-11).
 // - Below 720 px the shell bar is hidden, so the header also carries a search icon button (COPY-shell.search,
 //   `data-tk-palette-open`, armed by the palette bootstrap) that opens the palette (F-004.R1, SCR-ToolView narrow).
-// - A toolbar role labeled "<tool> tool" (COPY-tool.frameLabel). Every action keeps its text label; below 720 px
+// - A toolbar role labeled "<tool> controls" (COPY-tool.toolbarLabel). Every action keeps its text label; below 720 px
 //   the labels are visually hidden and the actions become 44 px icon buttons (SCR-ToolView, narrow).
 // - The slow hint lives in a polite status that is always in the page, so it is announced when filled.
 // - Rendered by the ToolFrame island (embedded tools) and statically by ToolView.astro (linked tools, whose
@@ -18,7 +18,7 @@ export interface ToolHeaderText {
   back: string;
   /** COPY-tool.openNewTab */
   openNewTab: string;
-  /** COPY-tool.frameLabel for this tool: the toolbar's label. */
+  /** COPY-tool.toolbarLabel for this tool: the toolbar's label. */
   label: string;
   /** COPY-tool.slow for this tool. */
   slow: string;

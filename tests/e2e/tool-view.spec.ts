@@ -45,7 +45,7 @@ const seed = (page: Page, doc: { favorites?: string[]; theme?: 'system' | 'light
     [STORAGE_KEY, doc.favorites ?? [], doc.theme ?? 'system'] as const,
   );
 
-const header = (page: Page, name = EMBEDDED) => page.getByRole('toolbar', { name: `${name} tool` });
+const header = (page: Page, name = EMBEDDED) => page.getByRole('toolbar', { name: `${name} controls` });
 const toolRegion = (page: Page, name = EMBEDDED) => page.getByRole('region', { name: `${name} tool` });
 const frameEl = (page: Page) => page.locator('iframe');
 
