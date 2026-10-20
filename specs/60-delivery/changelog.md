@@ -79,3 +79,4 @@ status: draft
 
 ## 2026-10-20
 - v1 release delivery (D-045 to D-048): MOD-Delivery records `wrangler.jsonc`, `pnpm build:staging`, the `publish.yml` triggers (production on every green push to `main`, manual staging or production) and the post-deploy smoke test. ADR-0007 gains a note for the temporary staging site `staging.tarokit.app` (D-046). DEP-45 registers wrangler 4.147.0 (supersedes DEP-28); DEP-29 adds the artifact actions. No behavior change.
+- Release: MOD-Delivery's home transfer-size pre-check (NFR-11, ADR-0006) is `scripts/check-dist-size.ts` (`pnpm size:check`), run by every build: the home HTML and every same-origin file it loads, brotli-compressed, at most 200 KB without the avatar (94.2 KB at v1.0.0).

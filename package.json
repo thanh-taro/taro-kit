@@ -12,8 +12,8 @@
     "gen": "node scripts/gen.ts",
     "gen:check": "node scripts/gen.ts --check",
     "content:validate": "node scripts/content-validate.ts",
-    "build": "pnpm run gen && TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= pnpm run content:validate && TAROKIT_FIXTURES= TAROKIT_SAMPLES= TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= astro build && pnpm run sw:build && node scripts/check-dist-fonts.ts && node scripts/check-dist-clean.ts",
-    "build:staging": "pnpm run gen && TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN=https://staging.tarokit.app pnpm run content:validate && TAROKIT_FIXTURES= TAROKIT_SAMPLES= TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN=https://staging.tarokit.app astro build && pnpm run sw:build && node scripts/check-dist-fonts.ts && node scripts/check-dist-clean.ts",
+    "build": "pnpm run gen && TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= pnpm run content:validate && TAROKIT_FIXTURES= TAROKIT_SAMPLES= TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN= astro build && pnpm run sw:build && node scripts/check-dist-fonts.ts && node scripts/check-dist-size.ts && node scripts/check-dist-clean.ts",
+    "build:staging": "pnpm run gen && TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN=https://staging.tarokit.app pnpm run content:validate && TAROKIT_FIXTURES= TAROKIT_SAMPLES= TAROKIT_CONTENT_DIR= TAROKIT_PORTAL_ORIGIN=https://staging.tarokit.app astro build && pnpm run sw:build && node scripts/check-dist-fonts.ts && node scripts/check-dist-size.ts && node scripts/check-dist-clean.ts",
     "build:samples": "pnpm run gen && TAROKIT_FIXTURES= TAROKIT_SAMPLES=1 TAROKIT_CONTENT_DIR=tests/fixtures/content/samples TAROKIT_PORTAL_ORIGIN= astro build && node scripts/build-sw.ts dist-samples",
     "build:fixtures": "pnpm run gen && TAROKIT_FIXTURES=1 TAROKIT_CONTENT_DIR=tests/fixtures/content/F005-favorites astro build",
     "preview": "astro preview",
@@ -24,6 +24,7 @@
     "check": "astro check && pnpm run gen:check",
     "licenses:check": "node scripts/check-licenses.ts",
     "fonts:check": "node scripts/check-dist-fonts.ts",
+    "size:check": "node scripts/check-dist-size.ts",
     "catalog:check": "node scripts/catalog-check.ts",
     "sw:build": "node scripts/build-sw.ts"
   },
