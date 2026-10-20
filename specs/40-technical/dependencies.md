@@ -70,8 +70,8 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 
 | ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
 |---|---|---|---|---|---|---|---|
-| **DEP-28** | wrangler | ^4 | Deploy static assets to Cloudflare | dev / ci | MIT OR Apache-2.0 | approved | ADR-0007 |
-| **DEP-29** | GitHub Actions: actions/checkout, actions/setup-node, pnpm/action-setup, actions/cache | pinned by commit SHA | CI | ci | MIT | approved | ADR-0007 |
+| **DEP-28** | ~~wrangler~~, superseded by DEP-45 (installed at an exact version) | ^4 | Deploy static assets to Cloudflare | dev / ci | MIT OR Apache-2.0 | removed | ADR-0007 |
+| **DEP-29** | GitHub Actions: actions/checkout, actions/setup-node, pnpm/action-setup, actions/cache, actions/upload-artifact (v7.0.2), actions/download-artifact (v8.0.2) | pinned by commit SHA | CI; the artifact actions carry the gated `dist/` from the build job to the deploy job (`publish.yml`) | ci | MIT | approved | ADR-0007 |
 
 ## Notable transitive dependencies (policy exceptions to watch)
 
@@ -100,7 +100,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-36** | @preact/signals-core | transitive of DEP-04 | Signals runtime | runtime | MIT (notice) | approved | ADR-0002 |
 | **DEP-37** | fast-uri | transitive of DEP-08 | URI parsing in Ajv (build only, unless Ajv ships) | build | BSD-3-Clause | approved | ADR-0005 |
 | **DEP-38** | Playwright browser binaries (Chromium, Firefox, WebKit) | via DEP-19 | E2E engines | dev | Chromium BSD; Firefox MPL-2.0; WebKit LGPL-2.1 (test-only, D-023) | approved | ADR-0006 |
-| **DEP-39** | workerd | via DEP-28 | Local Workers runtime for preview | dev | Apache-2.0 | approved | ADR-0007 |
+| **DEP-39** | workerd | via DEP-45 | Local Workers runtime for preview (its install script stays blocked in `pnpm-workspace.yaml`; `wrangler deploy` of static assets does not run it) | dev | Apache-2.0 | approved | ADR-0007 |
 | **DEP-40** | pnpm | 11.x | Package manager | dev | MIT | approved | ADR-0002 |
 
 Note (SP-6): DEP-33 to DEP-35 are source fonts only. The shipped files are fonttools subsets made at build (ADR-0003); fonttools is a build tool under the MIT license, to be registered when the build is scaffolded.
@@ -113,3 +113,9 @@ Note (SP-6): DEP-33 to DEP-35 are source fonts only. The shipped files are fontt
 | **DEP-42** | fonttools (Python, `requirements-build.txt`) | 4.66.x | Build-time font subsetting (`scripts/subset-fonts.py`) and the link-preview image's glyph outlines (`scripts/preview-glyphs.py`) | build | MIT | approved | ADR-0003 |
 | **DEP-43** | brotli (Python, `requirements-build.txt`) | 1.2.x | WOFF2 compression for fonttools | build | MIT | approved | ADR-0003 |
 | **DEP-44** | Lucide icons copied into `content/assets/icons/` (category icons) | from DEP-15 | Bundled category icons (ENT-Category) | runtime (asset) | ISC (notice via DEP-15) | approved | ADR-0003 |
+
+## Added for the v1 release (2026-10-20)
+
+| ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
+|---|---|---|---|---|---|---|---|
+| **DEP-45** | wrangler | 4.147.0 (exact; published 2026-10-02) | Deploy the static assets to Cloudflare Workers (`publish.yml`, `wrangler.jsonc`, MOD-Delivery); a manual rollback | dev | MIT OR Apache-2.0 (checked in the package metadata; permissive) | approved | ADR-0007, ADR-0008 |

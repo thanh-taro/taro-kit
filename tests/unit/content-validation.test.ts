@@ -98,6 +98,12 @@ describe('MOD-Content validation', () => {
     ]);
   });
 
+  it('INV-03 a staging build (D-046) refuses a tool on the staging origin it is configured with', () => {
+    expect(failures('INV03-staging-origin', { portalOrigin: 'https://staging.tarokit.app' })).toEqual([
+      'content/tools/staging-page.yaml:7 › staging-page › INV-03: an embedded tool must not be served from the portal origin https://staging.tarokit.app',
+    ]);
+  });
+
   it('INV-03 fails on an embedded tool served from the portal origin', () => {
     expect(failures('INV03-portal-origin')).toEqual([
       'content/tools/self.yaml:7 › self-hosted › INV-03: an embedded tool must not be served from the portal origin https://tarokit.app',

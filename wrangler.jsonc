@@ -1,0 +1,32 @@
+// Cloudflare Workers static assets (ADR-0007, MOD-Delivery). Assets only: no "main", no Worker script.
+// Deployed only by .github/workflows/publish.yml (`wrangler deploy`, or `--env staging`); never by hand from a laptop
+// except for a rollback (release checklist).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Production: https://tarokit.app, built by `pnpm build`.
+  "name": "tarokit",
+  "compatibility_date": "2026-10-01",
+  // No *.workers.dev origin and no preview URLs: they sit on a public suffix and would be a duplicate site
+  // (ADR-0007).
+  "workers_dev": false,
+  "preview_urls": false,
+  // No logs or analytics beyond the platform's own request handling (NFR-05, D-037).
+  "observability": { "enabled": false },
+  "assets": {
+    "directory": "./dist",
+    // Serves /404.html with a real 404 status (F-003.R7, F-015.R4). `_headers` in dist/ comes from the build
+    // (MOD-SecurityPolicy).
+    "not_found_handling": "404-page",
+  },
+  // No "routes": the custom domains (tarokit.app, staging.tarokit.app) are attached in the Cloudflare dashboard
+  // (release checklist U-11), so the CI token needs only Account / Workers Scripts / Edit, never Zone or DNS.
+  "env": {
+    // Staging (D-046): its own Worker, served at https://staging.tarokit.app, built by `pnpm build:staging`.
+    // Deployed only manually (publish.yml workflow_dispatch, target=staging). Removed after launch (U-19).
+    // It inherits "assets", "workers_dev", "preview_urls" and "observability" from the top level (wrangler 4
+    // treats them as inheritable keys); each workflow job builds its own target into ./dist.
+    "staging": {
+      "name": "tarokit-staging",
+    },
+  },
+}
