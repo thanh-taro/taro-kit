@@ -30,7 +30,7 @@ MOD-Delivery owns the pipeline that turns the repo into a published portal.
   - NFR-01: home's greeting and search rendered and responding (the first click on the search control that opens the palette) within 1.5 s on a first visit, and within 0.5 s on a repeat visit from the precache;
   - NFR-02, over a 500-entry catalog generated at test time through the content pipeline: the palette opens within 100 ms of the shortcut, and results update within 50 ms per keystroke. The app emits no performance marks, so latency is Event Timing input-to-next-paint, cross-checked by a frame probe; each run's value is the p75 of its interactions (SP-6).
   The `perf` project is defined only when asked for by name, so `pnpm test:e2e` and the engine runs never include it.
-- **Lighthouse CI (advisory, never blocking, Linux CI only; SP-6):** the mobile lab profile with custom throttling (4× CPU, 9000/1500 Kbps, 170 ms RTT) on home, asserting the byte-weight budgets of `architecture.md` and reporting timing as warnings, with reports kept on the runner's file system only (NFR-05). Not wired yet: DEP-21's dependency tree has a package whose declared license the ADR-0008 audit rejects, which needs a decision first.
+- **No Lighthouse CI** (user decision D-049, ADR-0006 note): the home size check and the Playwright perf rig are the performance gates.
 - **After each deploy:** the post-deploy smoke test above.
 
 **Notices:** generates `/third-party-notices.txt`.

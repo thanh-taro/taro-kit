@@ -59,7 +59,7 @@ flowchart LR
    - After `astro build`, MOD-Offline injects the precache manifest into `sw.js`.
 3. **Gate.**
    - On a pull request: lint, types, unit tests, Chromium e2e with axe, size pre-check and license audit.
-   - On `main`: all of the above, plus three-engine e2e, Lighthouse budgets and **MOD-CatalogCheck**. Only if everything passes does `wrangler deploy` run.
+   - On `main`: all of the above, plus three-engine e2e, the Playwright perf rig (NFR-01, NFR-02) and **MOD-CatalogCheck**. Only if everything passes does `wrangler deploy` run.
    - Weekly: the catalog check alone, failing the run to notify the Owner.
 4. **First visit.**
    - The host returns static HTML. The inline theme script sets the theme before paint, and the inline palette bootstrap arms Mod+K.

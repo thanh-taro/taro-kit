@@ -37,7 +37,7 @@ The hosting and CI requirements:
     - Chromium e2e and axe;
     - the size pre-check;
     - the license audit (ADR-0008).
-  - `publish.yml` runs on push to `main`. It runs everything above, then the full three-engine e2e, Lighthouse CI and the **catalog check** (MOD-CatalogCheck). Only if every job passes does `wrangler deploy` run. Cloudflare's own Git auto-deploy stays **off**, so the check gates the publish.
+  - `publish.yml` runs on push to `main`. It runs everything above, then the full three-engine e2e, the Playwright perf rig (Lighthouse CI dropped, D-049) and the **catalog check** (MOD-CatalogCheck). Only if every job passes does `wrangler deploy` run. Cloudflare's own Git auto-deploy stays **off**, so the check gates the publish.
   - `weekly-check.yml` runs on `schedule` (weekly) and `workflow_dispatch`. It runs the catalog check against `main`, which is the published content. A failure fails the run. GitHub's failed-workflow email is the notification channel shared with failed publishes. It never deploys.
 - Secrets are limited to a scoped Cloudflare API token and the account id, stored as GitHub Actions secrets.
 

@@ -49,3 +49,6 @@ supersedes: []
 
 ## Notes from spike SP-1
 - Playwright Chromium does not partition third-party storage by default. Storage-sharing tests re-enable partitioning through launch flags, so they match real Chrome.
+
+## Note from release (2026-10-20, D-049)
+- Lighthouse CI is not used. Its dependency tree includes a package whose declared license ("BSD") fails the ADR-0008 check, and the user chose not to register an exception. The performance gates are the build-time size check (NFR-11) and the Playwright perf rig (NFR-01, NFR-02), which SP-6 already made the gating measures.

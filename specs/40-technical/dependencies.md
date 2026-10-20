@@ -58,7 +58,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-18** | vitest | ^5.0 | Unit and integration tests | dev | MIT | approved | ADR-0006 |
 | **DEP-19** | @playwright/test | ^1.64 | E2E on Chromium, Gecko and WebKit; perf marks | dev | Apache-2.0 | approved | ADR-0006 |
 | **DEP-20** | @axe-core/playwright (pulls axe-core) | ^4.13 | Automated accessibility audit | dev | MPL-2.0 (dev-only exception) | approved | ADR-0006, ADR-0008 |
-| **DEP-21** | @lhci/cli | ^0.15 | Lighthouse budgets for NFR-01 and NFR-11 | dev | Apache-2.0 | approved | ADR-0006 |
+| **DEP-21** | @lhci/cli | ^0.15 | Lighthouse budgets for NFR-01 and NFR-11 | dev | Apache-2.0 | removed | ADR-0006 (D-049: never installed; its tree's parse-cache-control declares only "BSD") |
 | **DEP-22** | eslint | ^10 | Linting | dev | MIT | approved | ADR-0006 |
 | **DEP-23** | typescript-eslint | ^8.71 | TS lint rules | dev | MIT | approved | ADR-0006 |
 | **DEP-24** | eslint-plugin-astro | ^3.2 | Lint `.astro` files | dev | MIT | approved | ADR-0006 |
