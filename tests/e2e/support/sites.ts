@@ -78,9 +78,9 @@ export async function serveSites(context: BrowserContext): Promise<Sites> {
       const response = await route.fetch({ url: `${BUILD}${url.pathname}${url.search}`, headers: forwarded });
       await route.fulfill({ response, headers: { ...response.headers(), ...headers } });
     } catch (e) {
-      // A request the page abandoned mid-flight (it navigated away, e.g. a preload or the worker's precache):
+      // A request the page abandoned mid-flight (it navigated away or the test ended, e.g. a preload or the worker's precache):
       // nothing is left to answer. Any other failure still fails the test.
-      if (/disposed|closed|Request context/i.test(String(e))) return;
+      if (/disposed|closed|Request context|Test ended/i.test(String(e))) return;
       throw e;
     }
   };
