@@ -201,8 +201,16 @@ describe('MOD-Content normalization', () => {
 });
 
 describe('repository content', () => {
-  it('the sample content validates, with one visible sample tool per category (D-012)', () => {
+  // content/ is the Owner's to replace (release C-1), so it is checked by shape only: whatever it holds must
+  // validate. $TAROKIT_CONTENT_DIR, when set, stands in for it.
+  it('F-001.R2 the repository content validates, whatever tools it holds', () => {
     const r = loadRegistry({ root });
+    expect(r.categories.length).toBeGreaterThan(0);
+    for (const t of r.visibleTools) expect(new URL(t.url).protocol).toBe('https:');
+  });
+
+  it('the sample fixture content validates, with one visible sample tool per category (D-012)', () => {
+    const r = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/samples') });
     expect(r.categories.map((c) => [c.id, c.tools.length])).toEqual([
       ['developer', 1],
       ['media', 1],

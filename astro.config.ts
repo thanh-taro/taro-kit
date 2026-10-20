@@ -33,6 +33,9 @@ try {
 // scripts/check-dist-clean.ts fails the build if fixture pages or content reach dist/.
 // Playwright serves the fixture build on its own port (playwright.config.ts).
 const fixtures = process.env.TAROKIT_FIXTURES === '1';
+// E2E sample build (adapters/tests.md): `TAROKIT_SAMPLES=1` (only `pnpm build:samples` sets it) builds the production
+// pages over tests/fixtures/content/samples into dist-samples/, so e2e tests never depend on content/ (release C-1).
+const samples = !fixtures && process.env.TAROKIT_SAMPLES === '1';
 const fixturePages: AstroIntegration = {
   name: 'tarokit:test-fixture-pages',
   hooks: {
@@ -97,7 +100,7 @@ const catalogDataEmit: AstroIntegration = {
 export default defineConfig({
   site: portalOrigin,
   output: 'static',
-  outDir: fixtures ? './dist-fixtures' : './dist',
+  outDir: fixtures ? './dist-fixtures' : samples ? './dist-samples' : './dist',
   trailingSlash: 'always',
   // Silences the syntax-highlighter-vs-CSP warning: no Markdown pages are rendered.
   markdown: { syntaxHighlight: false },

@@ -24,7 +24,9 @@ import {
 } from '../../src/modules/personal-data/index.ts';
 
 const root = join(import.meta.dirname, '../..');
-const prod = loadRegistry({ root, contentDir: join(root, 'content') });
+// The sample content (D-012) stands in for the production content, so no test reads content/ (release C-1).
+const samplesDir = join(root, 'tests/fixtures/content/samples');
+const prod = loadRegistry({ root, contentDir: samplesDir });
 const fixtureDir = join(root, 'tests/fixtures/content/F005-favorites');
 const fixture = loadRegistry({ root, contentDir: fixtureDir });
 
@@ -65,7 +67,7 @@ describe('F-007.R5 introduction', () => {
   });
 
   it('F007_AC9 the production view introduces the profile', () => {
-    const view = homeView(prod, join(root, 'content'));
+    const view = homeView(prod, samplesDir);
     expect(view.intro.name).toBe(prod.profile.nickname ?? prod.profile.name);
     expect(view.intro.after).toContain(prod.profile.headline);
   });

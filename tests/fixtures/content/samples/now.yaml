@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../../content/schemas/now.json
+# Test fixture: a copy of the v1 sample content (D-012), so tests never read content/ (release C-1).
+# ENT-NowNote. SAMPLE text to replace before launch.
+body: |
+  Sample Now note. I'm setting up TaroKit, the home for the tools I build.
+updated: 2026-10-13

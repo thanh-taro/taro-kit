@@ -1,4 +1,4 @@
-// A static host for the production build (dist/) that can "publish a new version" mid-test (F-011.R4).
+// A static host for the production build of the sample content (dist-samples/, `pnpm build:samples`) that can "publish a new version" mid-test (F-011.R4).
 // - Serves files like the real host: clean URLs (`/tools/` → tools/index.html), and 404.html with status 404 for
 //   anything else, with `no-cache` on HTML, sw.js and the manifest (ADR-0007).
 // - `publish()` switches to version 2: every page carries `data-tk-e2e-version="2"` on <html>, and sw.js carries
@@ -10,7 +10,7 @@ import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { extname, join, normalize } from 'node:path';
 
-const dist = join(import.meta.dirname, '../../../dist');
+const dist = join(import.meta.dirname, '../../../dist-samples');
 
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -42,7 +42,7 @@ function resolve(pathname: string): string | null {
 }
 
 export async function startVersionedHost(): Promise<VersionedHost> {
-  if (!existsSync(join(dist, 'sw.js'))) throw new Error('dist/sw.js missing: run `pnpm build` first');
+  if (!existsSync(join(dist, 'sw.js'))) throw new Error('dist-samples/sw.js missing: run `pnpm build:samples` first');
   let version = 1;
   const server: Server = createServer((req, res) => {
     const { pathname } = new URL(req.url ?? '/', 'http://localhost');

@@ -1,5 +1,6 @@
 // F-007 Home dashboard (SCR-Home) in the built portal.
-// - The production build (PROD, content/) for the introduction, the category row and what's new on real content.
+// - The production build (PROD, tests/fixtures/content/samples) for the introduction, the category row and what's
+//   new on the sample content.
 // - The fixture build (FX, tests/fixtures/content/F005-favorites: fx-01 … fx-26, ft-*, fx-linked; fx-hidden is
 //   hidden) for favorites, recents and the first-visit states, since it has enough tools; its home is the real page.
 // - What's new needs tools with chosen dates, so F007_AC6–AC8 use the tests-only page /__fixtures__/whats-new/,
@@ -11,10 +12,10 @@ import { join } from 'node:path';
 import { devices, expect, test, type Page } from '@playwright/test';
 import { loadRegistry } from '../../src/modules/content/index.ts';
 import { whatsNew } from '../../src/modules/pages/whats-new.ts';
-import { FX, PROD } from './ports.ts';
+import { FX, PROD, SAMPLES_CONTENT } from './ports.ts';
 
 const root = join(import.meta.dirname, '../..');
-const prod = loadRegistry({ root, contentDir: join(root, 'content') });
+const prod = loadRegistry({ root, contentDir: join(root, SAMPLES_CONTENT) });
 const fixture = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') });
 
 const STORAGE_KEY = 'tarokit.personal';

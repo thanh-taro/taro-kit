@@ -6,8 +6,10 @@ How tests consume the specs. The stack and tools are decided in ADR-0006; this f
 | Kind | Runner | Folder | Runs against |
 |---|---|---|---|
 | Unit / integration (pure logic: content validation, codegen, search, rules, CSP derivation, catalog-check classifier) | Vitest, Node environment | `tests/unit/**/*.test.ts` | source modules directly |
-| End-to-end, accessibility, privacy | Playwright (`chromium`, `firefox`, `webkit` projects) + `@axe-core/playwright` | `tests/e2e/**/*.spec.ts` | `astro preview` serving the real `dist/` |
+| End-to-end, accessibility, privacy | Playwright (`chromium`, `firefox`, `webkit` projects) + `@axe-core/playwright` | `tests/e2e/**/*.spec.ts` | `astro preview` serving production builds of test content: `dist-samples/` (`pnpm build:samples`, the sample content in `tests/fixtures/content/samples/`, with the service worker) and `dist-fixtures/` (`pnpm build:fixtures`). Playwright builds both. |
 | Fixtures | — | `tests/fixtures/<area>/<fixture-name>/` | — |
+
+**No test reads `content/`.** It is the Owner's to replace; tests that need catalog content use fixtures. The unit suite checks only that whatever `content/` holds validates (`$TAROKIT_CONTENT_DIR` stands in for it when set). The production `pnpm build` and `dist/` are checked by the build guards (`check-dist-fonts`, `check-dist-clean`), not by e2e.
 
 ## Naming: acceptance-criterion IDs in test names
 Every test that verifies an acceptance criterion starts its name with the **compact AC ID**: the feature ID without its hyphen, an underscore, then the AC.
@@ -28,7 +30,7 @@ Rules:
 | Command | What it runs |
 |---|---|
 | `pnpm test` | Vitest, all unit tests |
-| `pnpm test:e2e` | Playwright, every project (needs `pnpm build` first) |
+| `pnpm test:e2e` | Playwright, every project (it builds `dist-samples/` and `dist-fixtures/` itself) |
 | `pnpm exec playwright test --project=chromium` | the pull-request subset |
 | `python3 tools/spec_lint.py --coverage tests/` | lists acceptance criteria without a test |
 

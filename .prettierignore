@@ -1,5 +1,6 @@
 dist/
 dist-fixtures/
+dist-samples/
 .astro/
 node_modules/
 spikes/

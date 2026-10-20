@@ -1,15 +1,15 @@
-// F-008 About the Owner (SCR-About). The production build (PROD) renders whatever content/profile.yaml holds, so
-// its expectations come from that file's registry. Link behavior runs on the fixture build (FX), whose profile
+// F-008 About the Owner (SCR-About). The production build (PROD) renders the sample profile
+// (tests/fixtures/content/samples/profile.yaml), so its expectations come from that file's registry. Link behavior runs on the fixture build (FX), whose profile
 // (tests/fixtures/content/F005-favorites) has an avatar, an email link and a website link. The nickname and
 // location variants are covered on fixture profiles in tests/unit/about.test.ts.
 import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { initials, loadRegistry, paragraphs } from '../../src/modules/content/index.ts';
-import { FX, PROD } from './ports.ts';
+import { FX, PROD, SAMPLES_CONTENT } from './ports.ts';
 
 const root = join(import.meta.dirname, '../..');
-const { profile } = loadRegistry({ root, contentDir: join(root, 'content') });
+const { profile } = loadRegistry({ root, contentDir: join(root, SAMPLES_CONTENT) });
 const fxProfile = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') }).profile;
 const links = (page: Page) => page.getByRole('region', { name: 'Find me' });
 
@@ -48,7 +48,7 @@ test.describe('F-008 About page', () => {
   });
 
   test('F008_AC2 without an avatar, the initials of the full name name the person', async ({ page }) => {
-    test.skip(!!profile.avatar, 'content/profile.yaml has an avatar; the initials are covered in unit tests');
+    test.skip(!!profile.avatar, 'the sample profile has an avatar; the initials are covered in unit tests');
     await page.goto(`${PROD}/about/`);
     const portrait = page.getByRole('img', { name: `Portrait of ${profile.name}` });
     await expect(portrait).toHaveText(initials(profile.name));

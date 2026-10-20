@@ -1,15 +1,15 @@
 // F-010 Now and changelog (SCR-Now) in the built portal. The stale label (RULE-09) is computed in the browser
 // against the viewer's local date, so these tests move the page clock over one build: the production build
-// (port TK_E2E_PORT, content/now.yaml) for the note and the changelog, and the fixture build (TK_E2E_FIXTURES_PORT)
+// (port TK_E2E_PORT, tests/fixtures/content/samples/now.yaml) for the note and the changelog, and the fixture build (TK_E2E_FIXTURES_PORT)
 // for the states the production content does not have (no Now note; no note and no tools).
 import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { changelog, loadRegistry } from '../../src/modules/content/index.ts';
-import { FX, PROD } from './ports.ts';
+import { FX, PROD, SAMPLES_CONTENT } from './ports.ts';
 
 const root = join(import.meta.dirname, '../..');
-const registry = loadRegistry({ root, contentDir: join(root, 'content') });
+const registry = loadRegistry({ root, contentDir: join(root, SAMPLES_CONTENT) });
 const noteDate = registry.now?.updated ?? '';
 
 /** `date` (YYYY-MM-DD) plus `days`, as YYYY-MM-DD. */

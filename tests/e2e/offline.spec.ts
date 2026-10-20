@@ -5,7 +5,7 @@
 //   the service worker sees them, and Firefox does not run here (adapters/tests.md, SP-4); the full-matrix runs
 //   cover WebKit by stopping the server.
 // - Production content (PROD) for pages and states; the fixture build (FX) for a linked and an offline-capable tool;
-//   a versioned copy of dist/ (support/versioned-server.ts) for publishing a new version mid-test.
+//   a versioned copy of dist-samples/ (support/versioned-server.ts) for publishing a new version mid-test.
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import { FX, PROD } from './ports.ts';
