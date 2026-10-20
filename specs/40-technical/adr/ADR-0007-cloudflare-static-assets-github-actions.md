@@ -56,3 +56,8 @@ The hosting and CI requirements:
 
 ## Note from the scaffold (2026-10-14)
 - The scheduled check workflow is `.github/workflows/catalog-check.yml` (weekly plus pre-deploy), not `weekly-check.yml`.
+
+## Note for the v1 release: staging (2026-10-20, D-046)
+- A temporary staging site, `https://staging.tarokit.app`, is its own assets-only Worker (`tarokit-staging`, the `staging` environment in `wrangler.jsonc`). It is built with `pnpm build:staging` and deployed only by hand (`publish.yml`, `workflow_dispatch` with `target: staging`). It is not a `*.workers.dev` or preview URL, which this ADR rules out for the portal.
+- It exists for the manual checks before go-live (D-044) and is removed after launch.
+- Production is unchanged (D-047): every green push to `main` deploys to production, as decided above.
