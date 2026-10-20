@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=./schemas/profile.json
-# ENT-Profile. Name and nickname come from PER-01. Written from the Owner's VietnamWorks profile (2026-10-20).
+# ENT-Profile. Name and nickname come from PER-01. Written from the Owner's VietnamWorks profile (2026-10-20); contact links from the Owner.
 name: Nguyen Tri Thanh
 nickname: Taro
 headline: Fullstack AI-Native engineer. I pair with AI and turn coffee into tidy products.
@@ -18,3 +18,9 @@ links:
   - label: Email me
     url: mailto:adamnguyen.itdn@gmail.com
     kind: email
+  - label: 'Zalo / Phone: 0974 389 028'
+    url: https://zalo.me/0974389028
+    kind: social
+  - label: GitHub
+    url: https://github.com/thanh-taro
+    kind: code
