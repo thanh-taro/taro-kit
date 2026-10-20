@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Change D-056 (résumé skills as grouped chips): spec change",
+      "step": "8 Iterate: D-055 (no Projects page) and D-056 (grouped skills) plus résumé content committed locally; not deployed or pushed — awaiting Owner",
       "gate": {
         "status": "pending",
         "at": null,
@@ -897,14 +897,6 @@
   "log": [
     {
       "at": "2026-10-13T03:25:58+00:00",
-      "event": "decision D-012 opened: Pilot tools at launch"
-    },
-    {
-      "at": "2026-10-13T03:25:58+00:00",
-      "event": "decision D-012 answered: Seed with placeholder/hidden entries; real tools added as deployed"
-    },
-    {
-      "at": "2026-10-13T03:25:58+00:00",
       "event": "decision D-013 opened: Now/changelog"
     },
     {
@@ -1694,9 +1686,17 @@
     {
       "at": "2026-10-20T15:50:50+00:00",
       "event": "iterate step: 8 Change D-056 (résumé skills as grouped chips): spec change"
+    },
+    {
+      "at": "2026-10-20T15:58:52+00:00",
+      "event": "D-056 change: résumé skills as grouped chips — specs, design boards, code, tests, content (a3040ba)"
+    },
+    {
+      "at": "2026-10-20T15:58:52+00:00",
+      "event": "iterate step: 8 Iterate: D-055 (no Projects page) and D-056 (grouped skills) plus résumé content committed locally; not deployed or pushed — awaiting Owner"
     }
   ],
-  "updated": "2026-10-20T15:50:50+00:00",
+  "updated": "2026-10-20T15:58:52+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
