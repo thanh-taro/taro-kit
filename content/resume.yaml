@@ -12,6 +12,7 @@ experience:
       - REST and WebSocket backends in Python and Node.js, with FastAPI and NestJS.
       - ETL pipelines that turn big, messy data into something a dashboard can love.
       - Prompts and integrations for ChatGPT, Llama 2, Midjourney and DALL-E.
+      - Claude Chat, Claude Code and Claude Design as everyday teammates, from planning and coding to design.
       - Products built for the company itself, not just for clients.
   - role: Training mentor
     organization: Rising Stars
