@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=./schemas/now.json
 # ENT-NowNote. Over 90 days old it is labeled out of date (RULE-09).
 body: |
-  Right now I'm building backends, data pipelines and AI prompts at Est Rouge, and mentoring the next batch of Rising Stars.
+  Right now I'm a Fullstack AI-Native engineer at Est Rouge, shipping products end to end with AI as my pair, from the backend and data to the prompts and agents on top. I'm also mentoring the next batch of Rising Stars.
 
   On the side, I'm launching TaroKit, the site you're on, with its first tool, a JSON formatter. Next on my list: more small tools, and fewer open browser tabs. One of those is going better than the other.
 updated: 2026-10-20
