@@ -1,6 +1,6 @@
 # Publish plan: `publish.yml`, wrangler config, version (TaroKit v1.0.0, M-1)
 
-Prepared 2026-10-20, main at 8a7c4d2. This is a spec for Claude to implement after approval. Nothing here was written outside `.build-my-app/reports/`. Companion: `release-checklist.md`.
+Prepared 2026-10-20, main at 8a7c4d2. **Updated 2026-10-20 for D-045 to D-048 and implemented** (branch `worktree-agent-a9b2dfd7cc3a69107`): production deploys on every green push to `main` (ADR-0007 as written, D-047), with no `PRODUCTION_DEPLOY_ENABLED` variable and no required reviewer; staging is a separate Worker deployed only by hand (D-046); wrangler is pinned at 4.147.0 (DEP-45); version 1.0.0, no tag (D-048). Where the text below differs from the files, the files win. This was a spec for Claude to implement after approval. Nothing here was written outside `.build-my-app/reports/`. Companion: `release-checklist.md`.
 Sources: `ci.yml`, `catalog-check.yml`, `security-qa.md` (Deploy job requirements), ADR-0007, MOD-Delivery, `package.json`, `pnpm-workspace.yaml`.
 
 ## 1. What exists and what is missing
@@ -131,7 +131,7 @@ No secrets are passed (`secrets:` is omitted, the called workflow uses none). Th
    - Require `needs.e2e-engines.result == 'success'`; with `continue-on-error` the Firefox leg does not change the job result.
    - A `push` builds production only, so a staging deploy comes only from `workflow_dispatch` with `target=staging`, which makes `build` run `pnpm build:staging`.
 
-6. **`deploy-production`**: `needs` the same; `if: github.ref == 'refs/heads/main' && vars.PRODUCTION_DEPLOY_ENABLED == 'true' && (github.event_name == 'push' || inputs.target == 'production')`; `environment: { name: production, url: https://tarokit.app }` (required reviewer = the Owner, if the plan allows). Until the variable is `true`, the job is skipped, so the first push to GitHub cannot go live.
+6. **`deploy-production`**: `needs` the same; `if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.target == 'production')`; `environment: { name: production, url: https://tarokit.app }`, no required reviewer (D-047). Its first step checks the secrets: when `CLOUDFLARE_API_TOKEN` or `CLOUDFLARE_ACCOUNT_ID` is missing, a **push** skips the remaining steps with a `::notice::` (the run stays green, the smoke job is skipped through the job output `deployed`), and a **manual** run fails with an `::error::`. Skipping on push is chosen because the repo is pushed and staging is checked before the production secret exists (checklist U-10 to U-17); failing then would turn every push red and send failure emails for an expected state. `deploy-staging` always fails when its secrets are missing (it only runs by hand).
 
 Both deploy jobs share these steps:
 ```yaml
@@ -204,7 +204,7 @@ Proposal:
 
 | Spec says | This plan | Why |
 |---|---|---|
-| `publish.yml` runs on push to main and deploys when green | Push to main always runs the gates; production deploy needs `vars.PRODUCTION_DEPLOY_ENABLED == 'true'` (and the environment's reviewer); a staging deploy is manual | The first push must not go live before staging checks (D-044); security-qa allows main or manual only |
+| `publish.yml` runs on push to main and deploys when green | Same (D-047), once the production secret exists; before that the deploy is skipped with a notice. A staging deploy is manual (ADR-0007 note, D-046) | Going live is controlled by when the Owner adds the production secret and the domain, after the staging checks (D-044) |
 | Full three-engine e2e and Lighthouse CI gate the deploy | Chromium + WebKit required, Firefox non-blocking at first; no Lighthouse | No Lighthouse config exists; perf was measured by hand and passed; Firefox is a user manual check |
 | Cloudflare token and account id "as GitHub Actions secrets" | Same, stored in GitHub environments (or repo secrets on a plan without environments) | Matches the CI brief and security-qa |
 | Workers static assets, `wrangler deploy` | Same; custom domains in the dashboard; `workers_dev` off | Least privilege, no duplicate origin |

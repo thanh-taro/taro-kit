@@ -6,16 +6,18 @@ Not legal advice. Companion files: `publish-plan.md` (the `publish.yml` spec, wr
 
 Legend: **C** = Claude does it (after you say go), **U** = user-owned hard stop. Each U item has Steps, Verify and Rollback.
 
+**Updated 2026-10-20 for D-045 to D-048.** C-1 and C-2 are done (branch `worktree-agent-a9b2dfd7cc3a69107`). Staging is its own Worker at `staging.tarokit.app`, deployed only by hand and removed after launch (D-046). Production follows ADR-0007 as written: every green push to `main` deploys to production (D-047); there is no `PRODUCTION_DEPLOY_ENABLED` variable. A push deploys only once `CLOUDFLARE_API_TOKEN` exists in the `production` environment; until then the production deploy is skipped with a notice and the run stays green. So the order below is: staging secrets, staging deploy and checks, then the production secret, the first production deploy and the production custom domain. `package.json` is at `1.0.0`; you create the tag at launch (D-048).
+
 ## What was found while preparing (read first)
 
-1. **Blocker for C-1: the test suites read the sample content.** 11 test files depend on `content/` (the e2e specs `shell`, `home`, `home-shots`, `catalog`, `projects`, `palette`, `offline`, `offline-shots`, `a11y-qa`; the unit tests `content-validation.test.ts:213` and `offline.test.ts:116,147`). `pnpm build` builds the real `content/`, so replacing the samples turns CI red. Unhiding json-formatter also fails `content-validation.test.ts:213` ("every visible tool is a sample"). Claude must move the samples to test fixtures before you replace them (C-1).
-2. **Wrangler is not installed.** `wrangler` (DEP-28, approved) is not in `package.json` or `pnpm-lock.yaml`, and there is no `wrangler.jsonc`. Needed: C-2.
+1. **(Resolved by C-1.) Blocker for C-1: the test suites read the sample content.** 11 test files depend on `content/` (the e2e specs `shell`, `home`, `home-shots`, `catalog`, `projects`, `palette`, `offline`, `offline-shots`, `a11y-qa`; the unit tests `content-validation.test.ts:213` and `offline.test.ts:116,147`). `pnpm build` builds the real `content/`, so replacing the samples turns CI red. Unhiding json-formatter also fails `content-validation.test.ts:213` ("every visible tool is a sample"). Claude must move the samples to test fixtures before you replace them (C-1).
+2. **(Resolved by C-2: wrangler 4.147.0, DEP-45.) Wrangler is not installed.** `wrangler` (DEP-28, approved) is not in `package.json` or `pnpm-lock.yaml`, and there is no `wrangler.jsonc`. Needed: C-2.
 3. **The commit counts differ from the brief.** `main` has 156 commits, 92 with the work email `[work email]` and 64 with the personal one. The "101" count is across all branches (165 commits, 101 work). If you push only `main`, 92 of 156 are affected. The email also appears as text in `.build-my-app/reports/security-qa.md`. A rewrite of authors does not remove it from file contents.
 4. **`gh` is logged in as `er-thanhnt`** (keyring, SSH protocol). Check this is the account you want to own a personal project before you create the repo (U-3).
 5. **Future commits are already personal.** `~/.gitconfig` has `includeIf gitdir:~/Documents/personals/` that loads the personal email. A fresh clone must live under that folder or its commits will use the work email again.
 6. **The domain and zone already exist** (spikes SP-1/SP-3 ran on `lab.tarokit.app` and `labtool.tarokit.app`; D-035 says Always Use HTTPS is on). So Cloudflare steps below are "verify and clean", not "buy". The spikes may have left Workers and DNS records behind (U-8).
-7. **`pnpm build` always targets `https://tarokit.app`.** It clears `TAROKIT_PORTAL_ORIGIN`. A staging build needs a different command (see U-13, `publish-plan.md`). Canonical URLs, `og:url`, `og:image`, sitemap and robots all follow the portal origin.
-8. **GitHub plan.** Environment secrets and required reviewers in a private repo need GitHub Pro, Team or Enterprise (verify on your plan, U-5). On Free, use repository secrets and the variable gate in `publish-plan.md`.
+7. **`pnpm build` always targets `https://tarokit.app`.** It clears `TAROKIT_PORTAL_ORIGIN`. A staging build uses `pnpm build:staging` (C-2). Canonical URLs, `og:url`, `og:image`, sitemap and robots all follow the portal origin.
+8. **GitHub plan.** Environments and environment secrets in a private repo may need GitHub Pro, Team or Enterprise (verify on your plan, U-5). The `production` environment has no required reviewer (D-047), so no paid reviewer feature is needed. If environments are not available, use repository secrets (U-10, fallback).
 9. **Visible sample content is wider than "four sample tools":** 4 visible sample tools, 4 hidden sample tools, 1 hidden sample project, 4 category intros starting "Sample intro:", the sample profile headline, bio, link and Now note.
 10. **Policies.** No separate privacy page or terms are needed (section "Policies"). Nothing was drafted for legal review.
 
@@ -23,14 +25,16 @@ Legend: **C** = Claude does it (after you say go), **U** = user-owned hard stop.
 
 ## Phase 1: Pre-push (local, before any remote exists)
 
-### C-1 (Claude, blocker) Keep the samples for tests, then free `content/`
+### C-1 (Claude, blocker) Keep the samples for tests, then free `content/` (done)
+Done: the samples live in `tests/fixtures/content/samples/`; `pnpm build:samples` builds them into `dist-samples/` (gitignored), which Playwright serves as the production build. No test reads `content/`. Proved with a scratch copy of `content/` (all samples hidden, json-formatter visible) through `TAROKIT_CONTENT_DIR`: unit and Chromium e2e suites green.
 1. Copy the 9 sample tool files and `content/projects/sample-project.yaml` into a fixture content folder (for example `tests/fixtures/content/samples/`, with the real `categories.yaml` shape, a profile and a Now note). Do not delete them from git history.
 2. Add a build of that folder for e2e (for example `pnpm build:samples`, output `dist-samples/`, never `dist/`), serve it from Playwright, and add `dist-samples/` to `.gitignore` and `check-dist-clean`.
 3. Point the 9 e2e specs and the 2 unit tests at the fixture build or folder. Update `content-validation.test.ts:204-213` (the D-012 assertion) so that real content is validated by shape, not by "only samples".
 4. Verify: `pnpm test`, the Chromium and WebKit suites and `python3 tools/spec_lint.py --coverage tests` all pass as before (449 unit, 310 Chromium, 279 WebKit, 129/129 ACs).
 This touches tests and build scripts, and may need a short spec note in `adapters/tests.md`. Ask first.
 
-### C-2 (Claude) Delivery files (all in `publish-plan.md`)
+### C-2 (Claude) Delivery files (all in `publish-plan.md`) (done)
+Done: wrangler 4.147.0 (exact, DEP-45), `wrangler.jsonc`, `pnpm build:staging`, `"version": "1.0.0"`, `workflow_call` on `ci.yml`, `publish.yml`, `scripts/smoke-test.sh`, `.gitignore`, `allowBuilds: workerd: false`. The steps below are the original plan.
 - Add `wrangler` `^4` as a devDependency, `wrangler.jsonc`, `build:staging` script, `"version": "1.0.0"`, `workflow_call` on `ci.yml`, `.github/workflows/publish.yml`.
 - `.gitignore`: add `.wrangler/`, `.dev.vars`, `.dev.vars.*`, `.env`, `.env.*`, `dist-samples/`.
 - Run `pnpm licenses:check` after adding wrangler. New transitive packages (miniflare, workerd, and similar) may need registry rows (ADR-0008). Check whether `pnpm-workspace.yaml` `allowBuilds` needs `workerd` (the deploy job uses `--ignore-scripts`).
@@ -107,9 +111,9 @@ Verify: `gh repo view <owner>/taro-kit --json visibility,defaultBranchRef` shows
 Rollback: `gh repo delete <owner>/taro-kit --yes` (needs `gh auth refresh -s delete_repo` first). Remember a push of the wrong history cannot be recalled from forks or clones; delete and recreate the repo.
 
 ### U-5 Check plan features, then create the GitHub environments
-1. Open the repo, Settings, Environments. If "New environment" is offered and "Required reviewers" can be set, use environments. If it says environments need a paid plan, use repository secrets instead (U-10, fallback).
-2. New environment `production`: Deployment branches and tags, Selected branches and tags, add `main`. Required reviewers: add yourself. Leave "Prevent self-review" off (you are the only reviewer).
-3. New environment `staging`: deployment branch `main`, no reviewers.
+1. Open the repo, Settings, Environments. If "New environment" is offered, use environments (no reviewers are needed). If it says environments need a paid plan, use repository secrets instead (U-10, fallback).
+2. New environment `staging`: deployment branch `main`, no reviewers.
+3. New environment `production`: Deployment branches and tags, Selected branches and tags, add `main`. No required reviewer (D-047). Do not add its secrets yet (that is U-17).
 Verify: `gh api repos/<owner>/taro-kit/environments --jq '.environments[].name'` lists both.
 Rollback: delete the environments in the same page.
 
@@ -158,15 +162,16 @@ Rollback: Cloudflare keeps no history; note each setting you change.
 Verify: `curl -s -H "Authorization: Bearer $TOKEN" https://api.cloudflare.com/client/v4/user/tokens/verify` shows `"status":"active"` (run it in your own terminal with the token in an env var, never committed).
 Rollback: API Tokens, the token, Roll or Delete.
 
-### U-10 Store the GitHub secrets
+### U-10 Store the staging secrets (production comes later, in U-17)
 Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. Nothing else.
-With environments (preferred): `gh secret set CLOUDFLARE_API_TOKEN --env staging --repo <owner>/taro-kit` (paste when prompted), the same with `--env production`, then `CLOUDFLARE_ACCOUNT_ID` for both. Use a separate token per environment if you want a separate expiry.
-Fallback (Free plan): `gh secret set CLOUDFLARE_API_TOKEN --repo <owner>/taro-kit`; the repo-level variable gate in `publish-plan.md` then protects production.
-The first `wrangler deploy` creates the Workers `tarokit` and `tarokit-staging`; no dashboard step is needed, but check both names are free (U-8). Do this only when you are ready to run the staging deploy (U-13). Until then the deploy jobs cannot run.
-Verify: `gh secret list --env production --repo <owner>/taro-kit` lists the names (values are never shown).
-Rollback: `gh secret delete CLOUDFLARE_API_TOKEN --env production`, and delete or roll the token in Cloudflare.
+1. `gh secret set CLOUDFLARE_API_TOKEN --env staging --repo <owner>/taro-kit` (paste when prompted), then `gh secret set CLOUDFLARE_ACCOUNT_ID --env staging --repo <owner>/taro-kit`.
+2. Do **not** set them in `production` yet. Every push to `main` deploys production as soon as `production` has the token (D-047); until then publish.yml skips the production deploy with a notice.
+Fallback (no environments on your plan): repository secrets apply to both deploy jobs, so a push would also deploy production. That deploy is not public until the `tarokit.app` custom domain is attached (`workers_dev` is off), so in this case keep U-17 step 4 (attaching the production domain) as the go-live switch, and do not attach it before U-14 passes.
+The first `wrangler deploy` creates the Workers `tarokit-staging` and later `tarokit`; no dashboard step is needed, but check both names are free (U-8). Do this only when you are ready to run the staging deploy (U-13).
+Verify: `gh secret list --env staging --repo <owner>/taro-kit` lists the names (values are never shown); `gh secret list --env production --repo <owner>/taro-kit` lists nothing.
+Rollback: `gh secret delete CLOUDFLARE_API_TOKEN --env staging`, and delete or roll the token in Cloudflare.
 
-### U-11 Attach the custom domains (staging after its first deploy in U-13; production at go-live in U-17)
+### U-11 Attach the custom domains (staging after its first deploy in U-13; production only at go-live, U-17, after staging passed U-14)
 - Staging: Workers & Pages, `tarokit-staging`, Settings, Domains & Routes, Add, Custom domain, `staging.tarokit.app`. Cloudflare creates the DNS record and certificate.
 - Production: Workers & Pages, `tarokit`, Settings, Domains & Routes, Add, Custom domain, `tarokit.app` (the apex). Do this only at go-live (U-17), after staging is accepted.
 - `www.tarokit.app` (optional): add a proxied DNS record (`www` CNAME to `tarokit.app`, proxied) and a Redirect Rule (Rules, Redirect Rules, from `www.tarokit.app` to `https://tarokit.app`, 301, preserve path).
@@ -194,9 +199,10 @@ Verify: `curl -sI https://json-formatter.tarokit.app/` returns 200 and the CSP h
 Rollback: remove the DNS record and Worker of that project.
 
 ### U-13 Deploy staging
-1. Push the commit to test to `main` (U-4).
+1. Push the commit to test to `main` (U-4). That push runs every gate; its production deploy is skipped with a notice (no production secret yet).
 2. `gh workflow run publish.yml --ref main -f target=staging --repo <owner>/taro-kit`, then `gh run watch`.
-3. Add the staging custom domain (U-11) if not yet done, wait about one minute.
+3. On the very first staging run the `smoke-staging` job fails, because the Worker did not exist before and has no domain yet. That is expected. Add the staging custom domain (U-11), wait about one minute, then re-run only the failed job: `gh run rerun <run-id> --failed`.
+4. Later staging deploys run the smoke test against the attached domain and must pass. You can also run it by hand: `scripts/smoke-test.sh staging.tarokit.app`.
 Verify: `curl -sI https://staging.tarokit.app/` shows 200 plus the headers `content-security-policy`, `permissions-policy`, `strict-transport-security`, `cache-control: no-cache, no-transform`; `curl -s https://staging.tarokit.app/robots.txt` names the staging sitemap; `curl -s -o /dev/null -w '%{http_code}\n' https://staging.tarokit.app/t/nope/` prints `404`.
 Rollback: `pnpm exec wrangler rollback --env staging` (previous version), or delete the Worker.
 
@@ -229,19 +235,20 @@ Rollback: not needed, staging is isolated.
 2. json-formatter: decide to show it (U-16). If yes, it must already answer at `https://json-formatter.tarokit.app/` (U-12).
 3. `pnpm catalog:check` passes locally against live hosts. It exits 0 for pass, 1 when a tool fails, 2 when it cannot run.
 4. Staging checks (U-14) passed.
-5. Token still valid (U-9), `staging` and `production` environments exist, secrets set (U-10).
+5. Token still valid (U-9), `staging` and `production` environments exist, staging secrets set (U-10), production secrets **not** set yet.
 
 ### U-16 Unhide json-formatter (only now)
-Edit `content/tools/json-formatter.yaml`: delete the line `hidden: true` and update the header comment; set `added:` to today if you want it shown as new. Commit, push to `main`. The first `publish.yml` run on that push does checks and the catalog gate; production deploy stays skipped until U-17.
+Edit `content/tools/json-formatter.yaml`: delete the line `hidden: true` and update the header comment; set `added:` to today if you want it shown as new. Commit, push to `main`. The `publish.yml` run on that push does checks and the catalog gate; the production deploy is skipped with a notice because `production` has no token yet (U-17).
 Verify: the run's `catalog-gate` job passed; the pre-deploy report lists `json-formatter` as checked.
 Rollback: re-add `hidden: true`, push.
 
-### U-17 First production deploy and domain
-1. In the repo: Settings, Secrets and variables, Actions, Variables: add `PRODUCTION_DEPLOY_ENABLED` = `true` (or `gh variable set PRODUCTION_DEPLOY_ENABLED --body true`).
-2. `gh workflow run publish.yml --ref main -f target=production`; approve the `production` environment gate in the run page (the yellow "Review deployments" button) if you set reviewers.
-3. After the first success: Workers & Pages, `tarokit`, Settings, Domains & Routes, Add custom domain `tarokit.app` (U-11). Add `www` redirect if wanted.
-4. Check the post-deploy smoke job (publish-plan.md).
-This is going live. Only you do it.
+### U-17 Production secret, first production deploy and domain
+Only after U-14 passed on staging. This is going live. Only you do it.
+1. Add the production secrets: `gh secret set CLOUDFLARE_API_TOKEN --env production --repo <owner>/taro-kit`, then `gh secret set CLOUDFLARE_ACCOUNT_ID --env production --repo <owner>/taro-kit`. From now on, every green push to `main` deploys production (D-047).
+2. `gh workflow run publish.yml --ref main -f target=production --repo <owner>/taro-kit` (or push a commit), then `gh run watch`. This first deploy creates the Worker `tarokit`.
+3. The first run's `smoke-production` job fails, because `tarokit.app` is not attached yet. That is expected.
+4. Workers & Pages, `tarokit`, Settings, Domains & Routes, Add custom domain `tarokit.app` (U-11). Add the `www` redirect if wanted. Wait about one minute.
+5. `gh run rerun <run-id> --failed` re-runs only the smoke job, which must now pass (or run `scripts/smoke-test.sh tarokit.app`).
 Verify: `curl -sI https://tarokit.app/` shows 200 and the header set; `curl -s https://tarokit.app/robots.txt | grep Sitemap` shows `https://tarokit.app/sitemap.xml`; `/t/nope/` returns 404; `/sw.js` and `/manifest.webmanifest` have `no-cache`; no `set-cookie` header on any response: `curl -sI https://tarokit.app/ | grep -i set-cookie` prints nothing; open the site in a private window; the Network tab shows only `tarokit.app` (and `json-formatter.tarokit.app` in the tool view).
 Rollback (fast): Workers & Pages, `tarokit`, Deployments, pick the previous version, "Rollback"; or `pnpm exec wrangler rollback` (with the token in the environment variable). If it was the first deploy: Settings, Domains & Routes, delete the custom domain `tarokit.app` (the site goes dark). Content rollback: `git revert <commit>` and push (a new deploy).
 
@@ -293,5 +300,5 @@ Source: security-qa.md (verified: no cookies, no third-party requests, `fetch` l
 - [ ] Zone hygiene and DNS clean (U-8)
 - [ ] Staging passed U-14
 - [ ] json-formatter deployed, then unhidden
-- [ ] Token scoped, expiry set; secrets in place
+- [ ] Token scoped, expiry set; staging secrets in place; production secrets added only in U-17
 - [ ] Rollback understood (Cloudflare Deployments, Rollback)
