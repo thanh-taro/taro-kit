@@ -9,7 +9,7 @@ tokens: [color.dark.bg, color.dark.bgGlow, color.dark.line, color.dark.fg, color
 The frame around every portal page: identity, navigation, search, theme and connection status.
 
 ## Anatomy
-Logo/name (COPY-shell.brand, links home); navigation (Home, Tools, Projects, About, Now; COPY-nav.home, COPY-nav.tools, COPY-nav.projects, COPY-nav.about, COPY-nav.now); search control with shortcut hint (full: COPY-palette.placeholder with the shortcut as a key cap; compact: COPY-shell.search with the shortcut; narrow: an icon button named COPY-shell.search); theme control; settings link (COPY-nav.settings); offline indicator (COPY-shell.offline); update message (COPY-shell.updateReady); skip link (COPY-shell.skip).
+Logo/name (COPY-shell.brand, links home); navigation (Home, Tools, Projects, About, Résumé when there is one, Now; COPY-nav.home, COPY-nav.tools, COPY-nav.projects, COPY-nav.about, COPY-nav.resume, COPY-nav.now); search control with shortcut hint (full: COPY-palette.placeholder with the shortcut as a key cap; compact: COPY-shell.search with the shortcut; narrow: an icon button named COPY-shell.search); theme control; settings link (COPY-nav.settings); offline indicator (COPY-shell.offline); update message (COPY-shell.updateReady); skip link (COPY-shell.skip).
 
 ## Variants & states
 | Variant / state | Description |

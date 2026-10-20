@@ -1,0 +1,132 @@
+# Draft content/resume.yaml (ENT-Resume, F-017), written from the Owner's VietnamWorks profile (2026-10-20).
+# Phone, street address and salary are left out. The builder moves this file to content/resume.yaml.
+experience:
+  - role: Fullstack AI-Native engineer
+    organization: Est Rouge
+    start: 2023-07
+    summary: I build products end to end with AI on the team, from the backend and the data underneath to the prompts that make language models behave.
+    highlights:
+      - REST and WebSocket backends in Python and Node.js, with FastAPI and NestJS.
+      - ETL pipelines that turn big, messy data into something a dashboard can love.
+      - Prompts and integrations for ChatGPT, Llama 2, Midjourney and DALL-E.
+      - Products built for the company itself, not just for clients.
+  - role: Training mentor
+    organization: Rising Stars
+    start: 2022-06
+    summary: I mentor bootcamp students and on-the-job trainees in backend development, soft skills and presenting.
+    highlights:
+      - Backend and presentation mentoring for the Rising Stars bootcamps.
+      - Coaching Rising Stars through their on-the-job training at Est Rouge.
+  - role: Technical leader
+    organization: Em&Ai JSC
+    start: 2023-04
+    end: 2023-07
+    summary: I led the AI team on a product that put AI and big-data analytics at its core.
+    highlights:
+      - Led the AI team and integrated models into the product.
+      - Python and Node.js on MongoDB, PostgreSQL and Redis, shipped with Docker and Kubernetes.
+  - role: Senior developer and technical leader
+    organization: Est Rouge
+    start: 2018-08
+    end: 2023-04
+    summary: I built and led commerce projects for the Japanese market, and made a lot of data answer a lot of questions.
+    highlights:
+      - Led commerce teams as their technical leader.
+      - Big-data analytics on Athena and Redshift, with dashboards built from the data lake.
+      - Recommendations with Neo4j, and gRPC between services.
+      - Reporting tools for sales, inventory and income.
+  - role: Backend developer
+    organization: NAL Solutions
+    start: 2018-03
+    end: 2018-07
+    summary: I worked on Japanese-market projects on AWS, filtering and enriching large client datasets.
+  - role: Backend developer
+    organization: Green Global
+    start: 2014-08
+    end: 2018-02
+    summary: I built government and US-market projects, and spent about a year as a vendor developer for Neolab Vietnam.
+    highlights:
+      - Social networks, newsfeeds and geolocation features.
+      - Caching, queue workers, and recommendations with Neo4j.
+      - PHP, JavaScript and Python with Yii, Laravel, Magento, Drupal, React and React Native.
+  - role: Intern Android developer
+    organization: Enclave
+    start: 2013-06
+    end: 2013-11
+    summary: I built a real-time chat and room-booking app for Android, with a Ruby on Rails API behind it.
+  - role: Intern web developer
+    organization: Danang Digital
+    start: 2013-02
+    end: 2013-06
+    summary: My first paid code, CMS sites and landing pages for customers. Everyone starts somewhere.
+education:
+  - program: Information Technology
+    institution: College of Information Technology, University of Danang
+    level: College
+    start: 2011-09
+    end: 2014-09
+    notes: Second prize in the Contest for Good IT Students, in my first year.
+skills:
+  - name: PHP
+    level: 5
+  - name: JavaScript
+    level: 5
+  - name: SQL
+    level: 5
+  - name: Python
+    level: 4
+  - name: MySQL
+    level: 4
+  - name: MongoDB
+    level: 4
+  - name: DynamoDB
+    level: 4
+  - name: Neo4j
+    level: 4
+  - name: Laravel
+    level: 4
+  - name: ReactJS
+    level: 4
+  - name: React Native
+    level: 4
+  - name: SQL injection prevention
+    level: 4
+  - name: Leadership
+    level: 3
+  - name: Node.js
+  - name: FastAPI
+  - name: NestJS
+  - name: Redis
+  - name: Docker
+  - name: Prompt engineering
+languages:
+  - name: Vietnamese
+    level: Native
+  - name: English
+    level: Advanced
+certificates:
+  - name: EQ – Emotional Quotient
+    issuer: Est Rouge
+    year: 2019
+  - name: Mindfulness – Follow the Flow
+    issuer: Est Rouge
+    year: 2021
+  - name: Mindfulness – Open Mind, Open Heart, Open Will
+    issuer: Est Rouge
+    year: 2022
+awards:
+  - title: Exceptional Effort Award
+    issuer: Company Central
+    year: 2025
+  - title: Exceptional Effort Award
+    issuer: Company Central
+    year: 2024
+  - title: Elite Influencer of ERverse
+    issuer: Est Rouge
+    year: 2021
+  - title: Employee of the Year
+    issuer: Est Rouge
+    year: 2018
+  - title: Employee of the Year
+    issuer: Green Global
+    year: 2017

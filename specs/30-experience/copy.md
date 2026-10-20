@@ -14,6 +14,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-nav.projects** | Projects | navigation |
 | **COPY-nav.about** | About me | navigation |
 | **COPY-nav.now** | Now | navigation |
+| **COPY-nav.resume** | Résumé | navigation, when there is a résumé (F-017) |
 | **COPY-nav.settings** | Settings | navigation |
 | **COPY-nav.menu** | Menu | narrow-layout menu button |
 | **COPY-shell.brand** | TaroKit | wordmark in the shell header |
@@ -75,12 +76,24 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.unavailable** | I couldn't load my tools and projects just now. Pages and actions still work; reload the page to try again. | when the catalog data can't load |
 | **COPY-about.links** | Find me | section heading |
 | **COPY-about.more** | See what I've built and what I'm up to now. | pointer to Projects and Now |
+| **COPY-about.resume** | Want the long version? Here's my résumé. | pointer to SCR-Resume, when there is a résumé (F-017.R4) |
 | **COPY-about.nickname** | aka {nickname} | under the avatar, when the profile has a nickname |
 | **COPY-about.avatarAlt** | Portrait of {name} | avatar alt text; {name} is the full name (SCR-About accessibility) |
 | **COPY-category.toolCount** | {count} tools | count on tiles and category pages; singular form is COPY-category.toolCountOne |
 | **COPY-category.toolCountOne** | 1 tool | singular of COPY-category.toolCount |
 | **COPY-category.allTools** | All my tools | link from a category page back to the catalog |
 | **COPY-category.navLabel** | Categories | accessible name of the category navigation |
+| **COPY-resume.title** | My résumé | page heading |
+| **COPY-resume.intro** | The long version: where I've worked, what I studied, and what I picked up along the way. | under the heading |
+| **COPY-resume.experience** | Experience | section heading |
+| **COPY-resume.education** | Education | section heading |
+| **COPY-resume.skills** | Skills | section heading |
+| **COPY-resume.languages** | Languages | section heading |
+| **COPY-resume.certificates** | Certificates | section heading |
+| **COPY-resume.awards** | Awards | section heading |
+| **COPY-resume.present** | present | end of a current period (RULE-15) |
+| **COPY-resume.period** | {start} – {end} | a period; {start} and {end} are month and year, or COPY-resume.present (RULE-15) |
+| **COPY-resume.skillLevel** | {level} out of 5 | a skill level in words (RULE-15) |
 | **COPY-projects.title** | Things I've built | page heading |
 | **COPY-projects.empty** | I'm putting my projects together. Check back soon. | empty state |
 | **COPY-projects.imageAlt** | Screenshot of {name} | text alternative of a project's image (CMP-ProjectCard, design CMP-ProjectCard) |
@@ -138,5 +151,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-meta.aboutDescription** | Who I am, what I do, and how to reach me. | About preview description |
 | **COPY-meta.projectsTitle** | Projects — TaroKit | projects preview title |
 | **COPY-meta.projectsDescription** | Things I've built beyond the toolkit. | projects preview description |
+| **COPY-meta.resumeTitle** | Résumé — TaroKit | Résumé preview title |
+| **COPY-meta.resumeDescription** | Where I've worked, what I studied, and what I'm good at. | Résumé preview description |
 | **COPY-meta.nowTitle** | Now — TaroKit | Now preview title |
 | **COPY-meta.nowDescription** | What I'm focused on, and what's new in TaroKit. | Now preview description |

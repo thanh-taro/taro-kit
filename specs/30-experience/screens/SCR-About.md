@@ -2,7 +2,7 @@
 id: SCR-About
 title: About
 status: draft
-features: [F-008]
+features: [F-008, F-017]
 components: [CMP-AppShell]
 ---
 
@@ -14,7 +14,7 @@ Show who Taro is and how to reach them.
 2. Avatar, name, nickname (COPY-about.nickname), headline, location.
 3. Bio.
 4. Links (COPY-about.links).
-5. Pointers to Projects and Now (COPY-about.more).
+5. Pointers to Projects and Now (COPY-about.more), and to the Résumé when there is one (COPY-about.resume).
 
 ## States
 | State | When | What the user sees |
@@ -26,7 +26,7 @@ Show who Taro is and how to reach them.
 
 ## Entry & exit
 - Entered from: the home introduction, shell navigation, the palette, FLOW-02.
-- Exits to: SCR-Projects, SCR-Now, external links.
+- Exits to: SCR-Projects, SCR-Now, external links, SCR-Resume (when there is a résumé).
 
 ## Accessibility
 The avatar, or the initials in its place, has alt text naming the person (COPY-about.avatarAlt). Links state where they go, for example "GitHub profile (opens in new tab)".

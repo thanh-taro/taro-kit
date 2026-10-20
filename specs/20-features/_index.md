@@ -23,6 +23,7 @@ status: draft
 | F-014 | Check the catalog before publishing | M-1 | P1 | shipped |
 | F-015 | Share rich link previews | M-1 | P2 | shipped |
 | F-016 | Browse a category | M-1 | P0 | shipped |
+| F-017 | Read the Owner's résumé | M-1 | P1 | draft |
 
 ## Dependency order (M-1)
-F-001 → (F-002, F-003, F-008, F-009, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013.
+F-001 → (F-002, F-003, F-008, F-009, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013; (F-001, F-008) → F-017.

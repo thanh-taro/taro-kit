@@ -58,6 +58,16 @@ The Owner's identity:
 - location (optional);
 - a list of links (label, address, kind: email, social, website, code host or other).
 
+### ENT-Resume — Résumé
+The Owner's optional career record, in the order the Owner writes it (RULE-15):
+- experience: each with a role, an organization, a start month, an end month (none while it is current), a short summary and optional highlights;
+- education: each with a program, an institution, an optional level, a start month, an optional end month and optional notes;
+- skills: each with a name and an optional self-rated level from 1 to 5;
+- languages: each with a name and a level, in words;
+- certificates: each with a name, an issuer and a year;
+- awards: each with a title, an issuer and a year.
+The résumé lives in its own optional content file. Every section is optional; a résumé with no entries in any section counts as no résumé. Without a résumé, the portal has no Résumé page.
+
 ### ENT-NowNote — Now note
 A single hand-written note: a body (a few paragraphs) and a **last updated** date (RULE-09).
 
@@ -83,3 +93,4 @@ The theme: `system`, `light` or `dark` (RULE-03).
 - **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme currently showing (light or dark) is passed to an embedded tool's own address (F-012.R5, D-039).
 - **INV-06** Every catalog entry has an `added` date. If it has an `updated` date, that date is on or after `added`.
 - **INV-07** Every tool belongs to exactly one category, and that category exists. Category ids are unique, stable slugs, like entry ids (INV-01).
+- **INV-08** In the résumé, an experience or education end month, when present, is on or after its start month.

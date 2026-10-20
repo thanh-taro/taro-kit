@@ -25,6 +25,7 @@ status: draft
 | Recent | A record that the user opened a tool, with when. |
 | Command palette | A keyboard-summoned search over tools, projects, pages and actions. |
 | Profile | The Owner's bio, avatar and links. |
+| Résumé | The Owner's career record: experience, education, skills, languages, certificates and awards. |
 | Now | A short, dated, hand-written note about what the Owner is focusing on. |
 | Changelog | The list of catalog additions and updates, derived from catalog dates. |
 | Personal data | Favorites, recents and preferences stored on the device. |

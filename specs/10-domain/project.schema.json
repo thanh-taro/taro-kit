@@ -441,6 +441,213 @@
       "type": "string",
       "pattern": "^(?!(?:.*/)?\\.\\.(?:/|$))/?[A-Za-z0-9_./-]+$",
       "description": "Relative path of an asset bundled with the portal, inside content/assets/ (no \"..\" segments); never a remote address (NFR-05)."
+    },
+    "yearMonth": {
+      "$comment": "A month, YYYY-MM (ENT-Resume).",
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+    },
+    "resume": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "experience": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "role",
+              "organization",
+              "start",
+              "summary"
+            ],
+            "properties": {
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "organization": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "start": {
+                "$ref": "#/$defs/yearMonth"
+              },
+              "end": {
+                "$ref": "#/$defs/yearMonth"
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              },
+              "highlights": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "education": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": [
+              "program",
+              "institution",
+              "start"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "institution": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "level": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "start": {
+                "$ref": "#/$defs/yearMonth"
+              },
+              "end": {
+                "$ref": "#/$defs/yearMonth"
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "skills": {
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "languages": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "level"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "level": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "certificates": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "issuer",
+              "year"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "issuer": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "year": {
+                "type": "integer",
+                "minimum": 1950,
+                "maximum": 2100
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "awards": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "title",
+              "issuer",
+              "year"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "issuer": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "year": {
+                "type": "integer",
+                "minimum": 1950,
+                "maximum": 2100
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "$comment": "ENT-Resume (F-017): the optional content file content/resume.yaml. INV-08 is checked by the validator."
     }
   }
 }
