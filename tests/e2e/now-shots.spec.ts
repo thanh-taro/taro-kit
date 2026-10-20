@@ -3,12 +3,12 @@
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { loadRegistry } from '../../src/modules/content/index.ts';
-import { FX, PROD } from './ports.ts';
+import { FX, PROD, SAMPLES_CONTENT } from './ports.ts';
 
 test.skip(!process.env.SHOTS, 'screenshots only with SHOTS=1');
 
 const root = join(import.meta.dirname, '../..');
-const noteDate = loadRegistry({ root, contentDir: join(root, 'content') }).now?.updated ?? '2026-10-13';
+const noteDate = loadRegistry({ root, contentDir: join(root, SAMPLES_CONTENT) }).now?.updated ?? '2026-10-13';
 const out = join(root, '.build-my-app/reports/shots/F-010');
 const sizes = { desktop: { width: 1440, height: 900 }, mobile: { width: 390, height: 844 } } as const;
 const at = (days: number) => {

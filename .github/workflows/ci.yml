@@ -1,5 +1,5 @@
-# Pull-request gate (ADR-0007, MOD-Delivery). The full engine matrix, Lighthouse, the catalog check and
-# the deploy belong to publish.yml (not scaffolded yet).
+# Pull-request gate (ADR-0007, MOD-Delivery). publish.yml calls it (workflow_call) as its `checks` job, then adds
+# the other engines, the catalog check and the deploy.
 name: ci
 
 on:
@@ -7,6 +7,7 @@ on:
   push:
     branches-ignore: [main]
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

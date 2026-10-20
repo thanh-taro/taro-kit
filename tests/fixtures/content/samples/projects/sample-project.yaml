@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=../../../../../content/schemas/project.json
+# Test fixture: a copy of the v1 sample content (D-012), so tests never read content/ (release C-1).
+# SAMPLE placeholder (D-012): hidden until a real project replaces it.
+id: sample-project
+kind: project
+name: Sample project
+summary: Sample entry. A placeholder for a real project.
+description: |
+  Sample description. Replace this entry with a real project, or delete it.
+links:
+  - label: Sample link
+    url: https://example.com/
+    kind: website
+year: 2026
+added: 2026-10-13
+hidden: true

@@ -4,9 +4,7 @@
 #               failed-workflow email notifies the Owner (F-014.R5). It never deploys.
 #   pre-deploy: called by publish.yml so the deploy job can `needs:` it (F-014.R1, F-014.R2).
 #
-# Secrets: none are used here. The deploy step in publish.yml will need CLOUDFLARE_API_TOKEN
-# (a scoped Cloudflare API token, stored as a GitHub Actions secret) and the account id; see the
-# commented placeholder at the end of this file.
+# Secrets: none are used here. Only publish.yml's deploy steps read CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 name: catalog-check
 
 on:
@@ -59,12 +57,3 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Catalog check (blocks the publish)
         run: pnpm catalog:check
-
-# Placeholder for publish.yml (not scaffolded):
-#   deploy:
-#     needs: [checks, catalog-check]
-#     steps:
-#       - run: pnpm exec wrangler deploy
-#         env:
-#           CLOUDFLARE_API_TOKEN: <secrets.CLOUDFLARE_API_TOKEN>   # scoped token, Workers static assets only
-#           CLOUDFLARE_ACCOUNT_ID: <secrets.CLOUDFLARE_ACCOUNT_ID>

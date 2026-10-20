@@ -188,7 +188,7 @@ test.describe('F-016 category page', () => {
   }
 });
 
-test.describe('F-016 production content (port 4321)', () => {
+test.describe('F-016 sample content, production build (PROD)', () => {
   test('F016_AC1 every sample category has a page, with no CSP violations', async ({ page }) => {
     const violations: string[] = [];
     page.on('console', (msg) => {

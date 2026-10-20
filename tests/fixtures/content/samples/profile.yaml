@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=../../../../content/schemas/profile.json
+# Test fixture: a copy of the v1 sample content (D-012), so tests never read content/ (release C-1).
+# ENT-Profile. Name and nickname come from PER-01; everything else is SAMPLE text to replace before launch.
+name: Nguyen Tri Thanh
+nickname: Taro
+headline: 'Sample headline: I build small tools for work and life.'
+bio: |
+  Sample bio. This paragraph is a placeholder until I write the real one.
+
+  Paragraphs are separated by a blank line.
+links:
+  - label: Sample link
+    url: https://example.com/
+    kind: website

@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../../../../../content/schemas/tool.json
+# Test fixture: a copy of the v1 sample content (D-012), so tests never read content/ (release C-1).
+# JSON Formatter (taro-kit-tools/developer-tools/json-formatter). Hidden until it is deployed,
+# so the catalog embed check (F-014) does not fail on an address that doesn't answer yet.
+id: json-formatter
+kind: tool
+name: JSON Formatter
+summary: Format, minify and validate JSON with exact error positions — nothing leaves your browser.
+category: developer
+url: https://json-formatter.tarokit.app/
+origin: own
+openMode: embedded
+permissions: [clipboard-write, downloads, file-pick]
+offline: true
+tags: [json, formatter, validator]
+added: 2026-10-13
+hidden: true

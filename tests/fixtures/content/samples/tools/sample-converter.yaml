@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../../../../../content/schemas/tool.json
+# Test fixture: a copy of the v1 sample content (D-012), so tests never read content/ (release C-1).
+# SAMPLE placeholder (D-012): the one visible sample in its category. Replace it with a real tool.
+id: sample-converter
+kind: tool
+name: Sample converter
+summary: Sample entry. A placeholder until the real tool ships.
+category: converters
+url: https://sample-converter.tarokit.app/
+origin: own
+tags: [sample]
+added: 2026-10-13

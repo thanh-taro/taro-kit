@@ -1,10 +1,17 @@
-// End-to-end (ADR-0006): against `astro preview` serving the real build, on three engines.
+// End-to-end (ADR-0006): against `astro preview` serving production builds of test content, on three engines.
 // PRs run Chromium only (`--project=chromium`); the full matrix gates publishing.
 import { defineConfig, devices } from '@playwright/test';
 import { FIXTURES_PORT, PORT } from './tests/e2e/ports.ts';
 
 // Tests-only pages (tests/fixtures/pages) are built into dist-fixtures/ and served on FIXTURES_PORT; see astro.config.ts.
 const fixturesEnv = { TAROKIT_FIXTURES: '1', TAROKIT_CONTENT_DIR: 'tests/fixtures/content/F005-favorites' };
+// The production pages over the sample fixture content (tests/fixtures/content/samples), built into dist-samples/ with
+// the service worker, so no test depends on content/ (release C-1). `pnpm build` and dist/ stay the real site.
+const samplesEnv = {
+  TAROKIT_FIXTURES: '',
+  TAROKIT_SAMPLES: '1',
+  TAROKIT_CONTENT_DIR: 'tests/fixtures/content/samples',
+};
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -23,12 +30,13 @@ export default defineConfig({
   ],
   webServer: [
     {
-      // The build must exist (`pnpm build`); preview only serves dist/. `--ignore-lock` keeps the server in
+      // The sample build is made here and served from dist-samples/. `--ignore-lock` keeps the server in
       // the foreground: Astro 7 otherwise detaches it when it detects a coding agent, and leaks it.
-      command: `pnpm exec astro preview --port ${PORT} --ignore-lock`,
+      command: `pnpm run build:samples && pnpm exec astro preview --port ${PORT} --ignore-lock`,
+      env: samplesEnv,
       url: `http://localhost:${PORT}/`,
       reuseExistingServer: !process.env.CI,
-      timeout: 60_000,
+      timeout: 180_000,
     },
     {
       // The fixture build is made here, from the same sources, so it never reaches dist/.

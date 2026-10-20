@@ -7,11 +7,11 @@ import { expect, test, type APIRequestContext } from '@playwright/test';
 import sharp from 'sharp';
 import { loadRegistry, PORTAL_ORIGIN, toolPath } from '../../src/modules/content/index.ts';
 import { t } from '../../src/modules/copy/index.ts';
-import { FX, PROD } from './ports.ts';
+import { FX, PROD, SAMPLES_CONTENT } from './ports.ts';
 
 const root = join(import.meta.dirname, '../..');
 const fixture = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') });
-const production = loadRegistry({ root, contentDir: join(root, 'content'), portalOrigin: PORTAL_ORIGIN });
+const production = loadRegistry({ root, contentDir: join(root, SAMPLES_CONTENT), portalOrigin: PORTAL_ORIGIN });
 
 interface Head {
   status: number;

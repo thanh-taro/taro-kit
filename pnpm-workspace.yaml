@@ -2,5 +2,8 @@
 # Dependency lifecycle scripts stay blocked except for the packages listed here.
 allowBuilds:
   esbuild: true
+  # workerd (DEP-39, via wrangler): its postinstall only places the local runtime binary for `wrangler dev`.
+  # `wrangler deploy` of static assets never runs it, so the script stays blocked (ADR-0008).
+  workerd: false
 # Delay brand-new releases by 3 days (value in minutes).
 minimumReleaseAge: 4320
