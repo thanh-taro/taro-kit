@@ -2,6 +2,7 @@
 // No Node imports, and nothing relative to the viewer's date (that is MOD-Pages', in the browser).
 // Every function drops hidden entries itself (RULE-06).
 // Implements: F-001.R1 (an entry appears everywhere it belongs), F-001.R4 (hidden entries appear nowhere).
+import { RESUME_PATH } from './resume.ts';
 
 export interface Listed {
   id: string;
@@ -101,11 +102,18 @@ export function changelog(tools: readonly Dated[]): ChangelogMonth[] {
 
 /**
  * Site index paths (F-015.R3): public pages, visible category pages and visible tools' portal addresses.
- * Hidden entries and empty categories are left out (RULE-06).
+ * Hidden entries and empty categories are left out (RULE-06). The Résumé page is listed, after About, only when
+ * there is a résumé (`Registry.resume`, F-017.R6, F-017.AC8).
  */
-export function sitemapEntries(content: { categories: readonly Ordered[]; allTools: readonly InCategory[] }): string[] {
+export function sitemapEntries(content: {
+  categories: readonly Ordered[];
+  allTools: readonly InCategory[];
+  resume?: object;
+}): string[] {
+  const pages: string[] = [...PUBLIC_PAGES];
+  if (content.resume) pages.splice(pages.indexOf('/about/') + 1, 0, RESUME_PATH);
   return [
-    ...PUBLIC_PAGES,
+    ...pages,
     ...visibleCategories(content.categories, content.allTools).map((c) => categoryPath(c.id)),
     ...visibleTools(content.allTools).map((t) => toolPath(t.id)),
   ];

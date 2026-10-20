@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=../../../../content/schemas/resume.json
+# Test fixture (overlay on tests/fixtures/content/valid), F-017.AC8: a résumé with no entries in any section counts
+# as no résumé (ENT-Resume). The no-résumé case is the valid base itself, which has no resume.yaml.
+experience: []
+education: []
+skills: []
+languages: []
+certificates: []
+awards: []

@@ -17,6 +17,7 @@ MOD-Pages owns the Astro routes and screen composition. Each page is pre-rendere
 | `/projects/` | SCR-Projects | A `#<id>` anchor scrolls to the card and focuses it on load and on `hashchange` (F-009.R4). |
 | `/projects/images/<id>.<ext>` | — | A visible project's bundled image, copied from `content/assets/` at build, with its media type from `IMAGE_TYPES` (F-009.R2). Hidden projects get none (RULE-06). |
 | `/about/` | SCR-About | Static, with no island. |
+| `/resume/` | SCR-Resume | Static, no island; built only when there is a résumé (`getStaticPaths` gives the one path or none, so without a résumé the address serves the not-found page, F-017.R4). |
 | `/now/` | SCR-Now | Static changelog grouped by month. A small island adds the stale label for RULE-09 against the viewer's date. |
 | `/settings/` | SCR-Settings | The theme choice, clear recents, days used, and export, import and erase with confirmations. |
 | `404.html` | SCR-NotFound | Served by the host for unknown and hidden ids, and by the service worker offline. |
@@ -54,6 +55,11 @@ Helpers for SCR-Now (`src/modules/pages/now/`):
 - `stale.ts` (browser-safe): `isStale(updated, today)` and `staleToday(updated)`, RULE-09 (more than 90 days) on the viewer's local date, reusing `daysBetween` and `localDate`. The `StaleLabel` island uses it.
 - `now.ts` (build time): `nowView({ now, tools }) → { note?, months, empty }` from MOD-Content's `changelog()`, with dates formatted once (they are absolute) and machine-readable. With no note, the changelog title is the page heading; with no visible tools the changelog section is left out; with neither, `empty` (F-010.R4).
 
+Résumé (`src/modules/pages/resume/`), for SCR-Resume (F-017):
+- `resume.ts` (build time, pure): `resumeView(resume) → { sections, experience, education, skills, languages, certificates, awards }`, the sections with entries in RULE-15 order and entries in written order; `period(start, end?)`: COPY-resume.period split into its parts, each month as the full English month and year from SCR-Now's `monthLabel` (the changelog's month-group format) with its `YYYY-MM` for `<time datetime>`, and COPY-resume.present when there is no end; `skillMarks(level)`: the 5 marks, `level` of them filled, with COPY-resume.skillLevel as the level in words; summaries and notes split into paragraphs.
+- `ResumeView.astro`: the page body. On wide screens experience and education fill the main column and the other sections the side column, keeping RULE-15 order in the DOM; narrow, one column, the timeline stacks and the skills grid keeps two columns. Level marks are `aria-hidden`; the level text is visually hidden.
+- SCR-About's region 5 links to `/resume/` with COPY-about.resume when there is a résumé (`About.astro` `resume` prop).
+
 Catalog (`src/modules/pages/catalog/`), for SCR-Catalog:
 - `catalogView(categories, tools) → { groups, nav, total, empty }` (`catalog.ts`): the grouped list from `categoryPages()`, so groups, order and navigation match the category pages (F-002.R1, R3, R6).
 - `CatalogView.astro`: the page body (title, search field, category navigation, groups whose headings link to the category pages, or the empty CMP-StateMessage), rendered by `/tools/` and by a tests-only page for the empty state.
@@ -69,4 +75,4 @@ Projects (`src/modules/pages/projects/`), for SCR-Projects:
 - `project-anchor.ts` (browser): on load and on `hashchange`, a hash `#<id>` naming a listed card (element id `project-<id>`, `cardIdForHash`) scrolls that card into view and focuses it; any other hash leaves the page as it is, at the top (F-009.R4).
 
 ## Implements
-F-002, F-016, F-007 (except R2, which is shared with MOD-Palette), F-008, F-009, F-010, F-003.R7, the settings UI for F-006.R4, F-006.R6, F-012.R2 and F-013.R4 to F-013.R6, and F-011.AC2 and F-011.AC4 (with MOD-Offline). It contributes to NFR-01 and NFR-11.
+F-002, F-016, F-007 (except R2, which is shared with MOD-Palette), F-008, F-009, F-010, F-017.R1 to F-017.R4 (with MOD-Shell and MOD-Palette for R4), F-003.R7, the settings UI for F-006.R4, F-006.R6, F-012.R2 and F-013.R4 to F-013.R6, and F-011.AC2 and F-011.AC4 (with MOD-Offline). It contributes to NFR-01 and NFR-11.

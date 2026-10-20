@@ -16,7 +16,9 @@ Tool pages use the tool's name in COPY-meta.toolTitle and its summary as the des
 
 The shared preview image (`/preview.png`) is generated at build from the dark theme tokens (DEP-17): the logo (accent square with "T" and COPY-shell.brand), COPY-meta.homeDescription, the portal host, and one dot per category tint. `pnpm gen` extracts the text as glyph outlines from the fontsource faces with fonttools (`scripts/preview-glyphs.py`), and sharp (DEP-31) rasterizes the SVG, so the image does not depend on system fonts.
 
-It also generates `sitemap.xml` from the registry (public pages, visible category pages and visible tool addresses, F-015.R3, F-015.R5) and `robots.txt`. A build check fails on titles or descriptions that are too long.
+The Résumé page declares COPY-meta.resumeTitle and COPY-meta.resumeDescription (`metaFor({ page: 'resume' })`); it exists only when there is a résumé (F-017.R6).
+
+It also generates `sitemap.xml` from the registry (public pages, with `/resume/` only when there is a résumé, visible category pages and visible tool addresses, F-015.R3, F-015.R5, F-017.R6) and `robots.txt`. A build check fails on titles or descriptions that are too long.
 
 ## Not responsible for
 - Per-tool preview images (not planned in this scope).
@@ -30,4 +32,4 @@ It also generates `sitemap.xml` from the registry (public pages, visible categor
 - `sitemap.xml.ts`, `robots.txt.ts` and `preview.png.ts` static endpoints.
 
 ## Implements
-F-015 (all requirements). It is the main owner of NFR-12.
+F-015 (all requirements) and F-017.R6. It is the main owner of NFR-12.

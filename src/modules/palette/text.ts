@@ -1,6 +1,6 @@
 // MOD-Palette build-time strings and icons for the island and the shell's search control (MOD-Copy, ADR-0003),
 // so the island ships no copy catalog or icon set. Build-time only (the icon set is read from disk).
-import { catalogDataFile, getRegistry, type Registry } from '../content/index.ts';
+import { catalogDataFile, getRegistry, RESUME_PATH, type Registry } from '../content/index.ts';
 import { t, type CopyId } from '../copy/index.ts';
 import { iconSvg } from '../design-system/icons.ts';
 import { SHORTCUT_LABELS, type ActionId, type PageItem, type ViewGroupId } from './logic.ts';
@@ -12,7 +12,7 @@ export interface PaletteText {
   label: string;
   /** COPY-palette.group* */
   groups: Record<ViewGroupId, string>;
-  /** The six pages (COPY-nav.*), F-004.R2. */
+  /** The pages (COPY-nav.*), F-004.R2: six, or seven with the Résumé (F-017.R4). */
   pages: PageItem[];
   /** COPY-palette.action* */
   actions: Record<ActionId, string>;
@@ -44,15 +44,26 @@ const PAGES: [id: string, path: string, copy: NavCopy][] = [
   ['tools', '/tools/', 'COPY-nav.tools'],
   ['projects', '/projects/', 'COPY-nav.projects'],
   ['about', '/about/', 'COPY-nav.about'],
+  ['resume', RESUME_PATH, 'COPY-nav.resume'],
   ['now', '/now/', 'COPY-nav.now'],
   ['settings', '/settings/', 'COPY-nav.settings'],
 ];
 
-let text: PaletteText | undefined;
+/** F-004.R2 Pages: Home, Tools, Projects, About, Résumé (only when there is a résumé, F-017.R4), Now and Settings. */
+export const palettePages = (resume: boolean): PageItem[] =>
+  PAGES.filter(([id]) => resume || id !== 'resume').map(([id, path, copy]) => ({ id, path, name: t(copy) }));
 
-/** Built once per build: every page passes the same props. */
-export function paletteText(): PaletteText {
-  return (text ??= {
+const texts = new WeakMap<Pick<Registry, 'resume'>, PaletteText>();
+
+/** Built once per registry: every page passes the same props. */
+export function paletteText(registry: Pick<Registry, 'resume'> = getRegistry()): PaletteText {
+  let text = texts.get(registry);
+  if (!text) texts.set(registry, (text = buildText(!!registry.resume)));
+  return text;
+}
+
+function buildText(resume: boolean): PaletteText {
+  return {
     placeholder: {
       apple: t('COPY-palette.placeholder', { shortcut: SHORTCUT_LABELS.apple }),
       other: t('COPY-palette.placeholder', { shortcut: SHORTCUT_LABELS.other }),
@@ -66,7 +77,7 @@ export function paletteText(): PaletteText {
       pages: t('COPY-palette.groupPages'),
       actions: t('COPY-palette.groupActions'),
     },
-    pages: PAGES.map(([id, path, copy]) => ({ id, path, name: t(copy) })),
+    pages: palettePages(resume),
     actions: {
       theme: t('COPY-palette.actionTheme'),
       export: t('COPY-palette.actionExport'),
@@ -87,7 +98,7 @@ export function paletteText(): PaletteText {
       copied: iconSvg('check', 16),
       newTab: iconSvg('arrow-up-right', 16),
     },
-  });
+  };
 }
 
 // The catalog data file's address, hashed once per registry rather than once per page.

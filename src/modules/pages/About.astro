@@ -1,15 +1,15 @@
 ---
 // SCR-About content (MOD-Pages), rendered by /about/ inside BaseLayout. Static, with no island.
 // Regions (SCR-About): 2 avatar, name, headline and location; 3 bio; 4 links (COPY-about.links);
-// 5 pointers to Projects and Now (COPY-about.more). Every sentence is the profile's own words (PRN-04).
+// 5 pointers to Projects and Now (COPY-about.more), and to the Résumé when there is one (COPY-about.resume). Every sentence is the profile's own words (PRN-04).
 // Design: design/canvas/AboutDesktop.dc.html (avatar, nickname, location and links beside the text) and
 // AboutMobile.dc.html (one column in region order). The DOM puts the name <h1> first, then the side column
 // (avatar, nickname, location, links), then the pointers; grid areas place the side column on the left on
 // wide screens, and on narrow ones only the non-focusable avatar row moves up. Focus order is the same in
 // both layouts: profile links, then Projects and Now.
-// Implements: F-008.R1, F-008.R2, F-008.R3.
+// Implements: F-008.R1, F-008.R2, F-008.R3, F-017.R4 (Résumé pointer).
 import type { Profile } from '../../generated/domain.ts';
-import { initials, paragraphs, profileLinks, type ProfileLink } from '../content/index.ts';
+import { initials, paragraphs, profileLinks, RESUME_PATH, type ProfileLink } from '../content/index.ts';
 import { t } from '../copy/index.ts';
 import Icon from '../design-system/Icon.astro';
 
@@ -17,8 +17,10 @@ interface Props {
   profile: Profile;
   /** The optimized avatar image, when the profile has one; otherwise the initials are shown (F-008.R1). */
   avatar?: { src: string; width: number; height: number };
+  /** There is a résumé: region 5 also points to it (COPY-about.resume, F-017.R4). */
+  resume?: boolean;
 }
-const { profile, avatar } = Astro.props;
+const { profile, avatar, resume = false } = Astro.props;
 const links = profileLinks(profile.links);
 const ICONS: Record<ProfileLink['kind'], string> = {
   email: 'at-sign',
@@ -104,6 +106,14 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
       </a>
       <a href="/now/">{t('COPY-nav.now')}</a>
     </div>
+    {resume && (
+      <a class="resume" href={RESUME_PATH}>
+        <span>{t('COPY-about.resume')}</span>
+        <span class="resume-arrow" aria-hidden="true">
+          <Icon name="arrow-right" size={16} />
+        </span>
+      </a>
+    )}
   </div>
 </div>
 
@@ -307,6 +317,29 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
     background: var(--tk-color-accent);
     border-color: var(--tk-color-accent);
     color: var(--tk-color-on-accent);
+  }
+  /* The Résumé pointer (COPY-about.resume), under the buttons, when there is a résumé (F-017.R4). */
+  .resume {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: var(--tk-space-2);
+    min-block-size: var(--tk-size-touch-target);
+    padding-block-start: var(--tk-space-1);
+    color: var(--tk-color-accent);
+    font-weight: var(--tk-font-weight-semibold);
+    text-decoration: none;
+  }
+  .resume:hover span:first-child {
+    text-decoration: underline;
+  }
+  .resume-arrow {
+    display: flex;
+    flex: none;
+  }
+  .resume-arrow :global(.tk-icon) {
+    inline-size: var(--tk-size-icon-sm);
+    block-size: var(--tk-size-icon-sm);
   }
   a:focus-visible {
     outline: var(--tk-border-width-focus) solid var(--tk-color-accent);

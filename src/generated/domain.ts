@@ -27,6 +27,11 @@ export type SecureUrl = string;
  * via the `definition` "assetPath".
  */
 export type AssetPath = string;
+/**
+ * This interface was referenced by `TaroKitDataModel`'s JSON-Schema
+ * via the `definition` "yearMonth".
+ */
+export type YearMonth = string;
 
 /**
  * Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Project, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.
@@ -160,4 +165,65 @@ export interface BackupFile {
   format: "tarokit-backup";
   exportedAt: Timestamp;
   data: PersonalData;
+}
+/**
+ * This interface was referenced by `TaroKitDataModel`'s JSON-Schema
+ * via the `definition` "resume".
+ */
+export interface Resume {
+  /**
+   * @maxItems 20
+   */
+  experience?: {
+    role: string;
+    organization: string;
+    start: YearMonth;
+    end?: YearMonth;
+    summary: string;
+    /**
+     * @maxItems 8
+     */
+    highlights?: string[];
+  }[];
+  /**
+   * @maxItems 10
+   */
+  education?: {
+    program: string;
+    institution: string;
+    level?: string;
+    start: YearMonth;
+    end?: YearMonth;
+    notes?: string;
+  }[];
+  /**
+   * @maxItems 40
+   */
+  skills?: {
+    name: string;
+    level?: number;
+  }[];
+  /**
+   * @maxItems 10
+   */
+  languages?: {
+    name: string;
+    level: string;
+  }[];
+  /**
+   * @maxItems 20
+   */
+  certificates?: {
+    name: string;
+    issuer: string;
+    year: number;
+  }[];
+  /**
+   * @maxItems 20
+   */
+  awards?: {
+    title: string;
+    issuer: string;
+    year: number;
+  }[];
 }

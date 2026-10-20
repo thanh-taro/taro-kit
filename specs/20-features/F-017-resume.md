@@ -1,7 +1,7 @@
 ---
 id: F-017
 title: Read the Owner's résumé
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-02]

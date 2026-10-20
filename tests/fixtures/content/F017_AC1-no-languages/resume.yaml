@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../../../../content/schemas/resume.json
+# Test fixture (overlay on tests/fixtures/content/valid), F-017.AC1: experience, education and skills only; the
+# empty lists count as no entries, so those sections are left out (RULE-15).
+experience:
+  - role: Fixture role
+    organization: Fixture Org
+    start: 2020-01
+    summary: Fixture summary.
+education:
+  - program: Fixture program
+    institution: Fixture school
+    start: 2015-09
+skills:
+  - name: Fixture skill
+    level: 2
+languages: []
+certificates: []

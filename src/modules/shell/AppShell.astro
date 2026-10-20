@@ -1,5 +1,6 @@
 ---
-// CMP-AppShell header (MOD-Shell): logo, navigation with the current page marked, theme quick toggle
+// CMP-AppShell header (MOD-Shell): logo, navigation with the current page marked (Résumé between About and Now
+// only when there is a résumé, F-017.R4), theme quick toggle
 // (F-012.R3) and settings link. Variants: full, and narrow below 720 px, where the navigation and the
 // settings link collapse behind the Menu button (NavMenu island).
 // Connection and updates (F-011.R3, R4): the ShellStatus island, from MOD-Offline's signals, in two places:
@@ -14,6 +15,7 @@
 // before any island loads, which also shows the platform's shortcut in its key cap (`data-tk-shortcut`). Full:
 // COPY-palette.placeholder's text with the shortcut; compact: COPY-shell.search with the shortcut; narrow: an
 // icon button named COPY-shell.search (design CMP-AppShell).
+import { RESUME_PATH } from '../content/resume.ts';
 import { t, type CopyId } from '../copy/index.ts';
 import Icon from '../design-system/Icon.astro';
 import { iconSvg } from '../design-system/icons.ts';
@@ -30,8 +32,10 @@ interface Props {
   path: string;
   /** `full` (default) or `compact` (tool view). */
   variant?: 'full' | 'compact';
+  /** There is a résumé: navigation includes the Résumé page, between About and Now (F-017.R4). */
+  resume?: boolean;
 }
-const { path, variant = 'full' } = Astro.props;
+const { path, variant = 'full', resume = false } = Astro.props;
 const compact = variant === 'compact';
 
 const SETTINGS = '/settings/';
@@ -40,6 +44,7 @@ const links: [href: string, copy: CopyId][] = [
   ['/tools/', 'COPY-nav.tools'],
   ['/projects/', 'COPY-nav.projects'],
   ['/about/', 'COPY-nav.about'],
+  ...(resume ? [[RESUME_PATH, 'COPY-nav.resume'] as [string, CopyId]] : []),
   ['/now/', 'COPY-nav.now'],
 ];
 const items: NavItem[] = [
@@ -62,7 +67,7 @@ const toggle = {
 const status = shellStatusText();
 ---
 
-<div class="shell-wrap" data-variant={variant}>
+<div class="shell-wrap" data-variant={variant} data-nav={resume ? 'long' : undefined}>
   <header class="shell">
     <a href="/" class="logo">
       <span class="mark" aria-hidden="true">
@@ -242,6 +247,28 @@ const status = shellStatusText();
     }
   }
 
+  /* Six navigation items (with Résumé, F-017.R4): the full control needs more room, so the icon control takes over
+     below 960 px, and up to 1000 px the items and the bar's gaps tighten so the bar fits from 721 px (NFR-07). */
+  @media (max-width: 960px) {
+    .shell-wrap[data-variant='full'][data-nav='long'] .search {
+      display: none;
+    }
+    .shell-wrap[data-variant='full'][data-nav='long'] .search-icon {
+      display: inline-flex;
+    }
+    .shell-wrap[data-variant='full'][data-nav='long'] .end {
+      margin-inline-start: auto;
+    }
+  }
+  @media (min-width: 721px) and (max-width: 1000px) {
+    .shell-wrap[data-variant='full'][data-nav='long'] .shell {
+      column-gap: var(--tk-space-3);
+    }
+    .shell-wrap[data-variant='full'][data-nav='long'] .shell :global(.nav .list a) {
+      padding-inline: var(--tk-space-2);
+    }
+  }
+
   /* ShellStatus island (design CMP-AppShell offline and update ready; not scoped: islands render outside it).
      The pill sits in the bar only where it fits beside the navigation: from 1120 px on the full shell (where the
      search control then collapses to its icon, as below 880 px), from 720 px on the compact tool-view bar.
@@ -290,13 +317,15 @@ const status = shellStatusText();
     display: none;
   }
   @media (min-width: 1120px) {
-    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .search {
+    .shell-wrap[data-variant='full']:not([data-nav='long']) .shell:has(:global(.tk-status--pill:not(:empty))) .search {
       display: none;
     }
-    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .search-icon {
+    .shell-wrap[data-variant='full']:not([data-nav='long'])
+      .shell:has(:global(.tk-status--pill:not(:empty)))
+      .search-icon {
       display: inline-flex;
     }
-    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .end {
+    .shell-wrap[data-variant='full']:not([data-nav='long']) .shell:has(:global(.tk-status--pill:not(:empty))) .end {
       margin-inline-start: auto;
     }
   }
@@ -307,6 +336,14 @@ const status = shellStatusText();
     .shell-wrap[data-variant='full'] :global(.tk-status--notice:not(:empty)) {
       display: flex;
     }
+  }
+  /* Six navigation items (F-017.R4) leave no room for the pill in the bar at any width (NFR-07), so the offline
+     indicator is always the notice below the bar there, as below 1120 px (design CMP-AppShell offline). */
+  .shell-wrap[data-variant='full'][data-nav='long'] .shell :global(.tk-status--pill:not(:empty)) {
+    display: none;
+  }
+  .shell-wrap[data-variant='full'][data-nav='long'] :global(.tk-status--notice:not(:empty)) {
+    display: flex;
   }
   .shell-wrap :global(.tk-status--update:not(:empty)) {
     display: flex;

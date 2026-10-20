@@ -4,6 +4,7 @@ export const COPY = {
   "COPY-about.links": "Find me",
   "COPY-about.more": "See what I've built and what I'm up to now.",
   "COPY-about.nickname": "aka {nickname}",
+  "COPY-about.resume": "Want the long version? Here's my résumé.",
   "COPY-catalog.clear": "Clear search",
   "COPY-catalog.empty": "I'm still building my first tools. Check back soon.",
   "COPY-catalog.noResults": "I don't have anything matching \"{query}\" yet.",
@@ -42,6 +43,8 @@ export const COPY = {
   "COPY-meta.nowTitle": "Now — TaroKit",
   "COPY-meta.projectsDescription": "Things I've built beyond the toolkit.",
   "COPY-meta.projectsTitle": "Projects — TaroKit",
+  "COPY-meta.resumeDescription": "Where I've worked, what I studied, and what I'm good at.",
+  "COPY-meta.resumeTitle": "Résumé — TaroKit",
   "COPY-meta.settingsDescription": "Your theme and your data on this device.",
   "COPY-meta.settingsTitle": "Settings — TaroKit",
   "COPY-meta.toolsDescription": "Every tool I've built, by category.",
@@ -52,6 +55,7 @@ export const COPY = {
   "COPY-nav.menu": "Menu",
   "COPY-nav.now": "Now",
   "COPY-nav.projects": "Projects",
+  "COPY-nav.resume": "Résumé",
   "COPY-nav.settings": "Settings",
   "COPY-nav.tools": "Tools",
   "COPY-notFound.body": "It may have moved, or I took it down.",
@@ -87,6 +91,17 @@ export const COPY = {
   "COPY-projects.empty": "I'm putting my projects together. Check back soon.",
   "COPY-projects.imageAlt": "Screenshot of {name}",
   "COPY-projects.title": "Things I've built",
+  "COPY-resume.awards": "Awards",
+  "COPY-resume.certificates": "Certificates",
+  "COPY-resume.education": "Education",
+  "COPY-resume.experience": "Experience",
+  "COPY-resume.intro": "The long version: where I've worked, what I studied, and what I picked up along the way.",
+  "COPY-resume.languages": "Languages",
+  "COPY-resume.period": "{start} – {end}",
+  "COPY-resume.present": "present",
+  "COPY-resume.skillLevel": "{level} out of 5",
+  "COPY-resume.skills": "Skills",
+  "COPY-resume.title": "My résumé",
   "COPY-settings.appearance": "Appearance",
   "COPY-settings.backupScope": "Your backup holds your favorites, recents, theme and days used. Each tool keeps its own data.",
   "COPY-settings.clearRecents": "Clear recent tools",
@@ -153,6 +168,8 @@ export interface CopyParams {
   "COPY-palette.placeholder": { shortcut: string | number };
   "COPY-palette.resultCount": { count: string | number };
   "COPY-projects.imageAlt": { name: string | number };
+  "COPY-resume.period": { start: string | number; end: string | number };
+  "COPY-resume.skillLevel": { level: string | number };
   "COPY-settings.daysUsed": { count: string | number };
   "COPY-settings.importInvalid": { reason: string | number };
   "COPY-shell.themeToggle": { theme: string | number };

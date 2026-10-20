@@ -5,7 +5,7 @@ Needs fonttools + brotli (requirements-build.txt).
 
 Ships exactly these faces, and nothing else (scripts/check-dist-fonts.ts enforces it):
 - Manrope: variable 400-700, Latin core + Vietnamese.
-- Unbounded: static 600, Latin (headings ASCII set) + Vietnamese.
+- Unbounded: static 600, Latin (headings: ASCII set plus é) + Vietnamese.
 - JetBrains Mono: variable 400-600, ASCII only, code ligatures off.
 No latin-ext: its range overlaps Vietnamese, so any Vietnamese text would download both faces.
 """
@@ -23,6 +23,8 @@ VIET = ('U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0
         'U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB')
 # Headings and mono text: ASCII letters, digits and basic punctuation.
 ASCII = 'U+0020-007E,U+00A0,U+00B7,U+2013-2014,U+2018-201D,U+2026'
+# Headings also get é: COPY-resume.title is "My résumé" (F-017).
+HEADINGS = ASCII + ',U+00E9'
 
 TEXT_FEATURES = ('kern', 'liga', 'calt', 'ccmp', 'locl', 'mark', 'mkmk')
 NO_LIGATURES = ('kern', 'ccmp', 'locl', 'mark', 'mkmk')
@@ -31,7 +33,7 @@ NO_LIGATURES = ('kern', 'ccmp', 'locl', 'mark', 'mkmk')
 JOBS = [
     ('manrope/files/manrope-latin-wght-normal.woff2', 'manrope-latin.woff2', LATIN, (400, 700), TEXT_FEATURES),
     ('manrope/files/manrope-vietnamese-wght-normal.woff2', 'manrope-vietnamese.woff2', VIET, (400, 700), TEXT_FEATURES),
-    ('unbounded/files/unbounded-latin-wght-normal.woff2', 'unbounded-600-latin.woff2', ASCII, 600, TEXT_FEATURES),
+    ('unbounded/files/unbounded-latin-wght-normal.woff2', 'unbounded-600-latin.woff2', HEADINGS, 600, TEXT_FEATURES),
     ('unbounded/files/unbounded-vietnamese-wght-normal.woff2', 'unbounded-600-vietnamese.woff2', VIET, 600, TEXT_FEATURES),
     ('jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2', 'jbmono-ascii.woff2', ASCII, (400, 600), NO_LIGATURES),
 ]

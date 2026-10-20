@@ -25,7 +25,7 @@ a{color:inherit}
     <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
       <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
       <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 2px; font-size: 14px">
-        <sc-for list="{{navs}}" as="n" hint-placeholder-count="5">
+        <sc-for list="{{navs}}" as="n" hint-placeholder-count="6">
           <a href="#" aria-current="{{n.cur}}" data-copy="{{n.copy}}" style="color: {{n.color}}; background: {{n.bg}}; font-weight: {{n.weight}}; text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px">{{n.label}}</a>
         </sc-for>
       </nav>
@@ -64,8 +64,9 @@ a{color:inherit}
             <a href="#" data-copy="COPY-nav.projects" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; text-decoration: none">Projects</a>
             <a href="#" data-copy="COPY-nav.now" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--lineStrong); border-radius: 10px; font-weight: 700; text-decoration: none">Now</a>
           </div>
+          <a href="#" data-copy="COPY-about.resume" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--accent); font-weight: 600; text-decoration: none">Want the long version? Here's my résumé.<span aria-hidden="true">→</span></a>
         </div>
-        <p style="margin: 0; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Sample bio, links and location: you'll write the real profile content.</p>
+        <p style="margin: 0; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Sample bio, links and location: you'll write the real profile content. The Résumé link and nav item show only when there is a résumé (F-017.R4).</p>
       </article>
     </main>
   </div>
@@ -79,7 +80,7 @@ class Component extends DCLogic {
     return {
       themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
       toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
-      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools'), nav('Projects', 'COPY-nav.projects'), nav('About me', 'COPY-nav.about', true), nav('Now', 'COPY-nav.now')],
+      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools'), nav('Projects', 'COPY-nav.projects'), nav('About me', 'COPY-nav.about', true), nav('Résumé', 'COPY-nav.resume'), nav('Now', 'COPY-nav.now')],
       links: [
         { icon: '</>', label: 'Code', detail: 'github.com/[handle] ↗', sr: ' on GitHub (opens in a new tab)' },
         { icon: 'in', label: 'LinkedIn', detail: '/in/[handle] ↗', sr: ' profile (opens in a new tab)' },

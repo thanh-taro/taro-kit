@@ -10,7 +10,7 @@ const addFormats = ((addFormatsModule as unknown as { default?: typeof addFormat
   addFormatsModule) as unknown as (ajv: Ajv2020) => void;
 
 export const SCHEMA_ID = 'tarokit.schema.json';
-export type Def = 'tool' | 'project' | 'category' | 'profile' | 'nowNote';
+export type Def = 'tool' | 'project' | 'category' | 'profile' | 'nowNote' | 'resume';
 
 const cache = new Map<string, Ajv2020>();
 

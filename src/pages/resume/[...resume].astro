@@ -1,0 +1,24 @@
+---
+// SCR-Resume (MOD-Pages) at /resume/: static, with no island. The page is built only when there is a résumé
+// (F-017.R4): `getStaticPaths` gives the one path `/resume/` (an empty rest parameter), or none, so without a
+// résumé the address serves the not-found page. Region 1 is the shell header (BaseLayout), with Résumé marked.
+// Implements: F-017.R1, F-017.R2, F-017.R3, F-017.R4, F-017.R6.
+import type { GetStaticPaths } from 'astro';
+import { getRegistry } from '../../modules/content/index.ts';
+import { metaFor } from '../../modules/meta/index.ts';
+import { resumeView } from '../../modules/pages/resume/resume.ts';
+import ResumeView from '../../modules/pages/resume/ResumeView.astro';
+import BaseLayout from '../../modules/shell/BaseLayout.astro';
+
+export const getStaticPaths = (() => {
+  const { resume } = getRegistry();
+  return resume ? [{ params: { resume: undefined }, props: { resume } }] : [];
+}) satisfies GetStaticPaths;
+
+const registry = getRegistry();
+const { resume } = Astro.props;
+---
+
+<BaseLayout {...metaFor({ page: 'resume' }, registry)}>
+  <ResumeView view={resumeView(resume)} />
+</BaseLayout>
