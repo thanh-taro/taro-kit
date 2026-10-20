@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=../schemas/tool.json
+# Text Case Converter (taro-kit-tools/developer-tools/text-case-converter), live at its own address.
+id: text-case-converter
+kind: tool
+name: Text Case Converter
+summary: See any text in every case at once — camelCase, snake_case, kebab-case and more — and copy with one click.
+category: developer
+url: https://text-case-converter.tarokit.app/
+origin: own
+openMode: embedded
+permissions: [clipboard-write]
+offline: true
+sourceUrl: https://github.com/thanh-taro/text-case-converter
+tags: [case, camelcase, snake_case, kebab-case, pascalcase, identifier, naming]
+added: 2026-10-20

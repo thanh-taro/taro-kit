@@ -1,6 +1,5 @@
 # yaml-language-server: $schema=../schemas/tool.json
-# JSON Formatter (taro-kit-tools/developer-tools/json-formatter). Hidden until it is deployed,
-# so the catalog embed check (F-014) does not fail on an address that doesn't answer yet.
+# JSON Formatter (taro-kit-tools/developer-tools/json-formatter), live at its own address.
 id: json-formatter
 kind: tool
 name: JSON Formatter
@@ -11,6 +10,6 @@ origin: own
 openMode: embedded
 permissions: [clipboard-write, downloads, file-pick]
 offline: true
-tags: [json, formatter, validator]
-added: 2026-10-13
-hidden: true
+sourceUrl: https://github.com/thanh-taro/json-formatter
+tags: [json, formatter, validator, minify, pretty print]
+added: 2026-10-20
