@@ -54,3 +54,6 @@ The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project
 ## Note from the scaffold (2026-10-14)
 - The `$comment` rule tags are not in `project.schema.json` yet, so the validator maps RULE-07 by schema position. Adding the tags is part of building F-001; the error contract is unchanged.
 - Done while building F-001 (2026-10-14): `project.schema.json` tags INV-01, INV-02, INV-07, RULE-07 and RULE-14 on their subschemas as `"$comment": "<ID>: …"`. The validator reads the innermost tag on the failing keyword's schema path, or, for a shared definition reached through `$ref` (such as `slug`), the tag on the referring property. Nothing is mapped by position.
+
+## Note from building F-017 (2026-10-20)
+- `content/resume.yaml` is optional (ENT-Resume, F-017), with the editor hint `content/schemas/resume.json` (`$ref` to `$defs/resume`). The second pass adds INV-08 (an end month on or after its start month). Résumé errors name the entry as `<section> <n>`, counting from 1, and the field inside it: `content/resume.yaml:12 › experience 3 › INV-08: end 2020-01 is before start 2021-03` (F-017.R5). The error contract is otherwise unchanged.

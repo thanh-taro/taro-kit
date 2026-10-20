@@ -16,7 +16,7 @@ MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
 - **Frame:**
   - the skip link;
   - the banner with name and logo;
-  - the navigation, with the current page marked and a collapsed menu on narrow screens;
+  - the navigation, with the current page marked and a collapsed menu on narrow screens; Résumé sits between About and Now only when there is a résumé (`<AppShell resume>`, which `<BaseLayout>` sets from the registry, F-017.R4). With those six items the full bar tightens its items between 721 and 1000 px and shows the icon search control up to 960 px, so it fits at every width (NFR-07);
   - the search control showing the shortcut hint (a button marked `data-tk-palette-open`, armed by the palette bootstrap before any island loads; full: the placeholder text and a `data-tk-shortcut` key cap; compact: COPY-shell.search and the key cap; narrow: an icon button named COPY-shell.search; on the narrow tool view the shell bar is hidden and CMP-ToolHeader carries the search icon button);
   - the theme quick toggle;
   - the settings link.
@@ -35,4 +35,4 @@ MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
 - Shell islands: `ShellStatus` (offline indicator and update message), `StorageNotice` and `ThemeToggle`.
 
 ## Implements
-CMP-AppShell; F-011.R3 (indicator) and F-011.R4 (message); F-012.R3 (header toggle); F-004.R1 (visible search control); F-006.R6 (recording). It contributes to NFR-04.
+CMP-AppShell; F-017.R4 (navigation); F-011.R3 (indicator) and F-011.R4 (message); F-012.R3 (header toggle); F-004.R1 (visible search control); F-006.R6 (recording). It contributes to NFR-04.

@@ -44,3 +44,6 @@ Measured on the reference profile: home transfer 74 KB (EN) and 87 KB (VI), of w
 
 ## Note from the scaffold (2026-10-14)
 - Generated tokens put the dark theme on `:root` and the light theme under `[data-theme="light"]` (adapters/design.md), with a `prefers-color-scheme` fallback for when no script has run.
+
+## Note from building F-017 (2026-10-20)
+- The Unbounded Latin subset, which in code was the ASCII set, also holds é (U+00E9), so COPY-resume.title ("My résumé") renders in the heading face instead of a fallback for one letter. It adds 48 bytes; `fonts.css` declares the same range.
