@@ -23,12 +23,15 @@ MOD-Delivery owns the pipeline that turns the repo into a published portal.
 - the **post-deploy smoke test** (`scripts/smoke-test.sh <host>`), after each deploy: the home page answers 200 with the `Content-Security-Policy` (`frame-ancestors`), `Strict-Transport-Security` and `Permissions-Policy` headers and no `Set-Cookie`; an unknown tool address is a 404; `sw.js` is `no-cache`; robots names the host's sitemap; the home page loads no external script. Zero third-party requests over a real page load stays a manual check;
 - `catalog-check.yml` (weekly, and pre-deploy for `publish.yml`).
 
-**Gates:**
-- the license audit against ADR-0008;
-- the home transfer-size pre-check (NFR-11);
-- the Lighthouse budgets;
-- freshness of generated files;
-- `spec_lint.py`.
+**Gates (ADR-0006), by where they run:**
+- **Every build** (`pnpm build` and `pnpm build:staging`, so every `ci.yml` run and `publish.yml`'s `build` job): content validation, the font-subset check, the home transfer-size pre-check (NFR-11, `scripts/check-dist-size.ts`) and the dist-clean check.
+- **`ci.yml`** (pull requests, and `publish.yml`'s `checks` job): `spec_lint.py`, token contrast, freshness of generated files, lint and format, `astro check`, the license audit against ADR-0008, unit tests, the build above, and Chromium e2e with axe, including the NFR-05 request and cookie test. Acceptance-criteria coverage is reported, not gated. Pull requests run no timing gate, so they stay fast.
+- **`publish.yml`, before any deploy, blocking:** WebKit e2e (Firefox reports only, D-044), the pre-deploy catalog check, the build, and the **perf gates** (`pnpm perf`, the Playwright `perf` project in `tests/perf/`). The perf gates are Chromium only, one test at a time, against `astro preview` of the sample build, on the mobile lab profile (`reference-environment.md`: CDP 4× CPU, 9000/1500 Kbps, 170 ms RTT, 412 × 915). Each is the median of 5 runs, against the NFR's own target:
+  - NFR-01: home's greeting and search rendered and responding (the first click on the search control that opens the palette) within 1.5 s on a first visit, and within 0.5 s on a repeat visit from the precache;
+  - NFR-02, over a 500-entry catalog generated at test time through the content pipeline: the palette opens within 100 ms of the shortcut, and results update within 50 ms per keystroke. The app emits no performance marks, so latency is Event Timing input-to-next-paint, cross-checked by a frame probe; each run's value is the p75 of its interactions (SP-6).
+  The `perf` project is defined only when asked for by name, so `pnpm test:e2e` and the engine runs never include it.
+- **Lighthouse CI (advisory, never blocking, Linux CI only; SP-6):** the mobile lab profile with custom throttling (4× CPU, 9000/1500 Kbps, 170 ms RTT) on home, asserting the byte-weight budgets of `architecture.md` and reporting timing as warnings, with reports kept on the runner's file system only (NFR-05). Not wired yet: DEP-21's dependency tree has a package whose declared license the ADR-0008 audit rejects, which needs a decision first.
+- **After each deploy:** the post-deploy smoke test above.
 
 **Notices:** generates `/third-party-notices.txt`.
 
@@ -40,4 +43,4 @@ MOD-Delivery owns the pipeline that turns the repo into a published portal.
 Workflows and package scripts.
 
 ## Implements
-F-014.R5 (schedule and notification wiring). It enforces NFR-10 (engine matrix) and NFR-11 (budget gate) in CI.
+F-014.R5 (schedule and notification wiring). It enforces NFR-10 (engine matrix), NFR-11 (budget gate) and NFR-01 and NFR-02 (perf gates) in CI.

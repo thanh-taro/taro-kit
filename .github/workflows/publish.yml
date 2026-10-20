@@ -78,6 +78,34 @@ jobs:
         env:
           PROJECT: ${{ matrix.project }}
 
+  # NFR-01 and NFR-02 gates (ADR-0006, SP-6 notes): the Playwright perf project, Chromium with CDP 4x CPU and the
+  # reference network, median of 5 runs, against `astro preview` of the sample build. Blocks the deploy.
+  perf:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install Python build tools (font subsetting, DEP-42, DEP-43)
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install --quiet -r requirements-build.txt
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      # Playwright builds dist-samples/ itself; the perf project runs one test at a time.
+      - name: Perf gates NFR-01, NFR-02 (Chromium)
+        run: pnpm perf
+
   # F-014.R1, F-014.R2: the blocking catalog check, against the production portal origin for every target.
   catalog-gate:
     permissions:
@@ -145,7 +173,7 @@ jobs:
           if-no-files-found: error
 
   deploy-staging:
-    needs: [checks, e2e-engines, catalog-gate, build]
+    needs: [checks, e2e-engines, perf, catalog-gate, build]
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.target == 'staging'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -187,7 +215,7 @@ jobs:
         run: pnpm exec wrangler deploy --env staging --message "${GITHUB_SHA}"
 
   deploy-production:
-    needs: [checks, e2e-engines, catalog-gate, build]
+    needs: [checks, e2e-engines, perf, catalog-gate, build]
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.target == 'production')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
