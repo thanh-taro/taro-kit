@@ -72,8 +72,8 @@
     },
     "release": {
       "title": "6 Release",
-      "status": "pending",
-      "step": null,
+      "status": "in_progress",
+      "step": "6 Release: release-manager drafting checklist, notes, publish plan",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1477,9 +1477,17 @@
     {
       "at": "2026-10-20T02:00:46+00:00",
       "event": "gate qa passed"
+    },
+    {
+      "at": "2026-10-20T02:00:54+00:00",
+      "event": "phase release -> in_progress"
+    },
+    {
+      "at": "2026-10-20T02:01:29+00:00",
+      "event": "release step: 6 Release: release-manager drafting checklist, notes, publish plan"
     }
   ],
-  "updated": "2026-10-20T02:00:46+00:00",
+  "updated": "2026-10-20T02:01:29+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
