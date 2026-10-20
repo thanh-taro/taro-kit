@@ -1,0 +1,460 @@
+---
+// SCR-Resume body (MOD-Pages), rendered inside BaseLayout by src/pages/resume/[...resume].astro. Static, no island.
+// Regions: 2 heading (COPY-resume.title) and intro (COPY-resume.intro); 3 experience as a timeline; 4 education,
+// entries like experience with level and notes; 5 skills, a compact grid with level marks; 6 languages, certificates
+// and awards as short lists. Sections with no entries are left out (RULE-15), and the DOM keeps RULE-15 order: on wide
+// screens experience and education fill the main column and the other sections the side column.
+// Accessibility (SCR-Resume): each section is a headed region; months are <time datetime="YYYY-MM">; the level marks
+// are hidden from assistive technology, which reads COPY-resume.skillLevel instead. Narrow: one column, the timeline
+// stacks (the period sits under the organization) and the skills grid keeps two columns.
+// Design: design/canvas/ResumeDesktop.dc.html, ResumeMobile.dc.html.
+// Implements: F-017.R1, F-017.R2, F-017.R3.
+import { t } from '../../copy/index.ts';
+import { sectionTitle, type ResumeViewData } from './resume.ts';
+
+interface Props {
+  view: ResumeViewData;
+}
+const { view } = Astro.props;
+const has = (s: ResumeViewData['sections'][number]) => view.sections.includes(s);
+const main = has('experience') || has('education');
+const side = has('skills') || has('languages') || has('certificates') || has('awards');
+const id = (s: string) => `resume-${s}`;
+const credits = (['certificates', 'awards'] as const).filter(has);
+---
+
+<div class="resume" data-layout={main && side ? 'both' : 'single'}>
+  <div class="head">
+    <h1>{t('COPY-resume.title')}</h1>
+    <p class="intro">{t('COPY-resume.intro')}</p>
+  </div>
+
+  {main && (
+    <div class="main">
+      {has('experience') && (
+        <section aria-labelledby={id('experience')}>
+          <h2 id={id('experience')}>{sectionTitle('experience')}</h2>
+          <ol class="timeline">
+            {view.experience.map((e) => (
+              <li data-current={e.period.current ? '' : undefined}>
+                <h3 class="title">{e.role}</h3>
+                <p class="org">{e.organization}</p>
+                <p class="period">
+                  {e.period.parts.map((p) => (p.datetime ? <time datetime={p.datetime}>{p.text}</time> : p.text))}
+                </p>
+                <div class="text">
+                  {e.summary.map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+                {e.highlights.length > 0 && (
+                  <ul class="highlights">
+                    {e.highlights.map((h) => (
+                      <li>{h}</li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      {has('education') && (
+        <section aria-labelledby={id('education')}>
+          <h2 id={id('education')}>{sectionTitle('education')}</h2>
+          <ol class="timeline">
+            {view.education.map((e) => (
+              <li data-current={e.period.current ? '' : undefined}>
+                <h3 class="title">{e.program}</h3>
+                <p class="org">
+                  <span>{e.institution}</span>
+                  {e.level && <span class="level">{e.level}</span>}
+                </p>
+                <p class="period">
+                  {e.period.parts.map((p) => (p.datetime ? <time datetime={p.datetime}>{p.text}</time> : p.text))}
+                </p>
+                {e.notes.length > 0 && (
+                  <div class="text">
+                    {e.notes.map((p) => (
+                      <p>{p}</p>
+                    ))}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+    </div>
+  )}
+
+  {side && (
+    <div class="side">
+      {has('skills') && (
+        <section aria-labelledby={id('skills')}>
+          <h2 id={id('skills')}>{sectionTitle('skills')}</h2>
+          <ul class="skills">
+            {view.skills.map((s) => (
+              <li>
+                <span class="name">{s.name}</span>
+                {s.marks && (
+                  <>
+                    <span class="marks" aria-hidden="true">
+                      {s.marks.map((filled) => (
+                        <span class="mark" data-filled={filled ? '' : undefined} />
+                      ))}
+                    </span>
+                    <span class="tk-visually-hidden">{s.levelText}</span>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {has('languages') && (
+        <section aria-labelledby={id('languages')}>
+          <h2 id={id('languages')}>{sectionTitle('languages')}</h2>
+          <ul class="rows">
+            {view.languages.map((l) => (
+              <li>
+                <span class="name">{l.name}</span>
+                <span class="aside">{l.level}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {credits.map((section) => (
+        <section aria-labelledby={id(section)}>
+          <h2 id={id(section)}>{sectionTitle(section)}</h2>
+          <ul class="rows">
+            {view[section].map((c) => (
+              <li>
+                <span class="credit">
+                  <span class="name">{c.name}</span>
+                  <span class="issuer">{c.issuer}</span>
+                </span>
+                <span class="aside year">{c.year}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  )}
+</div>
+
+<style>
+  .resume {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-10);
+    padding-block-start: var(--tk-space-4);
+  }
+  /* Wide: heading across, experience and education in the main column, the short sections beside them. */
+  .resume[data-layout='both'] {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-areas:
+      'head head'
+      'main side';
+    align-items: start;
+    column-gap: var(--tk-space-12);
+    row-gap: var(--tk-space-10);
+  }
+  .head {
+    grid-area: head;
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-4);
+  }
+  .main {
+    grid-area: main;
+  }
+  .side {
+    grid-area: side;
+  }
+  .main,
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-10);
+    min-inline-size: 0;
+  }
+  .resume[data-layout='single'] .main,
+  .resume[data-layout='single'] .side {
+    max-inline-size: var(--tk-size-palette-width);
+  }
+  h1 {
+    font-size: var(--tk-font-size-5xl);
+    line-height: var(--tk-font-line-height-tight);
+    letter-spacing: -0.03em;
+  }
+  .intro {
+    max-inline-size: 60ch;
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-lg);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-4);
+  }
+  h2 {
+    font-family: var(--tk-font-family-display);
+    font-size: var(--tk-font-size-xl);
+    font-weight: var(--tk-font-weight-semibold);
+    letter-spacing: -0.01em;
+  }
+  ol,
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Regions 3 and 4: the timeline. The period sits left of the rail; each entry has a dot on it, filled while the
+     period runs to the present. */
+  .timeline > li {
+    --period: calc(var(--tk-space-16) * 2 + var(--tk-space-6));
+    --rail: calc(var(--period) + var(--tk-space-6));
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--period) minmax(0, 1fr);
+    column-gap: calc(var(--tk-space-6) * 2);
+    align-content: start;
+    padding-block-end: var(--tk-space-8);
+  }
+  .timeline > li > * {
+    grid-column: 2;
+  }
+  .timeline > li > .period {
+    grid-column: 1;
+    grid-row: 1 / span 5;
+    align-self: start;
+    padding-block-start: calc(var(--tk-space-1) / 2);
+    text-align: end;
+  }
+  .timeline > li::before {
+    position: absolute;
+    inset-block: var(--tk-space-2) 0;
+    inset-inline-start: var(--rail);
+    border-inline-start: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    content: '';
+  }
+  .timeline > li:last-child {
+    padding-block-end: 0;
+  }
+  .timeline > li:last-child::before {
+    display: none;
+  }
+  .timeline > li::after {
+    position: absolute;
+    inset-block-start: calc(var(--tk-space-1) * 1.5);
+    inset-inline-start: calc(var(--rail) - var(--tk-space-1) - var(--tk-border-width-hairline) / 2);
+    box-sizing: border-box;
+    inline-size: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    block-size: calc(var(--tk-space-2) + var(--tk-space-1) / 2);
+    background: var(--tk-color-bg);
+    border: var(--tk-border-width-focus) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-pill);
+    content: '';
+  }
+  .timeline > li[data-current]::after {
+    background: var(--tk-color-accent);
+    border-color: var(--tk-color-accent);
+  }
+  .title {
+    font-family: var(--tk-font-family-body);
+    font-size: var(--tk-font-size-lg);
+    font-weight: var(--tk-font-weight-bold);
+    line-height: var(--tk-font-line-height-tight);
+  }
+  .org {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--tk-space-2);
+    margin-block-start: var(--tk-space-1);
+    color: var(--tk-color-accent);
+    font-size: var(--tk-font-size-md);
+    font-weight: var(--tk-font-weight-semibold);
+  }
+  .level {
+    padding: calc(var(--tk-space-1) * 3 / 4) var(--tk-space-2);
+    border-radius: var(--tk-radius-sm);
+    background: var(--tk-color-tint2);
+    color: var(--tk-color-accent2-fg);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-bold);
+  }
+  .period {
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-medium);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .period time {
+    white-space: nowrap;
+  }
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-2);
+    margin-block-start: var(--tk-space-3);
+    max-inline-size: 64ch;
+    font-size: var(--tk-font-size-base);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .highlights {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-1);
+    margin-block-start: var(--tk-space-3);
+    max-inline-size: 64ch;
+    font-size: var(--tk-font-size-base);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  .highlights li {
+    position: relative;
+    padding-inline-start: var(--tk-space-4);
+  }
+  .highlights li::before {
+    position: absolute;
+    inset-block-start: 0.7em;
+    inset-inline-start: var(--tk-space-1);
+    inline-size: var(--tk-space-1);
+    block-size: var(--tk-space-1);
+    background: var(--tk-color-muted);
+    border-radius: var(--tk-radius-pill);
+    content: '';
+  }
+
+  /* Region 5: skills, two columns, each with its 5 level marks (RULE-15). */
+  .skills {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--tk-space-2);
+  }
+  .skills li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--tk-space-1) var(--tk-space-2);
+    min-block-size: var(--tk-space-12);
+    padding: var(--tk-space-2) var(--tk-space-3);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-md);
+  }
+  .name {
+    min-inline-size: 0;
+    color: var(--tk-color-fg);
+    font-size: var(--tk-font-size-base);
+    font-weight: var(--tk-font-weight-semibold);
+    overflow-wrap: anywhere;
+  }
+  .marks {
+    display: flex;
+    flex: none;
+    gap: var(--tk-space-1);
+  }
+  .mark {
+    box-sizing: border-box;
+    inline-size: var(--tk-space-2);
+    block-size: var(--tk-space-2);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
+    border-radius: var(--tk-radius-pill);
+  }
+  .mark[data-filled] {
+    background: var(--tk-color-accent);
+    border-color: var(--tk-color-accent);
+  }
+
+  /* Region 6: languages, certificates and awards: name, then level or issuer and year. */
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-1) + var(--tk-space-1) / 2);
+  }
+  .rows li {
+    display: flex;
+    align-items: center;
+    gap: var(--tk-space-3);
+    min-block-size: var(--tk-space-12);
+    padding: var(--tk-space-2) calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+    background: var(--tk-color-surface);
+    border: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    border-radius: var(--tk-radius-md);
+  }
+  .credit {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: calc(var(--tk-space-1) / 2);
+    min-inline-size: 0;
+  }
+  .issuer {
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-sm);
+  }
+  .aside {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--tk-color-muted);
+    font-size: var(--tk-font-size-md);
+  }
+  .year {
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+  }
+
+  @media (max-width: 720px) {
+    .resume,
+    .resume[data-layout='both'] {
+      display: flex;
+      gap: calc(var(--tk-space-8) + var(--tk-space-1));
+      padding-block-start: 0;
+    }
+    .main,
+    .side {
+      gap: calc(var(--tk-space-8) + var(--tk-space-1));
+    }
+    .head {
+      gap: var(--tk-space-3);
+    }
+    h1 {
+      font-size: var(--tk-font-size-3xl);
+    }
+    .intro {
+      font-size: var(--tk-font-size-base);
+    }
+    section {
+      gap: var(--tk-space-3);
+    }
+    /* The timeline stacks: the rail on the left, the period under the organization. */
+    .timeline > li {
+      --rail: calc(var(--tk-space-1) + var(--tk-border-width-hairline));
+      grid-template-columns: minmax(0, 1fr);
+      padding-inline-start: var(--tk-space-6);
+      padding-block-end: var(--tk-space-6);
+    }
+    .timeline > li > *,
+    .timeline > li > .period {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    .timeline > li > .period {
+      margin-block-start: var(--tk-space-1);
+      padding-block-start: 0;
+      text-align: start;
+    }
+    .rows li {
+      min-block-size: calc(var(--tk-space-12) + var(--tk-space-1));
+    }
+  }
+</style>

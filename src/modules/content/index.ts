@@ -49,4 +49,13 @@ export {
   type DevServerLike,
 } from './visible-tool-ids.ts';
 export { initials, paragraphs, profileLinks, type ProfileLink } from './profile.ts';
+export {
+  hasResumeEntries,
+  RESUME_PATH,
+  RESUME_SECTIONS,
+  resumeEntryName,
+  resumePeriodErrors,
+  type ResumePeriodError,
+  type ResumeSection,
+} from './resume.ts';
 export { AVATAR_MODULE, avatarPlugin, avatarSource } from './avatar.ts';

@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=../../../../content/schemas/resume.json
+# Test fixture (overlay on tests/fixtures/content/valid): a résumé with every section, for F-017.AC2 to AC7 and AC11.
+experience:
+  - role: Mentor
+    organization: Rising Stars
+    start: 2022-06
+    summary: |
+      Fixture summary, first paragraph.
+
+      Fixture summary, second paragraph.
+    highlights:
+      - Fixture highlight one.
+      - Fixture highlight two.
+  - role: Fixture engineer B
+    organization: Fixture Org B
+    start: 2018-08
+    end: 2022-05
+    summary: Fixture summary B.
+education:
+  - program: Information Technology
+    institution: Fixture College
+    level: College
+    start: 2011-09
+    end: 2014-09
+    notes: Fixture notes.
+skills:
+  - name: PHP
+    level: 5
+  - name: Docker
+  - name: Python
+    level: 3
+languages:
+  - name: English
+    level: Advanced
+certificates:
+  - name: Mindfulness
+    issuer: Est Rouge
+    year: 2021
+awards:
+  - title: Employee of the Year
+    issuer: Green Global
+    year: 2017

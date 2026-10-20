@@ -1,5 +1,8 @@
-# Draft content/resume.yaml (ENT-Resume, F-017), written from the Owner's VietnamWorks profile (2026-10-20).
-# Phone, street address and salary are left out. The builder moves this file to content/resume.yaml.
+# yaml-language-server: $schema=./schemas/resume.json
+# ENT-Resume (F-017), optional: without this file, or with no entries in any section, there is no Résumé page.
+# Written from the Owner's VietnamWorks profile (2026-10-20). Phone, street address and salary are left out.
+# Sections show in RULE-15 order, entries in the order written here. Months are YYYY-MM; leave out `end` while a
+# role is current, and an end is on or after its start (INV-08).
 experience:
   - role: Fullstack AI-Native engineer
     organization: Est Rouge

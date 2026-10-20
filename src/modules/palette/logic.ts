@@ -1,5 +1,6 @@
 // MOD-Palette logic (CMP-CommandPalette), pure and browser-safe; the island (Palette.tsx) only renders it.
-// - Entries: visible tools and projects from the catalog data file, the six pages and the three actions.
+// - Entries: visible tools and projects from the catalog data file, the pages (six, or seven with the Résumé,
+//   F-017.R4) and the three actions.
 // - Empty query (F-004.R2): Favorites (at most 8, pin order), Recents (RULE-01: at most 8, newest first,
 //   favorites left out), Pages. Hidden or unknown tools never show (RULE-06, INV-04).
 // - A query (F-004.R3): MOD-Search `searchPalette`, groups Tools, Projects, Pages, Actions, 8 each.

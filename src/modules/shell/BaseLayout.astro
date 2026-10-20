@@ -8,6 +8,7 @@
 // bootstrap last in <body>, after every search control it arms; its hash is registered here, before <head>.
 import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
+import { getRegistry } from '../content/index.ts';
 import { t } from '../copy/index.ts';
 import HeadMeta from '../meta/HeadMeta.astro';
 import { FAVICONS, MANIFEST_PATH } from '../offline/manifest.ts';
@@ -71,7 +72,7 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
       {t('COPY-shell.skip')}
     </a>
     <div class="frame" data-variant={variant}>
-      <AppShell path={path} variant={variant} />
+      <AppShell path={path} variant={variant} resume={!!getRegistry().resume} />
       <main id="main" tabindex="-1">
         <slot />
       </main>

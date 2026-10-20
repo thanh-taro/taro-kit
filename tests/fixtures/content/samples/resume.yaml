@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=../../../../content/schemas/resume.json
+# Test fixture: a SAMPLE résumé for the e2e sample build (dist-samples/), so tests never read content/ (release C-1).
+# ENT-Resume (F-017). Every section has entries, and one experience is current, so SCR-Resume shows its whole layout.
+experience:
+  - role: Sample role, current
+    organization: Sample Company
+    start: 2023-07
+    summary: Sample summary. I build sample things end to end, from the backend to the bits you click.
+    highlights:
+      - Sample highlight about a backend.
+      - Sample highlight about a data pipeline that runs every night.
+  - role: Sample mentor
+    organization: Sample Academy
+    start: 2022-06
+    end: 2023-06
+    summary: Sample summary for a second role.
+    highlights:
+      - Sample highlight.
+  - role: Sample developer with a longer role name
+    organization: Sample Studio
+    start: 2014-08
+    end: 2018-02
+    summary: |
+      Sample summary, first paragraph.
+
+      Sample summary, second paragraph.
+education:
+  - program: Sample program
+    institution: Sample College
+    level: College
+    start: 2011-09
+    end: 2014-09
+    notes: Sample notes.
+skills:
+  - name: Sample skill A
+    level: 5
+  - name: Sample skill B
+    level: 4
+  - name: Sample skill with a long name
+    level: 3
+  - name: Sample skill C
+    level: 1
+  - name: Sample skill D
+  - name: Sample skill E
+languages:
+  - name: Sample language
+    level: Native
+  - name: English
+    level: Advanced
+certificates:
+  - name: Sample certificate with a longer name
+    issuer: Sample Issuer
+    year: 2021
+awards:
+  - title: Sample award
+    issuer: Sample Company
+    year: 2024

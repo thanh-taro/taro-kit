@@ -38,7 +38,9 @@ test.describe('CMP-AppShell narrow menu', () => {
     await expect(menu).toHaveAttribute('aria-expanded', 'false');
     await menu.click();
     await expect(page.getByRole('navigation').getByRole('link', { name: 'Home' })).toBeFocused();
-    for (let i = 0; i < 5; i++) await page.keyboard.press(tab);
+    // Settings is the panel's last link: five Tabs on, or six with the Résumé item (F-017.R4).
+    const links = await page.locator('#main-menu a').count();
+    for (let i = 1; i < links; i++) await page.keyboard.press(tab);
     await expect(page.getByRole('navigation').getByRole('link', { name: 'Settings' })).toBeFocused();
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
     await page.keyboard.press(tab);

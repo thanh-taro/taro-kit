@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=../../../../content/schemas/resume.json
+# Test fixture (overlay on tests/fixtures/content/valid), F-017.AC10: the first education entry has a field the
+# schema doesn't know (`school` instead of `institution`).
+education:
+  - program: Fixture program
+    institution: Fixture school
+    school: Fixture typo
+    start: 2015-09

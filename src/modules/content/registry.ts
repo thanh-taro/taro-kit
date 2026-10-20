@@ -1,10 +1,11 @@
 // MOD-Content: load -> validate (schema + invariants) -> normalize -> derive (ADR-0005).
 // Runs in Node at build (Astro config, pages, scripts). Never runs in the browser.
-// Implements: F-001.R1, F-001.R2, F-001.R3, F-001.R4, F-001.R5.
+// Implements: F-001.R1, F-001.R2, F-001.R3, F-001.R4, F-001.R5, F-017.R4 (optional résumé), F-017.R5.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { LineCounter, parseDocument } from 'yaml';
-import type { Category, EntryBase, NowNote, Profile, Project, Tool } from '../../generated/domain.ts';
+import type { Category, EntryBase, NowNote, Profile, Project, Resume, Tool } from '../../generated/domain.ts';
+import { hasResumeEntries, resumeEntryName, resumePeriodErrors } from './resume.ts';
 import {
   changelogItems,
   type DatedItem,
@@ -63,6 +64,11 @@ export interface Registry {
   avatarFile?: string;
   /** The Now note, or undefined when content has no now.yaml (F-010.R4). */
   now?: NowNote;
+  /**
+   * The résumé, or undefined when content has no resume.yaml or it has no entries in any section (ENT-Resume,
+   * F-017.R4): then there is no Résumé page and nothing links to it.
+   */
+  resume?: Resume;
   /** Changelog items of visible tools, newest first (RULE-04); `changelog()` groups them by month. */
   changelogEvents: ChangelogEvent[];
   embeddedOrigins: string[];
@@ -138,12 +144,24 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   // The Now note is optional: without now.yaml, SCR-Now shows only the changelog (F-010.R4).
   const nowPath = join(contentDir, 'now.yaml');
   const nowFile = existsSync(nowPath) ? load(nowPath) : undefined;
+  // The résumé is optional too: without resume.yaml there is no Résumé page (F-017.R4). An empty file is a résumé
+  // with no entries, which also counts as none (ENT-Resume).
+  const resumePath = join(contentDir, 'resume.yaml');
+  const resumeFile = existsSync(resumePath) ? load(resumePath) : undefined;
+  if (resumeFile && resumeFile.data === null) resumeFile.data = {};
 
   // 1. Schema (F-001.R2). Each file is checked against its $defs entry of the domain schema.
   // Fields that already failed the schema; the invariant checks skip them, so one mistake gives one error.
   const schemaFailed = new Set<string>();
   const fieldKey = (file: string, path: (string | number)[]) => `${file}#${path.join('/')}`;
-  const schemaCheck = (l: Loaded, def: Def, prefix: (string | number)[] = []) => {
+  /** How an error names its entry: the file's id by default; résumé entries by section and position (F-017.R5). */
+  type EntryNaming = (
+    target: unknown,
+    path: (string | number)[],
+    message: string,
+  ) => { entryId: string; message: string };
+  const namedById: EntryNaming = (target, _path, message) => ({ entryId: idOf(target), message });
+  const schemaCheck = (l: Loaded, def: Def, prefix: (string | number)[] = [], naming: EntryNaming = namedById) => {
     if (l.data === undefined) return;
     const target = prefix.reduce<unknown>((o, k) => (o as Obj | undefined)?.[k as string], l.data);
     const validate = validatorFor(schemaPath, def);
@@ -153,17 +171,26 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
       const m = mapAjvError(err, isObj(target) ? target : undefined, schemaPath, def);
       if (!m) continue;
       schemaFailed.add(fieldKey(l.file, [...prefix, ...m.path]));
-      const key = `${m.rule}|${m.message}`;
+      const named = naming(target, m.path, m.message);
+      const key = `${m.rule}|${named.entryId}|${named.message}`;
       if (seen.has(key)) continue;
       seen.add(key);
       errors.push({
         file: l.file,
         line: l.lineOf([...prefix, ...m.path]),
-        entryId: idOf(target),
+        entryId: named.entryId,
         rule: m.rule,
-        message: m.message,
+        message: named.message,
       });
     }
+  };
+  // F-017.R5: a résumé entry is "<section> <n>", counting from 1, and the message names the field inside it.
+  const resumeNaming: EntryNaming = (_target, path, message) => {
+    const [section, index] = path;
+    if (typeof section !== 'string' || typeof index !== 'number') return { entryId: '-', message };
+    const inEntry = `${section}.${index}`;
+    const rest = message.startsWith(inEntry) ? message.slice(inEntry.length).replace(/^[.:]\s?/, '') : message;
+    return { entryId: resumeEntryName(section, index), message: rest };
   };
   toolFiles.forEach((l) => schemaCheck(l, 'tool'));
   projectFiles.forEach((l) => schemaCheck(l, 'project'));
@@ -173,6 +200,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   catList.forEach((_, i) => schemaCheck(catFile, 'category', [i]));
   schemaCheck(profileFile, 'profile');
   if (nowFile) schemaCheck(nowFile, 'nowNote');
+  if (resumeFile) schemaCheck(resumeFile, 'resume', [], resumeNaming);
 
   // 2. Invariants the schema cannot express (ADR-0005).
   const entries = [...toolFiles, ...projectFiles].filter((l) => idOf(l.data) !== '-');
@@ -302,6 +330,21 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
       });
   }
 
+  // INV-08: a résumé period's end month is on or after its start month (F-017.AC9). Months that failed the schema
+  // already have their error.
+  if (resumeFile)
+    for (const p of resumePeriodErrors(resumeFile.data)) {
+      const at = (field: string) => fieldKey(resumeFile.file, [p.section, p.index, field]);
+      if (schemaFailed.has(at('start')) || schemaFailed.has(at('end'))) continue;
+      errors.push({
+        file: resumeFile.file,
+        line: resumeFile.lineOf([p.section, p.index, 'end']),
+        entryId: resumeEntryName(p.section, p.index),
+        rule: 'INV-08',
+        message: `end ${p.end} is before start ${p.start}`,
+      });
+    }
+
   if (errors.length) throw new ContentErrors(errors);
 
   // 3. Normalize: RULE-07 open-mode defaults, INV-03 permission and offline defaults.
@@ -344,6 +387,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     profile: profileFile.data as Profile,
     avatarFile,
     now: nowFile?.data as NowNote | undefined,
+    resume: hasResumeEntries(resumeFile?.data as Resume | undefined) ? (resumeFile?.data as Resume) : undefined,
     changelogEvents,
     embeddedOrigins,
     portalOrigin,
