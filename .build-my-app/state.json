@@ -896,14 +896,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T03:25:58+00:00",
-      "event": "decision D-013 opened: Now/changelog"
-    },
-    {
-      "at": "2026-10-13T03:25:58+00:00",
-      "event": "decision D-013 answered: Changelog auto from registry dates; Now manual with last-updated"
-    },
-    {
       "at": "2026-10-13T03:25:59+00:00",
       "event": "set spike_candidates"
     },
@@ -1694,9 +1686,17 @@
     {
       "at": "2026-10-20T15:58:52+00:00",
       "event": "iterate step: 8 Iterate: D-055 (no Projects page) and D-056 (grouped skills) plus résumé content committed locally; not deployed or pushed — awaiting Owner"
+    },
+    {
+      "at": "2026-10-20T16:02:14+00:00",
+      "event": "context compaction (auto) at: build-my-app: phase 8 Iterate [in_progress] — 8 Iterate: D-055 (no Projects page) and D-056 (grouped skills) plus résumé content committed locally; not deployed or pushed — awaiting Owner · 8/9 phases done · autonomy balanced"
+    },
+    {
+      "at": "2026-10-20T16:09:55+00:00",
+      "event": "v1.1.0 deployed to tarokit.app (version c9b374c3): D-055, D-056, résumé updates; smoke and catalog checks passed"
     }
   ],
-  "updated": "2026-10-20T15:58:52+00:00",
+  "updated": "2026-10-20T16:09:55+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
