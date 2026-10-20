@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: D-055 (no Projects page) and D-056 (grouped skills) plus résumé content committed locally; not deployed or pushed — awaiting Owner",
+      "step": "8 Iterate: v1.1.0 live (D-055, D-056, résumé updates); awaiting next change request",
       "gate": {
         "status": "pending",
         "at": null,
@@ -896,10 +896,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T03:25:59+00:00",
-      "event": "set spike_candidates"
-    },
-    {
       "at": "2026-10-13T03:26:22+00:00",
       "event": "decision D-014 opened: Approve vision brief v2"
     },
@@ -1694,9 +1690,13 @@
     {
       "at": "2026-10-20T16:09:55+00:00",
       "event": "v1.1.0 deployed to tarokit.app (version c9b374c3): D-055, D-056, résumé updates; smoke and catalog checks passed"
+    },
+    {
+      "at": "2026-10-20T16:10:05+00:00",
+      "event": "iterate step: 8 Iterate: v1.1.0 live (D-055, D-056, résumé updates); awaiting next change request"
     }
   ],
-  "updated": "2026-10-20T16:09:55+00:00",
+  "updated": "2026-10-20T16:10:05+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
