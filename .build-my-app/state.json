@@ -52,21 +52,21 @@
     },
     "build": {
       "title": "4 Implementation",
-      "status": "in_progress",
-      "step": "4 wave 1 merged (F-001 shipped; F-012 merged, AC5/9/10 pending F-003). Next: wave 2 F-016, F-003, F-005",
+      "status": "done",
+      "step": "4 all 16 features shipped; Gate G4 pending",
       "gate": {
-        "status": "pending",
-        "at": null,
-        "note": null
+        "status": "passed",
+        "at": "2026-10-19T07:32:47+00:00",
+        "note": "16/16 features shipped; AC coverage 100%; 445 unit + 290 e2e green; CI steps run locally (no repo yet); user approved 2026-10-19"
       }
     },
     "qa": {
       "title": "5 QA & hardening",
-      "status": "pending",
-      "step": null,
+      "status": "done",
+      "step": "5 QA: fixes merged, checks green; Gate G5 awaiting user (privacy copy, toolbar copy, narrow header, manual checks)",
       "gate": {
-        "status": "pending",
-        "at": null,
+        "status": "passed",
+        "at": "2026-10-20T02:00:46+00:00",
         "note": null
       }
     },
@@ -619,6 +619,68 @@
       "answer": "Keep F-012.R5/R6 + ADR-0011 after spec review; D-008 now: nothing shared except the current theme",
       "asked": "2026-10-14T00:32:02+00:00",
       "answered": "2026-10-14T00:32:02+00:00"
+    },
+    {
+      "id": "D-040",
+      "question": "Search: phrase matching vs multi-token",
+      "options": [
+        "phrase,multi-token"
+      ],
+      "recommendation": "phrase",
+      "kind": "product",
+      "phase": "build",
+      "status": "answered",
+      "answer": "phrase",
+      "asked": "2026-10-14T16:37:03+00:00",
+      "answered": "2026-10-14T16:37:06+00:00"
+    },
+    {
+      "id": "D-041",
+      "question": "QA: privacy statement wording",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "qa",
+      "status": "answered",
+      "answer": "Fuller first-person privacy statement in three paragraphs (device, tools, hosting)",
+      "asked": "2026-10-20T02:00:38+00:00",
+      "answered": "2026-10-20T02:00:45+00:00"
+    },
+    {
+      "id": "D-042",
+      "question": "QA: tool header toolbar accessible name",
+      "options": [],
+      "recommendation": null,
+      "kind": "design",
+      "phase": "qa",
+      "status": "answered",
+      "answer": "\"{tool} controls\" (COPY-tool.toolbarLabel)",
+      "asked": "2026-10-20T02:00:45+00:00",
+      "answered": "2026-10-20T02:00:45+00:00"
+    },
+    {
+      "id": "D-043",
+      "question": "QA: header below 360 px",
+      "options": [],
+      "recommendation": null,
+      "kind": "design",
+      "phase": "qa",
+      "status": "answered",
+      "answer": "Logo mark only; COPY-shell.brand stays the accessible name",
+      "asked": "2026-10-20T02:00:45+00:00",
+      "answered": "2026-10-20T02:00:46+00:00"
+    },
+    {
+      "id": "D-044",
+      "question": "Gate G5",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "qa",
+      "status": "answered",
+      "answer": "Approve; manual checks (screen reader, Firefox, Safari, real phone, installed offline) on the release checklist, done on staging before going live",
+      "asked": "2026-10-20T02:00:46+00:00",
+      "answered": "2026-10-20T02:00:46+00:00"
     }
   ],
   "loops": {
@@ -1271,9 +1333,153 @@
     {
       "at": "2026-10-14T02:10:14+00:00",
       "event": "wave 1 merged: 100 unit + 28 e2e passing"
+    },
+    {
+      "at": "2026-10-14T02:29:15+00:00",
+      "event": "context compaction (auto) at: build-my-app: phase 4 Implementation [in_progress] — 4 wave 1 merged (F-001 shipped; F-012 merged, AC5/9/10 pending F-003). Next: wave 2 F-016, F-003, F-005 · 4/8 phases done · autonomy balanced"
+    },
+    {
+      "at": "2026-10-14T04:58:17+00:00",
+      "event": "build step: 4 wave 2: F-005 shipped; next F-016 + F-003 in parallel"
+    },
+    {
+      "at": "2026-10-14T05:35:20+00:00",
+      "event": "F-016 review round 1: no blockers; 1 major (AC4 vacuous), 6 minor sent to builder. F-002 carry-over recorded."
+    },
+    {
+      "at": "2026-10-14T05:39:47+00:00",
+      "event": "build step: 4 wave 2: F-005, F-016 shipped; F-003 building (rebase onto 15fd495)"
+    },
+    {
+      "at": "2026-10-14T05:52:57+00:00",
+      "event": "build step: 4 wave 2 merged (F-003, F-005, F-012, F-016 shipped). Next: wave 3 F-008, F-009, F-010 (after user check-in)"
+    },
+    {
+      "at": "2026-10-14T06:01:40+00:00",
+      "event": "build step: 4 wave 3 building: F-008, F-009, F-010 in parallel"
+    },
+    {
+      "at": "2026-10-14T10:57:17+00:00",
+      "event": "build step: 4 wave 3 merged (F-008, F-009, F-010 shipped; 8/16). Next: wave 4 F-002, F-006, F-004 (after user check-in)"
+    },
+    {
+      "at": "2026-10-14T12:21:09+00:00",
+      "event": "build step: 4 wave 4: F-002 + F-006 building in parallel; F-004 after both (needs MOD-Search + recents)"
+    },
+    {
+      "at": "2026-10-14T15:24:14+00:00",
+      "event": "build step: 4 wave 4: F-002, F-006 shipped (10/16); F-004 palette building"
+    },
+    {
+      "at": "2026-10-14T16:11:30+00:00",
+      "event": "build step: 4 wave 4 merged (F-002, F-004, F-006 shipped; 11/16). Next: wave 5 F-011, F-015, F-014 (after user check-in; open question: multi-token search)"
+    },
+    {
+      "at": "2026-10-14T16:37:03+00:00",
+      "event": "decision D-040 opened: Search: phrase matching vs multi-token"
+    },
+    {
+      "at": "2026-10-14T16:37:06+00:00",
+      "event": "decision D-040 answered: phrase"
+    },
+    {
+      "at": "2026-10-14T16:37:48+00:00",
+      "event": "build step: 4 wave 5 building: F-011, F-014, F-015 in parallel"
+    },
+    {
+      "at": "2026-10-19T01:40:58+00:00",
+      "event": "build step: 4 wave 5: F-014, F-015 shipped (13/16); F-011 building"
+    },
+    {
+      "at": "2026-10-19T05:49:34+00:00",
+      "event": "context compaction (auto) at: build-my-app: phase 4 Implementation [in_progress] — 4 wave 5: F-014, F-015 shipped (13/16); F-011 building · 4/8 phases done · autonomy balanced"
+    },
+    {
+      "at": "2026-10-19T06:30:22+00:00",
+      "event": "build step: 4 wave 5 merged (F-011, F-014, F-015 shipped; 14/16). Next: wave 6 F-007, F-013 (after user check-in)"
+    },
+    {
+      "at": "2026-10-19T06:33:12+00:00",
+      "event": "build step: 4 wave 6 building: F-007, F-013 in parallel (then Gate G4)"
+    },
+    {
+      "at": "2026-10-19T07:16:36+00:00",
+      "event": "build step: 4 wave 6: F-013 shipped (15/16); F-007 building"
+    },
+    {
+      "at": "2026-10-19T07:31:47+00:00",
+      "event": "build step: 4 all 16 features shipped; Gate G4 pending"
+    },
+    {
+      "at": "2026-10-19T07:31:51+00:00",
+      "event": "phase build -> gate"
+    },
+    {
+      "at": "2026-10-19T07:32:47+00:00",
+      "event": "gate build passed: 16/16 features shipped; AC coverage 100%; 445 unit + 290 e2e green; CI steps run locally (no repo yet); user approved 2026-10-19"
+    },
+    {
+      "at": "2026-10-19T07:32:54+00:00",
+      "event": "phase qa -> in_progress"
+    },
+    {
+      "at": "2026-10-19T07:32:54+00:00",
+      "event": "qa step: 5 QA: 5 audits in parallel (flows+visual+traceability, a11y, security, perf/NFR, licenses)"
+    },
+    {
+      "at": "2026-10-19T07:34:02+00:00",
+      "event": "context compaction (auto) at: build-my-app: phase 5 QA & hardening [in_progress] — 5 QA: 5 audits in parallel (flows+visual+traceability, a11y, security, perf/NFR, licenses) · 5/8 phases done · autonomy balanced"
+    },
+    {
+      "at": "2026-10-19T10:41:48+00:00",
+      "event": "QA audits resumed after session limit reset"
+    },
+    {
+      "at": "2026-10-19T11:35:48+00:00",
+      "event": "qa step: 5 QA: audits done (0 blockers); fix bundle (a11y M1/M2+minors, perf palette prefetch, CI, HSTS, WebKit tests, favicon) building; then G5"
+    },
+    {
+      "at": "2026-10-20T01:51:49+00:00",
+      "event": "qa step: 5 QA: fixes merged, checks green; Gate G5 awaiting user (privacy copy, toolbar copy, narrow header, manual checks)"
+    },
+    {
+      "at": "2026-10-20T02:00:38+00:00",
+      "event": "decision D-041 opened: QA: privacy statement wording"
+    },
+    {
+      "at": "2026-10-20T02:00:45+00:00",
+      "event": "decision D-041 answered: Fuller first-person privacy statement in three paragraphs (device, tools, hosting)"
+    },
+    {
+      "at": "2026-10-20T02:00:45+00:00",
+      "event": "decision D-042 opened: QA: tool header toolbar accessible name"
+    },
+    {
+      "at": "2026-10-20T02:00:45+00:00",
+      "event": "decision D-042 answered: \"{tool} controls\" (COPY-tool.toolbarLabel)"
+    },
+    {
+      "at": "2026-10-20T02:00:45+00:00",
+      "event": "decision D-043 opened: QA: header below 360 px"
+    },
+    {
+      "at": "2026-10-20T02:00:46+00:00",
+      "event": "decision D-043 answered: Logo mark only; COPY-shell.brand stays the accessible name"
+    },
+    {
+      "at": "2026-10-20T02:00:46+00:00",
+      "event": "decision D-044 opened: Gate G5"
+    },
+    {
+      "at": "2026-10-20T02:00:46+00:00",
+      "event": "decision D-044 answered: Approve; manual checks (screen reader, Firefox, Safari, real phone, installed offline) on the release checklist, done on staging before going live"
+    },
+    {
+      "at": "2026-10-20T02:00:46+00:00",
+      "event": "gate qa passed"
     }
   ],
-  "updated": "2026-10-14T02:10:14+00:00",
+  "updated": "2026-10-20T02:00:46+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

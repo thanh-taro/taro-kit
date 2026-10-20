@@ -34,7 +34,10 @@ Date: 2026-10-20 · main at "Merge QA phase 5 fixes".
 | NFR-11 home weight | ~96 KB brotli | 200 KB |
 | CLS | 0 (mobile), ≤ 0.0008 (desktop) | |
 
-## Decisions for the user
+## Decisions (answered by the user at the gate: D-041 to D-044)
+
+G5 approved on 2026-10-20. The fuller privacy text and the toolbar name are applied; the narrow header is confirmed; the manual checks move to the release checklist (staging, before going live). After the copy changes: Chromium 310/310, WebKit 279/279.
+
 
 1. **Privacy text in Settings (COPY-settings.privacy, security L-1).**
    - Current: "No accounts, no tracking. Everything you do here stays in your browser, and I never see it."
