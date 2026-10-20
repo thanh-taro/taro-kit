@@ -25,9 +25,11 @@ education:
     notes: Fixture notes.
 skills:
   - name: PHP
+    group: Languages
     level: 5
   - name: Docker
-  - name: Python
+  - name: Go
+    group: Languages
     level: 3
 languages:
   - name: English

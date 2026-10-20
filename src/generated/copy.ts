@@ -100,6 +100,7 @@ export const COPY = {
   "COPY-resume.period": "{start} – {end}",
   "COPY-resume.present": "present",
   "COPY-resume.skillLevel": "{level} out of 5",
+  "COPY-resume.skillLevelShort": "{level}/5",
   "COPY-resume.skills": "Skills",
   "COPY-resume.title": "My résumé",
   "COPY-settings.appearance": "Appearance",
@@ -170,6 +171,7 @@ export interface CopyParams {
   "COPY-projects.imageAlt": { name: string | number };
   "COPY-resume.period": { start: string | number; end: string | number };
   "COPY-resume.skillLevel": { level: string | number };
+  "COPY-resume.skillLevelShort": { level: string | number };
   "COPY-settings.daysUsed": { count: string | number };
   "COPY-settings.importInvalid": { reason: string | number };
   "COPY-shell.themeToggle": { theme: string | number };

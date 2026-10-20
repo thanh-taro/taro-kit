@@ -188,6 +188,7 @@ export interface Resume {
    */
   skills?: {
     name: string;
+    group?: string;
     level?: number;
   }[];
   /**

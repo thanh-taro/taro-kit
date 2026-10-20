@@ -37,10 +37,15 @@ export interface EducationItem {
 }
 export interface SkillItem {
   name: string;
-  /** RULE-15: 5 marks, `level` of them filled; absent when the skill has no level. */
-  marks?: boolean[];
-  /** COPY-resume.skillLevel: "5 out of 5". */
+  /** COPY-resume.skillLevelShort, "3/5": only for a level below 5 (RULE-15). */
+  levelShort?: string;
+  /** COPY-resume.skillLevel, "3 out of 5": the same level in words. */
   levelText?: string;
+}
+export interface SkillGroup {
+  /** The Owner's group label; absent for the skills without a group, which come last. */
+  label?: string;
+  skills: SkillItem[];
 }
 export interface LanguageItem {
   name: string;
@@ -57,7 +62,7 @@ export interface ResumeViewData {
   sections: ResumeSection[];
   experience: ExperienceItem[];
   education: EducationItem[];
-  skills: SkillItem[];
+  skills: SkillGroup[];
   languages: LanguageItem[];
   certificates: CreditItem[];
   awards: CreditItem[];
@@ -82,8 +87,28 @@ export function period(start: string, end?: string): Period {
   return { parts, text: parts.map((p) => p.text).join(''), current: !end };
 }
 
-/** RULE-15: a skill level as 5 marks with `level` filled, and in words. */
-export const skillMarks = (level: number): boolean[] => Array.from({ length: 5 }, (_, i) => i < level);
+/** RULE-15: a level below 5 shows as "3/5" and in words; level 5 or no level shows the name only. */
+export function skillItem(skill: { name: string; level?: number }): SkillItem {
+  if (skill.level === undefined || skill.level >= 5) return { name: skill.name };
+  return {
+    name: skill.name,
+    levelShort: t('COPY-resume.skillLevelShort', { level: skill.level }),
+    levelText: t('COPY-resume.skillLevel', { level: skill.level }),
+  };
+}
+
+/** RULE-15: groups in the order their first skill appears, skills in written order, ungrouped skills last. */
+export function skillGroups(skills: readonly { name: string; group?: string; level?: number }[]): SkillGroup[] {
+  const groups = new Map<string, SkillItem[]>();
+  const loose: SkillItem[] = [];
+  for (const s of skills) {
+    if (s.group === undefined) loose.push(skillItem(s));
+    else groups.set(s.group, [...(groups.get(s.group) ?? []), skillItem(s)]);
+  }
+  const out: SkillGroup[] = [...groups].map(([label, items]) => ({ label, skills: items }));
+  if (loose.length > 0) out.push({ skills: loose });
+  return out;
+}
 
 export function resumeView(resume: Resume): ResumeViewData {
   const view: ResumeViewData = {
@@ -102,11 +127,7 @@ export function resumeView(resume: Resume): ResumeViewData {
       period: period(e.start, e.end),
       notes: e.notes ? paragraphs(e.notes) : [],
     })),
-    skills: (resume.skills ?? []).map((s) =>
-      s.level === undefined
-        ? { name: s.name }
-        : { name: s.name, marks: skillMarks(s.level), levelText: t('COPY-resume.skillLevel', { level: s.level }) },
-    ),
+    skills: skillGroups(resume.skills ?? []),
     languages: (resume.languages ?? []).map((l) => ({ name: l.name, level: l.level })),
     certificates: (resume.certificates ?? []).map((c) => ({ name: c.name, issuer: c.issuer, year: c.year })),
     awards: (resume.awards ?? []).map((a) => ({ name: a.title, issuer: a.issuer, year: a.year })),

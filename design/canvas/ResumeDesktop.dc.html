@@ -74,17 +74,26 @@ a{color:inherit}
       <div style="display: flex; flex-direction: column; gap: 40px; min-width: 0">
         <section aria-labelledby="skills-h" style="display: flex; flex-direction: column; gap: 16px">
           <h2 id="skills-h" data-copy="COPY-resume.skills" style="margin: 0; font: 600 20px Unbounded, sans-serif; letter-spacing: -0.01em">Skills</h2>
-          <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
-            <sc-for list="{{skills}}" as="s" hint-placeholder-count="6">
-              <li style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 8px; min-height: 48px; box-sizing: border-box; padding: 8px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px">
-                <span style="font-size: 15px; font-weight: 600">{{s.name}}</span>
-                <sc-if value="{{s.rated}}" hint-placeholder-val="{{true}}">
-                  <span aria-hidden="true" style="display: flex; gap: 4px"><sc-for list="{{s.marks}}" as="m" hint-placeholder-count="5"><span style="width: 8px; height: 8px; box-sizing: border-box; border-radius: 999px; background: {{m.bg}}; border: 1px solid {{m.line}}"></span></sc-for></span>
-                  <span class="sr" data-copy="COPY-resume.skillLevel">{{s.level}} out of 5</span>
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <sc-for list="{{skillGroups}}" as="g" hint-placeholder-count="3">
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <sc-if value="{{g.labelled}}" hint-placeholder-val="{{true}}">
+                  <h3 style="margin: 0; font: 600 12px 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted)">{{g.label}}</h3>
                 </sc-if>
-              </li>
+                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px">
+                  <sc-for list="{{g.skills}}" as="s" hint-placeholder-count="3">
+                    <li style="display: inline-flex; align-items: baseline; gap: 4px; padding: 4px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; font-size: 14px; font-weight: 500">
+                      {{s.name}}
+                      <sc-if value="{{s.rated}}" hint-placeholder-val="{{true}}">
+                        <span aria-hidden="true" data-copy="COPY-resume.skillLevelShort" style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">{{s.level}}/5</span>
+                        <span class="sr" data-copy="COPY-resume.skillLevel">{{s.level}} out of 5</span>
+                      </sc-if>
+                    </li>
+                  </sc-for>
+                </ul>
+              </div>
             </sc-for>
-          </ul>
+          </div>
         </section>
         <section aria-labelledby="lang-h" style="display: flex; flex-direction: column; gap: 16px">
           <h2 id="lang-h" data-copy="COPY-resume.languages" style="margin: 0; font: 600 20px Unbounded, sans-serif; letter-spacing: -0.01em">Languages</h2>
@@ -123,8 +132,8 @@ class Component extends DCLogic {
       summary: summary, highlights: highlights, pad: last ? '0' : '32px', rail: last ? 'transparent' : 'var(--line)',
       dot: end ? 'var(--bg)' : 'var(--accent)', dotLine: end ? 'var(--lineStrong)' : 'var(--accent)'
     });
-    const marks = (n) => [1, 2, 3, 4, 5].map((i) => ({ bg: i <= n ? 'var(--accent)' : 'transparent', line: i <= n ? 'var(--accent)' : 'var(--lineStrong)' }));
-    const skill = (name, level) => ({ name: name, rated: !!level, level: level, marks: marks(level || 0) });
+    const skill = (name, level) => ({ name: name, rated: !!level && level < 5, level: level });
+    const group = (label, skills) => ({ label: label, labelled: !!label, skills: skills });
     return {
       themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
       toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
@@ -134,7 +143,7 @@ class Component extends DCLogic {
         exp('Sample mentor', 'Sample Academy', 'June 2022', '2022-06', 'June 2023', 'Sample summary for a second role.', ['Sample highlight.']),
         exp('Sample developer', 'Sample Studio', 'August 2014', '2014-08', 'February 2018', 'Sample summary for an earlier role.', [], true)
       ],
-      skills: [skill('Sample skill A', 5), skill('Sample skill B', 4), skill('Sample skill C', 3), skill('Sample skill D', 1), skill('Sample skill E'), skill('Sample skill F')],
+      skillGroups: [group('Sample group one', [skill('Sample skill A', 5), skill('Sample skill with a long name', 3)]), group('Sample group two', [skill('Sample skill B', 4), skill('Sample skill C', 1)]), group('', [skill('Sample skill D'), skill('Sample skill E')])],
       languages: [{ name: 'Sample language', level: 'Native' }, { name: 'English', level: 'Advanced' }],
       credits: [
         { title: 'Certificates', copy: 'COPY-resume.certificates', items: [{ name: 'Sample certificate', issuer: 'Sample Issuer', year: '2021' }] },

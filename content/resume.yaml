@@ -72,44 +72,64 @@ education:
     notes: Second prize in the Contest for Good IT Students, in my first year.
 skills:
   - name: PHP
+    group: Languages
     level: 5
   - name: JavaScript
-    level: 5
-  - name: SQL
+    group: Languages
     level: 5
   - name: Python
+    group: Languages
     level: 5
-  - name: MySQL
-    level: 5
-  - name: MongoDB
-    level: 5
-  - name: DynamoDB
-    level: 5
-  - name: Neo4j
+  - name: SQL
+    group: Languages
     level: 5
   - name: Laravel
-    level: 5
-  - name: ReactJS
-    level: 5
-  - name: React Native
-    level: 5
-  - name: SQL injection prevention
-    level: 5
-  - name: Leadership
-    level: 5
-  - name: Node.js
-    level: 5
-  - name: FastAPI
+    group: Frameworks
     level: 5
   - name: NestJS
+    group: Frameworks
+    level: 5
+  - name: FastAPI
+    group: Frameworks
+    level: 5
+  - name: Node.js
+    group: Frameworks
+    level: 5
+  - name: ReactJS
+    group: Frameworks
+    level: 5
+  - name: React Native
+    group: Frameworks
+    level: 5
+  - name: MySQL
+    group: Data
+    level: 5
+  - name: MongoDB
+    group: Data
+    level: 5
+  - name: DynamoDB
+    group: Data
+    level: 5
+  - name: Neo4j
+    group: Data
     level: 5
   - name: Redis
-    level: 5
-  - name: Docker
-    level: 5
-  - name: Prompt engineering
+    group: Data
     level: 5
   - name: Claude AI (Chat, Code, Design)
+    group: AI
+    level: 5
+  - name: Prompt engineering
+    group: AI
+    level: 5
+  - name: Docker
+    group: Practices
+    level: 5
+  - name: Leadership
+    group: Practices
+    level: 5
+  - name: SQL injection prevention
+    group: Practices
     level: 5
 languages:
   - name: Vietnamese

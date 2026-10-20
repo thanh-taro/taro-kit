@@ -33,12 +33,16 @@ education:
     notes: Sample notes.
 skills:
   - name: Sample skill A
+    group: Sample group one
     level: 5
   - name: Sample skill B
+    group: Sample group two
     level: 4
   - name: Sample skill with a long name
+    group: Sample group one
     level: 3
   - name: Sample skill C
+    group: Sample group two
     level: 1
   - name: Sample skill D
   - name: Sample skill E

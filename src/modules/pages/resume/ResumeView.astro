@@ -1,12 +1,12 @@
 ---
 // SCR-Resume body (MOD-Pages), rendered inside BaseLayout by src/pages/resume/[...resume].astro. Static, no island.
 // Regions: 2 heading (COPY-resume.title) and intro (COPY-resume.intro); 3 experience as a timeline; 4 education,
-// entries like experience with level and notes; 5 skills, a compact grid with level marks; 6 languages, certificates
+// entries like experience with level and notes; 5 skills by group, as chips; 6 languages, certificates
 // and awards as short lists. Sections with no entries are left out (RULE-15), and the DOM keeps RULE-15 order: on wide
 // screens experience and education fill the main column and the other sections the side column.
 // Accessibility (SCR-Resume): each section is a headed region; months are <time datetime="YYYY-MM">; the level marks
-// are hidden from assistive technology, which reads COPY-resume.skillLevel instead. Narrow: one column, the timeline
-// stacks (the period sits under the organization) and the skills grid keeps two columns.
+// shown on a skill chip is hidden from assistive technology, which reads COPY-resume.skillLevel instead. Narrow: one
+// column, and the timeline stacks (the period sits under the organization).
 // Design: design/canvas/ResumeDesktop.dc.html, ResumeMobile.dc.html.
 // Implements: F-017.R1, F-017.R2, F-017.R3.
 import { t } from '../../copy/index.ts';
@@ -93,23 +93,32 @@ const credits = (['certificates', 'awards'] as const).filter(has);
       {has('skills') && (
         <section aria-labelledby={id('skills')}>
           <h2 id={id('skills')}>{sectionTitle('skills')}</h2>
-          <ul class="skills">
-            {view.skills.map((s) => (
-              <li>
-                <span class="name">{s.name}</span>
-                {s.marks && (
-                  <>
-                    <span class="marks" aria-hidden="true">
-                      {s.marks.map((filled) => (
-                        <span class="mark" data-filled={filled ? '' : undefined} />
-                      ))}
-                    </span>
-                    <span class="tk-visually-hidden">{s.levelText}</span>
-                  </>
+          <div class="skill-groups">
+            {view.skills.map((g, i) => (
+              <div class="skill-group">
+                {g.label && (
+                  <h3 class="group-label" id={id(`skills-${i}`)}>
+                    {g.label}
+                  </h3>
                 )}
-              </li>
+                <ul class="chips" aria-labelledby={g.label ? id(`skills-${i}`) : undefined}>
+                  {g.skills.map((s) => (
+                    <li class="chip">
+                      {s.name}
+                      {s.levelShort && (
+                        <>
+                          <span class="chip-level" aria-hidden="true">
+                            {s.levelShort}
+                          </span>
+                          <span class="tk-visually-hidden">, {s.levelText}</span>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
       )}
       {has('languages') && (
@@ -333,24 +342,55 @@ const credits = (['certificates', 'awards'] as const).filter(has);
     content: '';
   }
 
-  /* Region 5: skills, two columns, each with its 5 level marks (RULE-15). */
-  .skills {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Region 5: skills by group (RULE-15): each group's label above its chips, which wrap. */
+  .skill-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-4);
+  }
+  .skill-group {
+    display: flex;
+    flex-direction: column;
     gap: var(--tk-space-2);
   }
-  .skills li {
+  /* The same small label as SCR-Now's month groups. */
+  .group-label {
+    margin: 0;
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+    font-weight: var(--tk-font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .chips {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--tk-space-1) var(--tk-space-2);
-    min-block-size: var(--tk-space-12);
-    padding: var(--tk-space-2) var(--tk-space-3);
+    gap: var(--tk-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--tk-space-1);
+    max-inline-size: 100%;
+    padding: var(--tk-space-1) var(--tk-space-3);
+    color: var(--tk-color-fg);
     background: var(--tk-color-surface);
     border: var(--tk-border-width-hairline) solid var(--tk-color-line);
-    border-radius: var(--tk-radius-md);
+    border-radius: var(--tk-radius-pill);
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-medium);
+    overflow-wrap: anywhere;
   }
+  .chip-level {
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-xs);
+  }
+
   .name {
     min-inline-size: 0;
     color: var(--tk-color-fg);
@@ -358,23 +398,6 @@ const credits = (['certificates', 'awards'] as const).filter(has);
     font-weight: var(--tk-font-weight-semibold);
     overflow-wrap: anywhere;
   }
-  .marks {
-    display: flex;
-    flex: none;
-    gap: var(--tk-space-1);
-  }
-  .mark {
-    box-sizing: border-box;
-    inline-size: var(--tk-space-2);
-    block-size: var(--tk-space-2);
-    border: var(--tk-border-width-hairline) solid var(--tk-color-line-strong);
-    border-radius: var(--tk-radius-pill);
-  }
-  .mark[data-filled] {
-    background: var(--tk-color-accent);
-    border-color: var(--tk-color-accent);
-  }
-
   /* Region 6: languages, certificates and awards: name, then level or issuer and year. */
   .rows {
     display: flex;

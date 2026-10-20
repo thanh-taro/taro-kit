@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Change D-055 (remove Projects page): specs reviewed and fixed, code + tests + design updated; unit 460 pass, build ok; e2e Chromium running; then commit and offer deploy",
+      "step": "8 Change D-056 (résumé skills as grouped chips): spec change",
       "gate": {
         "status": "pending",
         "at": null,
@@ -826,6 +826,22 @@
       "answer": "Remove completely: Projects page, project cards, project catalog entries (ENT-Project), their tests and specs (Owner, 2026-10-20)",
       "asked": "2026-10-20T15:29:29+00:00",
       "answered": "2026-10-20T15:29:30+00:00"
+    },
+    {
+      "id": "D-056",
+      "question": "D-056 Résumé skills design",
+      "options": [
+        "A grouped chips",
+        "B chip cloud",
+        "C aligned list"
+      ],
+      "recommendation": "A grouped chips",
+      "kind": "design",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "A: grouped chips; level shown only below 5 (Owner, 2026-10-20)",
+      "asked": "2026-10-20T15:50:49+00:00",
+      "answered": "2026-10-20T15:50:49+00:00"
     }
   ],
   "loops": {
@@ -879,18 +895,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:25:57+00:00",
-      "event": "decision D-010 answered: Apex + tool subdomains (same site)"
-    },
-    {
-      "at": "2026-10-13T03:25:58+00:00",
-      "event": "decision D-011 opened: Home page"
-    },
-    {
-      "at": "2026-10-13T03:25:58+00:00",
-      "event": "decision D-011 answered: Lean dashboard"
-    },
     {
       "at": "2026-10-13T03:25:58+00:00",
       "event": "decision D-012 opened: Pilot tools at launch"
@@ -1678,9 +1682,21 @@
     {
       "at": "2026-10-20T15:40:37+00:00",
       "event": "iterate step: 8 Change D-055 (remove Projects page): specs reviewed and fixed, code + tests + design updated; unit 460 pass, build ok; e2e Chromium running; then commit and offer deploy"
+    },
+    {
+      "at": "2026-10-20T15:50:49+00:00",
+      "event": "decision D-056 opened: D-056 Résumé skills design"
+    },
+    {
+      "at": "2026-10-20T15:50:49+00:00",
+      "event": "decision D-056 answered: A: grouped chips; level shown only below 5 (Owner, 2026-10-20)"
+    },
+    {
+      "at": "2026-10-20T15:50:50+00:00",
+      "event": "iterate step: 8 Change D-056 (résumé skills as grouped chips): spec change"
     }
   ],
-  "updated": "2026-10-20T15:40:37+00:00",
+  "updated": "2026-10-20T15:50:50+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

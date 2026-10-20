@@ -19,7 +19,7 @@ import {
 } from '../../src/modules/content/index.ts';
 import { headTags, metaFor, PREVIEW_IMAGE, siteIndexXml } from '../../src/modules/meta/index.ts';
 import About from '../../src/modules/pages/About.astro';
-import { period, resumeView, skillMarks } from '../../src/modules/pages/resume/resume.ts';
+import { period, resumeView, skillGroups } from '../../src/modules/pages/resume/resume.ts';
 import ResumeView from '../../src/modules/pages/resume/ResumeView.astro';
 import { emptyQueryGroups, paletteIndex } from '../../src/modules/palette/logic.ts';
 import { palettePages, paletteText } from '../../src/modules/palette/text.ts';
@@ -154,10 +154,38 @@ describe('RULE-15 résumé display', () => {
     ]);
   });
 
-  test('RULE-15 a skill level is 5 marks with that many filled', () => {
-    expect(skillMarks(3)).toEqual([true, true, true, false, false]);
-    expect(skillMarks(5)).toEqual([true, true, true, true, true]);
-    expect(skillMarks(1)).toEqual([true, false, false, false, false]);
+  test('F017_AC5 PHP (5) and Go (3) under "Languages", then Docker with no group: only Go shows its level', () => {
+    expect(resumeView(full.resume!).skills).toEqual([
+      {
+        label: 'Languages',
+        skills: [{ name: 'PHP' }, { name: 'Go', levelShort: '3/5', levelText: '3 out of 5' }],
+      },
+      { skills: [{ name: 'Docker' }] },
+    ]);
+  });
+
+  test('F017_AC12 groups come in the order their first skill appears, skills in written order', () => {
+    const groups = skillGroups([
+      { name: 'A', group: 'Data' },
+      { name: 'B', group: 'Languages' },
+      { name: 'C', group: 'Data' },
+    ]);
+    expect(groups.map((g) => [g.label, g.skills.map((s) => s.name)])).toEqual([
+      ['Data', ['A', 'C']],
+      ['Languages', ['B']],
+    ]);
+  });
+
+  test('RULE-15 a skill level below 5 shows as "{level}/5" and in words; 5 or none shows the name only', () => {
+    const [g] = skillGroups([{ name: 'a', level: 1 }, { name: 'b', level: 4 }, { name: 'c', level: 5 }, { name: 'd' }]);
+    expect(g!.label).toBeUndefined();
+    expect(g!.skills).toEqual([
+      { name: 'a', levelShort: '1/5', levelText: '1 out of 5' },
+      { name: 'b', levelShort: '4/5', levelText: '4 out of 5' },
+      { name: 'c' },
+      { name: 'd' },
+    ]);
+    expect(skillGroups([])).toEqual([]);
   });
 });
 
@@ -206,20 +234,19 @@ describe('F-017 Résumé page body (SCR-Resume)', () => {
     expect(entry).toContain('<time datetime="2014-09"');
   });
 
-  test('F017_AC5 PHP at level 5 shows five filled marks read as "5 out of 5"; Docker shows its name only', async () => {
+  test('F017_AC5 rendered: "Languages" labels a list with PHP (name only) and Go ("3/5", read as "3 out of 5"); Docker last, unlabelled', async () => {
     const html = await renderResume(full);
-    const php = itemWith(html, '>PHP<')!;
-    expect(php.match(/class="mark"[^>]*data-filled/g)).toHaveLength(5);
-    expect(php).toMatch(/<span class="marks"[^>]*aria-hidden="true"/);
-    expect(php).toMatch(/<span class="tk-visually-hidden"[^>]*>5 out of 5<\/span>/);
+    expect(html).toMatch(/<h3 class="group-label"[^>]*id="resume-skills-0"[^>]*>\s*Languages\s*<\/h3>/);
+    expect(html).toMatch(/<ul class="chips"[^>]*aria-labelledby="resume-skills-0"/);
+    expect(text(itemWith(html, '>PHP<')!)).toBe('PHP');
+    const go = itemWith(html, '>Go<')!;
+    expect(go).toMatch(/<span class="chip-level"[^>]*aria-hidden="true"[^>]*>3\/5<\/span>/);
+    expect(go).toMatch(/<span class="tk-visually-hidden"[^>]*>, 3 out of 5<\/span>/);
     const docker = itemWith(html, '>Docker<')!;
     expect(text(docker)).toBe('Docker');
-    expect(docker).not.toContain('marks');
-    // A level below 5 fills that many of the 5 marks.
-    const python = itemWith(html, '>Python<')!;
-    expect(python.match(/class="mark"/g)).toHaveLength(5);
-    expect(python.match(/data-filled/g)).toHaveLength(3);
-    expect(text(python)).toBe('Python 3 out of 5');
+    // The ungrouped list comes after the group and has no label.
+    expect(html.indexOf('>Docker<')).toBeGreaterThan(html.indexOf('>Go<'));
+    expect(html.match(/<ul class="chips"(?![^>]*aria-labelledby)/g)).toHaveLength(1);
   });
 
   test('F017_AC6 a language with its level, a certificate and an award with their issuer and year', async () => {

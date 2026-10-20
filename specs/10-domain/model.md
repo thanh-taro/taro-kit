@@ -62,7 +62,7 @@ The Owner's identity:
 The Owner's optional career record, in the order the Owner writes it (RULE-15):
 - experience: each with a role, an organization, a start month, an end month (none while it is current), a short summary and optional highlights;
 - education: each with a program, an institution, an optional level, a start month, an optional end month and optional notes;
-- skills: each with a name and an optional self-rated level from 1 to 5;
+- skills: each with a name, an optional group (a short label in the Owner's words, such as "Languages") and an optional self-rated level from 1 to 5;
 - languages: each with a name and a level, in words;
 - certificates: each with a name, an issuer and a year;
 - awards: each with a title, an issuer and a year.

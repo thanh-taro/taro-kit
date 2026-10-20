@@ -94,6 +94,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-resume.present** | present | end of a current period (RULE-15) |
 | **COPY-resume.period** | {start} – {end} | a period; {start} and {end} are month and year, or COPY-resume.present (RULE-15) |
 | **COPY-resume.skillLevel** | {level} out of 5 | a skill level in words (RULE-15) |
+| **COPY-resume.skillLevelShort** | {level}/5 | a skill level below 5, shown on its chip (RULE-15) |
 | **COPY-projects.title** | Things I've built | deprecated (D-055): not shown |
 | **COPY-projects.empty** | I'm putting my projects together. Check back soon. | deprecated (D-055): not shown |
 | **COPY-projects.imageAlt** | Screenshot of {name} | deprecated (D-055): not shown |

@@ -79,21 +79,28 @@ test.describe('F-017 Résumé page', () => {
     await expect(entry.locator('.period')).toHaveText(e.period.text);
   });
 
-  test('F017_AC5 skill level marks are hidden from assistive technology, and the level is read in words', async ({
+  test('F017_AC5 F017_AC12 skills by group: each group a labelled list of chips, ungrouped skills last with no label', async ({
     page,
   }) => {
     await page.goto(`${PROD}/resume/`);
-    const skills = page.getByRole('region', { name: 'Skills' }).getByRole('listitem');
-    await expect(skills).toHaveCount(view.skills.length);
-    for (const [i, s] of view.skills.entries()) {
-      const item = skills.nth(i);
-      if (s.marks) {
-        await expect(item.locator('.marks')).toHaveAttribute('aria-hidden', 'true');
-        await expect(item.locator('.mark[data-filled]')).toHaveCount(s.marks.filter(Boolean).length);
-        await expect(item.locator('.tk-visually-hidden')).toHaveText(s.levelText!);
-        await expect(item.locator('.name')).toHaveText(s.name);
-      } else {
-        await expect(item).toHaveText(s.name);
+    const region = page.getByRole('region', { name: 'Skills' });
+    const lists = region.getByRole('list');
+    await expect(lists).toHaveCount(view.skills.length);
+    for (const [i, g] of view.skills.entries()) {
+      // A labelled group is a list named by its <h3>; the ungrouped one has no label.
+      const list = g.label ? region.getByRole('list', { name: g.label, exact: true }) : lists.nth(i);
+      if (g.label) await expect(region.getByRole('heading', { level: 3, name: g.label, exact: true })).toBeVisible();
+      const chips = list.getByRole('listitem');
+      await expect(chips).toHaveCount(g.skills.length);
+      for (const [j, s] of g.skills.entries()) {
+        const chip = chips.nth(j);
+        if (s.levelShort) {
+          await expect(chip.locator('.chip-level')).toHaveText(s.levelShort);
+          await expect(chip.locator('.chip-level')).toHaveAttribute('aria-hidden', 'true');
+          await expect(chip.locator('.tk-visually-hidden')).toHaveText(`, ${s.levelText}`);
+        } else {
+          await expect(chip).toHaveText(s.name);
+        }
       }
     }
   });
