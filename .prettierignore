@@ -20,3 +20,6 @@ tools/
 CLAUDE.md
 # Deliberately unparseable backup fixture (RULE-08 damaged).
 tests/fixtures/backups/RULE-08-damaged-unparseable.json
+
+# Verbatim license text (PolyForm Noncommercial 1.0.0); never reformat.
+LICENSE.md

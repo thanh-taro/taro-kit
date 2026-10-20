@@ -763,6 +763,18 @@
       "answer": "Separate /resume/ page (F-017), linked from nav, About and palette; built for v1.0; F-017 set ready by the user",
       "asked": "2026-10-20T04:03:31+00:00",
       "answered": "2026-10-20T04:03:31+00:00"
+    },
+    {
+      "id": "D-051",
+      "question": "Release: repo visibility, owner and project license",
+      "options": [],
+      "recommendation": null,
+      "kind": "legal",
+      "phase": "release",
+      "status": "answered",
+      "answer": "Public repo thanh-taro/taro-kit; own code and content under PolyForm Noncommercial 1.0.0; publish content as is (phone and résumé included)",
+      "asked": "2026-10-20T07:20:24+00:00",
+      "answered": "2026-10-20T07:20:30+00:00"
     }
   ],
   "loops": {
@@ -816,14 +828,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:14:15+00:00",
-      "event": "phase product-spec -> in_progress"
-    },
-    {
-      "at": "2026-10-13T03:14:29+00:00",
-      "event": "product-spec step: 1.1 brainstorm: problem round + market research (bg)"
-    },
     {
       "at": "2026-10-13T03:17:23+00:00",
       "event": "market research saved; user wants all categories incl. creator (clip maker) + relaxing tools; platform web+PWA; identity = about page + dashboard home"
@@ -1615,9 +1619,17 @@
     {
       "at": "2026-10-20T07:14:26+00:00",
       "event": "U-2 author rewrite done with git-filter-repo (mailmap + replace-text); old folder taro-kit keeps spike/worktree branches, never push from it"
+    },
+    {
+      "at": "2026-10-20T07:20:24+00:00",
+      "event": "decision D-051 opened: Release: repo visibility, owner and project license"
+    },
+    {
+      "at": "2026-10-20T07:20:30+00:00",
+      "event": "decision D-051 answered: Public repo thanh-taro/taro-kit; own code and content under PolyForm Noncommercial 1.0.0; publish content as is (phone and résumé included)"
     }
   ],
-  "updated": "2026-10-20T07:14:26+00:00",
+  "updated": "2026-10-20T07:20:30+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
