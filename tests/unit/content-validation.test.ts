@@ -210,8 +210,10 @@ describe('repository content', () => {
   // content/ is the Owner's to replace (release C-1), so it is checked by shape only: whatever it holds must
   // validate. $TAROKIT_CONTENT_DIR, when set, stands in for it.
   it('F-001.R2 the repository content validates, whatever tools it holds', () => {
+    // loadRegistry throws ContentErrors on any invalid entry. A category shows only once it has a visible tool
+    // (RULE-06), so the real content may legitimately show none (all tools hidden until deployed, D-012).
     const r = loadRegistry({ root });
-    expect(r.categories.length).toBeGreaterThan(0);
+    for (const c of r.categories) expect(c.tools.length).toBeGreaterThan(0);
     for (const t of r.visibleTools) expect(new URL(t.url).protocol).toBe('https:');
   });
 

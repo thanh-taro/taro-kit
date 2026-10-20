@@ -1,13 +1,20 @@
 # yaml-language-server: $schema=./schemas/profile.json
-# ENT-Profile. Name and nickname come from PER-01; everything else is SAMPLE text to replace before launch.
+# ENT-Profile. Name and nickname come from PER-01. Written from the Owner's VietnamWorks profile (2026-10-20).
 name: Nguyen Tri Thanh
 nickname: Taro
-headline: 'Sample headline: I build small tools for work and life.'
+headline: Senior developer. I turn coffee and messy data into tidy backends.
+location: Đà Nẵng, Vietnam
 bio: |
-  Sample bio. This paragraph is a placeholder until I write the real one.
+  Hi, I'm Thanh, though most people call me Taro. I've been writing software for more than ten years, mostly on the backend: APIs, data pipelines and, lately, a lot of prompts for AI models. Yes, talking politely to machines is part of my job now.
 
-  Paragraphs are separated by a blank line.
+  These days I'm a Fullstack AI-Native engineer at Est Rouge, building REST and WebSocket services, ETL for big data, and products that put language models to work. Before that I led commerce teams on projects for the Japanese market, ran an AI team as a technical leader, and built social networks, newsfeeds and geolocation features. My usual toolbox is Python, Node.js and PHP with FastAPI, NestJS and Laravel, on MySQL, MongoDB, DynamoDB, Redis and Neo4j. All of it in Docker, naturally.
+
+  Since 2022 I've also mentored Rising Stars bootcamp students in backend, soft skills and presenting. Watching a mentee's first demo go right is still my favorite kind of deploy.
+
+  People describe me as active, responsible, quick at coding and research, and a bit funny. I'll take all of it, especially the last part. A few Employee of the Year and Exceptional Effort awards suggest it isn't only my friends saying so. I like heavy tasks, tight deadlines and learning new things fast.
+
+  TaroKit is where I keep the small tools I build for work and everyday life. Help yourself.
 links:
-  - label: Sample link
-    url: https://example.com/
-    kind: website
+  - label: Email me
+    url: mailto:adamnguyen.itdn@gmail.com
+    kind: email

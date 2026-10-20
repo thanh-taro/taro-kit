@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=./schemas/now.json
-# ENT-NowNote. SAMPLE text to replace before launch.
+# ENT-NowNote. Over 90 days old it is labeled out of date (RULE-09).
 body: |
-  Sample Now note. I'm setting up TaroKit, the home for the tools I build.
-updated: 2026-10-13
+  Right now I'm building backends, data pipelines and AI prompts at Est Rouge, and mentoring the next batch of Rising Stars.
+
+  On the side, I'm launching TaroKit, the site you're on, with its first tool, a JSON formatter. Next on my list: more small tools, and fewer open browser tabs. One of those is going better than the other.
+updated: 2026-10-20

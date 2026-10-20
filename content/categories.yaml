@@ -1,27 +1,27 @@
 # yaml-language-server: $schema=./schemas/categories.json
 # The M-1 categories (ENT-Category, D-027), in display order. Each tint is used once (RULE-14).
-# The intros are SAMPLE text in Taro's voice (PRN-04): replace them before launch.
+# Intros in Taro's voice (PRN-04), at most 160 characters.
 - id: developer
   name: Developer tools
   order: 1
-  intro: 'Sample intro: the small helpers I reach for while I write code.'
+  intro: The helpers I reach for while I write code. Built by a backend dev, so expect fewer pixels and more JSON.
   icon: icons/code.svg
   tint: violet
 - id: media
   name: Media tools
   order: 2
-  intro: 'Sample intro: quick fixes for images, audio and video.'
+  intro: Quick fixes for images, audio and video, for when opening a heavy editor feels like overkill.
   icon: icons/clapperboard.svg
   tint: mango
 - id: converters
   name: Converters & calculators
   order: 3
-  intro: 'Sample intro: numbers and units, worked out the way I like them.'
+  intro: Numbers and units worked out for you, because mental math at 5 p.m. is not a feature.
   icon: icons/calculator.svg
   tint: sky
 - id: productivity
   name: Productivity & relax
   order: 4
-  intro: 'Sample intro: tools that keep my day on track, and a few that help me slow down.'
+  intro: Tools that keep my day on track, and a few that remind me to take a break. Both matter.
   icon: icons/coffee.svg
   tint: mint
