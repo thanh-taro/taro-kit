@@ -82,12 +82,12 @@
     },
     "deploy": {
       "title": "7 Deploy",
-      "status": "in_progress",
-      "step": "7 Deploy: live at https://tarokit.app (version 6003f97c, incl. 2 developer tools); remaining: production smoke checks and deploy gate G7",
+      "status": "done",
+      "step": "7 Deploy: v1.0.0 live at https://tarokit.app; G7 passed",
       "gate": {
-        "status": "pending",
-        "at": null,
-        "note": null
+        "status": "passed",
+        "at": "2026-10-20T14:17:22+00:00",
+        "note": "Production 6003f97c (v1.0.0 = rc.1 + catalog content 45f2209); smoke test + catalog check passed; Owner confirmed live site works (2026-10-20). Report: deploy-1.0.0.md"
       }
     },
     "iterate": {
@@ -864,14 +864,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:23:07+00:00",
-      "event": "decision D-007 answered: Typed registry file in this repo"
-    },
-    {
-      "at": "2026-10-13T03:23:07+00:00",
-      "event": "decision D-008 opened: Shared runtime UX"
-    },
     {
       "at": "2026-10-13T03:23:07+00:00",
       "event": "decision D-008 answered: Nothing shared"
@@ -1663,9 +1655,17 @@
     {
       "at": "2026-10-20T14:09:01+00:00",
       "event": "deploy step: 7 Deploy: live at https://tarokit.app (version 6003f97c, incl. 2 developer tools); remaining: production smoke checks and deploy gate G7"
+    },
+    {
+      "at": "2026-10-20T14:17:22+00:00",
+      "event": "gate deploy passed: Production 6003f97c (v1.0.0 = rc.1 + catalog content 45f2209); smoke test + catalog check passed; Owner confirmed live site works (2026-10-20). Report: deploy-1.0.0.md"
+    },
+    {
+      "at": "2026-10-20T14:17:23+00:00",
+      "event": "phase deploy -> done"
     }
   ],
-  "updated": "2026-10-20T14:09:01+00:00",
+  "updated": "2026-10-20T14:17:23+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
