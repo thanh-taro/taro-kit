@@ -198,14 +198,10 @@ describe('F-017 Résumé page body (SCR-Resume)', () => {
     const html = await renderResume(full);
     const entry = itemWith(html, 'Information Technology')!;
     const shown = text(entry);
-    for (const s of [
-      'Information Technology',
-      'Fixture College',
-      'College',
-      'September 2011 – September 2014',
-      'Fixture notes.',
-    ])
+    for (const s of ['Information Technology', 'Fixture College', 'September 2011 – September 2014', 'Fixture notes.'])
       expect(shown).toContain(s);
+    // The level is its own element, not the "College" inside the institution's name.
+    expect(entry).toMatch(/<span class="level"[^>]*>College<\/span>/);
     expect(entry).toContain('<time datetime="2011-09"');
     expect(entry).toContain('<time datetime="2014-09"');
   });

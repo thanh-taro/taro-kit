@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=../../../../content/schemas/resume.json
+# Test fixture: the fixture build's résumé has no entries in any section, which counts as no résumé (ENT-Resume), so
+# the FX build checks F-017.AC8: no Résumé page and nothing links to it.
+experience: []
+education: []
+skills: []
+languages: []
+certificates: []
+awards: []

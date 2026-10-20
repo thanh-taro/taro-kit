@@ -317,13 +317,15 @@ const status = shellStatusText();
     display: none;
   }
   @media (min-width: 1120px) {
-    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .search {
+    .shell-wrap[data-variant='full']:not([data-nav='long']) .shell:has(:global(.tk-status--pill:not(:empty))) .search {
       display: none;
     }
-    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .search-icon {
+    .shell-wrap[data-variant='full']:not([data-nav='long'])
+      .shell:has(:global(.tk-status--pill:not(:empty)))
+      .search-icon {
       display: inline-flex;
     }
-    .shell-wrap[data-variant='full'] .shell:has(:global(.tk-status--pill:not(:empty))) .end {
+    .shell-wrap[data-variant='full']:not([data-nav='long']) .shell:has(:global(.tk-status--pill:not(:empty))) .end {
       margin-inline-start: auto;
     }
   }
@@ -334,6 +336,14 @@ const status = shellStatusText();
     .shell-wrap[data-variant='full'] :global(.tk-status--notice:not(:empty)) {
       display: flex;
     }
+  }
+  /* Six navigation items (F-017.R4) leave no room for the pill in the bar at any width (NFR-07), so the offline
+     indicator is always the notice below the bar there, as below 1120 px (design CMP-AppShell offline). */
+  .shell-wrap[data-variant='full'][data-nav='long'] .shell :global(.tk-status--pill:not(:empty)) {
+    display: none;
+  }
+  .shell-wrap[data-variant='full'][data-nav='long'] :global(.tk-status--notice:not(:empty)) {
+    display: flex;
   }
   .shell-wrap :global(.tk-status--update:not(:empty)) {
     display: flex;
