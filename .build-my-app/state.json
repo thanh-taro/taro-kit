@@ -73,7 +73,7 @@
     "release": {
       "title": "6 Release",
       "status": "in_progress",
-      "step": "6 Release: release infra merged; size gate added; builder adding perf rig (NFR-01/02) + advisory Lighthouse CI; then author-rewrite copy; then user steps",
+      "step": "6 Release: U-1 content done (awaiting user review); next U-2 rewrite",
       "gate": {
         "status": "pending",
         "at": null,
@@ -794,14 +794,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:12:20+00:00",
-      "event": "initialized (autonomy=balanced)"
-    },
-    {
-      "at": "2026-10-13T03:12:20+00:00",
-      "event": "phase setup -> in_progress"
-    },
     {
       "at": "2026-10-13T03:13:18+00:00",
       "event": "set profile"
@@ -1593,9 +1585,17 @@
     {
       "at": "2026-10-20T03:39:48+00:00",
       "event": "decision D-049 answered: Skip Lighthouse CI; size check and Playwright perf rig are the gates"
+    },
+    {
+      "at": "2026-10-20T03:40:47+00:00",
+      "event": "release step: 6 Release: Claude items done (deploy, staging, perf gates, version, redaction). Waiting on user: U-1 real content, then U-2 rewrite, U-3+ repo/Cloudflare per release-checklist.md"
+    },
+    {
+      "at": "2026-10-20T03:49:46+00:00",
+      "event": "release step: 6 Release: U-1 content done (awaiting user review); next U-2 rewrite"
     }
   ],
-  "updated": "2026-10-20T03:39:48+00:00",
+  "updated": "2026-10-20T03:49:46+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
