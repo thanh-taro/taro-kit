@@ -70,7 +70,8 @@ else
   fi
 fi
 if [ "$allow_untagged" = 0 ]; then
-  [ "$tag" = "v${version}" ] || die "tag ${tag} does not match package.json version ${version}"
+  # The release (vX.Y.Z) or one of its candidates (vX.Y.Z-rc.N), for the version in package.json.
+  [[ "$tag" =~ ^v${version//./\\.}(-rc\.[0-9]+)?$ ]] || die "tag ${tag} is not v${version} or v${version}-rc.N"
 fi
 label="${tag#v}"
 suffix=""
