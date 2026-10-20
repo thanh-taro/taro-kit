@@ -42,14 +42,13 @@ type NavCopy = Extract<CopyId, `COPY-nav.${string}`>;
 const PAGES: [id: string, path: string, copy: NavCopy][] = [
   ['home', '/', 'COPY-nav.home'],
   ['tools', '/tools/', 'COPY-nav.tools'],
-  ['projects', '/projects/', 'COPY-nav.projects'],
   ['about', '/about/', 'COPY-nav.about'],
   ['resume', RESUME_PATH, 'COPY-nav.resume'],
   ['now', '/now/', 'COPY-nav.now'],
   ['settings', '/settings/', 'COPY-nav.settings'],
 ];
 
-/** F-004.R2 Pages: Home, Tools, Projects, About, Résumé (only when there is a résumé, F-017.R4), Now and Settings. */
+/** F-004.R2 Pages: Home, Tools, About, Résumé (only when there is a résumé, F-017.R4), Now and Settings. */
 export const palettePages = (resume: boolean): PageItem[] =>
   PAGES.filter(([id]) => resume || id !== 'resume').map(([id, path, copy]) => ({ id, path, name: t(copy) }));
 
@@ -73,7 +72,6 @@ function buildText(resume: boolean): PaletteText {
       favorites: t('COPY-palette.groupFavorites'),
       recents: t('COPY-palette.groupRecents'),
       tools: t('COPY-palette.groupTools'),
-      projects: t('COPY-palette.groupProjects'),
       pages: t('COPY-palette.groupPages'),
       actions: t('COPY-palette.groupActions'),
     },

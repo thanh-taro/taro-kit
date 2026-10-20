@@ -1,10 +1,12 @@
 ---
 id: SCR-Projects
 title: Projects
-status: draft
+status: deprecated
 features: [F-009]
 components: [CMP-AppShell, CMP-ProjectCard, CMP-StateMessage]
 ---
+
+> **Deprecated (D-055):** the Projects page was removed with F-009.
 
 ## Purpose
 Show what else Taro has built.

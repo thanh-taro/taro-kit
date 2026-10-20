@@ -141,7 +141,6 @@ test.describe('F-015 link previews', () => {
     const paths = [
       '/',
       '/tools/',
-      '/projects/',
       '/about/',
       '/now/',
       '/settings/',

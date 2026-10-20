@@ -14,10 +14,9 @@ MOD-Pages owns the Astro routes and screen composition. Each page is pre-rendere
 | `/tools/` | SCR-Catalog | The full grouped list is in static HTML. The island adds search and favorite toggles. Category headings and the category navigation link to category pages (F-002.R3). |
 | `/tools/<category-id>/` | SCR-Category | One static page per visible category: hero with tint, intro and count, category navigation, and the tool list (F-016). Unknown or empty categories have no page, so the 404 content is served (F-016.R5). |
 | `/t/<id>/` | SCR-ToolView | One page per visible tool (MOD-ToolHost). |
-| `/projects/` | SCR-Projects | A `#<id>` anchor scrolls to the card and focuses it on load and on `hashchange` (F-009.R4). |
-| `/projects/images/<id>.<ext>` | — | A visible project's bundled image, copied from `content/assets/` at build, with its media type from `IMAGE_TYPES` (F-009.R2). Hidden projects get none (RULE-06). |
 | `/about/` | SCR-About | Static, with no island. |
 | `/resume/` | SCR-Resume | Static, no island; built only when there is a résumé (`getStaticPaths` gives the one path or none, so without a résumé the address serves the not-found page, F-017.R4). |
+| `/projects/` | — | Not built since D-055 (the projects showcase is deprecated): the old address serves the not-found page (SCR-NotFound), like any unknown address. |
 | `/now/` | SCR-Now | Static changelog grouped by month. A small island adds the stale label for RULE-09 against the viewer's date. |
 | `/settings/` | SCR-Settings | The theme choice, clear recents, days used, and export, import and erase with confirmations. |
 | `404.html` | SCR-NotFound | Served by the host for unknown and hidden ids, and by the service worker offline. |
@@ -69,10 +68,5 @@ Build-time helpers for SCR-Category (`src/modules/pages/category.ts`):
 - `categoryPages(categories, tools) → { category, path, tools, count, nav }[]`: one entry per category with visible tools, in display order, from MOD-Content's `visibleCategories` and `toolsByCategory` (F-016.R1 to R4). Categories that are unknown or have only hidden tools have no entry, so no page (F-016.R5).
 - `toolCountText(count)`: COPY-category.toolCount, or COPY-category.toolCountOne for one tool (F-016.R2).
 
-Projects (`src/modules/pages/projects/`), for SCR-Projects:
-- `ProjectsView.astro`: the page body (title, CMP-ProjectCard list or the empty CMP-StateMessage, F-009.R1 to R3) from a list of visible projects and an image address per project. The route renders it from the registry.
-- `projectImagePath(project)`: the image's address under `/projects/images/`, or none (F-009.R2).
-- `project-anchor.ts` (browser): on load and on `hashchange`, a hash `#<id>` naming a listed card (element id `project-<id>`, `cardIdForHash`) scrolls that card into view and focuses it; any other hash leaves the page as it is, at the top (F-009.R4).
-
 ## Implements
-F-002, F-016, F-007 (except R2, which is shared with MOD-Palette), F-008, F-009, F-010, F-017.R1 to F-017.R4 (with MOD-Shell and MOD-Palette for R4), F-003.R7, the settings UI for F-006.R4, F-006.R6, F-012.R2 and F-013.R4 to F-013.R6, and F-011.AC2 and F-011.AC4 (with MOD-Offline). It contributes to NFR-01 and NFR-11.
+F-002, F-016, F-007 (except R2, which is shared with MOD-Palette), F-008, F-010, F-017.R1 to F-017.R4 (with MOD-Shell and MOD-Palette for R4), F-003.R7, the settings UI for F-006.R4, F-006.R6, F-012.R2 and F-013.R4 to F-013.R6, and F-011.AC2 and F-011.AC4 (with MOD-Offline). It contributes to NFR-01 and NFR-11.

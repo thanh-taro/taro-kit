@@ -1,9 +1,9 @@
 // MOD-Palette logic (CMP-CommandPalette), pure and browser-safe; the island (Palette.tsx) only renders it.
-// - Entries: visible tools and projects from the catalog data file, the pages (six, or seven with the Résumé,
+// - Entries: visible tools from the catalog data file, the pages (six, or seven with the Résumé,
 //   F-017.R4) and the three actions.
 // - Empty query (F-004.R2): Favorites (at most 8, pin order), Recents (RULE-01: at most 8, newest first,
 //   favorites left out), Pages. Hidden or unknown tools never show (RULE-06, INV-04).
-// - A query (F-004.R3): MOD-Search `searchPalette`, groups Tools, Projects, Pages, Actions, 8 each.
+// - A query (F-004.R3): MOD-Search `searchPalette`, groups Tools, Pages, Actions, 8 each.
 // - Running (F-004.R4, R5): everything closes the palette first (so focus handling and navigation never race),
 //   except copy-address, which reports `copied` so the island shows the confirmation and then closes.
 // - The shortcut (F-004.R1, platform-mapping): Meta+K on Apple platforms, Control+K elsewhere.
@@ -11,8 +11,7 @@
 //   controls before the island has loaded, opens the pre-rendered <dialog> with showModal() and focuses the field
 //   (NFR-02), closes it on a click outside, and returns focus where it was on close (F-004.R1).
 // Implements: F-004.R1 to F-004.R6 (logic), RULE-01 (palette list), RULE-05 (via MOD-Search).
-import type { IndexedProject, IndexedTool } from '../content/emit-catalog-data.ts';
-import { projectPath } from '../content/derive.ts';
+import type { IndexedTool } from '../content/emit-catalog-data.ts';
 import { visibleFavorites, visibleRecents, type PersonalData } from '../personal-data/index.ts';
 import { normalize, searchKeys, searchPalette, type PaletteGroupId, type SearchKeys } from '../search/index.ts';
 import type { OpenableTool } from '../tool-host/index.ts';
@@ -36,7 +35,6 @@ export const ACTIONS = ['theme', 'export', 'copy'] as const;
 export type ActionId = (typeof ACTIONS)[number];
 
 type ToolData = Pick<IndexedTool, 'id' | 'name' | 'summary' | 'tags' | 'keys' | 'openMode' | 'url'>;
-type ProjectData = Pick<IndexedProject, 'id' | 'name' | 'summary' | 'tags' | 'keys' | 'year'>;
 
 export interface PageItem {
   id: string;
@@ -46,7 +44,6 @@ export interface PageItem {
 }
 
 export type ToolEntry = ToolData & { kind: 'tool' };
-export type ProjectEntry = ProjectData & { kind: 'project' };
 export type PageEntry = PageItem & { kind: 'page'; keys: SearchKeys };
 export interface ActionEntry {
   kind: 'action';
@@ -54,11 +51,10 @@ export interface ActionEntry {
   name: string;
   keys: SearchKeys;
 }
-export type PaletteEntry = ToolEntry | ProjectEntry | PageEntry | ActionEntry;
+export type PaletteEntry = ToolEntry | PageEntry | ActionEntry;
 
 export interface PaletteEntries {
   tools: ToolEntry[];
-  projects: ProjectEntry[];
   pages: PageEntry[];
   actions: ActionEntry[];
 }
@@ -71,7 +67,7 @@ export interface ViewGroup {
 
 /** Everything the palette offers; `data` is null when the catalog data file could not be loaded. */
 export function paletteIndex(
-  data: { tools: readonly ToolData[]; projects: readonly ProjectData[] } | null,
+  data: { tools: readonly ToolData[] } | null,
   pages: readonly PageItem[],
   actions: Readonly<Record<ActionId, string>>,
 ): PaletteEntries {
@@ -85,15 +81,6 @@ export function paletteIndex(
       keys,
       openMode,
       url,
-    })),
-    projects: (data?.projects ?? []).map(({ id, name, summary, tags, keys, year }) => ({
-      kind: 'project',
-      id,
-      name,
-      summary,
-      tags,
-      keys,
-      year,
     })),
     pages: pages.map((p) => ({ ...p, kind: 'page', keys: searchKeys(p) })),
     actions: ACTIONS.map((id) => ({ kind: 'action', id, name: actions[id], keys: searchKeys({ name: actions[id] }) })),
@@ -170,7 +157,6 @@ export async function runEntry(entry: PaletteEntry, env: RunEnvironment): Promis
   }
   env.close();
   if (entry.kind === 'tool') env.openTool(entry);
-  else if (entry.kind === 'project') env.assign(projectPath(entry.id));
   else if (entry.kind === 'page') env.assign(entry.path);
   else env.toggleTheme();
   return 'closed';

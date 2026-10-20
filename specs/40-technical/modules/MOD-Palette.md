@@ -14,10 +14,10 @@ MOD-Palette provides the command palette (CMP-CommandPalette).
 - **Island:**
   - fetches the catalog data on hydration; MOD-Shell's `<BaseLayout>` preloads the file with every page (`<link rel="preload" as="fetch" crossorigin="anonymous">`), so that fetch reuses the download, and the service worker caches it;
   - lays out its glyphs once at idle after hydration, hidden, so the system font lookup for glyphs no bundled font has doesn't land in a keystroke;
-  - renders the empty-query groups (Favorites, Recents, Pages) and the query groups (Tools, Projects, Pages, Actions) using MOD-Search;
+  - renders the empty-query groups (Favorites, Recents, Pages) and the query groups (Tools, Pages, Actions) using MOD-Search;
   - implements the combobox and listbox keyboard model across groups;
   - announces the result count;
-  - runs results: tools as in F-003 and F-006.R1 (linked tools open a new tab and record a visit), pages, projects (`/projects/#<id>`), and actions (toggle theme, export, copy address with confirmation);
+  - runs results: tools as in F-003 and F-006.R1 (linked tools open a new tab and record a visit), pages and actions (toggle theme, export, copy address with confirmation);
   - restores focus on close.
 
 ## Not responsible for
@@ -31,9 +31,9 @@ MOD-Palette provides the command palette (CMP-CommandPalette).
 
 As built (F-004), in `src/modules/palette/`:
 - `PaletteDialog.astro`: the static `<dialog id="tk-palette">` named COPY-palette.dialogLabel, holding the `Palette` island (`Palette.tsx`, `client:palette`: a custom client directive, `directive.ts`, that hydrates at idle time or at once when the bootstrap opens the palette and dispatches `PALETTE_HYDRATE_EVENT`). MOD-Shell's BaseLayout mounts it on every page, renders `paletteBootstrap` last in `<body>` and registers its hash before `<head>`.
-- The bootstrap arms Mod+K, any element marked `data-tk-palette-open` (the shell's search controls), `data-tk-palette-close` (the touch sheet's Cancel), a click on the dialog's backdrop, and the `OPEN_PALETTE_EVENT` document event (`openPalette()`). It writes the platform's shortcut into `data-tk-shortcut` key caps (`SHORTCUT_LABELS`: ⌘K on Apple platforms, Ctrl K elsewhere), sets `aria-keyshortcuts`, picks the placeholder, empties the field on close and returns focus to the element focused before opening. Until the island marks the field `data-live`, the bootstrap keeps an Enter as `data-pending-enter`; the island (and an Enter before the data loads) runs the highlighted result once settled. Running a project already in view re-dispatches `hashchange` after the dialog's `close` event, so the card keeps the focus.
+- The bootstrap arms Mod+K, any element marked `data-tk-palette-open` (the shell's search controls), `data-tk-palette-close` (the touch sheet's Cancel), a click on the dialog's backdrop, and the `OPEN_PALETTE_EVENT` document event (`openPalette()`). It writes the platform's shortcut into `data-tk-shortcut` key caps (`SHORTCUT_LABELS`: ⌘K on Apple platforms, Ctrl K elsewhere), sets `aria-keyshortcuts`, picks the placeholder, empties the field on close and returns focus to the element focused before opening. Until the island marks the field `data-live`, the bootstrap keeps an Enter as `data-pending-enter`; the island (and an Enter before the data loads) runs the highlighted result once settled.
 - `logic.ts` (pure, unit-tested): `paletteIndex(data, pages, actions)`, `emptyQueryGroups(index, doc)` (Favorites at most `PALETTE_FAVORITES_MAX` = 8 in pin order, Recents by MOD-PersonalData `visibleRecents`, Pages), `paletteView(query, index, doc)`, `runEntry(entry, env) → 'closed' | 'copied'` (everything closes the palette before it navigates or acts, except export, which closes after the backup is saved and otherwise reports `exportFailed`, shown with COPY-palette.exportFailed; copy-address reports `copied`, shows COPY-palette.copied for `COPIED_MS` = 1200 ms, then closes; a refused clipboard write just closes), `isApplePlatform`, `isPaletteShortcut`, `matchRange` (the matched part of a name, marked in the row).
-- `text.ts` (build time): `paletteText(registry)` (the island's strings and icons, built once per registry; its Pages are `palettePages(resume)`: Home, Tools, Projects, About, Résumé only when there is a résumé (F-017.R4), Now and Settings) and `searchControlLead()` (COPY-palette.placeholder before its shortcut, for the shell control).
+- `text.ts` (build time): `paletteText(registry)` (the island's strings and icons, built once per registry; its Pages are `palettePages(resume)`: Home, Tools, About, Résumé only when there is a résumé (F-017.R4), Now and Settings) and `searchControlLead()` (COPY-palette.placeholder before its shortcut, for the shell control).
 - Export runs MOD-Backup `exportBackup()`, imported lazily on use.
 - If the catalog data file can't load, the island offers pages and actions only and shows COPY-palette.unavailable (F-004 edge case).
 

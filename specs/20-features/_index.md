@@ -15,7 +15,7 @@ status: draft
 | F-006 | Track recent tools | M-1 | P0 | shipped |
 | F-007 | Home dashboard | M-1 | P0 | shipped |
 | F-008 | About the Owner | M-1 | P0 | shipped |
-| F-009 | Showcase projects | M-1 | P1 | shipped |
+| F-009 | Showcase projects | M-1 | P1 | deprecated |
 | F-010 | Now and changelog | M-1 | P1 | shipped |
 | F-011 | Install and work offline | M-1 | P0 | shipped |
 | F-012 | Choose a theme | M-1 | P1 | shipped |
@@ -26,4 +26,4 @@ status: draft
 | F-017 | Read the Owner's résumé | M-1 | P1 | shipped |
 
 ## Dependency order (M-1)
-F-001 → (F-002, F-003, F-008, F-009, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013; (F-001, F-008) → F-017.
+F-001 → (F-002, F-003, F-008, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013; (F-001, F-008) → F-017.

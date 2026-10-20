@@ -5,7 +5,7 @@ status: shipped
 milestone: M-1
 priority: P0
 personas: [PER-01]
-entities: [ENT-CatalogEntry, ENT-Tool, ENT-Project, ENT-Category]
+entities: [ENT-CatalogEntry, ENT-Tool, ENT-Category]
 rules: [RULE-06, RULE-07, RULE-14]
 screens: []
 components: []
@@ -15,17 +15,17 @@ depends_on: []
 ---
 
 ## Intent
-The Owner adds a new tool or project by writing one catalog entry, and every part of the portal picks it up: catalog, search, home, changelog, tool view and site index (PRN-01). Mistakes are caught before publishing, not by visitors.
+The Owner adds a new tool by writing one catalog entry, and every part of the portal picks it up: catalog, search, home, changelog, tool view and site index (PRN-01). Mistakes are caught before publishing, not by visitors.
 
 ## Scope
 - In: authoring catalog entries, categories, profile and Now note as content kept with the portal; validating them when the portal is built; hidden entries.
 - Out: checking live addresses (F-014); not-found behavior for hidden tools (F-003); an in-app editor or admin screen (not planned).
 
 ## Requirements
-- **R1** The Owner can add, change or hide a tool or project by editing its catalog entry, and add or change a category by editing the category list, with no other change needed for it to appear everywhere it belongs.
+- **R1** The Owner can add, change or hide a tool by editing its catalog entry, and add or change a category by editing the category list, with no other change needed for it to appear everywhere it belongs.
 - **R2** Building the portal fails, naming the file, the entry and the broken rule, when any content breaks the data schema or INV-01, INV-02, INV-03, INV-06, INV-07 or RULE-14.
 - **R3** An own tool with no open mode opens embedded. An external tool declared as embedded is a build error (RULE-07).
-- **R4** Hidden entries are left out of the catalog, category pages, search, palette, home, changelog, projects showcase and site index (RULE-06).
+- **R4** Hidden entries are left out of the catalog, category pages, search, palette, home, changelog and site index (RULE-06).
 - **R5** A tool whose category does not exist is a build error.
 
 ## Acceptance criteria
@@ -34,7 +34,7 @@ The Owner adds a new tool or project by writing one catalog entry, and every par
 - **AC3** Given a tool whose address is not secure, when the portal is built, then the build fails and names the entry. (R2)
 - **AC4** Given an own tool with no open mode, when the portal is built, then it opens embedded. (R3)
 - **AC5** Given an external tool declared as embedded, when the portal is built, then the build fails and names the entry. (R3)
-- **AC6** Given a hidden tool and a hidden project, when the catalog, category pages, search, palette, home, changelog, projects showcase and site index are shown, then neither entry appears in any of them. (R4)
+- **AC6** Given a hidden tool, when the catalog, category pages, search, palette, home, changelog and site index are shown, then it appears in none of them. (R4)
 - **AC7** Given a tool whose category id does not exist, when the portal is built, then the build fails and names the entry and the category. (R5)
 - **AC8** Given an entry whose updated date is before its added date, when the portal is built, then the build fails and names the entry. (R2)
 - **AC9** Given two categories with the tint `mango`, when the portal is built, then the build fails and names both categories. (R2)

@@ -1,5 +1,5 @@
-// `pnpm catalog:check` (MOD-CatalogCheck CLI, F-014): checks every visible tool, project link and
-// profile link before publishing and weekly. Flags: --weekly, --json, --portal-origin <origin>.
+// `pnpm catalog:check` (MOD-CatalogCheck CLI, F-014): checks every visible tool and profile
+// link before publishing and weekly. Flags: --weekly, --json, --portal-origin <origin>.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runCli } from '../src/modules/catalog-check/index.ts';

@@ -73,7 +73,9 @@ def check_references(ix: Index, r: Report) -> None:
         target = ix.get(ref.id)
         source_file = ix.files.get(ref.path)
         src_status = source_file.meta.get("status") if source_file else None
-        if target.meta.get("status") == "deprecated" and src_status not in ("deprecated", None):
+        # The changelog (history) and the feature index (lists every feature) may name deprecated items.
+        is_history = ref.rel.endswith(("60-delivery/changelog.md", "20-features/_index.md"))
+        if target.meta.get("status") == "deprecated" and src_status not in ("deprecated", None) and not is_history:
             r.warn(f"{ref.rel}:{ref.line}", f"references deprecated {ref.id}")
 
 
@@ -237,6 +239,8 @@ def check_coverage(ix: Index, r: Report, test_dir: Path, include_drafts: bool) -
     missing = []
     for f in ix.features():
         if f.meta.get("status") == "draft" and not include_drafts:
+            continue
+        if f.meta.get("status") == "deprecated":  # removed behavior needs no tests
             continue
         for ac in sorted(k for k in ix.defs if k.startswith(f.id + ".AC")):
             compact = ac.replace("-", "").replace(".", "_")  # F-003.AC1 -> F003_AC1

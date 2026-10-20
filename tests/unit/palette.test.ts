@@ -29,18 +29,9 @@ const tool = (id: string, name: string, extra: { summary?: string; tags?: string
   url: `https://${id}.example.com/`,
   keys: searchKeys({ name, summary: extra.summary ?? '', tags: extra.tags }),
 });
-const project = (id: string, name: string, year = 2024) => ({
-  id,
-  name,
-  summary: '',
-  tags: [],
-  year,
-  keys: searchKeys({ name }),
-});
 const PAGES = [
   { id: 'home', name: 'Home', path: '/' },
   { id: 'tools', name: 'Tools', path: '/tools/' },
-  { id: 'projects', name: 'Projects', path: '/projects/' },
   { id: 'about', name: 'About me', path: '/about/' },
   { id: 'now', name: 'Now', path: '/now/' },
   { id: 'settings', name: 'Settings', path: '/settings/' },
@@ -62,15 +53,16 @@ const groupSummary = (groups: { id: string; items: { name: string }[] }[]) =>
 describe('MOD-Search searchPalette (F-004.R3, RULE-05)', () => {
   const index = {
     tools: [tool('units', 'Unit Converter'), tool('json', 'JSON Formatter', { tags: ['json'] })],
-    projects: [project('unity-game', 'Unity Game Jam'), project('jsoncrack', 'JsonCrack Clone', 2025)],
     pages: PAGES.map((p) => ({ ...p, keys: searchKeys(p) })),
     actions: [{ id: 'theme', name: ACTIONS.theme }],
   };
 
-  test('F004_AC4 "uni" shows the tool under Tools before the project under Projects', () => {
-    expect(groupSummary(searchPalette('uni', index))).toEqual([
-      ['tools', ['Unit Converter']],
-      ['projects', ['Unity Game Jam']],
+  test('F004_AC4 one tool "Tomato Timer", "to": Tools, Pages, Actions in that order, the theme action first', () => {
+    const one = paletteIndex({ tools: [tool('tomato', 'Tomato Timer')] }, PAGES, ACTIONS);
+    expect(groupSummary(searchPalette('to', one))).toEqual([
+      ['tools', ['Tomato Timer']],
+      ['pages', ['Tools']],
+      ['actions', [ACTIONS.theme, ACTIONS.copy]],
     ]);
   });
 
@@ -78,16 +70,15 @@ describe('MOD-Search searchPalette (F-004.R3, RULE-05)', () => {
     expect(searchPalette('zzzz', index)).toEqual([]);
   });
 
-  test('F-004.R3 groups keep the order Tools, Projects, Pages, Actions, each ranked by RULE-05', () => {
+  test('F-004.R3 groups keep the order Tools, Pages, Actions, each ranked by RULE-05', () => {
     const all = {
       tools: [tool('a', 'Toggle board'), tool('b', 'Gadget', { summary: 'toggles things' })],
-      projects: [project('p', 'Toggle Lamp')],
       pages: [{ id: 'tools', name: 'Tools', path: '/tools/' }],
       actions: [{ id: 'theme', name: ACTIONS.theme }],
     };
     const groups = searchPalette('to', all);
-    expect(groups.map((g) => g.id)).toEqual(['tools', 'projects', 'pages', 'actions']);
-    expect(PALETTE_GROUPS).toEqual(['tools', 'projects', 'pages', 'actions']);
+    expect(groups.map((g) => g.id)).toEqual(['tools', 'pages', 'actions']);
+    expect(PALETTE_GROUPS).toEqual(['tools', 'pages', 'actions']);
     // Within a group: name prefix beats summary contains (RULE-05).
     expect(names(searchPalette('toggle', all)[0]!.items)).toEqual(['Toggle board', 'Gadget']);
   });
@@ -95,7 +86,7 @@ describe('MOD-Search searchPalette (F-004.R3, RULE-05)', () => {
   test('RULE-05 each palette group shows at most 8 results, the best ones', () => {
     const many = Array.from({ length: 12 }, (_, i) => tool(`t${i}`, `Tool ${String(i).padStart(2, '0')}`));
     const exact = tool('exact', 'Tool');
-    const groups = searchPalette('tool', { tools: [...many, exact], projects: [], pages: [], actions: [] });
+    const groups = searchPalette('tool', { tools: [...many, exact], pages: [], actions: [] });
     expect(PALETTE_GROUP_MAX).toBe(8);
     expect(groups).toHaveLength(1);
     expect(groups[0]!.items).toHaveLength(8);
@@ -105,14 +96,19 @@ describe('MOD-Search searchPalette (F-004.R3, RULE-05)', () => {
   test('RULE-05 favorites break ties in the tools group only (favorites are tool ids)', () => {
     const index2 = {
       tools: [tool('a', 'Alpha tool'), tool('b', 'Beta tool')],
-      projects: [project('a', 'Alpha project'), project('b', 'Beta project')],
-      pages: [],
+      pages: [
+        { id: 'a', name: 'Alpha topic', path: '/a/' },
+        { id: 'b', name: 'Beta topic', path: '/b/' },
+      ].map((p) => ({
+        ...p,
+        keys: searchKeys(p),
+      })),
       actions: [],
     };
     // "t": every name contains it at the same tier, so the tie-break decides.
     const tie = searchPalette('t', index2, { favorites: ['b'] });
     expect(names(tie[0]!.items)).toEqual(['Beta tool', 'Alpha tool']);
-    expect(names(tie[1]!.items)).toEqual(['Alpha project', 'Beta project']);
+    expect(names(tie[1]!.items)).toEqual(['Alpha topic', 'Beta topic']);
   });
 
   test('F-004.R3 a blank query searches nothing', () => {
@@ -124,14 +120,14 @@ describe('MOD-Palette empty query (F-004.R2, RULE-01)', () => {
   const tools = ['a', 'b', 'c', 'd', ...Array.from({ length: 12 }, (_, i) => `x${i}`)].map((id) =>
     tool(id, `Tool ${id.toUpperCase()}`),
   );
-  const index = paletteIndex({ tools, projects: [] }, PAGES, ACTIONS);
+  const index = paletteIndex({ tools }, PAGES, ACTIONS);
 
   test('F004_AC3 favorites A and B, recents B, C and D: Favorites A, B, then Recents C, D, then Pages', () => {
     const groups = emptyQueryGroups(index, doc(['a', 'b'], ['b', 'c', 'd']));
     expect(groups.map((g) => [g.id, g.items.map((i) => i.id)])).toEqual([
       ['favorites', ['a', 'b']],
       ['recents', ['c', 'd']],
-      ['pages', ['home', 'tools', 'projects', 'about', 'now', 'settings']],
+      ['pages', ['home', 'tools', 'about', 'now', 'settings']],
     ]);
   });
 
@@ -181,17 +177,19 @@ describe('MOD-Palette running a result (F-004.R4, R5)', () => {
     return { e, calls };
   };
   const index = paletteIndex(
-    { tools: [tool('units', 'Unit Converter', { linked: true })], projects: [project('unity-game', 'Unity Game Jam')] },
+    { tools: [tool('units', 'Unit Converter', { linked: true }), tool('tab', 'Tab Tamer')] },
     PAGES,
     ACTIONS,
   );
   const find = (kind: PaletteEntry['kind'], id: string) =>
-    [...index.tools, ...index.projects, ...index.pages, ...index.actions].find((x) => x.kind === kind && x.id === id)!;
+    [...index.tools, ...index.pages, ...index.actions].find((x) => x.kind === kind && x.id === id)!;
 
-  test('F004_AC5 running a project closes the palette, then goes to its address on the projects page', async () => {
+  test('F004_AC5 "ab" shows Tab Tamer, then About; Down once and Enter goes to the About page', async () => {
+    const flat = paletteView('ab', index, emptyDocument()).flatMap((g) => g.items);
+    expect(names(flat)).toEqual(['Tab Tamer', 'About me']);
     const { e, calls } = env();
-    expect(await runEntry(find('project', 'unity-game'), e)).toBe('closed');
-    expect(calls).toEqual(['close', 'assign:/projects/#unity-game']);
+    expect(await runEntry(flat[1]!, e)).toBe('closed');
+    expect(calls).toEqual(['close', 'assign:/about/']);
   });
 
   test('F-004.R4 running a tool opens it as in F-003; running a page goes to it', async () => {

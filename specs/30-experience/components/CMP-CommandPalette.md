@@ -6,10 +6,10 @@ tokens: [color.dark.surface, color.dark.selection, color.dark.selectionLine, col
 ---
 
 ## Purpose
-Keyboard-summoned search over tools, projects, pages and actions.
+Keyboard-summoned search over tools, pages and actions.
 
 ## Anatomy
-Dialog named COPY-palette.dialogLabel; search field (COPY-palette.placeholder); result groups with headings (COPY-palette.groupFavorites, COPY-palette.groupRecents, COPY-palette.groupTools, COPY-palette.groupProjects, COPY-palette.groupPages, COPY-palette.groupActions); result rows; key hints in the footer (COPY-palette.hints).
+Dialog named COPY-palette.dialogLabel; search field (COPY-palette.placeholder); result groups with headings (COPY-palette.groupFavorites, COPY-palette.groupRecents, COPY-palette.groupTools, COPY-palette.groupPages, COPY-palette.groupActions); result rows; key hints in the footer (COPY-palette.hints).
 
 ## Variants & states
 | Variant / state | Description |

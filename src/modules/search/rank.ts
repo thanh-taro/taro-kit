@@ -21,7 +21,7 @@ export interface SearchKeys {
   summary: string;
 }
 
-/** Anything searchable: tools, projects, pages or actions. `keys`, when present, are used as they are. */
+/** Anything searchable: tools, pages or actions. `keys`, when present, are used as they are. */
 export interface Searchable {
   id: string;
   name: string;

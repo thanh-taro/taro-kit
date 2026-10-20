@@ -76,7 +76,7 @@ the full form `F-003.R2`.
 - **ready** — complete, reviewed, no open questions. Safe to generate designs/stories/code.
 - **building** — implementation in progress. Changes need a note in `60-delivery/changelog.md`.
 - **shipped** — live. Behavior changes need a changelog entry.
-- **deprecated** — kept for history; must not be referenced by non-deprecated items.
+- **deprecated** — kept for history; must not be referenced by non-deprecated items, except the changelog (history) and the feature index (`20-features/_index.md`, which lists every feature).
 
 ## Formats
 

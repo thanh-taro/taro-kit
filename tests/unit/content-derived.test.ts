@@ -44,10 +44,9 @@ function surfaces(r: Registry, today: string) {
     categoryPages: visibleCategories(r.categories, r.allTools).flatMap((c) =>
       toolsByCategory(r.allTools, c.id).map((t) => t.id),
     ),
-    searchAndPalette: [...data.tools, ...data.projects].map((e) => e.id),
+    searchAndPalette: data.tools.map((e) => e.id),
     home: whatsNew(r.allTools, today).map((i) => i.id),
     changelog: changelog(r.allTools).flatMap((m) => m.items.map((i) => i.id)),
-    projects: [...r.projects, ...data.projects].map((p) => p.id),
     siteIndex: sitemapEntries(r),
     toolView: r.allTools.filter((t) => r.toolById(t.id)).map((t) => t.id),
   };
@@ -91,25 +90,23 @@ describe('F-001 consumers', () => {
     expect(r.embeddedOrigins).toContain('https://json.tarokit.app');
   });
 
-  it('F001_AC6 a hidden tool and a hidden project appear in none of the consumers', () => {
-    const r = load('F001_AC6-hidden-entries');
-    // Both hidden entries are loaded and valid; they are only kept out of every view.
+  it('F001_AC6 a hidden tool appears in none of the consumers', () => {
+    const r = load();
+    // The hidden entry is loaded and valid; it is only kept out of every view.
     expect(r.allTools.map((t) => t.id)).toContain('secret');
     // Seen 6 days after the hidden tool was added, inside the what's new window.
     const s = surfaces(r, '2026-02-10');
     for (const [surface, ids] of Object.entries(s)) {
-      for (const id of ['secret', 'secret-game']) {
-        expect(ids, `${surface} lists ${id}`).not.toContain(id);
-        expect(ids, `${surface} links ${id}`).not.toContain(toolPath(id));
-      }
+      expect(ids, `${surface} lists secret`).not.toContain('secret');
+      expect(ids, `${surface} links secret`).not.toContain(toolPath('secret'));
     }
     // The hidden tool's category (media) has no visible tools, so it has no page (RULE-06).
     expect(visibleCategories(r.categories, r.allTools).map((c) => c.id)).not.toContain('media');
     expect(s.siteIndex).not.toContain(categoryPath('media'));
     expect(catalogData(r).categories.map((c) => c.id)).not.toContain('media');
     expect(r.toolById('secret')).toBeUndefined();
-    // The visible project still shows, so the hidden one is left out for being hidden.
-    expect(s.projects).toContain('blog');
+    // The visible tools still show, so the hidden one is left out for being hidden.
+    expect(s.catalog.length).toBeGreaterThan(0);
   });
 });
 
@@ -146,23 +143,12 @@ describe('RULE-04 changelog', () => {
     // alpha was added and updated the same day, so it appears only as added (F-010 edge case).
     expect(items.map((i) => `${i.id}:${i.type}`)).toEqual(['alpha:added', 'beta:added', 'gamma:updated']);
   });
-
-  it('RULE-04 leaves projects out of the changelog', () => {
-    const r = load();
-    expect(r.changelogEvents.map((e) => e.id)).not.toContain('blog');
-  });
 });
 
 describe('derived views', () => {
   it('RULE-06 an empty catalog has no visible categories and only the public pages in the site index', () => {
     expect(visibleCategories([{ id: 'developer', order: 1 }], [])).toEqual([]);
-    expect(sitemapEntries({ categories: [], allTools: [] })).toEqual([
-      '/',
-      '/tools/',
-      '/projects/',
-      '/about/',
-      '/now/',
-    ]);
+    expect(sitemapEntries({ categories: [], allTools: [] })).toEqual(['/', '/tools/', '/about/', '/now/']);
   });
 
   it('lists visible tools alphabetically and categories in display order', () => {

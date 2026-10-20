@@ -1,9 +1,0 @@
-id: blog
-kind: project
-name: Old blog
-summary: Fixture project.
-description: Fixture description.
-links:
-  - { label: Source, url: 'https://example.com/blog', kind: code }
-year: 2024
-added: 2026-01-15

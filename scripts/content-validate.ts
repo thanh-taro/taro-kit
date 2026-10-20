@@ -10,7 +10,7 @@ try {
   const r = loadRegistry({ root });
   const hidden = r.allTools.filter((t) => t.hidden).length;
   console.log(
-    `content: ok — ${r.allTools.length} tools (${hidden} hidden), ${r.projects.length} visible projects, ` +
+    `content: ok — ${r.allTools.length} tools (${hidden} hidden), ` +
       `${r.categories.length} visible categories (${(performance.now() - t0).toFixed(0)} ms)`,
   );
 } catch (e) {

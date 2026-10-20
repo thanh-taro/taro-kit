@@ -39,3 +39,6 @@ The portal is a static site with no backend (D-001), served from free static hos
 ## Amendments from spike SP-6 (2026-10-13)
 - The palette island hydrates `client:idle`. A tiny inline bootstrap plus a static `<dialog>` catches the shortcut before hydration (open in 25–53 ms; results within about 0.5 s on the reference profile). The catalog index is prefetched on hydrate.
 - Astro's CSP does not hash `is:inline` scripts, and hashes added after `<head>` are dropped. Inline scripts are therefore hashed in the layout frontmatter (see ADR-0009).
+
+## Amendment D-055 (2026-10-20)
+- The projects page is no longer a route (the projects showcase is deprecated); `/projects/` serves the not-found page. The rest of this decision is unchanged.

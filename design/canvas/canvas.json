@@ -76,14 +76,6 @@
       "title": "CMP-FavoriteToggle",
       "page": "components"
     },
-    "CMP-ProjectCard.dc.html": {
-      "x": 0,
-      "y": 5280,
-      "w": 1360,
-      "h": 840,
-      "title": "CMP-ProjectCard",
-      "page": "components"
-    },
     "CMP-StateMessage.dc.html": {
       "x": 1440,
       "y": 5280,
@@ -187,15 +179,6 @@
       "page": "screens",
       "expand": "fill"
     },
-    "ProjectsDesktop.dc.html": {
-      "x": 0,
-      "y": 1620,
-      "w": 1440,
-      "h": 1300,
-      "title": "SCR-Projects / default / desktop",
-      "page": "screens",
-      "expand": "fill"
-    },
     "NowDesktop.dc.html": {
       "x": 1520,
       "y": 1620,
@@ -245,14 +228,6 @@
       "w": 390,
       "h": 1400,
       "title": "SCR-About / default / mobile",
-      "page": "screens"
-    },
-    "ProjectsMobile.dc.html": {
-      "x": 2930,
-      "y": 3040,
-      "w": 390,
-      "h": 1600,
-      "title": "SCR-Projects / default / mobile",
       "page": "screens"
     },
     "NowMobile.dc.html": {
@@ -311,7 +286,7 @@
       "y": 1420,
       "w": 1440,
       "h": 900,
-      "title": "SCR-Projects empty · SCR-Now empty / desktop",
+      "title": "SCR-Now empty / desktop",
       "page": "states",
       "expand": "fill"
     },
@@ -373,7 +348,6 @@
     "CMP-ToolHeader.dc.html",
     "CMP-CommandPalette.dc.html",
     "CMP-FavoriteToggle.dc.html",
-    "CMP-ProjectCard.dc.html",
     "CMP-StateMessage.dc.html",
     "HomeDesktop.dc.html",
     "PaletteDesktop.dc.html",
@@ -386,7 +360,6 @@
     "CatalogDesktop.dc.html",
     "CategoryDesktop.dc.html",
     "AboutDesktop.dc.html",
-    "ProjectsDesktop.dc.html",
     "NowDesktop.dc.html",
     "SettingsDesktop.dc.html",
     "NotFoundDesktop.dc.html",
@@ -394,7 +367,6 @@
     "CatalogMobile.dc.html",
     "CategoryMobile.dc.html",
     "AboutMobile.dc.html",
-    "ProjectsMobile.dc.html",
     "NowMobile.dc.html",
     "SettingsMobile.dc.html",
     "NotFoundMobile.dc.html",

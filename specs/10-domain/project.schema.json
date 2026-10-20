@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "tarokit.schema.json",
   "title": "TaroKit data model",
-  "description": "Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Project, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.",
+  "description": "Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.",
   "$defs": {
     "slug": {
       "type": "string",
@@ -18,7 +18,7 @@
       "format": "date-time"
     },
     "secureUrl": {
-      "$comment": "INV-02: tool addresses, project links and profile links use https.",
+      "$comment": "INV-02: tool addresses and profile links use https.",
       "type": "string",
       "format": "uri",
       "pattern": "^https://"
@@ -68,8 +68,7 @@
         },
         "kind": {
           "enum": [
-            "tool",
-            "project"
+            "tool"
           ]
         },
         "name": {
@@ -200,44 +199,6 @@
         },
         "sourceUrl": {
           "$ref": "#/$defs/secureUrl"
-        }
-      },
-      "unevaluatedProperties": false
-    },
-    "project": {
-      "allOf": [
-        {
-          "$ref": "#/$defs/entryBase"
-        }
-      ],
-      "required": [
-        "description",
-        "links",
-        "year"
-      ],
-      "properties": {
-        "kind": {
-          "const": "project"
-        },
-        "description": {
-          "type": "string",
-          "maxLength": 600
-        },
-        "image": {
-          "$ref": "#/$defs/assetPath",
-          "pattern": "\\.(png|jpg|jpeg|webp|avif|svg)$",
-          "description": "A PNG, JPEG, WebP, AVIF or SVG image."
-        },
-        "links": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/link"
-          },
-          "maxItems": 4
-        },
-        "year": {
-          "type": "integer",
-          "minimum": 2000
         }
       },
       "unevaluatedProperties": false

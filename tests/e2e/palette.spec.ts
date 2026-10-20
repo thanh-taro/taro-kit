@@ -7,7 +7,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
-import { loadRegistry, projectPath } from '../../src/modules/content/index.ts';
+import { loadRegistry } from '../../src/modules/content/index.ts';
 import { localDate } from '../../src/modules/personal-data/index.ts';
 import { PROD } from './ports.ts';
 import { PORTAL, prefersScheme, serveSites, toolPage, type Sites } from './support/sites.ts';
@@ -15,7 +15,7 @@ import { PORTAL, prefersScheme, serveSites, toolPage, type Sites } from './suppo
 const root = join(import.meta.dirname, '../..');
 const registry = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') });
 const STORAGE_KEY = 'tarokit.personal';
-const PAGES = ['Home', 'Tools', 'Projects', 'About me', 'Now', 'Settings'];
+const PAGES = ['Home', 'Tools', 'About me', 'Now', 'Settings'];
 const tool = (id: string) => registry.visibleTools.find((t) => t.id === id)!;
 const linked = registry.visibleTools.find((t) => t.openMode === 'linked')!;
 const embedded = registry.visibleTools.find((t) => t.id === 'ft-embedded')!;
@@ -92,7 +92,7 @@ async function openPalette(page: Page) {
 
 test.describe('F-004 command palette', () => {
   test('F004_AC1 Mod+K opens the palette with the search field focused, on any portal page', async ({ page }) => {
-    for (const path of ['/', '/tools/', '/projects/', '/about/', '/now/', '/settings/', toolPage(embedded.id)]) {
+    for (const path of ['/', '/tools/', '/about/', '/now/', '/settings/', toolPage(embedded.id)]) {
       await goto(page, path.startsWith('http') ? new URL(path).pathname : path);
       await expect(dialog(page)).toBeHidden();
       await page.keyboard.press(`${await mod(page)}+k`);
@@ -104,7 +104,7 @@ test.describe('F-004 command palette', () => {
   });
 
   test('F004_AC2 Escape closes the palette and focus returns to the element focused before', async ({ page }) => {
-    await goto(page, '/projects/');
+    await goto(page, '/now/');
     const before = page.getByRole('link', { name: 'About me' }).first();
     await before.focus();
     await openPalette(page);
@@ -164,41 +164,30 @@ test.describe('F-004 command palette', () => {
     expect(await optionNames(page, 'Recent')).toEqual([tool('fx-20').name]);
   });
 
-  test('F004_AC4 typing "uni" shows the tool under Tools before the project under Projects', async ({ page }) => {
+  test('F004_AC4 typing "to" shows the groups Tools, Pages and Actions in that order', async ({ page }) => {
     await goto(page, '/');
     await openPalette(page);
-    await field(page).fill('uni');
-    expect(await groupNames(page)).toEqual(['Tools', 'Projects']);
-    expect(await optionNames(page, 'Tools')).toEqual(['Unit Converter']);
-    expect(await optionNames(page, 'Projects')).toEqual([registry.projects.find((p) => p.id === 'unity-game')!.name]);
-    await expect(activeOption(page)).toContainText('Unit Converter');
-    await expect(page.getByTestId('palette-count')).toHaveText('2 results');
+    await field(page).fill('to');
+    expect(await groupNames(page)).toEqual(['Tools', 'Pages', 'Actions']);
+    expect(await optionNames(page, 'Pages')).toEqual(['Tools']);
+    expect((await optionNames(page, 'Actions'))[0]).toBe('Toggle light/dark theme');
+    const first = (await optionNames(page, 'Tools'))[0]!;
+    await expect(activeOption(page)).toContainText(first);
     await expect(field(page)).toHaveAttribute('aria-activedescendant', (await activeOption(page).getAttribute('id'))!);
   });
 
-  test('F004_AC5 "uni", Down, Enter: the project opens on the projects page with its card focused', async ({
-    page,
-  }) => {
+  test('F004_AC5 "bo" shows one tool, then About; Down, Enter: the About page opens', async ({ page }) => {
     await goto(page, '/');
     await openPalette(page);
-    await field(page).fill('uni');
-    await expect(group(page, 'Projects')).toBeVisible();
+    await field(page).fill('bo');
+    expect(await groupNames(page)).toEqual(['Tools', 'Pages']);
+    expect(await optionNames(page, 'Tools')).toEqual([tool('ft-clipboard').name]);
+    expect(await optionNames(page, 'Pages')).toEqual(['About me']);
     await page.keyboard.press('ArrowDown');
-    await expect(activeOption(page)).toContainText('Unity Game Jam');
+    await expect(activeOption(page)).toContainText('About me');
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(`${PORTAL}${projectPath('unity-game')}`);
-    await expect(page.locator('li[data-project-id="unity-game"]')).toBeFocused();
+    await expect(page).toHaveURL(`${PORTAL}/about/`);
     await expect(dialog(page)).toBeHidden();
-  });
-
-  test('F-004.R4 the same project again from the projects page focuses its card again', async ({ page }) => {
-    await goto(page, projectPath('unity-game'));
-    await expect(page.locator('li[data-project-id="unity-game"]')).toBeFocused();
-    await openPalette(page);
-    await field(page).fill('unity');
-    await page.keyboard.press('Enter');
-    await expect(dialog(page)).toBeHidden();
-    await expect(page.locator('li[data-project-id="unity-game"]')).toBeFocused();
   });
 
   test('F-004 edge case: keys pressed before the island is ready are kept, and Enter runs once it is', async ({
@@ -214,21 +203,6 @@ test.describe('F-004 command palette', () => {
     await page.keyboard.type('settings');
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(`${PORTAL}/settings/`);
-  });
-
-  test('F-004.R4 a project already in view gets the focus back even when another element was focused', async ({
-    page,
-  }) => {
-    await goto(page, projectPath('unity-game'));
-    const card = page.locator('li[data-project-id="unity-game"]');
-    await expect(card).toBeFocused();
-    const other = page.getByRole('link', { name: 'About me' }).first();
-    await other.focus();
-    await openPalette(page);
-    await field(page).fill('unity');
-    await page.keyboard.press('Enter');
-    await expect(dialog(page)).toBeHidden();
-    await expect(card).toBeFocused();
   });
 
   test('F-004.R1 Mod+Shift+K does not open the palette', async ({ page }) => {

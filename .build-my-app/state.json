@@ -92,8 +92,8 @@
     },
     "iterate": {
       "title": "8 Iterate",
-      "status": "pending",
-      "step": null,
+      "status": "in_progress",
+      "step": "8 Change D-055 (remove Projects page): specs reviewed and fixed, code + tests + design updated; unit 460 pass, build ok; e2e Chromium running; then commit and offer deploy",
       "gate": {
         "status": "pending",
         "at": null,
@@ -811,6 +811,21 @@
       "answer": "Owner: no staging env (2026-10-20)",
       "asked": "2026-10-20T10:07:49+00:00",
       "answered": "2026-10-20T10:07:49+00:00"
+    },
+    {
+      "id": "D-055",
+      "question": "D-055 Projects page: hide until projects exist, or remove completely?",
+      "options": [
+        "Hide until projects exist",
+        "Remove completely"
+      ],
+      "recommendation": "Hide until projects exist",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Remove completely: Projects page, project cards, project catalog entries (ENT-Project), their tests and specs (Owner, 2026-10-20)",
+      "asked": "2026-10-20T15:29:29+00:00",
+      "answered": "2026-10-20T15:29:30+00:00"
     }
   ],
   "loops": {
@@ -864,26 +879,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:23:07+00:00",
-      "event": "decision D-008 answered: Nothing shared"
-    },
-    {
-      "at": "2026-10-13T03:23:07+00:00",
-      "event": "decision D-009 opened: Portfolio content"
-    },
-    {
-      "at": "2026-10-13T03:23:07+00:00",
-      "event": "decision D-009 answered: Bio+links, Projects showcase, Tool changelog/now (no blog)"
-    },
-    {
-      "at": "2026-10-13T03:23:36+00:00",
-      "event": "product-spec step: 1.1 vision brief draft v1 written; product-strategist challenge running"
-    },
-    {
-      "at": "2026-10-13T03:25:57+00:00",
-      "event": "decision D-010 opened: Domain layout"
-    },
     {
       "at": "2026-10-13T03:25:57+00:00",
       "event": "decision D-010 answered: Apex + tool subdomains (same site)"
@@ -1663,9 +1658,29 @@
     {
       "at": "2026-10-20T14:17:23+00:00",
       "event": "phase deploy -> done"
+    },
+    {
+      "at": "2026-10-20T15:28:21+00:00",
+      "event": "phase iterate -> in_progress"
+    },
+    {
+      "at": "2026-10-20T15:29:29+00:00",
+      "event": "decision D-055 opened: D-055 Projects page: hide until projects exist, or remove completely?"
+    },
+    {
+      "at": "2026-10-20T15:29:30+00:00",
+      "event": "decision D-055 answered: Remove completely: Projects page, project cards, project catalog entries (ENT-Project), their tests and specs (Owner, 2026-10-20)"
+    },
+    {
+      "at": "2026-10-20T15:40:37+00:00",
+      "event": "D-055 change: Projects page removed — specs (F-009/SCR-Projects/CMP-ProjectCard/ENT-Project deprecated), review round 1 (0 blockers, 3 major fixed), code, tests, design boards"
+    },
+    {
+      "at": "2026-10-20T15:40:37+00:00",
+      "event": "iterate step: 8 Change D-055 (remove Projects page): specs reviewed and fixed, code + tests + design updated; unit 460 pass, build ok; e2e Chromium running; then commit and offer deploy"
     }
   ],
-  "updated": "2026-10-20T14:17:23+00:00",
+  "updated": "2026-10-20T15:40:37+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

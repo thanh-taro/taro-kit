@@ -245,7 +245,7 @@ describe('F-017.R4 links to the Résumé page', () => {
 
   test('F017_AC7 with a résumé, navigation includes Résumé between About and Now, and the About page links to it', async () => {
     const shell = await render(AppShell, { path: '/', resume: true });
-    expect(navLabels(shell)).toEqual(['/', '/tools/', '/projects/', '/about/', '/resume/', '/now/', '/settings/']);
+    expect(navLabels(shell)).toEqual(['/', '/tools/', '/about/', '/resume/', '/now/', '/settings/']);
     expect(shell).toContain('>Résumé</a>');
     const current = await render(AppShell, { path: '/resume/', resume: true });
     expect(current).toMatch(/<a href="\/resume\/" aria-current="page">Résumé<\/a>/);
@@ -257,9 +257,9 @@ describe('F-017.R4 links to the Résumé page', () => {
 
   test("F017_AC7 with a résumé, the palette's empty-query Pages group includes Résumé", () => {
     const pages = paletteText(full).pages;
-    expect(pages.map((p) => p.name)).toEqual(['Home', 'Tools', 'Projects', 'About me', 'Résumé', 'Now', 'Settings']);
+    expect(pages.map((p) => p.name)).toEqual(['Home', 'Tools', 'About me', 'Résumé', 'Now', 'Settings']);
     expect(pages.find((p) => p.id === 'resume')?.path).toBe('/resume/');
-    const index = paletteIndex({ tools: [], projects: [] }, pages, {
+    const index = paletteIndex({ tools: [] }, pages, {
       theme: 'Theme',
       export: 'Export',
       copy: 'Copy',
@@ -281,14 +281,7 @@ describe('F-017.R4 links to the Résumé page', () => {
       const about = await render(About, { profile: reg.profile, resume: !!reg.resume });
       expect(about).not.toContain('/resume/');
       expect(about).not.toContain('Want the long version');
-      expect(paletteText(reg).pages.map((p) => p.id)).toEqual([
-        'home',
-        'tools',
-        'projects',
-        'about',
-        'now',
-        'settings',
-      ]);
+      expect(paletteText(reg).pages.map((p) => p.id)).toEqual(['home', 'tools', 'about', 'now', 'settings']);
       expect(palettePages(false).map((p) => p.id)).not.toContain('resume');
       expect(sitemapEntries(reg)).not.toContain('/resume/');
       expect(siteIndexXml(reg)).not.toContain('/resume/');
@@ -309,7 +302,7 @@ describe('F-017.R6 link preview and site index', () => {
     expect(content('og:description')).toBe(meta.description);
     expect(content('og:image')).toBe(`https://tarokit.app${PREVIEW_IMAGE.path}`);
     expect(content('og:url')).toBe('https://tarokit.app/resume/');
-    expect(sitemapEntries(full).slice(0, 6)).toEqual(['/', '/tools/', '/projects/', '/about/', '/resume/', '/now/']);
+    expect(sitemapEntries(full).slice(0, 5)).toEqual(['/', '/tools/', '/about/', '/resume/', '/now/']);
     expect(siteIndexXml(full)).toContain(`<loc>${full.portalOrigin}/resume/</loc>`);
   });
 });

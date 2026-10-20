@@ -1,12 +1,12 @@
 ---
 // SCR-About content (MOD-Pages), rendered by /about/ inside BaseLayout. Static, with no island.
 // Regions (SCR-About): 2 avatar, name, headline and location; 3 bio; 4 links (COPY-about.links);
-// 5 pointers to Projects and Now (COPY-about.more), and to the Résumé when there is one (COPY-about.resume). Every sentence is the profile's own words (PRN-04).
+// 5 a pointer to Now (COPY-about.more), and to the Résumé when there is one (COPY-about.resume). Every sentence is the profile's own words (PRN-04).
 // Design: design/canvas/AboutDesktop.dc.html (avatar, nickname, location and links beside the text) and
 // AboutMobile.dc.html (one column in region order). The DOM puts the name <h1> first, then the side column
 // (avatar, nickname, location, links), then the pointers; grid areas place the side column on the left on
 // wide screens, and on narrow ones only the non-focusable avatar row moves up. Focus order is the same in
-// both layouts: profile links, then Projects and Now.
+// both layouts: profile links, then Now.
 // Implements: F-008.R1, F-008.R2, F-008.R3, F-017.R4 (Résumé pointer).
 import type { Profile } from '../../generated/domain.ts';
 import { initials, paragraphs, profileLinks, RESUME_PATH, type ProfileLink } from '../content/index.ts';
@@ -101,10 +101,9 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
   <div class="more">
     <p>{t('COPY-about.more')}</p>
     <div class="more-actions">
-      <a class="primary" href="/projects/">
-        {t('COPY-nav.projects')}
+      <a class="primary" href="/now/">
+        {t('COPY-nav.now')}
       </a>
-      <a href="/now/">{t('COPY-nav.now')}</a>
     </div>
     {resume && (
       <a class="resume" href={RESUME_PATH}>
@@ -282,7 +281,7 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
     color: var(--tk-color-muted);
   }
 
-  /* Region 5: pointers to Projects and Now (COPY-about.more). */
+  /* Region 5: a pointer to Now (COPY-about.more). */
   .more {
     grid-area: more;
     align-self: start;

@@ -18,8 +18,8 @@ const root = join(import.meta.dirname, '../..');
 const samples = loadRegistry({ root, contentDir: join(root, SAMPLES_CONTENT) });
 const fx = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') });
 const view = resumeView(samples.resume!);
-const NAV = ['Home', 'Tools', 'Projects', 'About me', 'Résumé', 'Now'];
-const NAV_WITHOUT = ['Home', 'Tools', 'Projects', 'About me', 'Now'];
+const NAV = ['Home', 'Tools', 'About me', 'Résumé', 'Now'];
+const NAV_WITHOUT = ['Home', 'Tools', 'About me', 'Now'];
 
 const mainNav = (page: Page) => page.locator('#main-menu > li:not(.narrow-only) > a');
 
@@ -116,7 +116,7 @@ test.describe('F-017 Résumé page', () => {
   test('F017_AC7 with a résumé, navigation includes Résumé on every portal page, and About links to it', async ({
     page,
   }) => {
-    for (const path of ['/', '/tools/', '/projects/', '/about/', '/resume/', '/now/', '/settings/']) {
+    for (const path of ['/', '/tools/', '/about/', '/resume/', '/now/', '/settings/']) {
       await page.goto(`${PROD}${path}`);
       await expect(mainNav(page), path).toHaveText(NAV);
     }

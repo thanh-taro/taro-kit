@@ -1,5 +1,5 @@
 # Catalog check (F-014, MOD-CatalogCheck, ADR-0007). `pnpm catalog:check` exits 1 when a visible tool is
-# unreachable or an embedded tool refuses the portal (RULE-12); project and profile links only warn.
+# unreachable or an embedded tool refuses the portal (RULE-12); profile links only warn.
 #   weekly:     runs against main (the published content); a failure fails the run, and GitHub's
 #               failed-workflow email notifies the Owner (F-014.R5). It never deploys.
 #   pre-deploy: called by publish.yml so the deploy job can `needs:` it (F-014.R1, F-014.R2).

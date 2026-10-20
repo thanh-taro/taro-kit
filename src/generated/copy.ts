@@ -2,7 +2,7 @@
 export const COPY = {
   "COPY-about.avatarAlt": "Portrait of {name}",
   "COPY-about.links": "Find me",
-  "COPY-about.more": "See what I've built and what I'm up to now.",
+  "COPY-about.more": "See what I'm up to now.",
   "COPY-about.nickname": "aka {nickname}",
   "COPY-about.resume": "Want the long version? Here's my résumé.",
   "COPY-catalog.clear": "Clear search",
@@ -87,7 +87,7 @@ export const COPY = {
   "COPY-palette.placeholder": "What are you looking for? ({shortcut})",
   "COPY-palette.resultCount": "{count} results",
   "COPY-palette.resultCountOne": "1 result",
-  "COPY-palette.unavailable": "I couldn't load my tools and projects just now. Pages and actions still work; reload the page to try again.",
+  "COPY-palette.unavailable": "I couldn't load my tools just now. Pages and actions still work; reload the page to try again.",
   "COPY-projects.empty": "I'm putting my projects together. Check back soon.",
   "COPY-projects.imageAlt": "Screenshot of {name}",
   "COPY-projects.title": "Things I've built",

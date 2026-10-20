@@ -202,10 +202,10 @@ describe('F-008 About content (SCR-About)', () => {
     expect(html).toMatch(/<h2[^>]*>Find me<\/h2>/);
   });
 
-  test('F008_AC5 links to Projects and Now are shown with COPY-about.more', async () => {
+  test('F008_AC5 a link to Now is shown with COPY-about.more, and none to a projects page (D-055)', async () => {
     const html = await render(noAvatar);
-    expect(html).toContain('See what I&#39;ve built and what I&#39;m up to now.');
-    expect(linkWith(html, '>Projects<')).toContain('href="/projects/"');
+    expect(html).toContain('See what I&#39;m up to now.');
     expect(linkWith(html, '>Now<')).toContain('href="/now/"');
+    expect(html).not.toContain('/projects/');
   });
 });

@@ -1,7 +1,7 @@
 ---
 id: F-009
 title: Showcase projects
-status: shipped
+status: deprecated
 milestone: M-1
 priority: P1
 personas: [PER-02]
@@ -13,6 +13,8 @@ nfr: []
 events: []
 depends_on: [F-001]
 ---
+
+> **Deprecated (D-055, 2026-10-20):** the Owner removed the projects showcase. Kept for history; nothing active refers to it. Its strings are retired with it: COPY-nav.projects, COPY-palette.groupProjects, COPY-meta.projectsTitle, COPY-meta.projectsDescription, COPY-projects.title, COPY-projects.empty and COPY-projects.imageAlt.
 
 ## Intent
 Visitors see what else Taro has built beyond the tools (PRN-04).

@@ -57,3 +57,6 @@ The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project
 
 ## Note from building F-017 (2026-10-20)
 - `content/resume.yaml` is optional (ENT-Resume, F-017), with the editor hint `content/schemas/resume.json` (`$ref` to `$defs/resume`). The second pass adds INV-08 (an end month on or after its start month). Résumé errors name the entry as `<section> <n>`, counting from 1, and the field inside it: `content/resume.yaml:12 › experience 3 › INV-08: end 2020-01 is before start 2021-03` (F-017.R5). The error contract is otherwise unchanged.
+
+## Amendment D-055 (2026-10-20)
+- Projects are removed (the projects showcase and ENT-Project are deprecated). Content no longer has `content/projects/`, the schema has no `project` definition and `kind` is only `tool`, and INV-01 uniqueness covers tool ids. The rest of this decision is unchanged.

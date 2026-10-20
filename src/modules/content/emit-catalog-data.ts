@@ -1,6 +1,6 @@
 // MOD-Content: the hashed catalog data file that islands fetch (ADR-0002): `/data/catalog.<hash>.json`.
 // The payload is `catalogData()` (visible entries only, RULE-06) with MOD-Search's pre-normalized keys on each
-// tool and project, so a keystroke costs one linear pass in the browser (NFR-02).
+// tool, so a keystroke costs one linear pass in the browser (NFR-02).
 // - `catalogDataFile(registry)`: the file's address, hash and JSON, pure; pages pass the address to islands.
 // - `emitCatalogData(registry, outDir)`: writes it into the build output (astro.config.ts, after the build).
 // - `catalogDataPlugin()`: serves the same file in dev, so search works there too.
@@ -10,15 +10,13 @@ import { createHash } from 'node:crypto';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { searchKeys, type SearchKeys } from '../search/index.ts';
-import { catalogData, type CatalogData, type CatalogProject, type CatalogTool } from './catalog-data.ts';
+import { catalogData, type CatalogData, type CatalogTool } from './catalog-data.ts';
 import type { Registry } from './registry.ts';
 
 export type IndexedTool = CatalogTool & { keys: SearchKeys };
-export type IndexedProject = CatalogProject & { keys: SearchKeys };
 /** The catalog data file's content: the catalog data payload with search keys. */
-export interface CatalogDataFileContent extends Omit<CatalogData, 'tools' | 'projects'> {
+export interface CatalogDataFileContent extends Omit<CatalogData, 'tools'> {
   tools: IndexedTool[];
-  projects: IndexedProject[];
 }
 
 export interface CatalogDataFile {
@@ -29,14 +27,13 @@ export interface CatalogDataFile {
   json: string;
 }
 
-type RegistryPart = Pick<Registry, 'categories' | 'visibleTools' | 'projects'>;
+type RegistryPart = Pick<Registry, 'categories' | 'visibleTools'>;
 
 export function catalogDataFile(registry: RegistryPart): CatalogDataFile {
   const data = catalogData(registry);
   const content: CatalogDataFileContent = {
     categories: data.categories,
     tools: data.tools.map((t) => ({ ...t, keys: searchKeys(t) })),
-    projects: data.projects.map((p) => ({ ...p, keys: searchKeys(p) })),
   };
   const json = JSON.stringify(content);
   const hash = createHash('sha256').update(json).digest('hex').slice(0, 10);

@@ -1,18 +1,18 @@
 // MOD-CatalogCheck: what to check, running the checks, and the report.
 // Implements: F-014.R1 (visible tools reachable, blocking), F-014.R2 (embedded tools embeddable, blocking),
-// F-014.R3 (failures name entry, address and reason; a pass gives the count), F-014.R4 (project and
-// profile links are warnings only), F-014.R5 (the weekly run uses the same check; exit code fails the run).
+// F-014.R3 (failures name entry, address and reason; a pass gives the count), F-014.R4 (profile
+// links are warnings only), F-014.R5 (the weekly run uses the same check; exit code fails the run).
 import type { Registry } from '../content/index.ts';
 import { classifyEmbedding } from './classify.ts';
 import { checkReachability, type ReachOptions, type ReachResult } from './reach.ts';
 
-export type TargetKind = 'tool' | 'project' | 'profile';
+export type TargetKind = 'tool' | 'profile';
 
 export interface Target {
   kind: TargetKind;
-  /** The catalog entry id (tool or project), or "profile". */
+  /** The tool's catalog entry id, or "profile". */
   entryId: string;
-  /** The link's label, for project and profile links. */
+  /** The link's label, for profile links. */
   label?: string;
   address: string;
   /** Embedded tools also get the embedding check (RULE-12). */
@@ -35,11 +35,10 @@ export interface Plan {
 const isWebAddress = (address: string): boolean => /^https?:\/\//i.test(address);
 
 /**
- * Visible tools, visible projects' links and the profile's links. Hidden tools are skipped (F-014.AC3);
- * hidden projects are already absent from `registry.projects`. Links that are not web addresses
+ * Visible tools and the profile's links. Hidden tools are skipped (F-014.AC3). Links that are not web addresses
  * (mailto:, for example) cannot be fetched and are listed as skipped.
  */
-export function planCheck(registry: Pick<Registry, 'allTools' | 'projects' | 'profile'>): Plan {
+export function planCheck(registry: Pick<Registry, 'allTools' | 'profile'>): Plan {
   const targets: Target[] = [];
   const skipped: Skipped[] = [];
   for (const t of registry.allTools) {
@@ -52,7 +51,6 @@ export function planCheck(registry: Pick<Registry, 'allTools' | 'projects' | 'pr
       else skipped.push({ kind, entryId, label: l.label, address: l.url, why: 'not-a-web-address' });
     }
   };
-  for (const p of registry.projects) links('project', p.id, p.links);
   links('profile', 'profile', registry.profile.links ?? []);
   return { targets, skipped };
 }
@@ -158,16 +156,12 @@ export interface Report {
 const oneLine = (s: string | undefined): string => (s ?? '').replace(/[\r\n]+/g, ' ');
 
 const who = (t: { kind: TargetKind; entryId: string; label?: string }): string =>
-  t.kind === 'tool'
-    ? `tool ${t.entryId}`
-    : t.kind === 'project'
-      ? `project ${t.entryId} link "${oneLine(t.label)}"`
-      : `profile link "${oneLine(t.label)}"`;
+  t.kind === 'tool' ? `tool ${t.entryId}` : `profile link "${oneLine(t.label)}"`;
 
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? '' : one.endsWith('s') ? 'es' : 's'}`;
 
 export function buildReport(findings: readonly Finding[], skipped: readonly Skipped[], weekly = false): Report {
-  const counts: Record<TargetKind, number> = { tool: 0, project: 0, profile: 0 };
+  const counts: Record<TargetKind, number> = { tool: 0, profile: 0 };
   for (const f of findings) counts[f.target.kind]++;
   const failures = findings.filter((f) => f.outcome === 'fail').length;
   const warnings =
@@ -184,7 +178,7 @@ export function buildReport(findings: readonly Finding[], skipped: readonly Skip
   const label = weekly ? 'weekly' : 'pre-publish';
   const passed = failures === 0;
   const checked = findings.length;
-  const breakdown = `${plural(counts.tool, 'tool')}, ${plural(counts.project, 'project link')}, ${plural(counts.profile, 'profile link')}`;
+  const breakdown = `${plural(counts.tool, 'tool')}, ${plural(counts.profile, 'profile link')}`;
   const tail = `${plural(warnings, 'warning')}${skipped.length ? `, ${skipped.length} skipped` : ''}`;
   const summary = passed
     ? `catalog check (${label}): passed, ${plural(checked, 'address')} checked (${breakdown}); ${tail}`

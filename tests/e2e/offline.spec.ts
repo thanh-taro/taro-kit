@@ -157,7 +157,7 @@ test.describe('F-011 offline after one online visit (production build)', () => {
   test('NFR-06 offline, every portal page loads from the precache', async ({ page, context }) => {
     await visitOnline(page, `${PROD}/`);
     await goOffline(context, page);
-    for (const path of ['/', '/tools/', '/tools/developer/', '/projects/', '/about/', '/now/', '/settings/']) {
+    for (const path of ['/', '/tools/', '/tools/developer/', '/about/', '/now/', '/settings/']) {
       const res = await page.goto(`${PROD}${path}`);
       expect(res?.status(), path).toBe(200);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

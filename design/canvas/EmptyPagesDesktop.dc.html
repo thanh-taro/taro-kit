@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Empty Projects and Now, desktop</title>
+<title>Empty Now, desktop</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -33,22 +33,20 @@ a{color:inherit}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"page":{"editor":"enum","options":["projects empty","now empty"],"default":"projects empty"},"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"page":{"editor":"enum","options":["now empty"],"default":"now empty"},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
     const theme = this.props.theme ?? 'dark';
-    const page = this.props.page ?? 'projects empty';
-    const proj = page === 'projects empty';
     const nav = (label, copy, cur) => ({ label: label, copy: copy, cur: cur ? 'page' : 'false', color: cur ? 'var(--fg)' : 'var(--muted)', bg: cur ? 'var(--surface2)' : 'transparent' });
     return {
-      page: page,
+      page: 'now empty',
       themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
       toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
-      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools'), nav('Projects', 'COPY-nav.projects', proj), nav('About me', 'COPY-nav.about'), nav('Now', 'COPY-nav.now', !proj)],
-      titleCopy: proj ? 'COPY-projects.title' : 'COPY-now.title',
-      title: proj ? "Things I've built" : "What I'm up to",
-      emptyCopy: proj ? 'COPY-projects.empty' : 'COPY-now.empty',
-      empty: proj ? "I'm putting my projects together. Check back soon." : 'Nothing to share yet. Check back soon.'
+      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools'), nav('About me', 'COPY-nav.about'), nav('Now', 'COPY-nav.now', true)],
+      titleCopy: 'COPY-now.title',
+      title: "What I'm up to",
+      emptyCopy: 'COPY-now.empty',
+      empty: 'Nothing to share yet. Check back soon.'
     };
   }
 }

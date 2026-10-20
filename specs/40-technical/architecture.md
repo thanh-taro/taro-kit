@@ -48,14 +48,14 @@ flowchart LR
 
 ## Data flow
 
-1. **Authoring.** The Owner edits `content/tools/<id>.yaml` (or a project, category, profile or Now file) and opens a pull request.
+1. **Authoring.** The Owner edits `content/tools/<id>.yaml` (or a category, profile or Now file) and opens a pull request.
 2. **Build.**
    - MOD-Content parses every file, validates it against the domain schema, then runs the cross-entry invariants. Any failure stops the build with `file › entry › rule` messages (F-001.R2).
    - The resulting **registry** feeds:
      - the static routes (MOD-Pages, MOD-ToolHost), with one `/t/<id>/` per visible tool;
      - head metadata and `sitemap.xml` (MOD-Meta);
      - CSP `frame-src`, the Permissions-Policy and `_headers` (MOD-SecurityPolicy);
-     - the hashed catalog data file holding visible tools, projects, categories and pre-normalized search keys (MOD-Search keys).
+     - the hashed catalog data file holding visible tools, categories and pre-normalized search keys (MOD-Search keys).
    - After `astro build`, MOD-Offline injects the precache manifest into `sw.js`.
 3. **Gate.**
    - On a pull request: lint, types, unit tests, Chromium e2e with axe, size pre-check and license audit.

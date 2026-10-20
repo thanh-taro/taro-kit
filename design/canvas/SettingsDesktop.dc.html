@@ -91,7 +91,7 @@ class Component extends DCLogic {
     const used = [1,1,0,1,1,1,0,0,1,1,0,1,0,1];
     return {
       themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
-      navs: [{ label: 'Home', copy: 'COPY-nav.home' }, { label: 'Tools', copy: 'COPY-nav.tools' }, { label: 'Projects', copy: 'COPY-nav.projects' }, { label: 'About me', copy: 'COPY-nav.about' }, { label: 'Now', copy: 'COPY-nav.now' }],
+      navs: [{ label: 'Home', copy: 'COPY-nav.home' }, { label: 'Tools', copy: 'COPY-nav.tools' }, { label: 'About me', copy: 'COPY-nav.about' }, { label: 'Now', copy: 'COPY-nav.now' }],
       themes: [opt('System', theme === 'system'), opt('Light', theme === 'light'), opt('Dark', theme === 'dark')],
       days: used.map((u) => ({ bg: u ? 'var(--accent)' : 'var(--surface2)' }))
     };

@@ -6,7 +6,7 @@ import { t } from '../copy/index.ts';
 
 /** The pages that declare previews (routes per MOD-Pages). */
 export type MetaRoute =
-  | { page: 'home' | 'tools' | 'projects' | 'about' | 'resume' | 'now' | 'settings' | 'notFound' }
+  | { page: 'home' | 'tools' | 'about' | 'resume' | 'now' | 'settings' | 'notFound' }
   | { page: 'category'; id: string }
   | { page: 'tool'; id: string };
 
@@ -36,11 +36,6 @@ export const MAX_DESCRIPTION = 160;
 const STATIC: Record<Exclude<MetaRoute['page'], 'category' | 'tool' | 'notFound'>, PageMeta> = {
   home: { title: t('COPY-meta.homeTitle'), description: t('COPY-meta.homeDescription'), path: '/' },
   tools: { title: t('COPY-meta.toolsTitle'), description: t('COPY-meta.toolsDescription'), path: '/tools/' },
-  projects: {
-    title: t('COPY-meta.projectsTitle'),
-    description: t('COPY-meta.projectsDescription'),
-    path: '/projects/',
-  },
   about: { title: t('COPY-meta.aboutTitle'), description: t('COPY-meta.aboutDescription'), path: '/about/' },
   // F-017.R6: the Résumé page exists only when there is a résumé (MOD-Pages), so only then is this declared.
   resume: { title: t('COPY-meta.resumeTitle'), description: t('COPY-meta.resumeDescription'), path: RESUME_PATH },

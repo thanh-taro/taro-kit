@@ -11,31 +11,27 @@ export {
   type ChangelogEvent,
   type LoadOptions,
   type RegCategory,
-  type RegProject,
   type RegTool,
   type Registry,
 } from './registry.ts';
-export { catalogData, type CatalogData, type CatalogProject, type CatalogTool } from './catalog-data.ts';
+export { catalogData, type CatalogData, type CatalogTool } from './catalog-data.ts';
 export {
   catalogDataFile,
   catalogDataPlugin,
   emitCatalogData,
   type CatalogDataFile,
   type CatalogDataFileContent,
-  type IndexedProject,
   type IndexedTool,
 } from './emit-catalog-data.ts';
 export {
   categoryPath,
   changelog,
   changelogItems,
-  projectPath,
   PUBLIC_PAGES,
   sitemapEntries,
   toolPath,
   toolsByCategory,
   visibleCategories,
-  visibleProjects,
   visibleTools,
   type ChangelogMonth,
   type Dated,

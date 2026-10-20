@@ -4,7 +4,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { LineCounter, parseDocument } from 'yaml';
-import type { Category, EntryBase, NowNote, Profile, Project, Resume, Tool } from '../../generated/domain.ts';
+import type { Category, EntryBase, NowNote, Profile, Resume, Tool } from '../../generated/domain.ts';
 import { hasResumeEntries, resumeEntryName, resumePeriodErrors } from './resume.ts';
 import {
   changelogItems,
@@ -12,9 +12,8 @@ import {
   toolsByCategory,
   visibleTools as deriveVisibleTools,
   visibleCategories,
-  visibleProjects,
 } from './derive.ts';
-import { AVATAR_TYPES, IMAGE_TYPES, resolveAsset } from './assets.ts';
+import { AVATAR_TYPES, resolveAsset } from './assets.ts';
 import { type ContentError, ContentErrors } from './errors.ts';
 import { type Def, defaultSchemaPath, mapAjvError, validatorFor } from './schema.ts';
 
@@ -29,17 +28,11 @@ export const portalOriginFor = (override?: string): string =>
 type Permission = NonNullable<Tool['permissions']>[number];
 /** json-schema-to-typescript drops `allOf` beside sibling keywords, so the entry base is composed here. */
 export type RawTool = EntryBase & Tool;
-export type RawProject = EntryBase & Project;
 
 export interface RegTool extends Omit<RawTool, 'openMode' | 'permissions' | 'offline' | 'hidden' | 'tags'> {
   openMode: 'embedded' | 'linked';
   permissions: Permission[];
   offline: boolean;
-  hidden: boolean;
-  tags: string[];
-  file: string;
-}
-export interface RegProject extends Omit<RawProject, 'hidden' | 'tags'> {
   hidden: boolean;
   tags: string[];
   file: string;
@@ -57,8 +50,6 @@ export interface Registry {
   toolById(id: string): RegTool | undefined;
   /** Categories with at least one visible tool, in display order (RULE-06). */
   categories: RegCategory[];
-  /** Visible projects, newest year first, then by name. */
-  projects: RegProject[];
   profile: Profile;
   /** The profile avatar's validated absolute file (inside content/assets/, a raster image), if it has one. */
   avatarFile?: string;
@@ -138,7 +129,6 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   };
 
   const toolFiles = listYaml(join(contentDir, 'tools')).map(load);
-  const projectFiles = listYaml(join(contentDir, 'projects')).map(load);
   const catFile = required('categories.yaml');
   const profileFile = required('profile.yaml');
   // The Now note is optional: without now.yaml, SCR-Now shows only the changelog (F-010.R4).
@@ -193,7 +183,6 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     return { entryId: resumeEntryName(section, index), message: rest };
   };
   toolFiles.forEach((l) => schemaCheck(l, 'tool'));
-  projectFiles.forEach((l) => schemaCheck(l, 'project'));
   const catList: unknown[] = Array.isArray(catFile.data) ? catFile.data : [];
   if (catFile.data !== undefined && !Array.isArray(catFile.data))
     errors.push({ file: catFile.file, entryId: '-', rule: 'SCHEMA', message: 'must be a list of categories' });
@@ -203,9 +192,9 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   if (resumeFile) schemaCheck(resumeFile, 'resume', [], resumeNaming);
 
   // 2. Invariants the schema cannot express (ADR-0005).
-  const entries = [...toolFiles, ...projectFiles].filter((l) => idOf(l.data) !== '-');
+  const entries = toolFiles.filter((l) => idOf(l.data) !== '-');
 
-  // INV-01: ids are unique across tools and projects. Both entries are named (F-001.AC2).
+  // INV-01: tool ids are unique. Both entries are named (F-001.AC2).
   const byId = new Map<string, Loaded[]>();
   for (const l of entries) byId.set(idOf(l.data), [...(byId.get(idOf(l.data)) ?? []), l]);
   for (const [id, ls] of byId) {
@@ -234,12 +223,10 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
         message: `updated ${d.updated} is before added ${d.added}`,
       });
     // Bundled assets exist, inside content/assets/ (ADR-0005).
-    for (const key of ['icon', 'image']) {
-      const path = d[key];
-      if (typeof path !== 'string' || schemaFailed.has(fieldKey(l.file, [key]))) continue;
-      const kinds = key === 'image' ? Object.keys(IMAGE_TYPES) : undefined;
-      const site = { contentDir, file: l.file, entryId: idOf(d), field: key, line: l.lineOf([key]), kinds };
-      resolveAsset(path, site, errors);
+    const icon = d.icon;
+    if (typeof icon === 'string' && !schemaFailed.has(fieldKey(l.file, ['icon']))) {
+      const site = { contentDir, file: l.file, entryId: idOf(d), field: 'icon', line: l.lineOf(['icon']) };
+      resolveAsset(icon, site, errors);
     }
   }
 
@@ -360,14 +347,9 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
       file: l.file,
     };
   });
-  const allProjects: RegProject[] = projectFiles.map((l) => {
-    const d = l.data as RawProject;
-    return { ...d, hidden: d.hidden ?? false, tags: d.tags ?? [], file: l.file };
-  });
 
   // 4. Derive build-time views; hidden entries never reach them (RULE-06, F-001.R4).
   const visibleTools = deriveVisibleTools(allTools);
-  const projects = visibleProjects(allProjects);
   const categories = visibleCategories(catList as Category[], allTools).map((c) => ({
     ...c,
     tools: toolsByCategory(allTools, c.id),
@@ -383,7 +365,6 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     visibleTools,
     toolById: (id) => toolMap.get(id),
     categories,
-    projects,
     profile: profileFile.data as Profile,
     avatarFile,
     now: nowFile?.data as NowNote | undefined,

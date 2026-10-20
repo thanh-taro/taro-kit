@@ -14,7 +14,6 @@ const PROD_PAGES = [
   '/',
   '/tools/',
   '/tools/developer/',
-  '/projects/',
   '/about/',
   '/resume/',
   '/now/',

@@ -1,9 +1,11 @@
 ---
 id: CMP-ProjectCard
 title: Project card
-status: draft
+status: deprecated
 tokens: [color.dark.surface, color.dark.line, radius.lg]
 ---
+
+> **Deprecated (D-055):** removed with F-009.
 
 ## Purpose
 Present one project in the showcase.

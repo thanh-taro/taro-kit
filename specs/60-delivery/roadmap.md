@@ -6,7 +6,7 @@ status: draft
 # Roadmap
 
 ## M-1 — Portal and identity
-The portal shell, catalog, tool view, palette, favorites, recents, home, About, projects, Now and changelog, installable offline shell, theme, backup, catalog check and link previews: F-001 to F-016. Quality bar: NFR-01, NFR-02, NFR-03, NFR-04, NFR-05, NFR-06, NFR-07, NFR-08, NFR-09, NFR-10, NFR-11, NFR-12.
+The portal shell, catalog, tool view, palette, favorites, recents, home, About, Now and changelog, installable offline shell, theme, backup, catalog check and link previews: F-001 to F-016, except the deprecated projects showcase (D-055). Quality bar: NFR-01, NFR-02, NFR-03, NFR-04, NFR-05, NFR-06, NFR-07, NFR-08, NFR-09, NFR-10, NFR-11, NFR-12.
 **Done when:** every M-1 acceptance criterion passes, and the Owner's days-used count (RULE-13) shows at least 10 of the last 14 days.
 
 ## M-2 — Polish

@@ -36,7 +36,7 @@ export interface CliDeps {
   out: (line: string) => void;
   err: (line: string) => void;
   /** Content loading; tests inject a registry here. */
-  load?: (root: string) => Pick<Registry, 'allTools' | 'projects' | 'profile'>;
+  load?: (root: string) => Pick<Registry, 'allTools' | 'profile'>;
   /** Reach options, plus the `allowHttp` test hook (CheckOptions). */
   reach?: ReachOptions & { allowHttp?: boolean };
   /** Test hook: replaces `runCheck` (to prove a crash exits 2). */
@@ -49,7 +49,7 @@ export const escapeAnnotation = (s: string): string =>
 
 export async function runCli(argv: readonly string[], deps: CliDeps): Promise<0 | 1 | 2> {
   let args: CliArgs;
-  let registry: Pick<Registry, 'allTools' | 'projects' | 'profile'>;
+  let registry: Pick<Registry, 'allTools' | 'profile'>;
   try {
     args = parseArgs(argv);
     registry = (deps.load ?? ((root) => loadRegistry({ root })))(deps.root);

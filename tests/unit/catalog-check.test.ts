@@ -93,9 +93,8 @@ const check = (targets: Target[], extra: { timeoutMs?: number; allowHttp?: boole
 /** A registry-shaped object for the CLI, with addresses on the local server. */
 function registry(parts: {
   tools?: { id: string; path: string; embedded?: boolean; hidden?: boolean }[];
-  projects?: { id: string; links: { label: string; path: string }[] }[];
   profileLinks?: { label: string; path?: string; url?: string }[];
-}): Pick<Registry, 'allTools' | 'projects' | 'profile'> {
+}): Pick<Registry, 'allTools' | 'profile'> {
   return {
     allTools: (parts.tools ?? []).map((t) => ({
       id: t.id,
@@ -103,12 +102,8 @@ function registry(parts: {
       openMode: t.embedded ? 'embedded' : 'linked',
       hidden: t.hidden ?? false,
     })),
-    projects: (parts.projects ?? []).map((p) => ({
-      id: p.id,
-      links: p.links.map((l) => ({ label: l.label, url: url(l.path) })),
-    })),
     profile: { links: (parts.profileLinks ?? []).map((l) => ({ label: l.label, url: l.url ?? url(l.path ?? '/ok') })) },
-  } as unknown as Pick<Registry, 'allTools' | 'projects' | 'profile'>;
+  } as unknown as Pick<Registry, 'allTools' | 'profile'>;
 }
 
 async function cli(argv: string[], reg: ReturnType<typeof registry>) {
@@ -208,8 +203,7 @@ describe('F-014 catalog check', () => {
   it('INV-02 fails a tool whose final address is not https, and only warns for links', async () => {
     const reg = registry({
       tools: [{ id: 'plain-http', path: '/ok', embedded: true }],
-      projects: [{ id: 'proj', links: [{ label: 'Live', path: '/chain/1' }] }],
-      profileLinks: [{ label: 'Site', path: '/ok' }],
+      profileLinks: [{ label: 'Site', path: '/chain/1' }],
     });
     const out: string[] = [];
     const code = await runCli([], { root, env: {}, out: (l) => out.push(l), err: (l) => out.push(l), load: () => reg });
@@ -218,9 +212,8 @@ describe('F-014 catalog check', () => {
       `FAIL  tool plain-http  ${url('/ok')}  insecure-redirect: the final address ${url('/ok')} is not https`,
     );
     expect(out).toContain(
-      `WARN  project proj link "Live"  ${url('/chain/1')}  insecure-redirect: the final address ${url('/ok')} is not https`,
+      `WARN  profile link "Site"  ${url('/chain/1')}  insecure-redirect: the final address ${url('/ok')} is not https`,
     );
-    expect(out.some((l) => l.startsWith('WARN  profile link "Site"') && l.includes('insecure-redirect'))).toBe(true);
   });
 
   it('MOD-CatalogCheck exits 2, not 1, when the check itself crashes', async () => {
@@ -283,9 +276,7 @@ describe('F-014 catalog check', () => {
     expect(r.code).toBe(0);
     expect(hits.get('/not-found') ?? 0).toBe(before); // never fetched
     expect(r.out).toContain(`SKIP  tool secret  ${url('/not-found')}  hidden`);
-    expect(r.out.at(-1)).toMatch(
-      /passed, 1 address checked \(1 tool, 0 project links, 0 profile links\); 0 warnings, 1 skipped/,
-    );
+    expect(r.out.at(-1)).toMatch(/passed, 1 address checked \(1 tool, 0 profile links\); 0 warnings, 1 skipped/);
   });
 
   it('F014_AC3 plans only visible tools from real content (hidden fixture tool skipped)', () => {
@@ -360,14 +351,13 @@ describe('F-014 catalog check', () => {
           { id: 'b', path: '/fa-portal', embedded: true },
           { id: 'c', path: '/ok' },
         ],
-        projects: [{ id: 'proj', links: [{ label: 'Live', path: '/ok' }] }],
         profileLinks: [{ label: 'Site', path: '/ok' }],
       }),
     );
     expect(r.code).toBe(0);
     expect(r.err).toEqual([]);
     expect(r.out.at(-1)).toBe(
-      'catalog check (pre-publish): passed, 5 addresses checked (3 tools, 1 project link, 1 profile link); 0 warnings',
+      'catalog check (pre-publish): passed, 4 addresses checked (3 tools, 1 profile link); 0 warnings',
     );
   });
 
@@ -382,17 +372,17 @@ describe('F-014 catalog check', () => {
     });
   });
 
-  it('F014_AC8 warns about a project with a dead link and does not block publishing', async () => {
-    const r = await cli(
-      [],
-      registry({
-        tools: [{ id: 'a', path: '/ok' }],
-        projects: [{ id: 'old-blog', links: [{ label: 'Source', path: '/not-found' }] }],
-      }),
-    );
-    expect(r.code).toBe(0);
-    expect(r.out).toContain(`WARN  project old-blog link "Source"  ${url('/not-found')}  status 404`);
-    expect(r.out.at(-1)).toMatch(/passed, 2 addresses checked .*; 1 warning$/);
+  it('F014_AC8 warns about a profile link that does not answer, even after one retry, and publishing continues', async () => {
+    const before = hits.get('/hang') ?? 0;
+    const link: Target = { kind: 'profile', entryId: 'profile', label: 'Blog', address: url('/hang'), embedded: false };
+    const [f] = await check([link], { timeoutMs: HANG_MS });
+    expect(f.outcome).toBe('warn');
+    expect((hits.get('/hang') ?? 0) - before).toBe(2);
+    expect(f.reason).toMatch(/^timeout: /);
+    const report = buildReport([f], []);
+    expect(report.passed).toBe(true);
+    expect(report.exitCode).toBe(0);
+    expect(report.lines[0]).toBe(`WARN  profile link "Blog"  ${url('/hang')}  ${f.reason}`);
   });
 
   it('F014_AC10 warns about a profile link that answers not found and does not block publishing', async () => {

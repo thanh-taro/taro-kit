@@ -69,7 +69,7 @@ test.describe('FLOW-01 launch a tool from the keyboard', () => {
 });
 
 test.describe('FLOW-02 visitor first visit', () => {
-  test('FLOW-02 preview data, home invitation, About, Projects, then a tool; a dead link shows not-found', async ({
+  test('FLOW-02 preview data, home invitation, About, then a tool; a dead link shows not-found', async ({
     page,
     request,
   }) => {
@@ -87,14 +87,11 @@ test.describe('FLOW-02 visitor first visit', () => {
     );
     await expect(page.getByTestId('home-search')).toBeVisible();
 
-    // Step 3: About, then Projects, by the navigation.
+    // Step 3: About, by the navigation.
     const nav = page.getByRole('banner').getByRole('navigation');
     await nav.getByRole('link', { name: 'About me' }).first().click();
     await expect(page).toHaveURL(`${PORTAL}/about/`);
-    await expect(page.getByRole('main').getByRole('link', { name: 'Projects', exact: true })).toBeVisible();
-    await page.getByRole('main').getByRole('link', { name: 'Projects', exact: true }).click();
-    await expect(page).toHaveURL(`${PORTAL}/projects/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText("Things I've built");
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
     // Step 4: back on home, browse tools and try an embedded one.
     await page.goto(`${PORTAL}/tools/`);

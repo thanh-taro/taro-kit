@@ -34,7 +34,7 @@ export type AssetPath = string;
 export type YearMonth = string;
 
 /**
- * Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Project, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.
+ * Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.
  */
 export interface TaroKitDataModel {
   [k: string]: unknown;
@@ -54,7 +54,7 @@ export interface Link {
  */
 export interface EntryBase {
   id: string;
-  kind: "tool" | "project";
+  kind: "tool";
   name: string;
   summary: string;
   icon?: AssetPath;
@@ -77,19 +77,6 @@ export interface Tool {
   )[];
   offline?: boolean;
   sourceUrl?: SecureUrl;
-}
-export interface Project {
-  kind?: "project";
-  description: string;
-  /**
-   * Relative path of an asset bundled with the portal, inside content/assets/ (no ".." segments); never a remote address (NFR-05).
-   */
-  image?: string;
-  /**
-   * @maxItems 4
-   */
-  links: Link[];
-  year: number;
 }
 /**
  * This interface was referenced by `TaroKitDataModel`'s JSON-Schema

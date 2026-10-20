@@ -10,8 +10,7 @@ status: draft
 | Portal | This product: the TaroKit hub that lists and launches tools and hosts the portfolio. |
 | Tool | An independent web utility, built and deployed as its own project, listed in the catalog. |
 | Catalog | The set of all tool entries the portal knows about, maintained by the Owner. |
-| Catalog entry | One record in the catalog describing a tool or a project. |
-| Project | A portfolio item that is not a tool, shown in the projects showcase. |
+| Catalog entry | One record in the catalog describing a tool. |
 | Category | The one group a tool belongs to: Developer tools, Media tools, Converters & calculators, or Productivity & relax. |
 | Category page | The portal page for one category, with Taro's intro and the category's tools. |
 | Open mode | How a tool opens: **embedded** inside the portal, or **linked** in a new browser tab. |
@@ -23,7 +22,7 @@ status: draft
 | Hidden | A catalog entry that is kept in the catalog but not shown to users. |
 | Favorite | A tool the user pinned for quick access. |
 | Recent | A record that the user opened a tool, with when. |
-| Command palette | A keyboard-summoned search over tools, projects, pages and actions. |
+| Command palette | A keyboard-summoned search over tools, pages and actions. |
 | Profile | The Owner's bio, avatar and links. |
 | Résumé | The Owner's career record: experience, education, skills, languages, certificates and awards. |
 | Now | A short, dated, hand-written note about what the Owner is focusing on. |

@@ -1,6 +1,6 @@
 // MOD-Search palette search: the query groups of the command palette (F-004.R3), built on the ranking core.
-// - Each kind (tools, projects, pages, actions) is ranked separately by `rank` (RULE-05), so a project never
-//   pushes a tool out; groups keep the order Tools, Projects, Pages, Actions.
+// - Each kind (tools, pages, actions) is ranked separately by `rank` (RULE-05), so a page never pushes a tool
+//   out; groups keep the order Tools, Pages, Actions.
 // - Each group holds at most 8 results (RULE-05, PALETTE_GROUP_MAX); groups with no match are left out, so an
 //   empty result means "no results" (F-004.R6).
 // - Favorites are tool ids, so they break ties in the tools group only.
@@ -9,7 +9,7 @@
 import { rank, type RankContext, type Searchable } from './rank.ts';
 
 /** The palette's query groups, in display order (F-004.R3). */
-export const PALETTE_GROUPS = ['tools', 'projects', 'pages', 'actions'] as const;
+export const PALETTE_GROUPS = ['tools', 'pages', 'actions'] as const;
 export type PaletteGroupId = (typeof PALETTE_GROUPS)[number];
 
 /** RULE-05: the palette shows at most 8 results per group. */
@@ -23,7 +23,7 @@ export type PaletteGroup<I extends PaletteIndex = PaletteIndex> = {
   [K in PaletteGroupId]: { id: K; items: I[K][number][] };
 }[PaletteGroupId];
 
-/** The palette's groups for `query`: Tools, Projects, Pages, Actions, each ranked and capped; a blank query gives none. */
+/** The palette's groups for `query`: Tools, Pages, Actions, each ranked and capped; a blank query gives none. */
 export function searchPalette<I extends PaletteIndex>(
   query: string,
   index: I,

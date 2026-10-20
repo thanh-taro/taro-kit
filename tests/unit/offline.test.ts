@@ -107,7 +107,7 @@ describe('F-011 precache (NFR-06)', () => {
     if (dist) rmSync(dist, { recursive: true, force: true });
   });
 
-  test('F011_AC2 F011_AC4 F011_AC8 the precache holds every page, the not-found page, the catalog data, assets and project images', async () => {
+  test('F011_AC2 F011_AC4 F011_AC8 the precache holds every page, the not-found page, the catalog data and assets', async () => {
     for (const p of [
       'index.html',
       '404.html',
@@ -119,8 +119,6 @@ describe('F-011 precache (NFR-06)', () => {
       '_astro/index.abc.css',
       '_astro/manrope-latin.abc.woff2',
       '_astro/avatar.abc.webp',
-      'projects/images/pocket-budget.jpg',
-      'projects/images/tiny-synth.png',
       'icons/icon-192.png',
       'manifest.webmanifest',
     ])
@@ -142,8 +140,6 @@ describe('F-011 precache (NFR-06)', () => {
         'icons/icon-192.png',
         'index.html',
         'manifest.webmanifest',
-        'projects/images/pocket-budget.jpg',
-        'projects/images/tiny-synth.png',
         't/sample-dev/index.html',
         'tools/index.html',
         'tools/media/index.html',

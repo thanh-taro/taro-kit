@@ -27,7 +27,7 @@ Read Taro's career at a glance, then in detail.
 
 ## Entry & exit
 - Entered from: shell navigation, About (COPY-about.resume), the palette.
-- Exits to: SCR-About, SCR-Projects.
+- Exits to: SCR-About.
 
 ## Accessibility
 Sections are headed regions. Periods are machine-readable dates. Level marks are hidden from assistive technology, and the level is given in words (COPY-resume.skillLevel). In the narrow layout (NFR-07) the skills grid becomes two columns, and the timeline stacks.

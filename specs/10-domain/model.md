@@ -10,7 +10,7 @@ The machine-readable shape is in `10-domain/project.schema.json`. This file hold
 ## Content (authored by the Owner, published with the portal)
 
 ### ENT-CatalogEntry — Catalog entry
-One item in the catalog. Its `kind` is either `tool` (ENT-Tool) or `project` (ENT-Project).
+One item in the catalog. Its `kind` is `tool` (ENT-Tool).
 Common fields:
 - **id**: a unique, stable slug (INV-01).
 - **name**, **summary** (one sentence).
@@ -30,7 +30,7 @@ A catalog entry of kind `tool`. Additional fields:
 - **source address**, optional: where the tool's source code lives.
 
 ### ENT-Project — Project
-A catalog entry of kind `project`, shown in the projects showcase. Additional fields:
+**Deprecated (D-055):** removed with the projects showcase; the catalog no longer accepts entries of kind `project`. Kept for history. It had these fields:
 - **description**: a short paragraph.
 - **image**, optional, bundled with the portal: a PNG, JPEG, WebP, AVIF or SVG file.
 - **links**: a list of label + address pairs, such as live site or source.
@@ -86,8 +86,8 @@ A tool id plus the time it was last opened. There is at most one per tool (RULE-
 The theme: `system`, `light` or `dark` (RULE-03).
 
 ## Invariants
-- **INV-01** Catalog entry ids are unique across tools and projects. They are lowercase slugs (letters, digits, hyphens), never change once published, and are never reused for a different entry.
-- **INV-02** Every tool address, project link and profile link uses a secure web address (https), except email links.
+- **INV-01** Catalog entry ids are unique. They are lowercase slugs (letters, digits, hyphens), never change once published, and are never reused for a different entry.
+- **INV-02** Every tool address and profile link uses a secure web address (https), except email links.
 - **INV-03** A tool whose open mode is `embedded` has origin `own` and is served from its own site address, never the portal's own address (otherwise it could not be isolated). Its permission set defaults to none (RULE-10) and its offline-capable flag defaults to false. A linked tool is never at the portal's own address either: that address belongs to the portal's own pages (and its offline worker).
 - **INV-04** Favorites and recents may hold ids of tools that are unknown or hidden. Such entries are never shown to the user. They stay in storage until the RULE-01 or RULE-02 limits remove them, and while stored they reappear if the tool becomes visible again.
 - **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme currently showing (light or dark) is passed to an embedded tool's own address (F-012.R5, D-039).

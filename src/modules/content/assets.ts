@@ -1,11 +1,11 @@
 // MOD-Content: bundled assets in content/assets/ (ADR-0005, NFR-05).
 // Build-time only (Node). One table of image types serves both validation and the image route.
-// Implements: F-001.R2 (assets are checked at build), F-009.R2 (project images).
+// Implements: F-001.R2 (assets are checked at build).
 import { existsSync } from 'node:fs';
 import { resolve, sep } from 'node:path';
 import type { ContentError } from './errors.ts';
 
-/** The project image types the portal bundles, by extension (domain schema `project.image`). */
+/** The image types the portal bundles, by extension; the avatar allows all but SVG (AVATAR_TYPES). */
 export const IMAGE_TYPES: Readonly<Record<string, string>> = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -47,7 +47,7 @@ export interface AssetSite {
  * Validates one bundled asset path (ADR-0005, NFR-05): it must stay inside content/assets/, have one of `kinds`
  * (extensions such as `.png`; any when left out) and exist. Returns the absolute file, or pushes one ASSET error
  * naming the content file, entry and field to `errors` and returns undefined. Shared by every asset field
- * (tool and project icons, project images, category icons, the profile avatar).
+ * (tool icons, category icons, the profile avatar).
  */
 export function resolveAsset(
   path: string,

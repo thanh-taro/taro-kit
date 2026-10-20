@@ -106,7 +106,6 @@ const ALL_PAGES = [
   '/',
   '/tools/',
   '/tools/developer/',
-  '/projects/',
   '/about/',
   '/now/',
   '/settings/',

@@ -227,6 +227,5 @@ describe('repository content', () => {
     ]);
     // Visible tools are samples; real tools may be present while hidden until deployed (D-012).
     expect(r.allTools.filter((t) => !t.hidden).every((t) => t.id.startsWith('sample-'))).toBe(true);
-    expect(r.projects).toEqual([]);
   });
 });

@@ -72,7 +72,7 @@ test.describe('F-008 About page', () => {
     };
     await page.setViewportSize({ width: 1440, height: 900 });
     const wide = await focusOrder();
-    expect(wide).toEqual([...fxProfile.links.map((l) => l.url), '/projects/', '/now/']);
+    expect(wide).toEqual([...fxProfile.links.map((l) => l.url), '/now/']);
     const headings = await page
       .getByRole('main')
       .getByRole('heading')
@@ -109,11 +109,11 @@ test.describe('F-008 About page', () => {
     await expect(link).not.toHaveAccessibleName(/new tab/);
   });
 
-  test('F008_AC5 links to Projects and Now are shown', async ({ page }) => {
+  test('F008_AC5 a link to Now is shown, and none to a projects page', async ({ page }) => {
     await page.goto(`${PROD}/about/`);
     const main = page.getByRole('main');
-    await expect(main.getByText("See what I've built and what I'm up to now.")).toBeVisible();
-    await expect(main.getByRole('link', { name: 'Projects', exact: true })).toHaveAttribute('href', '/projects/');
+    await expect(main.getByText("See what I'm up to now.")).toBeVisible();
+    await expect(main.getByRole('link', { name: 'Projects', exact: true })).toHaveCount(0);
     await expect(main.getByRole('link', { name: 'Now', exact: true })).toHaveAttribute('href', '/now/');
   });
 

@@ -57,7 +57,6 @@ describe('F-015 page metadata', () => {
     const pages = [
       ['home', '/', 'COPY-meta.homeTitle', 'COPY-meta.homeDescription'],
       ['tools', '/tools/', 'COPY-meta.toolsTitle', 'COPY-meta.toolsDescription'],
-      ['projects', '/projects/', 'COPY-meta.projectsTitle', 'COPY-meta.projectsDescription'],
       ['now', '/now/', 'COPY-meta.nowTitle', 'COPY-meta.nowDescription'],
       ['settings', '/settings/', 'COPY-meta.settingsTitle', 'COPY-meta.settingsDescription'],
     ] as const;
@@ -175,7 +174,7 @@ describe('F-015 page metadata', () => {
 
   it('NFR-12 every page of the fixture content fits the title and description limits', () => {
     const routes = [
-      ...(['home', 'tools', 'projects', 'about', 'now', 'settings', 'notFound'] as const).map((page) => ({ page })),
+      ...(['home', 'tools', 'about', 'now', 'settings', 'notFound'] as const).map((page) => ({ page })),
       ...registry.categories.map((c) => ({ page: 'category' as const, id: c.id })),
       ...registry.visibleTools.map((tool) => ({ page: 'tool' as const, id: tool.id })),
     ];
@@ -201,8 +200,8 @@ describe('F-015 site index', () => {
   });
 
   it('F-015.R3 lists the public pages and visible category pages, not settings or empty categories', () => {
-    for (const path of ['/', '/tools/', '/projects/', '/about/', '/now/'])
-      expect(locs).toContain(`${PORTAL_ORIGIN}${path}`);
+    for (const path of ['/', '/tools/', '/about/', '/now/']) expect(locs).toContain(`${PORTAL_ORIGIN}${path}`);
+    expect(locs).not.toContain(`${PORTAL_ORIGIN}/projects/`);
     for (const c of registry.categories) expect(locs).toContain(`${PORTAL_ORIGIN}/tools/${c.id}/`);
     expect(locs).not.toContain(`${PORTAL_ORIGIN}/tools/converters/`);
     expect(locs).not.toContain(`${PORTAL_ORIGIN}/settings/`);

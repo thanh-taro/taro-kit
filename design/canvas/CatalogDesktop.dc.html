@@ -88,7 +88,7 @@ class Component extends DCLogic {
     return {
       themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
       toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
-      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools', true), nav('Projects', 'COPY-nav.projects'), nav('About me', 'COPY-nav.about'), nav('Now', 'COPY-nav.now')],
+      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools', true), nav('About me', 'COPY-nav.about'), nav('Now', 'COPY-nav.now')],
       cats: [
         { id: 'c-dev', name: 'Developer tools', icon: '</>', bg: 'var(--catVioletBg)', fg: 'var(--catVioletFg)', n: '3', countText: '3 tools', countCopy: 'COPY-category.toolCount', tools: [
           tool('64', 'Base64', 'Encode and decode Base64 text and files.'),

@@ -11,7 +11,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 |---|---|---|
 | **COPY-nav.home** | Home | navigation |
 | **COPY-nav.tools** | Tools | navigation |
-| **COPY-nav.projects** | Projects | navigation |
+| **COPY-nav.projects** | Projects | deprecated (D-055): not shown |
 | **COPY-nav.about** | About me | navigation |
 | **COPY-nav.now** | Now | navigation |
 | **COPY-nav.resume** | Résumé | navigation, when there is a résumé (F-017) |
@@ -58,7 +58,7 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.groupFavorites** | Favorites | group heading |
 | **COPY-palette.groupRecents** | Recent | group heading |
 | **COPY-palette.groupTools** | Tools | group heading |
-| **COPY-palette.groupProjects** | Projects | group heading |
+| **COPY-palette.groupProjects** | Projects | deprecated (D-055): not shown |
 | **COPY-palette.groupPages** | Pages | group heading |
 | **COPY-palette.groupActions** | Actions | group heading |
 | **COPY-palette.hints** | ↑↓ to move · Enter to open · Esc to close | footer |
@@ -73,9 +73,9 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-palette.resultCount** | {count} results | announced result count; singular form is COPY-palette.resultCountOne |
 | **COPY-palette.resultCountOne** | 1 result | singular of COPY-palette.resultCount |
 | **COPY-palette.exportFailed** | I couldn't save your backup just now. Please try again. | when the palette's export action fails |
-| **COPY-palette.unavailable** | I couldn't load my tools and projects just now. Pages and actions still work; reload the page to try again. | when the catalog data can't load |
+| **COPY-palette.unavailable** | I couldn't load my tools just now. Pages and actions still work; reload the page to try again. | when the catalog data can't load |
 | **COPY-about.links** | Find me | section heading |
-| **COPY-about.more** | See what I've built and what I'm up to now. | pointer to Projects and Now |
+| **COPY-about.more** | See what I'm up to now. | pointer to Now |
 | **COPY-about.resume** | Want the long version? Here's my résumé. | pointer to SCR-Resume, when there is a résumé (F-017.R4) |
 | **COPY-about.nickname** | aka {nickname} | under the avatar, when the profile has a nickname |
 | **COPY-about.avatarAlt** | Portrait of {name} | avatar alt text; {name} is the full name (SCR-About accessibility) |
@@ -94,9 +94,9 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-resume.present** | present | end of a current period (RULE-15) |
 | **COPY-resume.period** | {start} – {end} | a period; {start} and {end} are month and year, or COPY-resume.present (RULE-15) |
 | **COPY-resume.skillLevel** | {level} out of 5 | a skill level in words (RULE-15) |
-| **COPY-projects.title** | Things I've built | page heading |
-| **COPY-projects.empty** | I'm putting my projects together. Check back soon. | empty state |
-| **COPY-projects.imageAlt** | Screenshot of {name} | text alternative of a project's image (CMP-ProjectCard, design CMP-ProjectCard) |
+| **COPY-projects.title** | Things I've built | deprecated (D-055): not shown |
+| **COPY-projects.empty** | I'm putting my projects together. Check back soon. | deprecated (D-055): not shown |
+| **COPY-projects.imageAlt** | Screenshot of {name} | deprecated (D-055): not shown |
 | **COPY-now.title** | What I'm up to | Now section heading |
 | **COPY-now.updated** | Updated {date} | Now note date |
 | **COPY-now.stale** | I wrote this a while ago, so it may be out of date. | when older than 90 days |
@@ -149,8 +149,8 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-meta.toolTitle** | {tool} — TaroKit | tool preview title |
 | **COPY-meta.aboutTitle** | About me — TaroKit | About preview title |
 | **COPY-meta.aboutDescription** | Who I am, what I do, and how to reach me. | About preview description |
-| **COPY-meta.projectsTitle** | Projects — TaroKit | projects preview title |
-| **COPY-meta.projectsDescription** | Things I've built beyond the toolkit. | projects preview description |
+| **COPY-meta.projectsTitle** | Projects — TaroKit | deprecated (D-055): not shown |
+| **COPY-meta.projectsDescription** | Things I've built beyond the toolkit. | deprecated (D-055): not shown |
 | **COPY-meta.resumeTitle** | Résumé — TaroKit | Résumé preview title |
 | **COPY-meta.resumeDescription** | Where I've worked, what I studied, and what I'm good at. | Résumé preview description |
 | **COPY-meta.nowTitle** | Now — TaroKit | Now preview title |

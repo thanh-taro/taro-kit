@@ -2,7 +2,7 @@
 // finished build with workbox-build (DEP-11). It runs after `astro build`, so it sees every file the build wrote,
 // including `astro:build:done` output such as /data/catalog.<hash>.json (MOD-Content).
 // Precached: every page (404.html included), all CSS, JS and fonts, the catalog data file, the manifest and icons,
-// the avatar and project images: "every portal page and all catalog content" (NFR-06).
+// and the avatar: "every portal page and all catalog content" (NFR-06).
 // Not precached: sw.js itself, host config, and files no page loads (sitemap, robots.txt, the link-preview image).
 // Node only (build); the CLI is scripts/build-sw.ts (`pnpm sw:build`).
 import { readFileSync, rmSync, statSync } from 'node:fs';

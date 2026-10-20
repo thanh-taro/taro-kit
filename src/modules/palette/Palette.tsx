@@ -8,7 +8,7 @@
 // - Glyph warm-up (NFR-02, QA perf): some action glyphs (⤓, ⧉) are in no bundled font, and the browser's first
 //   search for a system font that has them took ~60 ms (4x CPU) inside the first keystroke that showed them. At
 //   hydration, outside the closed dialog, every glyph is laid out once, hidden, so that search is done at idle.
-// - Empty query: Favorites, Recents, Pages (F-004.R2); a query: Tools, Projects, Pages, Actions (F-004.R3).
+// - Empty query: Favorites, Recents, Pages (F-004.R2); a query: Tools, Pages, Actions (F-004.R3).
 // - Keyboard (F-004.R4, ARIA combobox + listbox): focus stays in the field; Up and Down move the highlighted
 //   option across groups (aria-activedescendant), Enter runs it, Esc closes (native dialog cancel). The first
 //   option is highlighted whenever the results change.
@@ -46,7 +46,7 @@ export interface PaletteProps {
   catalogPath: string;
 }
 
-type Data = Pick<CatalogDataFileContent, 'tools' | 'projects'>;
+type Data = Pick<CatalogDataFileContent, 'tools'>;
 type Loaded = Data | 'failed' | null;
 
 const LIST_ID = 'tk-palette-list';
@@ -54,7 +54,6 @@ const GLYPHS: Record<string, string> = {
   // Pages and actions (design: CMP-CommandPalette, PaletteDesktop); text presentation, never emoji.
   home: '⌂',
   tools: '▦',
-  projects: '◇',
   about: '☺︎',
   now: '✦',
   settings: '⚙︎',
@@ -169,16 +168,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
   const env: RunEnvironment = {
     close: () => dialog()?.close(),
     openTool: (tool) => openTool(tool),
-    assign: (path) => {
-      const target = new URL(path, location.href);
-      if (target.href !== location.href || !target.hash) return location.assign(target.href);
-      // The same address again (a project already in view): re-run its fragment handling after the dialog's
-      // close event, whose focus return would otherwise take the focus back from the card.
-      const fire = () => window.dispatchEvent(new HashChangeEvent('hashchange'));
-      const d = dialog();
-      if (d) d.addEventListener('close', fire, { once: true });
-      else fire();
-    },
+    assign: (path) => location.assign(new URL(path, location.href).href),
     toggleTheme: () => theme().toggle(),
     exportData: () => import('../backup/index.ts').then((m) => m.exportBackup()),
     copy: (value) => navigator.clipboard.writeText(value),
@@ -299,9 +289,8 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
                 const id = optionId(g.id, entry);
                 const selected = id === activeId;
                 const linked = entry.kind === 'tool' && entry.openMode === 'linked';
-                const sub = entry.kind === 'tool' || entry.kind === 'project' ? entry.summary : '';
-                const glyph =
-                  entry.kind === 'tool' || entry.kind === 'project' ? monogram(entry.name) : (GLYPHS[entry.id] ?? '');
+                const sub = entry.kind === 'tool' ? entry.summary : '';
+                const glyph = entry.kind === 'tool' ? monogram(entry.name) : (GLYPHS[entry.id] ?? '');
                 return (
                   // Reached from the field (aria-activedescendant); the click handler is the pointer path only.
                   // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus
@@ -335,7 +324,6 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
                       {sub && <span class="tk-palette__sub">{sub}</span>}
                     </span>
                     <span class="tk-palette__hint" aria-hidden="true">
-                      {entry.kind === 'project' ? entry.year : ''}
                       {selected && <kbd>↵</kbd>}
                     </span>
                   </div>
