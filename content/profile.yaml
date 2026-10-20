@@ -7,7 +7,7 @@ location: Đà Nẵng, Vietnam
 bio: |
   Hi, I'm Thanh, though most people call me Taro. I've been writing software for more than ten years, mostly on the backend: APIs, data pipelines and, lately, a lot of prompts for AI models. Yes, talking politely to machines is part of my job now.
 
-  These days I'm a Fullstack AI-Native engineer at Est Rouge, building REST and WebSocket services, ETL for big data, and products that put language models to work. Before that I led commerce teams on projects for the Japanese market, ran an AI team as a technical leader, and built social networks, newsfeeds and geolocation features. My usual toolbox is Python, Node.js and PHP with FastAPI, NestJS and Laravel, on MySQL, MongoDB, DynamoDB, Redis and Neo4j. All of it in Docker, naturally.
+  These days I'm a Fullstack AI-Native engineer at Est Rouge. I build products end to end with AI as part of the team: REST and WebSocket backends, big-data pipelines, the frontends people actually click, and the prompts and agents that get language models doing useful work. Before that I led commerce teams on projects for the Japanese market, ran an AI team as a technical leader, and built social networks, newsfeeds and geolocation features. My usual toolbox is Python, Node.js and PHP with FastAPI, NestJS and Laravel, on MySQL, MongoDB, DynamoDB, Redis and Neo4j. All of it in Docker, naturally.
 
   Since 2022 I've also mentored Rising Stars bootcamp students in backend, soft skills and presenting. Watching a mentee's first demo go right is still my favorite kind of deploy.
 
