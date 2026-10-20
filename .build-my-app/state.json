@@ -73,7 +73,7 @@
     "release": {
       "title": "6 Release",
       "status": "in_progress",
-      "step": "6 Release: U-1 content done (awaiting user review); next U-2 rewrite",
+      "step": "6 Release: change request F-017 Résumé (ready) building; release user steps paused until merged",
       "gate": {
         "status": "pending",
         "at": null,
@@ -741,6 +741,18 @@
       "answer": "Skip Lighthouse CI; size check and Playwright perf rig are the gates",
       "asked": "2026-10-20T03:39:27+00:00",
       "answered": "2026-10-20T03:39:48+00:00"
+    },
+    {
+      "id": "D-050",
+      "question": "Résumé page placement and timing",
+      "options": [],
+      "recommendation": null,
+      "kind": "product",
+      "phase": "release",
+      "status": "answered",
+      "answer": "Separate /resume/ page (F-017), linked from nav, About and palette; built for v1.0; F-017 set ready by the user",
+      "asked": "2026-10-20T04:03:31+00:00",
+      "answered": "2026-10-20T04:03:31+00:00"
     }
   ],
   "loops": {
@@ -794,18 +806,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:13:18+00:00",
-      "event": "set profile"
-    },
-    {
-      "at": "2026-10-13T03:13:18+00:00",
-      "event": "set autonomy"
-    },
-    {
-      "at": "2026-10-13T03:13:18+00:00",
-      "event": "set environment"
-    },
     {
       "at": "2026-10-13T03:13:27+00:00",
       "event": "phase setup -> gate"
@@ -1593,9 +1593,21 @@
     {
       "at": "2026-10-20T03:49:46+00:00",
       "event": "release step: 6 Release: U-1 content done (awaiting user review); next U-2 rewrite"
+    },
+    {
+      "at": "2026-10-20T04:03:31+00:00",
+      "event": "decision D-050 opened: Résumé page placement and timing"
+    },
+    {
+      "at": "2026-10-20T04:03:31+00:00",
+      "event": "decision D-050 answered: Separate /resume/ page (F-017), linked from nav, About and palette; built for v1.0; F-017 set ready by the user"
+    },
+    {
+      "at": "2026-10-20T04:03:31+00:00",
+      "event": "release step: 6 Release: change request F-017 Résumé (ready) building; release user steps paused until merged"
     }
   ],
-  "updated": "2026-10-20T03:49:46+00:00",
+  "updated": "2026-10-20T04:03:31+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
