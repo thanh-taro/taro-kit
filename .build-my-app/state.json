@@ -73,7 +73,7 @@
     "release": {
       "title": "6 Release",
       "status": "in_progress",
-      "step": "6 Release: release-manager drafting checklist, notes, publish plan",
+      "step": "6 Release: release infra merged; size gate added; builder adding perf rig (NFR-01/02) + advisory Lighthouse CI; then author-rewrite copy; then user steps",
       "gate": {
         "status": "pending",
         "at": null,
@@ -681,6 +681,66 @@
       "answer": "Approve; manual checks (screen reader, Firefox, Safari, real phone, installed offline) on the release checklist, done on staging before going live",
       "asked": "2026-10-20T02:00:46+00:00",
       "answered": "2026-10-20T02:00:46+00:00"
+    },
+    {
+      "id": "D-045",
+      "question": "Release: commit author email",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "release",
+      "status": "answered",
+      "answer": "Rewrite to adamnguyen.itdn@gmail.com in a single-branch copy before the first push; user checks before pushing",
+      "asked": "2026-10-20T02:11:47+00:00",
+      "answered": "2026-10-20T02:11:53+00:00"
+    },
+    {
+      "id": "D-046",
+      "question": "Release: staging for manual checks",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "release",
+      "status": "answered",
+      "answer": "staging.tarokit.app as its own Worker, manual deploy, removed after launch",
+      "asked": "2026-10-20T02:11:47+00:00",
+      "answered": "2026-10-20T02:11:53+00:00"
+    },
+    {
+      "id": "D-047",
+      "question": "Release: production deploy rule",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "release",
+      "status": "answered",
+      "answer": "As ADR-0007: every green push to main deploys; user accepted the first push goes live once the Cloudflare secret exists",
+      "asked": "2026-10-20T02:11:47+00:00",
+      "answered": "2026-10-20T02:11:54+00:00"
+    },
+    {
+      "id": "D-048",
+      "question": "Release: version",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "release",
+      "status": "answered",
+      "answer": "1.0.0; tag v1.0.0 at launch",
+      "asked": "2026-10-20T02:11:47+00:00",
+      "answered": "2026-10-20T02:11:54+00:00"
+    },
+    {
+      "id": "D-049",
+      "question": "Release: Lighthouse CI (needs a license exception for parse-cache-control)",
+      "options": [],
+      "recommendation": null,
+      "kind": "legal",
+      "phase": "release",
+      "status": "answered",
+      "answer": "Skip Lighthouse CI; size check and Playwright perf rig are the gates",
+      "asked": "2026-10-20T03:39:27+00:00",
+      "answered": "2026-10-20T03:39:48+00:00"
     }
   ],
   "loops": {
@@ -1485,9 +1545,57 @@
     {
       "at": "2026-10-20T02:01:29+00:00",
       "event": "release step: 6 Release: release-manager drafting checklist, notes, publish plan"
+    },
+    {
+      "at": "2026-10-20T02:11:47+00:00",
+      "event": "decision D-045 opened: Release: commit author email"
+    },
+    {
+      "at": "2026-10-20T02:11:47+00:00",
+      "event": "decision D-046 opened: Release: staging for manual checks"
+    },
+    {
+      "at": "2026-10-20T02:11:47+00:00",
+      "event": "decision D-047 opened: Release: production deploy rule"
+    },
+    {
+      "at": "2026-10-20T02:11:47+00:00",
+      "event": "decision D-048 opened: Release: version"
+    },
+    {
+      "at": "2026-10-20T02:11:53+00:00",
+      "event": "decision D-045 answered: Rewrite to adamnguyen.itdn@gmail.com in a single-branch copy before the first push; user checks before pushing"
+    },
+    {
+      "at": "2026-10-20T02:11:53+00:00",
+      "event": "decision D-046 answered: staging.tarokit.app as its own Worker, manual deploy, removed after launch"
+    },
+    {
+      "at": "2026-10-20T02:11:54+00:00",
+      "event": "decision D-047 answered: As ADR-0007: every green push to main deploys; user accepted the first push goes live once the Cloudflare secret exists"
+    },
+    {
+      "at": "2026-10-20T02:11:54+00:00",
+      "event": "decision D-048 answered: 1.0.0; tag v1.0.0 at launch"
+    },
+    {
+      "at": "2026-10-20T02:12:21+00:00",
+      "event": "release step: 6 Release: D-045..D-048 answered; builder doing publish.yml, wrangler, staging build, tests off sample content, version 1.0.0; then author rewrite copy; then user steps U-1.."
+    },
+    {
+      "at": "2026-10-20T02:45:57+00:00",
+      "event": "release step: 6 Release: release infra merged; size gate added; builder adding perf rig (NFR-01/02) + advisory Lighthouse CI; then author-rewrite copy; then user steps"
+    },
+    {
+      "at": "2026-10-20T03:39:27+00:00",
+      "event": "decision D-049 opened: Release: Lighthouse CI (needs a license exception for parse-cache-control)"
+    },
+    {
+      "at": "2026-10-20T03:39:48+00:00",
+      "event": "decision D-049 answered: Skip Lighthouse CI; size check and Playwright perf rig are the gates"
     }
   ],
-  "updated": "2026-10-20T02:01:29+00:00",
+  "updated": "2026-10-20T03:39:48+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

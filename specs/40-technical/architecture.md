@@ -79,7 +79,7 @@ flowchart LR
 
 ## Performance baselines
 
-These are targets that implementation must meet. Measurement rigs are in ADR-0006, and the environment is in `reference-environment.md`. Lighthouse is configured with custom throttling to match it: 4× CPU, 9000 Kbps down, 1500 Kbps up, 170 ms RTT.
+These are targets that implementation must meet. Measurement rigs are in ADR-0006, and the environment is in `reference-environment.md`. The Playwright perf rig throttles to match it: 4× CPU, 9000 Kbps down, 1500 Kbps up, 170 ms RTT.
 
 | Item (home, compressed) | Budget | Basis |
 |---|---|---|
