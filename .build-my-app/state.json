@@ -73,7 +73,7 @@
     "release": {
       "title": "6 Release candidate",
       "status": "in_progress",
-      "step": "6 Release: U-2 done — history rewritten in taro-kit-release (185 commits, personal email only); continue from this folder; next U-3 GitHub repo",
+      "step": "6 Release candidate: D-052 manual deploys committed; release-manager writing environments.md, runbook.md, .env.example, scripts/release-build.sh; then verify release build, tag v1.0.0-rc.1, Gate G6",
       "gate": {
         "status": "pending",
         "at": null,
@@ -840,10 +840,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:23:04+00:00",
-      "event": "decision D-001 opened: Platform"
-    },
     {
       "at": "2026-10-13T03:23:04+00:00",
       "event": "decision D-001 answered: Web app + PWA"
@@ -1639,9 +1635,13 @@
     {
       "at": "2026-10-20T07:26:03+00:00",
       "event": "decision D-052 answered: Manual only: pushes run gates, never ship; staging and production only by manual workflow run or the runbook's local command (supersedes D-047)"
+    },
+    {
+      "at": "2026-10-20T07:26:36+00:00",
+      "event": "release step: 6 Release candidate: D-052 manual deploys committed; release-manager writing environments.md, runbook.md, .env.example, scripts/release-build.sh; then verify release build, tag v1.0.0-rc.1, Gate G6"
     }
   ],
-  "updated": "2026-10-20T07:26:03+00:00",
+  "updated": "2026-10-20T07:26:36+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

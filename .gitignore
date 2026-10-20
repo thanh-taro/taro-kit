@@ -28,3 +28,8 @@ test-results/
 .dev.vars.*
 .env
 .env.*
+# ...but the documented template is committed
+!.env.example
+
+# Release builds (scripts/release-build.sh)
+release/

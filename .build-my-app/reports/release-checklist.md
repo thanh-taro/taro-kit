@@ -6,6 +6,8 @@ Not legal advice. Companion files: `publish-plan.md` (the `publish.yml` spec, wr
 
 Legend: **C** = Claude does it (after you say go), **U** = user-owned hard stop. Each U item has Steps, Verify and Rollback.
 
+**Status 2026-10-20 (supersedes the notes below where they differ).** Done: U-1 (real content, plus the Résumé page F-017), U-2 (history rewritten, working repo `~/Documents/personals/taro-kit-release`), U-3 and U-4 (public repo `thanh-taro/taro-kit` under PolyForm Noncommercial 1.0.0, D-051; `main` pushed). Every deploy is manual (D-052): a push never deploys, so the D-047 notes about push deploys and skipped deploys no longer apply. The deploy steps (secrets, staging, custom domains, production, rollback, teardown) now live in `docs/deploy/runbook.md`; follow it instead of U-9 to U-19 where they differ. Variables and secrets: `docs/deploy/environments.md`.
+
 **Updated 2026-10-20 for D-045 to D-048.** C-1 and C-2 are done (branch `worktree-agent-a9b2dfd7cc3a69107`). Staging is its own Worker at `staging.tarokit.app`, deployed only by hand and removed after launch (D-046). Production follows ADR-0007 as written: every green push to `main` deploys to production (D-047); there is no `PRODUCTION_DEPLOY_ENABLED` variable. A push deploys only once `CLOUDFLARE_API_TOKEN` exists in the `production` environment; until then the production deploy is skipped with a notice and the run stays green. So the order below is: staging secrets, staging deploy and checks, then the production secret, the first production deploy and the production custom domain. `package.json` is at `1.0.0`; you create the tag at launch (D-048).
 
 ## What was found while preparing (read first)
