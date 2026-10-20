@@ -78,31 +78,37 @@ skills:
   - name: SQL
     level: 5
   - name: Python
-    level: 4
+    level: 5
   - name: MySQL
-    level: 4
+    level: 5
   - name: MongoDB
-    level: 4
+    level: 5
   - name: DynamoDB
-    level: 4
+    level: 5
   - name: Neo4j
-    level: 4
+    level: 5
   - name: Laravel
-    level: 4
+    level: 5
   - name: ReactJS
-    level: 4
+    level: 5
   - name: React Native
-    level: 4
+    level: 5
   - name: SQL injection prevention
-    level: 4
+    level: 5
   - name: Leadership
-    level: 3
+    level: 5
   - name: Node.js
+    level: 5
   - name: FastAPI
+    level: 5
   - name: NestJS
+    level: 5
   - name: Redis
+    level: 5
   - name: Docker
+    level: 5
   - name: Prompt engineering
+    level: 5
 languages:
   - name: Vietnamese
     level: Native
