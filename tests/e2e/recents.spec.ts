@@ -8,6 +8,10 @@ import { expect, test, type Page } from '@playwright/test';
 import { PROD } from './ports.ts';
 import { PORTAL, serveSites, toolPage } from './support/sites.ts';
 
+// Firefox refuses any navigation while the context is offline (NS_ERROR_OFFLINE), even one these tests route, so the
+// offline tool view is a Firefox manual check (docs/deploy/runbook.md); Chromium and WebKit run it here.
+const OFFLINE_FIREFOX = 'Firefox blocks routed navigations while offline; manual check in the runbook';
+
 const STORAGE_KEY = 'tarokit.personal';
 const FIXTURE = `${PORTAL}/__fixtures__/recents/`;
 const SETTINGS = `${PORTAL}/settings/`;
@@ -119,7 +123,9 @@ test.describe('F-006.R1 recording visits', () => {
   test('F-006.R1 an embedded tool’s view records the visit even when the tool does not load (offline)', async ({
     page,
     context,
+    browserName,
   }) => {
+    test.skip(browserName === 'firefox', OFFLINE_FIREFOX);
     await context.setOffline(true);
     await page.goto(toolPage('ft-embedded'));
     await expect(page.getByText('Fixture embedded tool needs the internet.', { exact: false })).toBeVisible();

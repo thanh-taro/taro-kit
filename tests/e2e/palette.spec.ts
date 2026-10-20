@@ -10,7 +10,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { loadRegistry, projectPath } from '../../src/modules/content/index.ts';
 import { localDate } from '../../src/modules/personal-data/index.ts';
 import { PROD } from './ports.ts';
-import { PORTAL, serveSites, toolPage, type Sites } from './support/sites.ts';
+import { PORTAL, prefersScheme, serveSites, toolPage, type Sites } from './support/sites.ts';
 
 const root = join(import.meta.dirname, '../..');
 const registry = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F005-favorites') });
@@ -448,7 +448,7 @@ test.describe('F-004 command palette', () => {
 
   for (const scheme of ['dark', 'light'] as const)
     test(`NFR-04 the open palette has no axe violations (${scheme})`, async ({ page }) => {
-      await page.emulateMedia({ colorScheme: scheme });
+      await prefersScheme(page, scheme);
       await seed(page, { favorites: ['fx-01'], recents: ['fx-02'] });
       await goto(page, '/');
       await expect(page.locator('html')).toHaveAttribute('data-theme', scheme);

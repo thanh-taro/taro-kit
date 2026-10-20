@@ -9,7 +9,11 @@ import { join } from 'node:path';
 import { loadRegistry } from '../../src/modules/content/index.ts';
 import { permissionsPolicy } from '../../src/modules/security-policy/index.ts';
 import { SLOW_LOAD_MS } from '../../src/modules/tool-host/phase.ts';
-import { PORTAL, serveSites, toolPage, toolUrl, type Sites } from './support/sites.ts';
+import { PORTAL, prefersScheme, serveSites, toolPage, toolUrl, type Sites } from './support/sites.ts';
+
+// Firefox refuses any navigation while the context is offline (NS_ERROR_OFFLINE), even one these tests route, so the
+// offline tool view is a Firefox manual check (docs/deploy/runbook.md); Chromium and WebKit run it here.
+const OFFLINE_FIREFOX = 'Firefox blocks routed navigations while offline; manual check in the runbook';
 
 const STORAGE_KEY = 'tarokit.personal';
 const EMBEDDED = 'Fixture embedded tool';
@@ -254,7 +258,9 @@ test.describe('F-003 tool view: embedded tools', () => {
   test('F003_AC9 offline, a tool that is not offline-capable shows the offline state, then loads when back online', async ({
     page,
     context,
+    browserName,
   }) => {
+    test.skip(browserName === 'firefox', OFFLINE_FIREFOX);
     await page.goto(toolPage('ft-embedded'));
     await toolFrame(page);
     // Opened while the device is offline (the portal page itself comes from the proxy, like a cached shell).
@@ -273,7 +279,8 @@ test.describe('F-003 tool view: embedded tools', () => {
     expect(await page.evaluate(() => (window as unknown as { marker: number }).marker)).toBe(7);
   });
 
-  test('F-003.R6 an offline-capable tool is loaded even while offline', async ({ page, context }) => {
+  test('F-003.R6 an offline-capable tool is loaded even while offline', async ({ page, context, browserName }) => {
+    test.skip(browserName === 'firefox', OFFLINE_FIREFOX);
     await page.goto(toolPage('ft-offline'));
     await toolFrame(page, 'ft-offline');
     await context.setOffline(true);
@@ -357,7 +364,7 @@ test.describe('F-003 tool view: linked, unknown and hidden tools', () => {
 
 test.describe('F-012 theme hand-off through the real tool frame', () => {
   test('F012_AC5 with the dark theme showing, the embedded tool’s address carries the dark theme', async ({ page }) => {
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await prefersScheme(page, 'dark');
     const tool = await openEmbedded(page);
     expect(new URL(tool.url()).searchParams.get('theme')).toBe('dark');
     expect(await tool.evaluate(() => (window as unknown as { initialTheme: string }).initialTheme)).toBe('dark');
@@ -365,7 +372,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
   });
 
   test('F012_AC5 a stored light choice reaches the tool as light', async ({ page }) => {
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await prefersScheme(page, 'dark');
     await seed(page, { theme: 'light' });
     const tool = await openEmbedded(page);
     expect(new URL(tool.url()).searchParams.get('theme')).toBe('light');
@@ -374,7 +381,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
   test('F012_AC6 the header toggle reaches the tool without reloading it, and nothing else is sent', async ({
     page,
   }) => {
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await prefersScheme(page, 'dark');
     const tool = await openEmbedded(page);
     await tool.evaluate(() => ((window as unknown as { marker: number }).marker = 42));
     await page.getByRole('button', { name: 'Switch to light theme' }).click();
@@ -387,7 +394,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
   test('F012_AC7 a tool that says ready while the theme changed during its load gets exactly the theme showing', async ({
     page,
   }) => {
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await prefersScheme(page, 'dark');
     const held = sites.holdTools();
     // The held tool may be part of the page's load event (when the island hydrates early), so don't wait for it.
     await page.goto(toolPage('ft-ready'), { waitUntil: 'domcontentloaded' });
@@ -408,7 +415,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
   test('F012_AC8 on system, a device switch during the load reaches a ready tool once, and a later one live', async ({
     page,
   }) => {
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await prefersScheme(page, 'dark');
     const held = sites.holdTools();
     // The held tool may be part of the page's load event (when the island hydrates early), so don't wait for it.
     await page.goto(toolPage('ft-ready'), { waitUntil: 'domcontentloaded' });
@@ -422,7 +429,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     await expect.poll(received).toEqual([{ type: 'taro:theme', value: 'light' }]);
     // Loaded: a later device switch reaches the tool without reloading it.
     await tool.evaluate(() => ((window as unknown as { marker: number }).marker = 1));
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await prefersScheme(page, 'dark');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect.poll(received).toEqual([
       { type: 'taro:theme', value: 'light' },
@@ -461,7 +468,7 @@ test('F005_AC2 unpinning in the real tool header removes the tool from the home 
 test.describe('NFR-03 tool view accessibility', () => {
   for (const scheme of ['dark', 'light'] as const) {
     test(`NFR-03 embedded, linked and not-found views have no axe violations (${scheme})`, async ({ page }) => {
-      await page.emulateMedia({ colorScheme: scheme });
+      await prefersScheme(page, scheme);
       for (const id of ['ft-embedded', 'fx-linked', 'does-not-exist']) {
         await page.goto(toolPage(id));
         if (id === 'ft-embedded') await toolFrame(page);

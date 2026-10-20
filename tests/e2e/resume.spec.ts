@@ -191,6 +191,8 @@ test.describe('F-017 Résumé page', () => {
   test('NFR-07 CMP-AppShell full: with six navigation items, the bar fits without overlap at every width', async ({
     page,
   }) => {
+    // About a hundred widths: Firefox resizes slowly enough to reach the default 30 s under a full parallel run.
+    test.slow();
     await page.goto(`${PROD}/resume/`);
     await page.waitForLoadState('load');
     await expectBarFits(page, 'online');

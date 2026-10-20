@@ -8,7 +8,7 @@
 // Every address is https, as INV-02 requires of catalog addresses, so real secure contexts and origins apply.
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { BrowserContext, Route } from '@playwright/test';
+import type { BrowserContext, Page, Route } from '@playwright/test';
 import { FX } from '../ports.ts';
 
 const root = join(import.meta.dirname, '../../..');
@@ -18,6 +18,19 @@ export const PORTAL = 'https://tarokit.test';
 export const OTHER_PORTAL = 'https://elsewhere-portal.test';
 export const toolUrl = (id: string) => `https://${id}.tarokit.test/`;
 export const toolPage = (id: string, portal = PORTAL) => `${portal}/t/${id}/`;
+
+/** A test-only empty page on the portal origin (no app code runs, nothing is stored). */
+const BLANK = '/__blank__';
+
+/**
+ * Sets the device color scheme for the portal pages that follow. Firefox drops Playwright's emulated scheme when a
+ * page served with `Cross-Origin-Opener-Policy` opens in a fresh browsing context (the first navigation from
+ * about:blank), so the scheme is set once the tab is already on the portal origin. Call it before the first `goto`.
+ */
+export async function prefersScheme(page: Page, colorScheme: 'dark' | 'light'): Promise<void> {
+  if (new URL(page.url()).origin !== PORTAL) await page.goto(`${PORTAL}${BLANK}`);
+  await page.emulateMedia({ colorScheme });
+}
 
 const fixture = (name: string) => readFileSync(join(root, 'tests/fixtures/tool-host/F003-tool', name), 'utf8');
 
@@ -56,6 +69,8 @@ export async function serveSites(context: BrowserContext): Promise<Sites> {
 
   const portal = async (route: Route) => {
     const url = new URL(route.request().url());
+    if (url.pathname === BLANK)
+      return route.fulfill({ body: '<!doctype html><title>blank</title>', contentType: 'text/html', headers });
     try {
       // Firefox forwards the page's Host (tarokit.test), which the preview server refuses ("Blocked request"),
       // so the proxied request drops it and gets the preview server's own host.
