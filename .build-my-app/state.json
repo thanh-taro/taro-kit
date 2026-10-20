@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "created": "2026-10-13T03:12:20+00:00",
   "autonomy": "balanced",
   "profile": {
@@ -71,9 +71,19 @@
       }
     },
     "release": {
-      "title": "6 Release",
+      "title": "6 Release candidate",
       "status": "in_progress",
-      "step": "6 Release: change request F-017 Résumé (ready) building; release user steps paused until merged",
+      "step": "6 Release: F-017 shipped; U-1 content done; next user U-2 author rewrite, then U-3+",
+      "gate": {
+        "status": "pending",
+        "at": null,
+        "note": null
+      }
+    },
+    "deploy": {
+      "title": "7 Deploy",
+      "status": "pending",
+      "step": null,
       "gate": {
         "status": "pending",
         "at": null,
@@ -81,7 +91,7 @@
       }
     },
     "iterate": {
-      "title": "7 Iterate",
+      "title": "8 Iterate",
       "status": "pending",
       "step": null,
       "gate": {
@@ -806,10 +816,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:13:27+00:00",
-      "event": "phase setup -> gate"
-    },
     {
       "at": "2026-10-13T03:14:10+00:00",
       "event": "gate setup passed: Greenfield; personal/experienced/flexible/balanced; web-capable env"
@@ -1605,9 +1611,13 @@
     {
       "at": "2026-10-20T04:03:31+00:00",
       "event": "release step: 6 Release: change request F-017 Résumé (ready) building; release user steps paused until merged"
+    },
+    {
+      "at": "2026-10-20T06:58:29+00:00",
+      "event": "release step: 6 Release: F-017 shipped; U-1 content done; next user U-2 author rewrite, then U-3+"
     }
   ],
-  "updated": "2026-10-20T04:03:31+00:00",
+  "updated": "2026-10-20T06:58:29+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
