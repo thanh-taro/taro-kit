@@ -73,7 +73,7 @@
     "release": {
       "title": "6 Release candidate",
       "status": "in_progress",
-      "step": "6 Release: F-017 shipped; U-1 content done; next user U-2 author rewrite, then U-3+",
+      "step": "6 Release: U-2 done — history rewritten in taro-kit-release (185 commits, personal email only); continue from this folder; next U-3 GitHub repo",
       "gate": {
         "status": "pending",
         "at": null,
@@ -816,14 +816,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:14:10+00:00",
-      "event": "gate setup passed: Greenfield; personal/experienced/flexible/balanced; web-capable env"
-    },
-    {
-      "at": "2026-10-13T03:14:10+00:00",
-      "event": "set idea"
-    },
     {
       "at": "2026-10-13T03:14:15+00:00",
       "event": "phase product-spec -> in_progress"
@@ -1615,9 +1607,17 @@
     {
       "at": "2026-10-20T06:58:29+00:00",
       "event": "release step: 6 Release: F-017 shipped; U-1 content done; next user U-2 author rewrite, then U-3+"
+    },
+    {
+      "at": "2026-10-20T07:14:25+00:00",
+      "event": "release step: 6 Release: U-2 done — history rewritten in taro-kit-release (185 commits, personal email only); continue from this folder; next U-3 GitHub repo"
+    },
+    {
+      "at": "2026-10-20T07:14:26+00:00",
+      "event": "U-2 author rewrite done with git-filter-repo (mailmap + replace-text); old folder taro-kit keeps spike/worktree branches, never push from it"
     }
   ],
-  "updated": "2026-10-20T06:58:29+00:00",
+  "updated": "2026-10-20T07:14:26+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
