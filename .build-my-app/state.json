@@ -72,18 +72,18 @@
     },
     "release": {
       "title": "6 Release candidate",
-      "status": "in_progress",
-      "step": "6 Release candidate: D-052 manual deploys committed; release-manager writing environments.md, runbook.md, .env.example, scripts/release-build.sh; then verify release build, tag v1.0.0-rc.1, Gate G6",
+      "status": "done",
+      "step": "6 Release: v1.0.0-rc.1 tagged at 8e5c40a, reproducible build recorded in release-1.0.0.md; awaiting G6 approval",
       "gate": {
-        "status": "pending",
-        "at": null,
+        "status": "passed",
+        "at": "2026-10-20T10:05:11+00:00",
         "note": null
       }
     },
     "deploy": {
       "title": "7 Deploy",
-      "status": "pending",
-      "step": null,
+      "status": "in_progress",
+      "step": "7 Deploy: live at https://tarokit.app (version 6003f97c, incl. 2 developer tools); remaining: production smoke checks and deploy gate G7",
       "gate": {
         "status": "pending",
         "at": null,
@@ -787,6 +787,30 @@
       "answer": "Manual only: pushes run gates, never ship; staging and production only by manual workflow run or the runbook's local command (supersedes D-047)",
       "asked": "2026-10-20T07:26:03+00:00",
       "answered": "2026-10-20T07:26:03+00:00"
+    },
+    {
+      "id": "D-053",
+      "question": "D-053 G6: approve v1.0.0-rc.1 + runbook; first deploy straight to production (supersedes D-044 staging-first for v1.0); deploys via local wrangler after Owner login",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "release",
+      "status": "answered",
+      "answer": "Owner: Approve; Straight to production; Local wrangler (2026-10-20)",
+      "asked": "2026-10-20T10:05:11+00:00",
+      "answered": "2026-10-20T10:05:17+00:00"
+    },
+    {
+      "id": "D-054",
+      "question": "D-054 No staging environment: deploys go straight to production; remove env.staging, the staging jobs and docs (Owner, 2026-10-20)",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "deploy",
+      "status": "answered",
+      "answer": "Owner: no staging env (2026-10-20)",
+      "asked": "2026-10-20T10:07:49+00:00",
+      "answered": "2026-10-20T10:07:49+00:00"
     }
   ],
   "loops": {
@@ -840,54 +864,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:23:04+00:00",
-      "event": "decision D-001 answered: Web app + PWA"
-    },
-    {
-      "at": "2026-10-13T03:23:04+00:00",
-      "event": "decision D-002 opened: Scope of this project"
-    },
-    {
-      "at": "2026-10-13T03:23:04+00:00",
-      "event": "decision D-002 answered: Portal/portfolio only; each tool is a separate project in another dir"
-    },
-    {
-      "at": "2026-10-13T03:23:05+00:00",
-      "event": "decision D-003 opened: Data storage"
-    },
-    {
-      "at": "2026-10-13T03:23:05+00:00",
-      "event": "decision D-003 answered: Local-only with JSON export/import"
-    },
-    {
-      "at": "2026-10-13T03:23:05+00:00",
-      "event": "decision D-004 opened: Currency converter"
-    },
-    {
-      "at": "2026-10-13T03:23:05+00:00",
-      "event": "decision D-004 answered: Skip in M-1 (moot: tools are separate projects)"
-    },
-    {
-      "at": "2026-10-13T03:23:06+00:00",
-      "event": "decision D-005 opened: Analytics"
-    },
-    {
-      "at": "2026-10-13T03:23:06+00:00",
-      "event": "decision D-005 answered: None"
-    },
-    {
-      "at": "2026-10-13T03:23:06+00:00",
-      "event": "decision D-006 opened: Tool integration"
-    },
-    {
-      "at": "2026-10-13T03:23:06+00:00",
-      "event": "decision D-006 answered: Hybrid: per-tool mode embed (sandboxed iframe) or link"
-    },
-    {
-      "at": "2026-10-13T03:23:06+00:00",
-      "event": "decision D-007 opened: Tool registry"
-    },
     {
       "at": "2026-10-13T03:23:07+00:00",
       "event": "decision D-007 answered: Typed registry file in this repo"
@@ -1639,9 +1615,57 @@
     {
       "at": "2026-10-20T07:26:36+00:00",
       "event": "release step: 6 Release candidate: D-052 manual deploys committed; release-manager writing environments.md, runbook.md, .env.example, scripts/release-build.sh; then verify release build, tag v1.0.0-rc.1, Gate G6"
+    },
+    {
+      "at": "2026-10-20T10:03:51+00:00",
+      "event": "release step: 6 Release: v1.0.0-rc.1 tagged at 8e5c40a, reproducible build recorded in release-1.0.0.md; awaiting G6 approval"
+    },
+    {
+      "at": "2026-10-20T10:05:11+00:00",
+      "event": "decision D-053 opened: D-053 G6: approve v1.0.0-rc.1 + runbook; first deploy straight to production (supersedes D-044 staging-first for v1.0); deploys via local wrangler after Owner login"
+    },
+    {
+      "at": "2026-10-20T10:05:11+00:00",
+      "event": "gate release passed"
+    },
+    {
+      "at": "2026-10-20T10:05:17+00:00",
+      "event": "decision D-053 answered: Owner: Approve; Straight to production; Local wrangler (2026-10-20)"
+    },
+    {
+      "at": "2026-10-20T10:05:28+00:00",
+      "event": "phase deploy -> in_progress"
+    },
+    {
+      "at": "2026-10-20T10:05:28+00:00",
+      "event": "deploy step: 7 Deploy: pre-flight; waiting for Owner wrangler login"
+    },
+    {
+      "at": "2026-10-20T10:07:49+00:00",
+      "event": "decision D-054 opened: D-054 No staging environment: deploys go straight to production; remove env.staging, the staging jobs and docs (Owner, 2026-10-20)"
+    },
+    {
+      "at": "2026-10-20T10:07:49+00:00",
+      "event": "decision D-054 answered: Owner: no staging env (2026-10-20)"
+    },
+    {
+      "at": "2026-10-20T10:07:49+00:00",
+      "event": "deploy step: 7 Deploy: Worker tarokit uploaded (version 9aac4eda); waiting for Owner to attach tarokit.app custom domain"
+    },
+    {
+      "at": "2026-10-20T14:09:01+00:00",
+      "event": "tarokit.app attached via wrangler deploy --domain (version 759778a8, same assets as v1.0.0-rc.1)"
+    },
+    {
+      "at": "2026-10-20T14:09:01+00:00",
+      "event": "catalog: JSON Formatter published, Text Case Converter added (45f2209); deployed version 6003f97c, both verified embedded on tarokit.app"
+    },
+    {
+      "at": "2026-10-20T14:09:01+00:00",
+      "event": "deploy step: 7 Deploy: live at https://tarokit.app (version 6003f97c, incl. 2 developer tools); remaining: production smoke checks and deploy gate G7"
     }
   ],
-  "updated": "2026-10-20T07:26:36+00:00",
+  "updated": "2026-10-20T14:09:01+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
