@@ -57,7 +57,10 @@ export async function serveSites(context: BrowserContext): Promise<Sites> {
   const portal = async (route: Route) => {
     const url = new URL(route.request().url());
     try {
-      const response = await route.fetch({ url: `${BUILD}${url.pathname}${url.search}` });
+      // Firefox forwards the page's Host (tarokit.test), which the preview server refuses ("Blocked request"),
+      // so the proxied request drops it and gets the preview server's own host.
+      const { host: _host, ...forwarded } = route.request().headers();
+      const response = await route.fetch({ url: `${BUILD}${url.pathname}${url.search}`, headers: forwarded });
       await route.fulfill({ response, headers: { ...response.headers(), ...headers } });
     } catch (e) {
       // A request the page abandoned mid-flight (it navigated away, e.g. a preload or the worker's precache):
