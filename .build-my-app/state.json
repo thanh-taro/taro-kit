@@ -775,6 +775,18 @@
       "answer": "Public repo thanh-taro/taro-kit; own code and content under PolyForm Noncommercial 1.0.0; publish content as is (phone and résumé included)",
       "asked": "2026-10-20T07:20:24+00:00",
       "answered": "2026-10-20T07:20:30+00:00"
+    },
+    {
+      "id": "D-052",
+      "question": "Release: when deploys happen",
+      "options": [],
+      "recommendation": null,
+      "kind": "release",
+      "phase": "release",
+      "status": "answered",
+      "answer": "Manual only: pushes run gates, never ship; staging and production only by manual workflow run or the runbook's local command (supersedes D-047)",
+      "asked": "2026-10-20T07:26:03+00:00",
+      "answered": "2026-10-20T07:26:03+00:00"
     }
   ],
   "loops": {
@@ -828,14 +840,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:17:23+00:00",
-      "event": "market research saved; user wants all categories incl. creator (clip maker) + relaxing tools; platform web+PWA; identity = about page + dashboard home"
-    },
-    {
-      "at": "2026-10-13T03:17:23+00:00",
-      "event": "product-spec step: 1.1 positioning + MVP scope round"
-    },
     {
       "at": "2026-10-13T03:23:04+00:00",
       "event": "decision D-001 opened: Platform"
@@ -1627,9 +1631,17 @@
     {
       "at": "2026-10-20T07:20:30+00:00",
       "event": "decision D-051 answered: Public repo thanh-taro/taro-kit; own code and content under PolyForm Noncommercial 1.0.0; publish content as is (phone and résumé included)"
+    },
+    {
+      "at": "2026-10-20T07:26:03+00:00",
+      "event": "decision D-052 opened: Release: when deploys happen"
+    },
+    {
+      "at": "2026-10-20T07:26:03+00:00",
+      "event": "decision D-052 answered: Manual only: pushes run gates, never ship; staging and production only by manual workflow run or the runbook's local command (supersedes D-047)"
     }
   ],
-  "updated": "2026-10-20T07:20:30+00:00",
+  "updated": "2026-10-20T07:26:03+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

@@ -61,3 +61,6 @@ The hosting and CI requirements:
 - A temporary staging site, `https://staging.tarokit.app`, is its own assets-only Worker (`tarokit-staging`, the `staging` environment in `wrangler.jsonc`). It is built with `pnpm build:staging` and deployed only by hand (`publish.yml`, `workflow_dispatch` with `target: staging`). It is not a `*.workers.dev` or preview URL, which this ADR rules out for the portal.
 - It exists for the manual checks before go-live (D-044) and is removed after launch.
 - Production is unchanged (D-047): every green push to `main` deploys to production, as decided above.
+
+## Note: manual deploys only (2026-10-20, D-052)
+- Supersedes D-047 and the push-to-deploy line in "Decision". A push to `main` runs every gate and the build but never deploys. Production and staging are deployed only by hand: a manual run of `publish.yml` (`workflow_dispatch`, same gates), or the local command in `docs/deploy/runbook.md`.

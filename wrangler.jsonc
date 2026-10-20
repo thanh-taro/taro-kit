@@ -1,6 +1,5 @@
 // Cloudflare Workers static assets (ADR-0007, MOD-Delivery). Assets only: no "main", no Worker script.
-// Deployed only by .github/workflows/publish.yml (`wrangler deploy`, or `--env staging`); never by hand from a laptop
-// except for a rollback (release checklist).
+// Deployed by hand only (D-052): a manual run of .github/workflows/publish.yml, or the runbook's local command.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   // Production: https://tarokit.app, built by `pnpm build`.

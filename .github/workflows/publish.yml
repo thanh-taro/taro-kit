@@ -1,14 +1,12 @@
-# Publish (ADR-0007, MOD-Delivery, D-046, D-047). What was gated is what is deployed: one build per run, passed to
-# the deploy job as an artifact.
-#   push to main:        every gate, then a production deploy to https://tarokit.app (ADR-0007 as written, D-047).
-#   workflow_dispatch:   target=staging deploys https://staging.tarokit.app (D-046, manual only);
-#                        target=production deploys production by hand. Deploys run only from main.
+# Publish (ADR-0007, MOD-Delivery, D-046, D-052). What was gated is what is deployed: one build per run, passed to
+# the deploy job as an artifact. Every deploy is manual (D-052).
+#   push to main:        every gate and the production build; it never deploys.
+#   workflow_dispatch:   target=staging deploys https://staging.tarokit.app (D-046);
+#                        target=production deploys https://tarokit.app. Deploys run only from main.
 #
 # Secrets: CLOUDFLARE_API_TOKEN (Account / Workers Scripts / Edit only) and CLOUDFLARE_ACCOUNT_ID, stored in the
 # GitHub environments `staging` and `production` and read only by the Deploy step.
-# A push deploys only once CLOUDFLARE_API_TOKEN exists in the `production` environment. Until then the
-# production deploy is skipped with a notice and the run stays green, so the repo can be pushed and staging
-# checked first (release checklist). A manual deploy (either target) with a missing secret fails with an error.
+# A manual deploy (either target) with a missing secret fails with an error.
 name: publish
 
 on:
@@ -31,7 +29,7 @@ concurrency:
 
 env:
   ASTRO_TELEMETRY_DISABLED: '1'
-  # A push always targets production; a manual run targets what was chosen.
+  # A push builds production for the gates only; a manual run targets what was chosen.
   TARGET: ${{ github.event_name == 'push' && 'production' || inputs.target }}
 
 jobs:
@@ -216,7 +214,7 @@ jobs:
 
   deploy-production:
     needs: [checks, e2e-engines, perf, catalog-gate, build]
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.target == 'production')
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.target == 'production'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
