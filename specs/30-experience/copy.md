@@ -135,8 +135,11 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-settings.importFailed** | I couldn't open that file just now. Please try again. | when settings can't read the picked file or load the import (F-013 edge case) |
 | **COPY-settings.exportFailed** | I couldn't save your backup just now. Please try again. | when settings' export fails (F-013 edge case) |
 | **COPY-settings.privacy** | No accounts, no tracking, no cookies. Your favorites, recent tools, days used and theme stay in this browser, and they only leave it if you export a backup. | privacy statement, paragraph 1: what stays on the device (INV-05) |
-| **COPY-settings.privacyTools** | Each tool is its own site, with its own privacy policy. The only thing I tell a tool inside TaroKit is which theme you're using. | privacy statement, paragraph 2: tools (INV-05 exception, F-012.R5) |
+| **COPY-settings.privacyTools** | Each tool is its own site and tells you how it handles your data. The only thing I tell a tool inside TaroKit is which theme you're using. | privacy statement, paragraph 2: tools (INV-05 exception, F-012.R5) |
 | **COPY-settings.privacyHosting** | Cloudflare hosts TaroKit and, like any host, handles request data such as your IP address to serve it. I don't use its analytics. | privacy statement, paragraph 3: hosting (D-037) |
+| **COPY-footer.privacy** | Privacy | shell footer link to the Privacy page (F-018) |
+| **COPY-footer.terms** | Terms | shell footer link to the Terms page (F-018) |
+| **COPY-policy.updated** | Last updated {date} | policy date, read in full (SCR-Policy) |
 | **COPY-notFound.title** | I can't find that page | not-found heading |
 | **COPY-notFound.body** | It may have moved, or I took it down. | not-found body |
 | **COPY-notFound.toCatalog** | Browse my tools | not-found action; also the home first-visit invitation's action (SCR-Home empty) |
@@ -154,5 +157,9 @@ Voice (PRN-04): TaroKit **is Taro talking to you**. Sentences are first person (
 | **COPY-meta.projectsDescription** | Things I've built beyond the toolkit. | deprecated (D-055): not shown |
 | **COPY-meta.resumeTitle** | Résumé — TaroKit | Résumé preview title |
 | **COPY-meta.resumeDescription** | Where I've worked, what I studied, and what I'm good at. | Résumé preview description |
+| **COPY-meta.privacyTitle** | Privacy — TaroKit | Privacy preview title (F-018) |
+| **COPY-meta.privacyDescription** | How I handle your data: what stays on your device, and what reaches my host. | Privacy preview description |
+| **COPY-meta.termsTitle** | Terms — TaroKit | Terms preview title (F-018) |
+| **COPY-meta.termsDescription** | The ground rules for using TaroKit and the tools I build. | Terms preview description |
 | **COPY-meta.nowTitle** | Now — TaroKit | Now preview title |
 | **COPY-meta.nowDescription** | What I'm focused on, and what's new in TaroKit. | Now preview description |

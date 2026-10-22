@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "tarokit.schema.json",
   "title": "TaroKit data model",
-  "description": "Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.",
+  "description": "Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Category, ENT-Profile, ENT-NowNote, ENT-Resume, ENT-Policy) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.",
   "$defs": {
     "slug": {
       "type": "string",
@@ -614,6 +614,51 @@
       },
       "additionalProperties": false,
       "$comment": "ENT-Resume (F-017): the optional content file content/resume.yaml. INV-08 is checked by the validator."
+    },
+    "policy": {
+      "$comment": "ENT-Policy (F-018): content/privacy.yaml and content/terms.yaml, both required. Links inside a body are checked against INV-02 by the second pass.",
+      "type": "object",
+      "required": [
+        "title",
+        "updated",
+        "sections"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "updated": {
+          "$ref": "#/$defs/date"
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "heading",
+              "body"
+            ],
+            "properties": {
+              "heading": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "body": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "unevaluatedProperties": false
     }
   }
 }

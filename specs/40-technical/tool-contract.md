@@ -19,6 +19,13 @@ How a separate tool project (for example the JSON Formatter) must behave to be l
 - **Cookies**: tools share the `tarokit.app` site with the portal, so a `Domain=.tarokit.app` cookie would reach the portal and every other tool. Scope cookies to your own host (no `Domain` attribute). The portal sets and reads no cookies, and never will (architecture.md, Runtime boundaries).
 - Offline: if `offline: true`, the tool's own service worker must work after the tool has been opened inside the portal once while online (ADR-0009, SP-4).
 
+## Your users' data (F-018, D-058)
+The portal's privacy policy and terms promise these for every tool the Owner builds (origin `own`), so each such tool must keep them:
+- **Processed on the device**: files and text the user gives the tool are processed in the browser and never uploaded or sent anywhere. Prefer enforcing it with `Content-Security-Policy: connect-src 'none'` (or only the tool's own origin for its own static files).
+- **Originals never change**: the tool never modifies a file the user opened in it. Anything it saves is a new file the user chooses to download or save.
+- **Says how it handles data**: the tool states its own data handling inside the tool (F-018 scope, COPY-settings.privacyTools).
+- A tool that can't keep these is not listed until the policies are changed first.
+
 ## Theme hand-off (F-012.R5/R6, ADR-0011)
 - The portal opens the embedded tool with `?theme=light` or `?theme=dark`. Read it before first paint.
 - After loading, the tool may post `{ type: 'taro:ready' }` to `https://tarokit.app`. The portal answers with `{ type: 'taro:theme', value }` (`value` is `'light'` or `'dark'`) and sends it again whenever the theme changes. Accept messages only when `event.origin === 'https://tarokit.app'`.

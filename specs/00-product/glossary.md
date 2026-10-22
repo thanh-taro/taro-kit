@@ -27,6 +27,7 @@ status: draft
 | Résumé | The Owner's career record: experience, education, skills, languages, certificates and awards. |
 | Now | A short, dated, hand-written note about what the Owner is focusing on. |
 | Changelog | The list of catalog additions and updates, derived from catalog dates. |
+| Policy | The privacy policy or the terms of use: a dated document the Owner writes, shown on its own page. |
 | Personal data | Favorites, recents and preferences stored on the device. |
 | Backup file | An exported file of personal data that can be imported again. |
 | Installed app | The portal installed to the device's home screen or dock, opening in its own window. |

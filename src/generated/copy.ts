@@ -20,6 +20,8 @@ export const COPY = {
   "COPY-fav.add": "Add to favorites",
   "COPY-fav.full": "You can keep up to {limit} favorites. Unpin one to make room.",
   "COPY-fav.remove": "Remove from favorites",
+  "COPY-footer.privacy": "Privacy",
+  "COPY-footer.terms": "Terms",
   "COPY-home.categories": "Browse by category",
   "COPY-home.favorites": "Your favorites",
   "COPY-home.firstVisit": "New here? These are the tools I've built for work and life. Browse them, or press {shortcut} and I'll find anything for you.",
@@ -41,12 +43,16 @@ export const COPY = {
   "COPY-meta.homeTitle": "TaroKit — Taro's tools and work",
   "COPY-meta.nowDescription": "What I'm focused on, and what's new in TaroKit.",
   "COPY-meta.nowTitle": "Now — TaroKit",
+  "COPY-meta.privacyDescription": "How I handle your data: what stays on your device, and what reaches my host.",
+  "COPY-meta.privacyTitle": "Privacy — TaroKit",
   "COPY-meta.projectsDescription": "Things I've built beyond the toolkit.",
   "COPY-meta.projectsTitle": "Projects — TaroKit",
   "COPY-meta.resumeDescription": "Where I've worked, what I studied, and what I'm good at.",
   "COPY-meta.resumeTitle": "Résumé — TaroKit",
   "COPY-meta.settingsDescription": "Your theme and your data on this device.",
   "COPY-meta.settingsTitle": "Settings — TaroKit",
+  "COPY-meta.termsDescription": "The ground rules for using TaroKit and the tools I build.",
+  "COPY-meta.termsTitle": "Terms — TaroKit",
   "COPY-meta.toolsDescription": "Every tool I've built, by category.",
   "COPY-meta.toolsTitle": "Tools — TaroKit",
   "COPY-meta.toolTitle": "{tool} — TaroKit",
@@ -88,6 +94,7 @@ export const COPY = {
   "COPY-palette.resultCount": "{count} results",
   "COPY-palette.resultCountOne": "1 result",
   "COPY-palette.unavailable": "I couldn't load my tools just now. Pages and actions still work; reload the page to try again.",
+  "COPY-policy.updated": "Last updated {date}",
   "COPY-projects.empty": "I'm putting my projects together. Check back soon.",
   "COPY-projects.imageAlt": "Screenshot of {name}",
   "COPY-projects.title": "Things I've built",
@@ -122,7 +129,7 @@ export const COPY = {
   "COPY-settings.privacy": "No accounts, no tracking, no cookies. Your favorites, recent tools, days used and theme stay in this browser, and they only leave it if you export a backup.",
   "COPY-settings.privacyHosting": "Cloudflare hosts TaroKit and, like any host, handles request data such as your IP address to serve it. I don't use its analytics.",
   "COPY-settings.privacyTitle": "Privacy",
-  "COPY-settings.privacyTools": "Each tool is its own site, with its own privacy policy. The only thing I tell a tool inside TaroKit is which theme you're using.",
+  "COPY-settings.privacyTools": "Each tool is its own site and tells you how it handles your data. The only thing I tell a tool inside TaroKit is which theme you're using.",
   "COPY-settings.theme": "Theme",
   "COPY-settings.themeDark": "Dark",
   "COPY-settings.themeLight": "Light",
@@ -168,6 +175,7 @@ export interface CopyParams {
   "COPY-palette.noResults": { query: string | number };
   "COPY-palette.placeholder": { shortcut: string | number };
   "COPY-palette.resultCount": { count: string | number };
+  "COPY-policy.updated": { date: string | number };
   "COPY-projects.imageAlt": { name: string | number };
   "COPY-resume.period": { start: string | number; end: string | number };
   "COPY-resume.skillLevel": { level: string | number };

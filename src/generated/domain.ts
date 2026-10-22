@@ -34,7 +34,7 @@ export type AssetPath = string;
 export type YearMonth = string;
 
 /**
- * Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Category, ENT-Profile, ENT-NowNote) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.
+ * Shapes of authored content (ENT-CatalogEntry, ENT-Tool, ENT-Category, ENT-Profile, ENT-NowNote, ENT-Resume, ENT-Policy) and on-device personal data (ENT-PersonalData). Meaning and invariants: model.md.
  */
 export interface TaroKitDataModel {
   [k: string]: unknown;
@@ -214,4 +214,26 @@ export interface Resume {
     issuer: string;
     year: number;
   }[];
+}
+/**
+ * This interface was referenced by `TaroKitDataModel`'s JSON-Schema
+ * via the `definition` "policy".
+ */
+export interface Policy {
+  title: string;
+  updated: IsoDate;
+  /**
+   * @minItems 1
+   * @maxItems 20
+   */
+  sections: [
+    {
+      heading: string;
+      body: string;
+    },
+    ...{
+      heading: string;
+      body: string;
+    }[]
+  ];
 }

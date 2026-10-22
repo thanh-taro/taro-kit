@@ -18,7 +18,9 @@ The shared preview image (`/preview.png`) is generated at build from the dark th
 
 The Résumé page declares COPY-meta.resumeTitle and COPY-meta.resumeDescription (`metaFor({ page: 'resume' })`); it exists only when there is a résumé (F-017.R6).
 
-It also generates `sitemap.xml` from the registry (public pages, with `/resume/` only when there is a résumé, visible category pages and visible tool addresses, F-015.R3, F-015.R5, F-017.R6) and `robots.txt`. A build check fails on titles or descriptions that are too long.
+The Privacy and Terms pages declare COPY-meta.privacyTitle and COPY-meta.privacyDescription, and COPY-meta.termsTitle and COPY-meta.termsDescription (`metaFor({ page: 'privacy' })`, `metaFor({ page: 'terms' })`, F-018.R4).
+
+It also generates `sitemap.xml` from the registry (public pages, with `/resume/` only when there is a résumé, visible category pages and visible tool addresses, F-015.R3, F-015.R5, F-017.R6, with `/privacy/` and `/terms/`, F-018.R4) and `robots.txt`. A build check fails on titles or descriptions that are too long.
 
 ## Not responsible for
 - Per-tool preview images (not planned in this scope).
@@ -32,4 +34,4 @@ It also generates `sitemap.xml` from the registry (public pages, with `/resume/`
 - `sitemap.xml.ts`, `robots.txt.ts` and `preview.png.ts` static endpoints.
 
 ## Implements
-F-015 (all requirements) and F-017.R6. It is the main owner of NFR-12.
+F-015 (all requirements), F-017.R6 and F-018.R4. It is the main owner of NFR-12.

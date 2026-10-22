@@ -22,7 +22,7 @@ When a portal link is shared in chat or social media, the preview looks intentio
 - Out: a unique preview image per tool (M-2). M-1 uses one shared portal image.
 
 ## Requirements
-- **R1** Every public portal page declares a title, a one-sentence description and the shared preview image (COPY-meta.homeTitle, COPY-meta.homeDescription, COPY-meta.aboutTitle, COPY-meta.aboutDescription, COPY-meta.toolsTitle, COPY-meta.toolsDescription, COPY-meta.nowTitle, COPY-meta.nowDescription; the Résumé page per F-017.R6).
+- **R1** Every public portal page declares a title, a one-sentence description and the shared preview image (COPY-meta.homeTitle, COPY-meta.homeDescription, COPY-meta.aboutTitle, COPY-meta.aboutDescription, COPY-meta.toolsTitle, COPY-meta.toolsDescription, COPY-meta.nowTitle, COPY-meta.nowDescription; the Résumé page per F-017.R6; the Privacy and Terms pages per F-018.R4).
 - **R2** A tool's portal address declares the tool's name in its title (COPY-meta.toolTitle), its summary as the description, and the shared preview image.
 - **R3** The portal publishes a site index listing its public pages, visible category pages and the portal addresses of visible tools, leaving out hidden entries and empty categories (RULE-06).
 - **R4** A hidden or unknown tool's portal address declares the not-found title (COPY-notFound.title) and nothing about the tool.
