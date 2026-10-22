@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: F-018 built and reviewed; cutting release candidate v1.2.0-rc.1",
+      "step": "8 Iterate: v1.2.0 live (F-018 privacy and terms); awaiting next change request",
       "gate": {
         "status": "pending",
         "at": null,
@@ -868,6 +868,20 @@
       "answer": "A: every tool Taro builds processes user files and text on the device, never uploads them, and never changes opened files (saves are new files); added to tool-contract.md (Owner, 2026-10-22)",
       "asked": "2026-10-22T05:50:24+00:00",
       "answered": "2026-10-22T05:50:24+00:00"
+    },
+    {
+      "id": "D-059",
+      "question": "D-059 Approve v1.2.0-rc.1 and deploy it to production",
+      "options": [
+        "A deploy to production now;B hold"
+      ],
+      "recommendation": "A deploy to production now",
+      "kind": "release",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "A: deploy v1.2.0-rc.1 to production now, then push main and tags (Owner, 2026-10-22)",
+      "asked": "2026-10-22T07:19:23+00:00",
+      "answered": "2026-10-22T07:20:42+00:00"
     }
   ],
   "loops": {
@@ -937,26 +951,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:43:31+00:00",
-      "event": "phase product-spec -> gate"
-    },
-    {
-      "at": "2026-10-13T03:44:58+00:00",
-      "event": "gate product-spec passed: 15 M-1 features ready; 2 review rounds converged; D-001..D-018"
-    },
-    {
-      "at": "2026-10-13T03:45:17+00:00",
-      "event": "phase design -> in_progress"
-    },
-    {
-      "at": "2026-10-13T03:45:17+00:00",
-      "event": "phase architecture -> in_progress"
-    },
-    {
-      "at": "2026-10-13T03:45:17+00:00",
-      "event": "design step: 3.1 architect agent proposing stack (background)"
-    },
     {
       "at": "2026-10-13T03:45:34+00:00",
       "event": "design step: 2.1 style builder: discovery round"
@@ -1736,9 +1730,29 @@
     {
       "at": "2026-10-22T07:16:14+00:00",
       "event": "iterate step: 8 Iterate: F-018 built and reviewed; cutting release candidate v1.2.0-rc.1"
+    },
+    {
+      "at": "2026-10-22T07:19:23+00:00",
+      "event": "decision D-059 opened: D-059 Approve v1.2.0-rc.1 and deploy it to production"
+    },
+    {
+      "at": "2026-10-22T07:19:26+00:00",
+      "event": "iterate step: 8 Iterate: v1.2.0-rc.1 cut and verified locally; awaiting Owner approval to deploy (D-059)"
+    },
+    {
+      "at": "2026-10-22T07:20:42+00:00",
+      "event": "decision D-059 answered: A: deploy v1.2.0-rc.1 to production now, then push main and tags (Owner, 2026-10-22)"
+    },
+    {
+      "at": "2026-10-22T12:06:42+00:00",
+      "event": "iterate step: 8 Iterate: v1.2.0 live (F-018 privacy and terms); awaiting next change request"
+    },
+    {
+      "at": "2026-10-22T12:06:42+00:00",
+      "event": "v1.2.0 deployed to tarokit.app (version 0df943c1): F-018; smoke and catalog checks passed"
     }
   ],
-  "updated": "2026-10-22T07:16:14+00:00",
+  "updated": "2026-10-22T12:06:42+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
