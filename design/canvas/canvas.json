@@ -40,7 +40,7 @@
       "x": 1440,
       "y": 0,
       "w": 1360,
-      "h": 1560,
+      "h": 1820,
       "title": "CMP-AppShell",
       "page": "components"
     },
@@ -54,7 +54,7 @@
     },
     "CMP-ToolHeader.dc.html": {
       "x": 1440,
-      "y": 1680,
+      "y": 1940,
       "w": 1360,
       "h": 640,
       "title": "CMP-ToolHeader",
@@ -339,6 +339,23 @@
       "h": 2000,
       "title": "SCR-Resume / default / mobile",
       "page": "screens"
+    },
+    "PolicyDesktop.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "SCR-Policy / default / desktop",
+      "page": "screens",
+      "expand": "fill"
+    },
+    "PolicyMobile.dc.html": {
+      "x": 5280,
+      "y": 3040,
+      "w": 390,
+      "h": 1400,
+      "title": "SCR-Policy / default / mobile",
+      "page": "screens"
     }
   },
   "order": [
@@ -364,6 +381,7 @@
     "SettingsDesktop.dc.html",
     "NotFoundDesktop.dc.html",
     "ResumeDesktop.dc.html",
+    "PolicyDesktop.dc.html",
     "CatalogMobile.dc.html",
     "CategoryMobile.dc.html",
     "AboutMobile.dc.html",
@@ -371,6 +389,7 @@
     "SettingsMobile.dc.html",
     "NotFoundMobile.dc.html",
     "ResumeMobile.dc.html",
+    "PolicyMobile.dc.html",
     "HomeStatesDesktop.dc.html",
     "CatalogStatesDesktop.dc.html",
     "ToolStatesDesktop.dc.html",

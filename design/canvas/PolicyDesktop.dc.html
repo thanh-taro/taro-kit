@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Privacy and Terms, desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+.tk-dark{--bg:#0F0B16;--glow:#2A1850;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--accent2Fg:#FFC48A;--tint:#251A3C;--tint2:#33240F;--chrome:#140F1EB8}
+.tk-light{--bg:#FBFAFE;--glow:#F4F0FF;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--accent2Fg:#8F4705;--tint:#EEE7FE;--tint2:#FDEBD8;--chrome:#FFFFFFD1}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip{position:absolute;left:16px;top:-60px}.skip:focus{top:16px}
+.policy a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+</style>
+</helmet>
+<!-- SCR-Policy / default / desktop (F-018.R1, R2, R3). Tweaks: theme, and which policy is shown (the footer marks it). -->
+<div class="{{themeCls}}" style="position: relative; box-sizing: border-box; min-height: 1500px; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 16px 24px 48px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
+  <div style="max-width: 1120px; min-height: 1436px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 56px; padding: 0 8px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+      <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 14px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span><span data-copy="COPY-shell.brand">TAROKIT</span></a>
+      <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 2px; font-size: 14px">
+        <sc-for list="{{navs}}" as="n" hint-placeholder-count="5">
+          <a href="#" data-copy="{{n.copy}}" style="color: var(--muted); text-decoration: none; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 7px; font-weight: 500">{{n.label}}</a>
+        </sc-for>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 4px">
+        <button type="button" aria-label="{{toggleLabel}}" data-copy="COPY-shell.themeToggle" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 10.5A6.5 6.5 0 017.5 3a6.5 6.5 0 107.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+        <a href="#" aria-label="Settings" data-copy="COPY-nav.settings" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--muted); border-radius: 10px"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></a>
+      </div>
+    </header>
+    <!-- main fills at least the window less the header, so the footer starts below the first screen (CMP-AppShell). -->
+    <main id="main" class="policy" style="flex: 1 0 auto; min-height: 900px; padding: 16px 8px 0">
+      <article style="max-width: 640px; display: flex; flex-direction: column; gap: 40px">
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <h1 style="margin: 0; font: 600 44px/1.15 Unbounded, sans-serif; letter-spacing: -0.03em">{{doc.title}}</h1>
+          <p data-copy="COPY-policy.updated" style="margin: 0; font: 500 13px 'JetBrains Mono', monospace; color: var(--muted)">Last updated <time datetime="2026-10-22">October 22, 2026</time></p>
+        </div>
+        <sc-for list="{{doc.sections}}" as="s" hint-placeholder-count="3">
+          <section style="display: flex; flex-direction: column; gap: 14px">
+            <h2 style="margin: 0; font: 600 20px/1.15 Unbounded, sans-serif; letter-spacing: -0.01em">{{s.heading}}</h2>
+            <sc-for list="{{s.paras}}" as="p" hint-placeholder-count="1">
+              <p style="margin: 0; font-size: 17px; line-height: 1.55">{{p}}</p>
+            </sc-for>
+            <sc-if value="{{s.hasList}}" hint-placeholder-val="{{true}}">
+              <ul style="margin: 0; padding: 0 0 0 20px; display: flex; flex-direction: column; gap: 4px; font-size: 17px; line-height: 1.55">
+                <sc-for list="{{s.items}}" as="i" hint-placeholder-count="3"><li>{{i}}</li></sc-for>
+              </ul>
+            </sc-if>
+            <sc-if value="{{s.hasLinks}}" hint-placeholder-val="{{false}}">
+              <p style="margin: 0; font-size: 17px; line-height: 1.55">Sample text with <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">a sample web link</a>, which opens in a new tab, and <a href="mailto:adamnguyen.itdn@gmail.com">a sample email link</a>, which opens the mail app.</p>
+            </sc-if>
+          </section>
+        </sc-for>
+      </article>
+    </main>
+    <!-- CMP-AppShell footer (F-018.R3): contentinfo after main; the link to the page shown has aria-current="page". -->
+    <footer style="display: flex; align-items: center; gap: 4px; padding: 16px 8px 0; border-top: 1px solid var(--line); font-size: 13px">
+      <a href="#" data-copy="COPY-footer.privacy" aria-current="{{privacyCur}}" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; text-decoration: none; color: {{privacyColor}}; background: {{privacyBg}}; font-weight: {{privacyWeight}}">Privacy</a>
+      <a href="#" data-copy="COPY-footer.terms" aria-current="{{termsCur}}" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; text-decoration: none; color: {{termsColor}}; background: {{termsBg}}; font-weight: {{termsWeight}}">Terms</a>
+    </footer>
+    <p style="margin: 0; padding: 0 8px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Sample policy: the title, headings, text and links are placeholders; the real text is the Owner's content (ENT-Policy). Web links open in a new tab, email links the mail app (SCR-Policy).</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"page":{"editor":"enum","options":["privacy","terms"],"default":"privacy"},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme ?? 'dark';
+    const page = this.props.page ?? 'privacy';
+    const nav = (label, copy) => ({ label: label, copy: copy });
+    const sec = (heading, paras, items, links) => ({ heading: heading, paras: paras, items: items || [], hasList: !!items, hasLinks: !!links });
+    const docs = {
+      privacy: {
+        title: 'Privacy',
+        sections: [
+          sec('Sample section heading', ['Sample paragraph. I say in plain words what happens to your data, in a short opening section.']),
+          sec('Sample section with a list', ['Sample paragraph that leads into a list:'], ['Sample list item one;', 'Sample list item two;', 'Sample list item three.']),
+          sec('Sample section with links', [], null, true)
+        ]
+      },
+      terms: {
+        title: 'Terms',
+        sections: [
+          sec('Sample section heading', ['Sample paragraph about using the portal and its tools.']),
+          sec('Sample second heading', ['Sample paragraph, a little longer, so the reading width shows: a comfortable line stays well under the full content width.', 'Sample second paragraph in the same section.']),
+          sec('Sample third heading', [], null, true)
+        ]
+      }
+    };
+    const cur = (on) => ({ cur: on ? 'page' : 'false', color: on ? 'var(--fg)' : 'var(--muted)', bg: on ? 'var(--surface2)' : 'transparent', weight: on ? '600' : '500' });
+    const p = cur(page === 'privacy');
+    const t = cur(page === 'terms');
+    return {
+      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
+      toggleLabel: theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme',
+      navs: [nav('Home', 'COPY-nav.home'), nav('Tools', 'COPY-nav.tools'), nav('About me', 'COPY-nav.about'), nav('Résumé', 'COPY-nav.resume'), nav('Now', 'COPY-nav.now')],
+      doc: docs[page],
+      privacyCur: p.cur, privacyColor: p.color, privacyBg: p.bg, privacyWeight: p.weight,
+      termsCur: t.cur, termsColor: t.color, termsBg: t.bg, termsWeight: t.weight
+    };
+  }
+}
+</script>
+</body>
+</html>
