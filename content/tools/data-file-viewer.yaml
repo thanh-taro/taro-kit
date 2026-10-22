@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=../schemas/tool.json
+# Data File Viewer (taro-kit-tools/developer-tools/data-analysts-file-viewer), live at its own address.
+id: data-file-viewer
+kind: tool
+name: Data File Viewer
+summary: Open CSV, Parquet, JSON, Excel, XML and Avro files in a fast grid or tree — nothing leaves your browser.
+category: developer
+url: https://data-file-viewer.tarokit.app/
+origin: own
+openMode: embedded
+permissions: [clipboard-write, file-pick]
+offline: true
+tags: [csv, tsv, parquet, json, jsonl, excel, xlsx, xml, avro, data, viewer, analyst]
+added: 2026-10-22
