@@ -36,3 +36,11 @@ Waves run up to 3 features in parallel, in separate worktrees. Merges happen one
 - **F-011 / release**: `publish.yml` must call `catalog-check.yml` via `workflow_call` with `pre_deploy: true`.
 - **F-007**: re-cite F-011.AC5 (offline home cards) on the real home page; it is currently tested on the recents fixture page.
 - **QA**: F-011.AC1 (installed window) and offline in WebKit/Firefox are manual checks; the compact search key cap overflows its border (F-004).
+
+## Change request F-018 — privacy policy and terms (2026-10-22, D-057)
+One feature, one wave, in the main worktree (no other feature in flight).
+1. Design: PolicyDesktop and PolicyMobile boards (SCR-Policy / default, both themes); CMP-AppShell board gains the footer (full, narrow; compact without it); the footer added to the screen boards' shells where it is in view.
+2. Tests first (adapters/tests.md naming): F018_AC1–AC10 (unit for content/parsing/meta/sitemap; e2e for pages, footer, current page, tool view, offline), INV-02 policy links, the body-format errors (folded body, mixed list paragraph).
+3. Implement: `$defs/policy` wiring (content/schemas/policy.json, Def union), `content/privacy.yaml` and `content/terms.yaml` from the approved text, MOD-Content `policy.ts` + registry, every fixture/test content set gains both files (except the AC5 fixture), MOD-Pages `/privacy/` `/terms/` + `PolicyView.astro`, MOD-Meta, MOD-Shell footer + `<main>` min-height, COPY-settings.privacyTools via gen.
+4. Verify: build, unit, Playwright Chromium (full), spec lint and coverage, screenshots both themes desktop/mobile.
+5. Review loop build-F-018: code-reviewer + spec audit; design-auditor on the new boards; a11y check of SCR-Policy and the footer.

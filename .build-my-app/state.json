@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: F-018 spec review converged (2 rounds); awaiting Owner approval D-057 (spec ready + policy text)",
+      "step": "8 Iterate: F-018 built and reviewed; cutting release candidate v1.2.0-rc.1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -926,33 +926,17 @@
       "started": "2026-10-22T05:40:25+00:00",
       "outcome": "converged",
       "ended": "2026-10-22T05:49:35+00:00"
+    },
+    "build-F-018": {
+      "round": 2,
+      "max": 3,
+      "active": false,
+      "started": "2026-10-22T06:19:00+00:00",
+      "outcome": "converged",
+      "ended": "2026-10-22T06:42:55+00:00"
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:37:40+00:00",
-      "event": "decision D-016 answered: Local distinct-days-used counter; done = 10 of 14 days"
-    },
-    {
-      "at": "2026-10-13T03:37:40+00:00",
-      "event": "decision D-017 answered: External tools allowed in M-1, linked only; label in M-2"
-    },
-    {
-      "at": "2026-10-13T03:37:40+00:00",
-      "event": "decision D-018 answered: Project/profile links checked as non-blocking warnings"
-    },
-    {
-      "at": "2026-10-13T03:41:03+00:00",
-      "event": "loop spec-review round 2"
-    },
-    {
-      "at": "2026-10-13T03:41:04+00:00",
-      "event": "product-spec step: 1.3 spec review round 2 (verification)"
-    },
-    {
-      "at": "2026-10-13T03:43:26+00:00",
-      "event": "loop spec-review ended: converged"
-    },
     {
       "at": "2026-10-13T03:43:31+00:00",
       "event": "phase product-spec -> gate"
@@ -1728,9 +1712,33 @@
     {
       "at": "2026-10-22T05:50:24+00:00",
       "event": "decision D-058 answered: A: every tool Taro builds processes user files and text on the device, never uploads them, and never changes opened files (saves are new files); added to tool-contract.md (Owner, 2026-10-22)"
+    },
+    {
+      "at": "2026-10-22T05:50:58+00:00",
+      "event": "iterate step: 8 Iterate: F-018 approved (D-057, D-058) and spec committed; building F-018 (design boards + test-first)"
+    },
+    {
+      "at": "2026-10-22T06:19:00+00:00",
+      "event": "loop build-F-018 started (max 3)"
+    },
+    {
+      "at": "2026-10-22T06:37:26+00:00",
+      "event": "loop build-F-018 round 2"
+    },
+    {
+      "at": "2026-10-22T06:42:55+00:00",
+      "event": "loop build-F-018 ended: converged"
+    },
+    {
+      "at": "2026-10-22T06:42:56+00:00",
+      "event": "F-018 build review converged (2 rounds): code review M1 + design majors fixed in aa613bb; 4 optional minors deferred (see code-review-F-018-round-2.md)"
+    },
+    {
+      "at": "2026-10-22T07:16:14+00:00",
+      "event": "iterate step: 8 Iterate: F-018 built and reviewed; cutting release candidate v1.2.0-rc.1"
     }
   ],
-  "updated": "2026-10-22T05:50:24+00:00",
+  "updated": "2026-10-22T07:16:14+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
