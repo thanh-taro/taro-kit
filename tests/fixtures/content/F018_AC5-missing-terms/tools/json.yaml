@@ -1,0 +1,10 @@
+id: json
+kind: tool
+name: JSON Formatter
+summary: Fixture tool, own, no open mode.
+category: developer
+url: https://json.tarokit.app/
+origin: own
+tags: [json]
+added: 2026-02-01
+updated: 2026-03-10

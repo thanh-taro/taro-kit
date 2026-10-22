@@ -1,0 +1,123 @@
+---
+// SCR-Policy body (MOD-Pages), rendered inside BaseLayout by src/pages/privacy.astro and src/pages/terms.astro.
+// Static, no island. Regions: 2 the policy's own title (the page's only <h1>) and COPY-policy.updated with the date in
+// full in <time datetime>; 3 each section as an <h2> followed by its paragraphs (<p>) and bulleted lists (<ul>), at
+// the reading width. Web links open in a new tab (platform-mapping); email links open the mail app.
+// Design: design/canvas/PolicyDesktop.dc.html, PolicyMobile.dc.html.
+// Implements: F-018.R1, F-018.R2.
+import type { PolicyViewData } from './policy.ts';
+import PolicyText from './PolicyText.astro';
+
+interface Props {
+  view: PolicyViewData;
+}
+const { view } = Astro.props;
+---
+
+<article class="policy">
+  <div class="head">
+    <h1>{view.title}</h1>
+    <p class="updated">
+      {view.updatedLabel.before}
+      <time datetime={view.updated}>{view.updatedText}</time>
+      {view.updatedLabel.after}
+    </p>
+  </div>
+  {view.sections.map((section) => (
+    <section>
+      <h2>{section.heading}</h2>
+      {section.blocks.map((block) =>
+        block.kind === 'paragraph' ? (
+          <p>
+            <PolicyText parts={block.parts} />
+          </p>
+        ) : (
+          <ul>
+            {block.items.map((item) => (
+              <li>
+                <PolicyText parts={item} />
+              </li>
+            ))}
+          </ul>
+        ),
+      )}
+    </section>
+  ))}
+</article>
+
+<style>
+  .policy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-10);
+    max-inline-size: var(--tk-size-palette-width);
+    padding-block-start: var(--tk-space-4);
+  }
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-4);
+  }
+  h1 {
+    font-size: var(--tk-font-size-5xl);
+    line-height: var(--tk-font-line-height-tight);
+    letter-spacing: -0.03em;
+  }
+  .updated {
+    margin: 0;
+    color: var(--tk-color-muted);
+    font-family: var(--tk-font-family-mono);
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-medium);
+  }
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--tk-space-3) + var(--tk-space-1) / 2);
+  }
+  h2 {
+    font-family: var(--tk-font-family-display);
+    font-size: var(--tk-font-size-xl);
+    font-weight: var(--tk-font-weight-semibold);
+    line-height: var(--tk-font-line-height-tight);
+    letter-spacing: -0.01em;
+  }
+  p,
+  ul {
+    margin: 0;
+    font-size: var(--tk-font-size-lg);
+    line-height: var(--tk-font-line-height-normal);
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-1);
+    padding-inline-start: var(--tk-space-5);
+  }
+  /* PolicyText renders the links, outside this component's scope. */
+  .policy :global(a) {
+    color: var(--tk-color-accent);
+    text-decoration: underline;
+    text-underline-offset: var(--tk-border-width-focus);
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 720px) {
+    .policy {
+      gap: var(--tk-space-8);
+      padding-block-start: 0;
+    }
+    .head {
+      gap: var(--tk-space-3);
+    }
+    h1 {
+      font-size: var(--tk-font-size-3xl);
+    }
+    section {
+      gap: var(--tk-space-3);
+    }
+    p,
+    ul {
+      font-size: var(--tk-font-size-base);
+    }
+  }
+</style>

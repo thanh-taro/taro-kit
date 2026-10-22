@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=./schemas/policy.json
+# ENT-Policy (F-018), required: the terms of use shown at /terms/. Text approved by the Owner (D-057).
+# Same format as privacy.yaml: a literal body (|), paragraphs separated by blank lines, "- " lists after a blank
+# line, links as [text](https://...) or [text](mailto:...) (INV-02). Change `updated` whenever the text changes.
+title: Terms
+updated: 2026-10-22
+sections:
+  - heading: Using TaroKit
+    body: |
+      TaroKit and its tools are free to use. There are no accounts and nothing to sign up for.
+  - heading: As is
+    body: |
+      I build these tools with care, but they're provided "as is", without any warranty, express or implied, including that they're fit for a particular purpose or free of errors. To the fullest extent the law allows, I'm not liable for any loss or damage from using them, including lost data or decisions made from what a tool shows you. Keep your own copies of anything important. The tools I build don't change the files you open in them; anything they save is a new file.
+  - heading: Your files and content
+    body: |
+      What you open or type in a tool stays yours. The tools I build process it on your device and don't send it to me.
+  - heading: Fair use
+    body: |
+      Please don't use TaroKit to break the law or to try to disrupt or attack the sites.
+  - heading: Code and licenses
+    body: |
+      TaroKit's own code and content are licensed under PolyForm Noncommercial 1.0.0. Each tool has its own license, stated in its project. Open-source parts keep their own licenses; each tool lists them in its notices.
+  - heading: Governing law
+    body: |
+      These terms are governed by the laws of Vietnam. Any dispute will be handled by the competent courts of Vietnam, unless the law where you live gives you a right to bring it elsewhere.
+  - heading: Changes
+    body: |
+      I may update these terms. The date at the top shows when they last changed, and using TaroKit after that means you accept the new version.
+  - heading: Contact
+    body: |
+      Questions? Email me at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).

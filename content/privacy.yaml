@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=./schemas/policy.json
+# ENT-Policy (F-018), required: the privacy policy shown at /privacy/. Text approved by the Owner (D-057).
+# Each section has a heading and a body. Write the body as a literal block (|). Paragraphs are separated by blank
+# lines; a paragraph whose every line starts with "- " is a bulleted list (leave a blank line before it); links are
+# [text](https://...) or [text](mailto:...) (INV-02). Change `updated` whenever the text changes.
+title: Privacy
+updated: 2026-10-22
+sections:
+  - heading: The short version
+    body: |
+      TaroKit doesn't collect your data. There are no accounts and no cookies, and I run no analytics, ads or trackers. What you do here stays on your device.
+  - heading: What stays on your device
+    body: |
+      To make the portal yours, I keep a few things in your browser's storage on this device only:
+
+      - the tools you pin as favorites and the ones you opened recently;
+      - your theme choice (light, dark or system);
+      - the last 60 days on which you opened TaroKit, so Settings can show how often you use it.
+
+      None of this is sent to me or anyone else. You can save it to a backup file, load it on another device, or erase it at any time from Settings. Clearing your browser's site data erases it too.
+
+      So TaroKit works offline, your browser also keeps a copy of the portal's pages and files. That copy holds no personal data.
+  - heading: The tools
+    body: |
+      Each tool is its own small website. The tools I build are made to run in your browser: files and text you give them are processed on your device and not uploaded. Each tool tells you how it handles your data inside the tool itself.
+
+      When a tool opens inside TaroKit, it runs walled off from the portal. It can't read your favorites or anything else the portal stores. The only thing the portal passes to it is whether you're using the light or dark theme, so it can match.
+
+      If I list a tool built by someone else, it opens on its own site in a new tab, and that site's own privacy policy applies.
+  - heading: Hosting
+    body: |
+      TaroKit and the tools I build are served by Cloudflare. Like any web host, Cloudflare sees your IP address and basic browser details when your browser asks for a page, in order to deliver it and to protect the sites from attacks.
+
+      I haven't turned on Cloudflare's visitor analytics or logs. Its dashboard still shows me overall traffic numbers, such as how many requests the sites get and from which countries, but nothing that tells me who you are. If Cloudflare blocks a request as an attack, its security log shows me that request's IP address. Cloudflare's own handling is described in [its privacy policy](https://www.cloudflare.com/privacypolicy/).
+  - heading: Changes
+    body: |
+      If this policy changes, I'll update this page and the date at the top.
+  - heading: Contact
+    body: |
+      Questions? Email me, Thanh Nguyen Tri (Taro), at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).

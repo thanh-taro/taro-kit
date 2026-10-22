@@ -1,0 +1,16 @@
+---
+// SCR-Policy (MOD-Pages) at /terms/: static, with no island. Region 1 is the shell header and region 4 the shell
+// footer (BaseLayout), whose Terms link is marked as the current page (F-018.R3); the rest is PolicyView.
+// Implements: F-018.R2, F-018.R4.
+import { getRegistry } from '../modules/content/index.ts';
+import { metaFor } from '../modules/meta/index.ts';
+import { policyView } from '../modules/pages/policy/policy.ts';
+import PolicyView from '../modules/pages/policy/PolicyView.astro';
+import BaseLayout from '../modules/shell/BaseLayout.astro';
+
+const registry = getRegistry();
+---
+
+<BaseLayout {...metaFor({ page: 'terms' }, registry)}>
+  <PolicyView view={policyView(registry.terms)} />
+</BaseLayout>

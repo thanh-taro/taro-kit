@@ -54,4 +54,19 @@ export {
   type ResumePeriodError,
   type ResumeSection,
 } from './resume.ts';
+export {
+  parsePolicy,
+  policyBlocks,
+  policyLinkErrors,
+  policyMixedLists,
+  policySectionName,
+  PRIVACY_PATH,
+  TERMS_PATH,
+  type Policy,
+  type PolicyBlock,
+  type PolicyLinkError,
+  type PolicyMixedList,
+  type PolicyPart,
+  type PolicySection,
+} from './policy.ts';
 export { AVATAR_MODULE, avatarPlugin, avatarSource } from './avatar.ts';

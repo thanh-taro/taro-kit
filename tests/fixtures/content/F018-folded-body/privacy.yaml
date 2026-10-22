@@ -1,0 +1,14 @@
+# Test fixture (F-018.R5, ADR-0005 note from F-018): section 2's body is folded (>), which loses its line breaks;
+# overlays the valid base.
+title: Privacy
+updated: 2026-10-22
+sections:
+  - heading: Fixture first section
+    body: |
+      Fixture paragraph.
+  - heading: Fixture folded section
+    body: >
+      Fixture paragraph before a list:
+
+      - the first item;
+      - the second item.

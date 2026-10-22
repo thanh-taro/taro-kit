@@ -1,7 +1,7 @@
 ---
 id: F-018
 title: Read the privacy policy and terms
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-01, PER-02]

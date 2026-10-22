@@ -1,0 +1,23 @@
+---
+// SCR-Policy: one paragraph's or list item's run of text and links (MOD-Content `PolicyPart`). Web links open in a
+// new tab (`target="_blank" rel="noopener noreferrer"`, platform-mapping); email links open the mail app.
+// Implements: F-018.R1, F-018.R2.
+import type { PolicyPart } from '../../content/policy.ts';
+
+interface Props {
+  parts: PolicyPart[];
+}
+const { parts } = Astro.props;
+---
+
+{parts.map((part) =>
+  part.kind === 'text' ? (
+    part.text
+  ) : part.newTab ? (
+    <a href={part.href} target="_blank" rel="noopener noreferrer">
+      {part.text}
+    </a>
+  ) : (
+    <a href={part.href}>{part.text}</a>
+  ),
+)}

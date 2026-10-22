@@ -1,0 +1,7 @@
+# Test fixture (F-018.AC6): a privacy policy whose last updated date is not a real date; overlays the valid base.
+title: Privacy
+updated: 2026-13-01
+sections:
+  - heading: Fixture section
+    body: |
+      Fixture paragraph.

@@ -1,11 +1,21 @@
 // MOD-Content: load -> validate (schema + invariants) -> normalize -> derive (ADR-0005).
 // Runs in Node at build (Astro config, pages, scripts). Never runs in the browser.
-// Implements: F-001.R1, F-001.R2, F-001.R3, F-001.R4, F-001.R5, F-017.R4 (optional résumé), F-017.R5.
+// Implements: F-001.R1, F-001.R2, F-001.R3, F-001.R4, F-001.R5, F-017.R4 (optional résumé), F-017.R5,
+// F-018.R5 (the two required policies).
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
-import { LineCounter, parseDocument } from 'yaml';
-import type { Category, EntryBase, NowNote, Profile, Resume, Tool } from '../../generated/domain.ts';
+import { isScalar, LineCounter, parseDocument } from 'yaml';
+import type {
+  Category,
+  EntryBase,
+  NowNote,
+  Policy as RawPolicy,
+  Profile,
+  Resume,
+  Tool,
+} from '../../generated/domain.ts';
 import { hasResumeEntries, resumeEntryName, resumePeriodErrors } from './resume.ts';
+import { parsePolicy, type Policy, policyLinkErrors, policyMixedLists, policySectionName } from './policy.ts';
 import {
   changelogItems,
   type DatedItem,
@@ -60,6 +70,10 @@ export interface Registry {
    * F-017.R4): then there is no Résumé page and nothing links to it.
    */
   resume?: Resume;
+  /** The privacy policy (ENT-Policy, F-018.R1), required, with each section's body parsed into blocks. */
+  privacy: Policy;
+  /** The terms of use (ENT-Policy, F-018.R2), required, with each section's body parsed into blocks. */
+  terms: Policy;
   /** Changelog items of visible tools, newest first (RULE-04); `changelog()` groups them by month. */
   changelogEvents: ChangelogEvent[];
   embeddedOrigins: string[];
@@ -81,6 +95,8 @@ interface Loaded {
   file: string;
   data: unknown;
   lineOf: (path: (string | number)[]) => number | undefined;
+  /** The YAML scalar style at a path (`BLOCK_LITERAL`, `BLOCK_FOLDED`, `PLAIN`, …), if a scalar is there. */
+  scalarType: (path: (string | number)[]) => string | undefined;
 }
 
 type Obj = Record<string, unknown>;
@@ -100,7 +116,11 @@ function loadYaml(relRoot: string, abs: string, errors: ContentError[]): Loaded 
       if (!p.length) return undefined;
     }
   };
-  return { file, data: doc.toJS(), lineOf };
+  const scalarType = (path: (string | number)[]) => {
+    const node = doc.getIn(path, true);
+    return isScalar(node) ? node.type : undefined;
+  };
+  return { file, data: doc.toJS(), lineOf, scalarType };
 }
 
 const listYaml = (dir: string) =>
@@ -125,7 +145,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     const abs = join(contentDir, name);
     if (existsSync(abs)) return load(abs);
     errors.push({ file: relative(relRoot, abs), entryId: '-', rule: 'SCHEMA', message: 'file is missing' });
-    return { file: relative(relRoot, abs), data: undefined, lineOf: () => undefined };
+    return { file: relative(relRoot, abs), data: undefined, lineOf: () => undefined, scalarType: () => undefined };
   };
 
   const toolFiles = listYaml(join(contentDir, 'tools')).map(load);
@@ -139,6 +159,8 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   const resumePath = join(contentDir, 'resume.yaml');
   const resumeFile = existsSync(resumePath) ? load(resumePath) : undefined;
   if (resumeFile && resumeFile.data === null) resumeFile.data = {};
+  // Both policies are required (ENT-Policy, F-018.R5): a missing one is "file is missing" (ADR-0005 note from F-018).
+  const policyFiles = [required('privacy.yaml'), required('terms.yaml')] as const;
 
   // 1. Schema (F-001.R2). Each file is checked against its $defs entry of the domain schema.
   // Fields that already failed the schema; the invariant checks skip them, so one mistake gives one error.
@@ -182,6 +204,14 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     const rest = message.startsWith(inEntry) ? message.slice(inEntry.length).replace(/^[.:]\s?/, '') : message;
     return { entryId: resumeEntryName(section, index), message: rest };
   };
+  // F-018.R5: a policy section is "section <n>", counting from 1, and the message names the field inside it.
+  const policyNaming: EntryNaming = (_target, path, message) => {
+    const [key, index] = path;
+    if (key !== 'sections' || typeof index !== 'number') return { entryId: '-', message };
+    const inSection = `sections.${index}`;
+    const rest = message.startsWith(inSection) ? message.slice(inSection.length).replace(/^[.:]\s?/, '') : message;
+    return { entryId: policySectionName(index), message: rest };
+  };
   toolFiles.forEach((l) => schemaCheck(l, 'tool'));
   const catList: unknown[] = Array.isArray(catFile.data) ? catFile.data : [];
   if (catFile.data !== undefined && !Array.isArray(catFile.data))
@@ -190,6 +220,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   schemaCheck(profileFile, 'profile');
   if (nowFile) schemaCheck(nowFile, 'nowNote');
   if (resumeFile) schemaCheck(resumeFile, 'resume', [], resumeNaming);
+  policyFiles.forEach((l) => schemaCheck(l, 'policy', [], policyNaming));
 
   // 2. Invariants the schema cannot express (ADR-0005).
   const entries = toolFiles.filter((l) => idOf(l.data) !== '-');
@@ -332,6 +363,49 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
       });
     }
 
+  // Policy bodies (ADR-0005 note from F-018): a literal block, so line breaks are kept; no paragraph that mixes list
+  // lines with other lines; and INV-02 on every link. Each error names the section (F-018.R5).
+  for (const l of policyFiles) {
+    const sections = isObj(l.data) && Array.isArray(l.data.sections) ? (l.data.sections as unknown[]) : [];
+    /** The file line of a body's line `i` (from 0): a literal block's text starts on the line after its `|`. */
+    const bodyLine = (index: number, i: number) => {
+      const at = l.lineOf(['sections', index, 'body']);
+      return at !== undefined && l.scalarType(['sections', index, 'body']) === 'BLOCK_LITERAL' ? at + 1 + i : at;
+    };
+    const literal = new Set<number>();
+    sections.forEach((section, index) => {
+      if (!isObj(section) || typeof section.body !== 'string') return;
+      if (schemaFailed.has(fieldKey(l.file, ['sections', index, 'body']))) return;
+      if (l.scalarType(['sections', index, 'body']) === 'BLOCK_LITERAL') {
+        literal.add(index);
+        return;
+      }
+      errors.push({
+        file: l.file,
+        line: l.lineOf(['sections', index, 'body']),
+        entryId: policySectionName(index),
+        rule: 'SCHEMA',
+        message: 'body must be a literal block (|), so its line breaks are kept',
+      });
+    });
+    for (const m of policyMixedLists(l.data).filter((m) => literal.has(m.index)))
+      errors.push({
+        file: l.file,
+        line: bodyLine(m.index, m.line),
+        entryId: policySectionName(m.index),
+        rule: 'SCHEMA',
+        message: `paragraph ${m.paragraph + 1} mixes list lines ("- ") with other lines; put a blank line before the list`,
+      });
+    for (const e of policyLinkErrors(l.data))
+      errors.push({
+        file: l.file,
+        line: bodyLine(e.index, e.line),
+        entryId: policySectionName(e.index),
+        rule: 'INV-02',
+        message: `link "${e.href}" is not https`,
+      });
+  }
+
   if (errors.length) throw new ContentErrors(errors);
 
   // 3. Normalize: RULE-07 open-mode defaults, INV-03 permission and offline defaults.
@@ -369,6 +443,8 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     avatarFile,
     now: nowFile?.data as NowNote | undefined,
     resume: hasResumeEntries(resumeFile?.data as Resume | undefined) ? (resumeFile?.data as Resume) : undefined,
+    privacy: parsePolicy(policyFiles[0].data as RawPolicy),
+    terms: parsePolicy(policyFiles[1].data as RawPolicy),
     changelogEvents,
     embeddedOrigins,
     portalOrigin,

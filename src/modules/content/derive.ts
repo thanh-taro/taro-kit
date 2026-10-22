@@ -2,6 +2,7 @@
 // No Node imports, and nothing relative to the viewer's date (that is MOD-Pages', in the browser).
 // Every function drops hidden entries itself (RULE-06).
 // Implements: F-001.R1 (an entry appears everywhere it belongs), F-001.R4 (hidden entries appear nowhere).
+import { PRIVACY_PATH, TERMS_PATH } from './policy.ts';
 import { RESUME_PATH } from './resume.ts';
 
 export interface Listed {
@@ -35,8 +36,8 @@ export interface ChangelogMonth {
   items: DatedItem[];
 }
 
-/** Public pages listed in the site index (F-015.R1, F-015.R3; routes per MOD-Pages). */
-export const PUBLIC_PAGES = ['/', '/tools/', '/about/', '/now/'] as const;
+/** Public pages listed in the site index (F-015.R1, F-015.R3; routes per MOD-Pages), Privacy and Terms last (F-018.R4). */
+export const PUBLIC_PAGES = ['/', '/tools/', '/about/', '/now/', PRIVACY_PATH, TERMS_PATH] as const;
 
 /** A tool's stable portal address (F-003.R1). */
 export const toolPath = (id: string): string => `/t/${id}/`;
@@ -95,7 +96,8 @@ export function changelog(tools: readonly Dated[]): ChangelogMonth[] {
 /**
  * Site index paths (F-015.R3): public pages, visible category pages and visible tools' portal addresses.
  * Hidden entries and empty categories are left out (RULE-06). The Résumé page is listed, after About, only when
- * there is a résumé (`Registry.resume`, F-017.R6, F-017.AC8).
+ * there is a résumé (`Registry.resume`, F-017.R6, F-017.AC8). The Privacy and Terms pages are the last public pages
+ * (F-018.R4).
  */
 export function sitemapEntries(content: {
   categories: readonly Ordered[];

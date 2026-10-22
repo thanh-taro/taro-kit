@@ -1,0 +1,65 @@
+---
+// CMP-AppShell footer (MOD-Shell): the contentinfo landmark after the page content, with links to the Privacy and
+// Terms pages (COPY-footer.privacy, COPY-footer.terms); the link to the page being shown has aria-current="page"
+// (platform-mapping). Only the full variant has it: BaseLayout leaves it out of the compact tool view.
+// Design: design/canvas/CMP-AppShell.dc.html (full · footer, narrow · footer).
+// Implements: F-018.R3.
+import { PRIVACY_PATH, TERMS_PATH } from '../content/policy.ts';
+import { t, type CopyId } from '../copy/index.ts';
+
+interface Props {
+  /** Current route path, e.g. "/privacy/" (marks the current link). */
+  path: string;
+}
+const { path } = Astro.props;
+const links: [href: string, copy: CopyId][] = [
+  [PRIVACY_PATH, 'COPY-footer.privacy'],
+  [TERMS_PATH, 'COPY-footer.terms'],
+];
+---
+
+<footer class="shell-footer">
+  {links.map(([href, id]) => (
+    <a href={href} aria-current={href === path ? 'page' : undefined}>
+      {t(id)}
+    </a>
+  ))}
+</footer>
+
+<style>
+  .shell-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--tk-space-1);
+    padding: var(--tk-space-4) var(--tk-space-2) 0;
+    border-block-start: var(--tk-border-width-hairline) solid var(--tk-color-line);
+    font-size: var(--tk-font-size-sm);
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-3);
+    border-radius: var(--tk-radius-sm);
+    color: var(--tk-color-muted);
+    font-weight: var(--tk-font-weight-medium);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--tk-color-fg);
+  }
+  /* The transparent outline shows only in forced colors, where the fill is removed (as the settings link, NFR-03). */
+  a[aria-current='page'] {
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+    font-weight: var(--tk-font-weight-semibold);
+    outline: var(--tk-border-width-focus) solid transparent;
+    outline-offset: calc(-1 * var(--tk-border-width-focus));
+  }
+  @media (max-width: 720px) {
+    .shell-footer {
+      padding: var(--tk-space-3) var(--tk-space-1) 0;
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+id: excalidraw
+kind: tool
+name: Excalidraw
+summary: Fixture tool, external, no open mode.
+category: productivity
+url: https://excalidraw.com/
+origin: external
+added: 2026-02-03

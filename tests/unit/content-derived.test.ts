@@ -148,7 +148,15 @@ describe('RULE-04 changelog', () => {
 describe('derived views', () => {
   it('RULE-06 an empty catalog has no visible categories and only the public pages in the site index', () => {
     expect(visibleCategories([{ id: 'developer', order: 1 }], [])).toEqual([]);
-    expect(sitemapEntries({ categories: [], allTools: [] })).toEqual(['/', '/tools/', '/about/', '/now/']);
+    // The Privacy and Terms pages are public pages, listed last (F-018.R4).
+    expect(sitemapEntries({ categories: [], allTools: [] })).toEqual([
+      '/',
+      '/tools/',
+      '/about/',
+      '/now/',
+      '/privacy/',
+      '/terms/',
+    ]);
   });
 
   it('lists visible tools alphabetically and categories in display order', () => {

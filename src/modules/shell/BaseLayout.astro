@@ -1,7 +1,8 @@
 ---
 // MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
 // Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
-// the link-preview metadata (MOD-Meta <HeadMeta>, F-015), the single font preload (ADR-0003), the catalog data preload. Body: skip link first, banner, main.
+// the link-preview metadata (MOD-Meta <HeadMeta>, F-015), the single font preload (ADR-0003), the catalog data preload. Body: skip link first, banner, main,
+// and on the full variant the footer (contentinfo, F-018.R3), which main's minimum height keeps below the first screen.
 // Slot: default (page content). Offline and updates (F-011): the manifest link here, the worker registration in
 // the module script below (MOD-Offline), and the status island in AppShell.
 // Palette (MOD-Palette, F-004.R1): the pre-rendered <dialog> with its island after the frame, and the inline
@@ -19,6 +20,7 @@ import { frameSrcDirective, inlineScriptHash } from '../security-policy/index.ts
 import { themeInlineScript } from '../theme/inline.ts';
 import { THEME_COLORS } from '../theme/theme-color.ts';
 import AppShell from './AppShell.astro';
+import AppShellFooter from './AppShellFooter.astro';
 
 interface Props {
   title: string;
@@ -76,6 +78,7 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
       <main id="main" tabindex="-1">
         <slot />
       </main>
+      {variant === 'full' && <AppShellFooter path={path} />}
     </div>
     <PaletteDialog />
     {/* set:html on a build-time constant only (paletteBootstrap, hashed for the CSP). */}
@@ -127,8 +130,16 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     margin-inline: auto;
     padding: var(--tk-space-4) var(--tk-size-gutter) var(--tk-space-12);
   }
+  /* CMP-AppShell: on the full variant the content area is at least the window's height less the header (the frame's
+     top padding, the bar and the gap below it), so the footer starts below the first screen and content that appears
+     late (what's new on Home) never moves it in view (F-018.R3, NFR-01). */
   main {
     padding-inline: var(--tk-space-2);
+  }
+  .frame[data-variant='full'] main {
+    min-block-size: calc(
+      100dvh - var(--tk-space-4) - var(--tk-size-touch-target) - var(--tk-space-3) - var(--tk-space-10)
+    );
   }
   main:focus {
     outline: none;

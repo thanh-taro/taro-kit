@@ -1,12 +1,13 @@
 // MOD-Meta: each page's link-preview metadata (specs/40-technical/modules/MOD-Meta.md). Pure: no Node imports.
-// Implements: F-015.R1, F-015.R2, F-015.R4, F-015.R5, F-017.R6, NFR-12.
+// Implements: F-015.R1, F-015.R2, F-015.R4, F-015.R5, F-017.R6, F-018.R4, NFR-12.
 import { categoryPath, toolPath } from '../content/derive.ts';
+import { PRIVACY_PATH, TERMS_PATH } from '../content/policy.ts';
 import { RESUME_PATH } from '../content/resume.ts';
 import { t } from '../copy/index.ts';
 
 /** The pages that declare previews (routes per MOD-Pages). */
 export type MetaRoute =
-  | { page: 'home' | 'tools' | 'about' | 'resume' | 'now' | 'settings' | 'notFound' }
+  | { page: 'home' | 'tools' | 'about' | 'resume' | 'now' | 'settings' | 'privacy' | 'terms' | 'notFound' }
   | { page: 'category'; id: string }
   | { page: 'tool'; id: string };
 
@@ -40,6 +41,9 @@ const STATIC: Record<Exclude<MetaRoute['page'], 'category' | 'tool' | 'notFound'
   // F-017.R6: the Résumé page exists only when there is a résumé (MOD-Pages), so only then is this declared.
   resume: { title: t('COPY-meta.resumeTitle'), description: t('COPY-meta.resumeDescription'), path: RESUME_PATH },
   now: { title: t('COPY-meta.nowTitle'), description: t('COPY-meta.nowDescription'), path: '/now/' },
+  // F-018.R4: the Privacy and Terms pages.
+  privacy: { title: t('COPY-meta.privacyTitle'), description: t('COPY-meta.privacyDescription'), path: PRIVACY_PATH },
+  terms: { title: t('COPY-meta.termsTitle'), description: t('COPY-meta.termsDescription'), path: TERMS_PATH },
   settings: {
     title: t('COPY-meta.settingsTitle'),
     description: t('COPY-meta.settingsDescription'),
