@@ -49,17 +49,14 @@ const links: [href: string, copy: CopyId][] = [
   a:hover {
     color: var(--tk-color-fg);
   }
-  /* The transparent outline shows only in forced colors, where the fill is removed (as the settings link, NFR-03). */
+  /* The current page (F-018.R3): fg text and a 2 px accent underline, a non-color cue (accent on bg is above 6:1 in
+     both themes) that also shows in forced colors. */
   a[aria-current='page'] {
-    background: var(--tk-color-surface2);
     color: var(--tk-color-fg);
     font-weight: var(--tk-font-weight-semibold);
-    outline: var(--tk-border-width-focus) solid transparent;
-    outline-offset: calc(-1 * var(--tk-border-width-focus));
-  }
-  @media (max-width: 720px) {
-    .shell-footer {
-      padding: var(--tk-space-3) var(--tk-space-1) 0;
-    }
+    text-decoration-line: underline;
+    text-decoration-color: var(--tk-color-accent);
+    text-decoration-thickness: var(--tk-border-width-focus);
+    text-underline-offset: var(--tk-space-1);
   }
 </style>

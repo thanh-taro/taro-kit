@@ -126,6 +126,12 @@ test.describe('F-018 CMP-AppShell footer', () => {
         if (path === '/privacy/') await expect(current).toHaveText(['Privacy']);
         else if (path === '/terms/') await expect(current).toHaveText(['Terms']);
         else await expect(current).toHaveCount(0);
+        // The current page is marked visibly too, not by color alone: an underline only it has.
+        for (const name of ['Privacy', 'Terms'] as const)
+          await expect(footerLink(page, name)).toHaveCSS(
+            'text-decoration-line',
+            path === `/${name.toLowerCase()}/` ? 'underline' : 'none',
+          );
       });
     }
     // The hidden tool's address really is the not-found page.

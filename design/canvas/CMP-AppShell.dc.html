@@ -78,22 +78,22 @@ body{margin:0}
       </div>
       <div style="display: flex; gap: 24px; align-items: flex-start">
         <div style="display: flex; flex-direction: column; gap: 8px; flex: 1 1 0; min-width: 0">
-          <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-AppShell / full · footer / {{t.key}} — contentinfo after main, below the first screen; shown on Privacy (aria-current="page")</span>
+          <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-AppShell / full · footer / {{t.key}} — contentinfo after main, below the first screen; shown on Privacy: aria-current="page", fg text and a 2 px accent underline (non-color cue)</span>
           <div style="display: flex; flex-direction: column; background: var(--bg); border: 1px dashed var(--line); border-radius: 12px; padding: 0 16px 8px">
             <span style="padding: 12px 8px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">… end of the page content (main)</span>
             <footer style="display: flex; align-items: center; gap: 4px; padding: 16px 8px 0; border-top: 1px solid var(--line); font-size: 13px">
-              <a href="#" data-copy="COPY-footer.privacy" aria-current="page" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; text-decoration: none; color: var(--fg); background: var(--surface2); font-weight: 600">Privacy</a>
+              <a href="#" data-copy="COPY-footer.privacy" aria-current="page" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; color: var(--fg); font-weight: 600; text-decoration: underline 2px var(--accent); text-underline-offset: 4px">Privacy</a>
               <a href="#" data-copy="COPY-footer.terms" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; text-decoration: none; color: var(--muted); font-weight: 500">Terms</a>
             </footer>
           </div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px; width: 390px; flex: none">
-          <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-AppShell / narrow · footer / {{t.key}} — 390 px, on Home (none current)</span>
+          <span style="font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">CMP-AppShell / narrow · footer / {{t.key}} — 390 px, shown on Terms (aria-current="page"); on other pages no link is current</span>
           <div style="display: flex; flex-direction: column; background: var(--bg); border: 1px dashed var(--line); border-radius: 12px; padding: 0 16px 8px">
-            <span style="padding: 12px 4px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">… end of main</span>
-            <footer style="display: flex; align-items: center; gap: 4px; padding: 12px 4px 0; border-top: 1px solid var(--line); font-size: 13px">
+            <span style="padding: 12px 8px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">… end of main</span>
+            <footer style="display: flex; align-items: center; gap: 4px; padding: 16px 8px 0; border-top: 1px solid var(--line); font-size: 13px">
               <a href="#" data-copy="COPY-footer.privacy" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; text-decoration: none; color: var(--muted); font-weight: 500">Privacy</a>
-              <a href="#" data-copy="COPY-footer.terms" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; text-decoration: none; color: var(--muted); font-weight: 500">Terms</a>
+              <a href="#" data-copy="COPY-footer.terms" aria-current="page" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 7px; color: var(--fg); font-weight: 600; text-decoration: underline 2px var(--accent); text-underline-offset: 4px">Terms</a>
             </footer>
           </div>
         </div>

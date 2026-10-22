@@ -1,9 +1,0 @@
-id: units
-kind: tool
-name: Units
-summary: Fixture tool, own, linked.
-category: converters
-url: https://units.tarokit.app/
-origin: own
-openMode: linked
-added: 2026-02-02

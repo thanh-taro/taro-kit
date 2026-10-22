@@ -89,7 +89,20 @@ describe('F-018 policies as content (MOD-Content)', () => {
   });
 
   it('F018_AC5 fails when content/terms.yaml is missing, naming it as missing', () => {
-    expect(failures('F018_AC5-missing-terms')).toEqual(['content/terms.yaml › - › SCHEMA: file is missing']);
+    // The valid base without its terms.yaml (no committed copy of the base, so it never drifts from it).
+    const dir = contentFrom('valid');
+    rmSync(join(dir, 'terms.yaml'));
+    expect(() => loadRegistry({ root, contentDir: dir })).toThrow(ContentErrors);
+    try {
+      loadRegistry({ root, contentDir: dir });
+    } catch (e) {
+      expect(
+        (e as ContentErrors).message
+          .split('\n')
+          .slice(1)
+          .map((l) => l.trim()),
+      ).toEqual(['content/terms.yaml › - › SCHEMA: file is missing']);
+    }
   });
 
   it('F018_AC6 fails on an updated date that is not a date, naming the file, the updated field and the value', () => {
@@ -101,6 +114,30 @@ describe('F-018 policies as content (MOD-Content)', () => {
   it('F018_AC9 fails on an http link in a terms paragraph, naming the file, the section and INV-02', () => {
     expect(failures('valid', 'F018_AC9-http-link')).toEqual([
       'content/terms.yaml:12 › section 2 › INV-02: link "http://example.com" is not https',
+    ]);
+  });
+
+  it('F018_AC9 a link wrapped over two lines is checked as the page shows it: an http address fails', () => {
+    const dir = contentFrom('valid');
+    writeFileSync(
+      join(dir, 'terms.yaml'),
+      'title: Terms\nupdated: 2026-10-22\nsections:\n  - heading: A\n    body: |\n      Fine.\n\n      See [the example\n      site](http://example.com) for more.\n',
+    );
+    expect(() => loadRegistry({ root, contentDir: dir })).toThrow(
+      /content\/terms\.yaml:8 › section 1 › INV-02: link "http:\/\/example\.com" is not https/,
+    );
+  });
+
+  it('F-018.R1 a secure link wrapped over two lines shows as one link', () => {
+    expect(policyBlocks('See [the example\nsite](https://example.com/) for more.\n')).toEqual([
+      {
+        kind: 'paragraph',
+        parts: [
+          { kind: 'text', text: 'See ' },
+          { kind: 'link', text: 'the example site', href: 'https://example.com/', newTab: true },
+          { kind: 'text', text: ' for more.' },
+        ],
+      },
     ]);
   });
 
@@ -184,8 +221,49 @@ describe('F-018 policy body format (policyBlocks, policyLinkErrors)', () => {
   });
 
   it('F-018.R1 other bracket syntax stays literal text', () => {
-    const body = 'A [note] here, [no address](), [spaced](https://a b) and "as is" (quoted).';
+    const body = 'A [note] here, [no address]() and "as is" (quoted).';
     expect(policyBlocks(body)).toEqual([{ kind: 'paragraph', parts: [{ kind: 'text', text: body }] }]);
+  });
+
+  it('F-018.R1 nested brackets: only the innermost [text](address) is the link', () => {
+    expect(policyBlocks('Note [see [docs](https://x.com/) here]')).toEqual([
+      {
+        kind: 'paragraph',
+        parts: [
+          { kind: 'text', text: 'Note [see ' },
+          { kind: 'link', text: 'docs', href: 'https://x.com/', newTab: true },
+          { kind: 'text', text: ' here]' },
+        ],
+      },
+    ]);
+  });
+
+  it('INV-02 text that looks like a link but has no readable https or email address is an error', () => {
+    const errors = policyLinkErrors({
+      sections: [
+        { heading: 'A', body: 'Run [run](javascript:alert(1)) now.\n' },
+        { heading: 'B', body: 'See [x](http://a.com "t").\n' },
+        { heading: 'C', body: 'Read [wiki](https://en.wikipedia.org/wiki/Foo_(bar)).\n' },
+        { heading: 'D', body: 'Spaced [s](https://a b).\n' },
+      ],
+    });
+    expect(errors.map((e) => [e.index, e.line, e.kind, e.link])).toEqual([
+      [0, 0, 'malformed', '[run](javascript:alert(1)'],
+      [1, 0, 'malformed', '[x](http://a.com "t")'],
+      [2, 0, 'malformed', '[wiki](https://en.wikipedia.org/wiki/Foo_(bar)'],
+      [3, 0, 'malformed', '[s](https://a b)'],
+    ]);
+  });
+
+  it('INV-02 a malformed link fails the build naming the file, the section and how to write the address', () => {
+    const dir = contentFrom('valid');
+    writeFileSync(
+      join(dir, 'privacy.yaml'),
+      'title: Privacy\nupdated: 2026-10-22\nsections:\n  - heading: A\n    body: |\n      Fine.\n  - heading: B\n    body: |\n      Read [wiki](https://en.wikipedia.org/wiki/Foo_(bar)).\n',
+    );
+    expect(() => loadRegistry({ root, contentDir: dir })).toThrow(
+      /content\/privacy\.yaml:9 › section 2 › INV-02: link "\[wiki\]\(https:\/\/en\.wikipedia\.org\/wiki\/Foo_\(bar\)" must be \[text\]\(address\) with an https or mailto address and no spaces; write \( and \) in an address as %28 and %29/,
+    );
   });
 
   it('INV-02 a link whose address is not https or email is an error naming its section', () => {
@@ -197,9 +275,9 @@ describe('F-018 policy body format (policyBlocks, policyLinkErrors)', () => {
       ],
     });
     expect(errors).toEqual([
-      { index: 1, line: 2, href: 'http://example.com' },
-      { index: 1, line: 3, href: 'ftp://example.com/f' },
-      { index: 2, line: 0, href: '/privacy/' },
+      { index: 1, line: 2, kind: 'insecure', link: 'http://example.com' },
+      { index: 1, line: 3, kind: 'insecure', link: 'ftp://example.com/f' },
+      { index: 2, line: 0, kind: 'insecure', link: '/privacy/' },
     ]);
   });
 });

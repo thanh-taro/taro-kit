@@ -402,7 +402,10 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
         line: bodyLine(e.index, e.line),
         entryId: policySectionName(e.index),
         rule: 'INV-02',
-        message: `link "${e.href}" is not https`,
+        message:
+          e.kind === 'insecure'
+            ? `link "${e.link}" is not https`
+            : `link "${e.link}" must be [text](address) with an https or mailto address and no spaces; write ( and ) in an address as %28 and %29`,
       });
   }
 

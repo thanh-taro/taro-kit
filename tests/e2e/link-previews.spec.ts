@@ -144,6 +144,8 @@ test.describe('F-015 link previews', () => {
       '/about/',
       '/now/',
       '/settings/',
+      '/privacy/',
+      '/terms/',
       ...production.categories.map((c) => `/tools/${c.id}/`),
       ...production.visibleTools.map((tool) => toolPath(tool.id)),
     ];
@@ -159,6 +161,30 @@ test.describe('F-015 link previews', () => {
       expect(h.meta.get('robots'), path).toBe(path === '/settings/' ? 'noindex' : undefined);
       expectSharedImage(h);
     }
+  });
+
+  test('F018_AC4 the built Privacy and Terms pages declare their title, description and the shared image, and the site index lists both', async ({
+    request,
+  }) => {
+    const pages = [
+      ['/privacy/', 'COPY-meta.privacyTitle', 'COPY-meta.privacyDescription'],
+      ['/terms/', 'COPY-meta.termsTitle', 'COPY-meta.termsDescription'],
+    ] as const;
+    for (const [path, title, description] of pages) {
+      const h = await readHead(request, `${PROD}${path}`);
+      expect(h.status, path).toBe(200);
+      expect(h.title, path).toBe(t(title));
+      expect(h.meta.get('og:title'), path).toBe(t(title));
+      expect(h.meta.get('description'), path).toBe(t(description));
+      expect(h.meta.get('og:description'), path).toBe(t(description));
+      expect(h.meta.get('og:url'), path).toBe(`${PORTAL_ORIGIN}${path}`);
+      expect(h.canonical, path).toBe(`${PORTAL_ORIGIN}${path}`);
+      expect(h.meta.get('robots'), path).toBeUndefined();
+      expectSharedImage(h);
+    }
+    const sitemap = await (await request.get(`${PROD}/sitemap.xml`)).text();
+    expect(sitemap).toContain(`<loc>${production.portalOrigin}/privacy/</loc>`);
+    expect(sitemap).toContain(`<loc>${production.portalOrigin}/terms/</loc>`);
   });
 
   test('NFR-12 the shared preview image is a 1200 × 630 PNG', async ({ request }) => {
