@@ -18,56 +18,102 @@ mark{background:none;color:var(--accent);font-weight:700}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </helmet>
-<div class="{{themeCls}}" role="dialog" aria-modal="true" aria-label="Search TaroKit" data-copy="COPY-palette.dialogLabel" style="width: 390px; height: 844px; box-sizing: border-box; overflow: hidden; background: var(--surface); color: var(--fg); font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column">
+<!-- CMP-CommandPalette / touch sheet / mobile (390 px). Tweaks: theme; state; language = the language showing (all copy follows it). -->
+<div class="{{themeCls}}" lang="{{c.lang}}" role="dialog" aria-modal="true" aria-label="{{c.dialogLabel}}" data-copy="COPY-palette.dialogLabel" style="width: 390px; height: 844px; box-sizing: border-box; overflow: hidden; background: var(--surface); color: var(--fg); font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column">
   <div style="display: flex; align-items: center; gap: 8px; padding: 12px 8px 12px 16px; border-bottom: 1px solid var(--line)">
-    <div style="flex: 1 1 auto; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; background: var(--bg); border: 1px solid var(--accent); border-radius: 12px">
+    <div style="flex: 1 1 auto; display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; background: var(--bg); border: 1px solid var(--accent); border-radius: 12px">
       <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="color: var(--muted)"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
-      <label for="m-q" class="sr" data-copy="COPY-palette.placeholder">What are you looking for?</label>
-      <input id="m-q" type="search" value="{{query}}" placeholder="What are you looking for?" style="flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: none; color: var(--fg); font: 500 15px Manrope, sans-serif">
+      <label for="m-q" id="m-l" class="sr" data-copy="COPY-palette.placeholder">{{c.placeholder}}</label>
+      <input id="m-q" type="search" value="{{query}}" placeholder="{{c.placeholder}}" style="flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: none; color: var(--fg); font: 500 16px Manrope, sans-serif">
     </div>
-    <button type="button" data-copy="COPY-palette.close" style="min-height: 44px; padding: 0 10px; background: transparent; border: 0; color: var(--accent); font: 700 15px Manrope, sans-serif">Cancel</button>
+    <button type="button" data-copy="COPY-palette.close" style="min-height: 44px; padding: 0 8px; background: transparent; border: 0; color: var(--accent); font: 700 15px Manrope, sans-serif">{{c.close}}</button>
   </div>
-  <div role="listbox" aria-label="Results" style="flex: 1 1 auto; display: flex; flex-direction: column; padding: 8px">
+  <span role="status" class="sr" data-copy="{{countCopy}}">{{count}}</span>
+  <div role="listbox" aria-labelledby="m-l" style="flex: 1 1 auto; display: flex; flex-direction: column; padding: 8px">
     <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
       <div role="group" aria-label="{{g.title}}" style="display: flex; flex-direction: column; padding: 4px 0">
         <span data-copy="{{g.copy}}" style="font: 700 12px Manrope, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 8px">{{g.title}}</span>
         <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="2">
-          <div role="option" aria-selected="{{r.selected}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 10px; border-radius: 10px; background: {{r.bg}}; box-shadow: {{r.ring}}">
-            <span style="width: 32px; height: 32px; flex: none; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 12px 'JetBrains Mono', monospace">{{r.icon}}</span>
+          <div role="option" aria-selected="{{r.selected}}" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 10px; background: {{r.bg}}; box-shadow: {{r.ring}}">
+            <span style="width: 32px; height: 32px; flex: none; border-radius: 10px; background: var(--tint); color: var(--accent); display: flex; align-items: center; justify-content: center; font: 600 12px 'JetBrains Mono', monospace"><sc-if value="{{r.globe}}" hint-placeholder-val="{{false}}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"></circle><path d="M1.75 8h12.5M8 1.75c1.7 1.8 2.5 3.9 2.5 6.25S9.7 12.45 8 14.25C6.3 12.45 5.5 10.35 5.5 8S6.3 3.55 8 1.75z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></sc-if>{{r.icon}}</span>
             <span style="display: flex; flex-direction: column; min-width: 0">
-              <span data-copy="{{r.copy}}" style="font-size: 15px; font-weight: 600">{{r.pre}}<mark>{{r.match}}</mark>{{r.post}}<span class="sr">{{r.sr}}</span></span>
-              <span style="font-size: 12px; color: var(--muted)">{{r.sub}}</span>
+              <span data-copy="{{r.copy}}" style="font-size: 15px; font-weight: 600">{{r.pre}}<mark>{{r.match}}</mark>{{r.post}}<sc-if value="{{r.hasLang}}" hint-placeholder-val="{{false}}"><span lang="{{r.lang}}" data-copy="{{r.langCopy}}">{{r.langName}}</span></sc-if><sc-if value="{{r.hasSr}}" hint-placeholder-val="{{false}}"><span class="sr" data-copy="COPY-tool.opensNewTab"> ({{r.sr}})</span></sc-if></span>
+              <sc-if value="{{r.hasSub}}" hint-placeholder-val="{{true}}"><span style="font-size: 12px; color: var(--muted)">{{r.sub}}</span></sc-if>
             </span>
           </div>
         </sc-for>
       </div>
     </sc-for>
   </div>
-  <p style="margin: 0; padding: 12px 16px 20px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Full-screen sheet on touch screens. No key hints. Cancel closes it.</p>
+  <p lang="en-US" style="margin: 0; padding: 12px 16px 20px; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Board note: full-screen sheet on touch screens; no key hints; Cancel closes it. Sample tool names and summaries. The result count is announced, not shown. The switch-language action is also found by "language", "ngon ngu", "English", "Vietnamese" (F-019.R5).</p>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"state":{"editor":"enum","options":["empty query","results"],"default":"results"},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"state":{"editor":"enum","options":["empty query","results","language action"],"default":"results"},"language":{"editor":"enum","options":["en-US","vi-VN"],"default":"en-US"},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   renderVals() {
     const theme = this.props.theme ?? 'dark';
     const state = this.props.state ?? 'results';
-    const row = (icon, pre, match, post, sub, selected, copy, sr) => ({
-      icon: icon, pre: pre, match: match, post: post, sub: sub, copy: copy || '', sr: sr || '', selected: selected ? 'true' : 'false',
+    const vi = (this.props.language ?? 'en-US') === 'vi-VN';
+    // Copy per language, from specs/30-experience/copy.md. Tool names are written once for both languages (INV-09); summaries are sample text.
+    const c = vi ? {
+      lang: 'vi-VN', dialogLabel: 'Tìm trong TaroKit', close: 'Huỷ', placeholder: 'Bạn đang tìm gì?',
+      hintMove: 'để di chuyển', hintOpen: 'để mở', hintClose: 'để đóng', opensNewTab: 'Mở trong thẻ mới',
+      groupFavorites: 'Yêu thích', groupRecents: 'Gần đây', groupTools: 'Công cụ', groupPages: 'Trang', groupActions: 'Thao tác',
+      home: 'Trang chủ', tools: 'Công cụ', about: 'Về mình', actionExport: 'Xuất dữ liệu của bạn', actionLanguage: 'Chuyển sang ',
+      other: { lang: 'en-US', copy: 'COPY-language.en', name: 'English' }, results: (n) => n === 1 ? '1 kết quả' : n + ' kết quả',
+      sumJson: 'Định dạng, kiểm tra và rút gọn JSON.', sumYaml: 'Chuyển đổi giữa JSON và YAML.',
+      date: 'Thứ 3, 13 thg 10 · 8:42', dateFont: 'font: 500 13px Manrope, sans-serif', greeting: 'Chào buổi sáng',
+      intro: 'Mình là Taro. Lập trình viên full-stack. Mình làm những công cụ nhỏ cho công việc và cuộc sống, và tất cả đều ở đây.', langQuery: 'language'
+    } : {
+      lang: 'en-US', dialogLabel: 'Search TaroKit', close: 'Cancel', placeholder: 'What are you looking for?',
+      hintMove: 'to move', hintOpen: 'to open', hintClose: 'to close', opensNewTab: 'Opens in a new tab',
+      groupFavorites: 'Favorites', groupRecents: 'Recent', groupTools: 'Tools', groupPages: 'Pages', groupActions: 'Actions',
+      home: 'Home', tools: 'Tools', about: 'About me', actionExport: 'Export your data', actionLanguage: 'Switch to ',
+      other: { lang: 'vi-VN', copy: 'COPY-language.vi', name: 'Tiếng Việt' }, results: (n) => n === 1 ? '1 result' : n + ' results',
+      sumJson: 'Pretty-print, validate and minify JSON.', sumYaml: 'Convert between JSON and YAML.',
+      date: 'Tue, 13 Oct · 08:42', dateFont: "font: 500 13px 'JetBrains Mono', monospace", greeting: 'Good morning',
+      intro: "I'm Taro. Full-stack developer. I build small tools for work and life, and they all live here.", langQuery: 'ngôn ngữ'
+    };
+    const row = (icon, pre, match, post, sub, hint, selected, copy, sr) => ({
+      icon: icon, globe: false, pre: pre, match: match, post: post, sub: sub, hasSub: !!sub, hint: hint, copy: copy || '',
+      sr: sr || '', hasSr: !!sr, lang: '', langName: '', langCopy: '', hasLang: false,
+      selected: selected ? 'true' : 'false',
       bg: selected ? 'var(--sel)' : 'transparent', ring: selected ? 'inset 0 0 0 1px var(--selLine)' : 'none'
     });
     const results = [
-      { title: 'Tools', copy: 'COPY-palette.groupTools', rows: [row('{ }', '', 'JSON', ' Formatter', 'Pretty-print, validate and minify JSON.', true), row('⇆', '', 'JSON', ' to YAML', 'Convert between JSON and YAML.')] },
-      { title: 'Actions', copy: 'COPY-palette.groupActions', rows: [row('⤓', 'Export your data', '', '', 'Save your favorites, recents and theme to a file.', false, 'COPY-palette.actionExport')] }
+      { title: c.groupTools, copy: 'COPY-palette.groupTools', rows: [
+        row('{ }', '', 'JSON', ' Formatter', c.sumJson, 'Enter', true),
+        row('⇆', '', 'JSON', ' to YAML', c.sumYaml, '')
+      ] },
+      { title: c.groupActions, copy: 'COPY-palette.groupActions', rows: [
+        row('⤓', c.actionExport, '', '', '', '', false, 'COPY-palette.actionExport')
+      ] }
     ];
     const empty = [
-      { title: 'Favorites', copy: 'COPY-palette.groupFavorites', rows: [row('{ }', 'JSON Formatter', '', '', '', true), row('⇄', 'Unit Converter', '', '', ''), row('◷', 'Focus Timer', '', '', '')] },
-      { title: 'Recent', copy: 'COPY-palette.groupRecents', rows: [row('64', 'Base64', '', '', ''), row('%', 'Loan Calculator ↗', '', '', '', false, '', ' (opens in a new tab)')] },
-      { title: 'Pages', copy: 'COPY-palette.groupPages', rows: [row('⌂', 'Home', '', '', '', false, 'COPY-nav.home'), row('▦', 'Tools', '', '', '', false, 'COPY-nav.tools'), row('☺', 'About me', '', '', '', false, 'COPY-nav.about')] }
+      { title: c.groupFavorites, copy: 'COPY-palette.groupFavorites', rows: [
+        row('{ }', 'JSON Formatter', '', '', '', 'Enter', true), row('⇄', 'Unit Converter', '', '', '', ''),
+        row('◷', 'Focus Timer', '', '', '', '')
+      ] },
+      { title: c.groupRecents, copy: 'COPY-palette.groupRecents', rows: [
+        row('64', 'Base64', '', '', '', ''), row('%', 'Loan Calculator ↗', '', '', '', '', false, '', c.opensNewTab)
+      ] },
+      { title: c.groupPages, copy: 'COPY-palette.groupPages', rows: [
+        row('⌂', c.home, '', '', '', '', false, 'COPY-nav.home'), row('▦', c.tools, '', '', '', '', false, 'COPY-nav.tools'),
+        row('☺', c.about, '', '', '', '', false, 'COPY-nav.about')
+      ] }
     ];
+    const langAction = Object.assign(row('', c.actionLanguage, '', '', '', 'Enter', true, 'COPY-palette.actionLanguage'),
+      { globe: true, hasLang: true, lang: c.other.lang, langCopy: c.other.copy, langName: c.other.name });
+    const language = [{ title: c.groupActions, copy: 'COPY-palette.groupActions', rows: [langAction] }];
+    const groups = state === 'results' ? results : state === 'language action' ? language : empty;
+    const n = state === 'empty query' ? 0 : groups.reduce((a, g) => a + g.rows.length, 0);
     return {
+      c: c,
       themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
-      query: state === 'results' ? 'json' : '',
-      groups: state === 'results' ? results : empty
+      query: state === 'results' ? 'json' : state === 'language action' ? c.langQuery : '',
+      groups: groups,
+      count: n ? c.results(n) : '',
+      countCopy: n === 1 ? 'COPY-palette.resultCountOne' : 'COPY-palette.resultCount'
     };
   }
 }

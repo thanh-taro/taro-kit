@@ -11,62 +11,120 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
 <style>
 body{margin:0}
-.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--danger:#FF8595;--chrome:#140F1EB8;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
-.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--danger:#C0243B;--chrome:#FFFFFFD1;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
+.tk-dark{--bg:#0F0B16;--surface:#18121F;--surface2:#221A2F;--line:#2D2440;--lineStrong:#6F6290;--fg:#EFEAF8;--muted:#9C92B0;--accent:#A47BFF;--onAccent:#0F0B16;--tint:#251A3C;--danger:#FF8595;--chrome:#140F1EB8;--catMintBg:#0F2C25;--catMintFg:#7FE3B8}
+.tk-light{--bg:#FBFAFE;--surface:#FFFFFF;--surface2:#F1EDFA;--line:#E2DCF0;--lineStrong:#8C82A2;--fg:#16111F;--muted:#5E566F;--accent:#6837E0;--onAccent:#FFFFFF;--tint:#EEE7FE;--danger:#C0243B;--chrome:#FFFFFFD1;--catMintBg:#DDF5EA;--catMintFg:#0B6B49}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:16px;top:-60px}.skip:focus{top:12px}
 </style>
 </helmet>
-<div class="{{themeCls}}" style="position: relative; width: 390px; height: 1700px; box-sizing: border-box; overflow: hidden; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 20px">
-  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">Skip to content</a>
-  <header style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 4px 0 14px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
-    <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 13px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span>TAROKIT</a>
-    <nav aria-label="Main" style="margin-left: auto; display: contents"><button type="button" aria-expanded="false" data-copy="COPY-nav.menu" style="margin-left: auto; min-height: 44px; display: flex; align-items: center; padding: 0 12px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 600 13px Manrope, sans-serif">Menu</button></nav>
+<!-- SCR-Settings / default / mobile (390 px). Tweaks: theme; language = the stored choice, which also sets the language showing ("device" assumes a device preferring English). Below 480 px the Language options stack in one column (SCR-Settings region 2). -->
+<div class="{{themeCls}}" lang="{{c.lang}}" style="position: relative; width: 390px; height: 1800px; box-sizing: border-box; overflow: hidden; background: var(--bg); color: var(--fg); font-family: Manrope, system-ui, sans-serif; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 20px">
+  <a href="#main" class="skip" data-copy="COPY-shell.skip" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; background: var(--accent); color: var(--onAccent); border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; z-index: 2">{{c.skip}}</a>
+  <!-- CMP-AppShell narrow: logo, search, theme toggle, Menu; the language switch is a row in the menu (see CMP-AppShell). -->
+  <header style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 4px 0 16px; background: var(--chrome); border: 1px solid var(--line); border-radius: 12px">
+    <a href="#" style="display: flex; align-items: center; gap: 8px; text-decoration: none; font: 600 13px Unbounded, sans-serif; letter-spacing: 0.02em"><span style="width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: var(--onAccent); display: inline-flex; align-items: center; justify-content: center; font: 700 12px Unbounded, sans-serif">T</span><span data-copy="COPY-shell.brand" style="text-transform: uppercase">TaroKit</span></a>
+    <button type="button" aria-label="{{c.search}}" data-copy="COPY-shell.search" style="margin-left: auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; border-radius: 10px; color: var(--fg)"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"></circle><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></button>
+    <button type="button" aria-label="{{c.toggleLabel}}" data-copy="COPY-shell.themeToggle" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; border-radius: 10px; color: var(--muted)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M15 10.5A6.5 6.5 0 017.5 3a6.5 6.5 0 107.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+    <nav style="display: contents"><button type="button" aria-expanded="false" data-copy="COPY-nav.menu" style="min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font: 600 13px Manrope, sans-serif"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>Menu</button></nav>
   </header>
   <main id="main" style="display: flex; flex-direction: column; gap: 16px">
-    <h1 data-copy="COPY-settings.title" style="margin: 0; font: 600 28px/1.1 Unbounded, sans-serif; letter-spacing: -0.03em">Settings</h1>
-    <section aria-labelledby="ms-app" style="display: flex; flex-direction: column; gap: 12px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
-      <h2 id="ms-app" data-copy="COPY-settings.appearance" style="margin: 0; font: 600 15px Unbounded, sans-serif">Appearance</h2>
-      <fieldset data-copy="COPY-settings.theme" style="margin: 0; padding: 0; border: 0">
-        <legend style="font-size: 14px; color: var(--muted); padding: 0; margin-bottom: 8px">Theme</legend>
-        <div role="radiogroup" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; gap: 4px; background: var(--bg); border: 1px solid var(--lineStrong); border-radius: 12px">
+    <h1 data-copy="COPY-settings.title" style="margin: 0; font: 600 28px/1.15 Unbounded, sans-serif; letter-spacing: -0.03em">{{c.title}}</h1>
+    <section aria-labelledby="ms-app" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+      <h2 id="ms-app" data-copy="COPY-settings.appearance" style="margin: 0; font: 600 15px/1.15 Unbounded, sans-serif">{{c.appearance}}</h2>
+      <fieldset style="margin: 0; padding: 0; border: 0">
+        <legend id="ms-theme" data-copy="COPY-settings.theme" style="font-size: 14px; color: var(--muted); padding: 0; margin-bottom: 8px">{{c.theme}}</legend>
+        <div role="radiogroup" aria-labelledby="ms-theme" style="display: grid; grid-template-columns: repeat(3, auto); padding: 4px; gap: 4px; background: var(--bg); border: 1px solid var(--lineStrong); border-radius: 12px">
           <sc-for list="{{themes}}" as="o" hint-placeholder-count="3">
-            <span role="radio" aria-checked="{{o.checked}}" tabindex="{{o.tab}}" style="display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 10px; font-weight: 700; font-size: 14px; background: {{o.bg}}; color: {{o.fg}}">{{o.label}}</span>
+            <span role="radio" data-copy="{{o.copy}}" aria-checked="{{o.checked}}" tabindex="{{o.tab}}" style="display: flex; align-items: center; justify-content: center; text-align: center; white-space: nowrap; min-height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 10px; font-weight: 700; font-size: 14px; background: {{o.bg}}; color: {{o.fg}}">{{o.label}}</span>
+          </sc-for>
+        </div>
+      </fieldset>
+      <fieldset style="margin: 0; padding: 0; border: 0">
+        <legend id="ms-lang" data-copy="COPY-settings.language" style="font-size: 14px; color: var(--muted); padding: 0; margin-bottom: 8px">{{c.language}}</legend>
+        <div role="radiogroup" aria-labelledby="ms-lang" style="display: grid; grid-template-columns: 1fr; padding: 4px; gap: 4px; background: var(--bg); border: 1px solid var(--lineStrong); border-radius: 12px">
+          <sc-for list="{{langs}}" as="o" hint-placeholder-count="3">
+            <sc-if value="{{o.marked}}" hint-placeholder-val="{{true}}">
+              <span role="radio" lang="{{o.lang}}" data-copy="{{o.copy}}" aria-checked="{{o.checked}}" tabindex="{{o.tab}}" style="display: flex; align-items: center; justify-content: flex-start; min-height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 10px; font-weight: 700; font-size: 14px; background: {{o.bg}}; color: {{o.fg}}">{{o.label}}</span>
+            </sc-if>
+            <sc-if value="{{o.unmarked}}" hint-placeholder-val="{{false}}">
+              <span role="radio" data-copy="{{o.copy}}" aria-checked="{{o.checked}}" tabindex="{{o.tab}}" style="display: flex; align-items: center; justify-content: flex-start; min-height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 10px; font-weight: 700; font-size: 14px; background: {{o.bg}}; color: {{o.fg}}">{{o.label}}</span>
+            </sc-if>
           </sc-for>
         </div>
       </fieldset>
     </section>
-    <section aria-labelledby="ms-data" style="display: flex; flex-direction: column; gap: 14px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
-      <h2 id="ms-data" data-copy="COPY-settings.yourData" style="margin: 0; font: 600 15px Unbounded, sans-serif">Your data</h2>
-      <span data-copy="COPY-settings.daysUsed" style="font-size: 15px; font-weight: 600">You've used TaroKit on 9 of the last 14 days</span>
+    <section aria-labelledby="ms-data" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px">
+      <h2 id="ms-data" data-copy="COPY-settings.yourData" style="margin: 0; font: 600 15px/1.15 Unbounded, sans-serif">{{c.yourData}}</h2>
+      <span data-copy="COPY-settings.daysUsed" style="font-size: 15px; font-weight: 600">{{c.daysUsed}}</span>
       <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: 4px">
         <sc-for list="{{days}}" as="d" hint-placeholder-count="14"><span style="aspect-ratio: 1; border-radius: 7px; background: {{d.bg}}; border: 1px solid var(--line)"></span></sc-for>
       </div>
       <div style="height: 1px; background: var(--line)"></div>
-      <button type="button" data-copy="COPY-settings.export" style="min-height: 48px; background: var(--accent); color: var(--onAccent); border: 0; border-radius: 10px; font: 700 15px Manrope, sans-serif">Export your data</button>
-      <button type="button" data-copy="COPY-settings.import" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">Import from file</button>
-      <p data-copy="COPY-settings.backupScope" style="margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5">Your backup holds your favorites, recents, theme and days used. Each tool keeps its own data.</p>
+      <button type="button" data-copy="COPY-settings.export" style="min-height: 48px; background: var(--accent); color: var(--onAccent); border: 0; border-radius: 10px; font: 700 15px Manrope, sans-serif">{{c.export}}</button>
+      <button type="button" data-copy="COPY-settings.import" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">{{c.import}}</button>
+      <p data-copy="COPY-settings.backupScope" style="margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55">{{c.backupScope}}</p>
       <div style="height: 1px; background: var(--line)"></div>
-      <button type="button" data-copy="COPY-settings.clearRecents" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">Clear recent tools</button>
-      <button type="button" data-copy="COPY-settings.erase" style="min-height: 48px; background: transparent; color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; font: 700 15px Manrope, sans-serif">Erase your data</button>
+      <button type="button" data-copy="COPY-settings.clearRecents" style="min-height: 48px; background: transparent; color: var(--fg); border: 1px solid var(--lineStrong); border-radius: 10px; font: 700 15px Manrope, sans-serif">{{c.clearRecents}}</button>
+      <button type="button" data-copy="COPY-settings.erase" style="min-height: 48px; background: transparent; color: var(--danger); border: 1px solid var(--danger); border-radius: 10px; font: 700 15px Manrope, sans-serif">{{c.erase}}</button>
     </section>
-    <section aria-labelledby="ms-priv" style="display: flex; flex-direction: column; gap: 6px; padding: 18px; background: var(--tint); border-radius: 12px">
-      <h2 id="ms-priv" data-copy="COPY-settings.privacyTitle" style="margin: 0; font: 600 15px Unbounded, sans-serif">Privacy</h2>
-      <p data-copy="COPY-settings.privacy" style="margin: 0; font-size: 15px; line-height: 1.5">No accounts, no tracking. Everything you do here stays in your browser, and I never see it.</p>
+    <section aria-labelledby="ms-priv" style="display: flex; flex-direction: column; gap: 8px; padding: 16px; background: var(--tint); border-radius: 12px">
+      <h2 id="ms-priv" data-copy="COPY-settings.privacyTitle" style="margin: 0; font: 600 15px/1.15 Unbounded, sans-serif">{{c.privacyTitle}}</h2>
+      <p data-copy="COPY-settings.privacy" style="margin: 0; font-size: 15px; line-height: 1.55">{{c.privacy}}</p>
+      <p data-copy="COPY-settings.privacyTools" style="margin: 0; font-size: 15px; line-height: 1.55">{{c.privacyTools}}</p>
+      <p data-copy="COPY-settings.privacyHosting" style="margin: 0; font-size: 15px; line-height: 1.55">{{c.privacyHosting}}</p>
     </section>
+    <p lang="en-US" style="margin: 0; font: 400 12px 'JetBrains Mono', monospace; color: var(--muted)">Board note: native radio inputs in code, each group named by its legend. Theme keeps one row (columns sized to their labels, so no label wraps in either language); Language stacks below 480 px.</p>
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["system","dark","light"],"default":"system"},"$preview":{"width":390,"height":1700}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["system","dark","light"],"default":"system"},"language":{"editor":"enum","options":["device","en-US","vi-VN"],"default":"device"},"$preview":{"width":390,"height":1800}}'>
 class Component extends DCLogic {
   renderVals() {
     const theme = this.props.theme ?? 'system';
-    const opt = (label, checked) => ({ label: label, checked: checked ? 'true' : 'false', tab: checked ? '0' : '-1', bg: checked ? 'var(--accent)' : 'transparent', fg: checked ? 'var(--onAccent)' : 'var(--fg)' });
+    const language = this.props.language ?? 'device';
+    const vi = language === 'vi-VN';
+    const light = theme === 'light';
+    // Copy per language, from specs/30-experience/copy.md (en-US / vi-VN columns). "device" shows English here.
+    const en = {
+      lang: 'en-US', skip: 'Skip to content', search: 'Search', placeholder: 'What are you looking for?', settings: 'Settings',
+      navs: [{ label: 'Home', copy: 'COPY-nav.home' }, { label: 'Tools', copy: 'COPY-nav.tools' }, { label: 'About me', copy: 'COPY-nav.about' }, { label: 'Now', copy: 'COPY-nav.now' }],
+      switchPrefix: 'Switch to ', otherLang: 'vi-VN', otherCopy: 'COPY-language.vi', otherName: 'Tiếng Việt', thisCopy: 'COPY-language.en', thisName: 'English',
+      toggleLabel: light ? 'Switch to dark theme' : 'Switch to light theme',
+      title: 'Settings', appearance: 'Appearance', theme: 'Theme', themeSystem: 'System', themeLight: 'Light', themeDark: 'Dark',
+      language: 'Language', device: 'Match my device',
+      yourData: 'Your data', daysUsed: "You've used TaroKit on 9 of the last 14 days", export: 'Export your data', import: 'Import from file',
+      backupScope: 'Your backup holds your favorites, recents, theme, language and days used. Each tool keeps its own data.',
+      clearRecents: 'Clear recent tools', erase: 'Erase your data', privacyTitle: 'Privacy',
+      privacy: 'No accounts, no tracking, no cookies. Your favorites, recent tools, days used, theme and language stay in this browser, and they only leave it if you export a backup.',
+      privacyTools: 'Each tool is its own site and tells you how it handles your data. The only things I tell a tool inside TaroKit are your theme and language.',
+      privacyHosting: "Cloudflare hosts TaroKit and, like any host, handles request data such as your IP address to serve it. I don't use its analytics."
+    };
+    const viCopy = {
+      lang: 'vi-VN', skip: 'Chuyển đến nội dung', search: 'Tìm kiếm', placeholder: 'Bạn đang tìm gì?', settings: 'Cài đặt',
+      navs: [{ label: 'Trang chủ', copy: 'COPY-nav.home' }, { label: 'Công cụ', copy: 'COPY-nav.tools' }, { label: 'Về mình', copy: 'COPY-nav.about' }, { label: 'Dạo này', copy: 'COPY-nav.now' }],
+      switchPrefix: 'Chuyển sang ', otherLang: 'en-US', otherCopy: 'COPY-language.en', otherName: 'English', thisCopy: 'COPY-language.vi', thisName: 'Tiếng Việt',
+      toggleLabel: light ? 'Chuyển sang giao diện tối' : 'Chuyển sang giao diện sáng',
+      title: 'Cài đặt', appearance: 'Hiển thị', theme: 'Giao diện', themeSystem: 'Theo hệ thống', themeLight: 'Sáng', themeDark: 'Tối',
+      language: 'Ngôn ngữ', device: 'Theo thiết bị',
+      yourData: 'Dữ liệu của bạn', daysUsed: 'Bạn đã dùng TaroKit 9 ngày trong 14 ngày qua', export: 'Xuất dữ liệu của bạn', import: 'Nhập từ tệp',
+      backupScope: 'Bản sao lưu gồm mục yêu thích, công cụ gần đây, giao diện, ngôn ngữ và số ngày đã dùng. Mỗi công cụ tự giữ dữ liệu riêng.',
+      clearRecents: 'Xoá công cụ gần đây', erase: 'Xoá dữ liệu của bạn', privacyTitle: 'Quyền riêng tư',
+      privacy: 'Không tài khoản, không theo dõi, không cookie. Mục yêu thích, công cụ gần đây, số ngày đã dùng, giao diện và ngôn ngữ của bạn ở lại trong trình duyệt này, và chỉ rời khỏi đó khi bạn xuất bản sao lưu.',
+      privacyTools: 'Mỗi công cụ là một trang riêng và tự cho bạn biết cách nó xử lý dữ liệu. Mình chỉ cho công cụ trong TaroKit biết hai điều: giao diện và ngôn ngữ bạn đang dùng.',
+      privacyHosting: 'Cloudflare lưu trữ TaroKit và, như mọi nhà cung cấp hosting, xử lý dữ liệu yêu cầu như địa chỉ IP của bạn để phục vụ trang. Mình không dùng tính năng phân tích của họ.'
+    };
+    const c = vi ? viCopy : en;
+    const opt = (label, copy, checked) => ({ label: label, copy: copy, checked: checked ? 'true' : 'false', tab: checked ? '0' : '-1', bg: checked ? 'var(--accent)' : 'transparent', fg: checked ? 'var(--onAccent)' : 'var(--fg)' });
+    // Language names carry their own lang; "Match my device" has none (it inherits the page language).
+    const lopt = (label, copy, lang, v) => Object.assign(opt(label, copy, language === v), { lang: lang, marked: !!lang, unmarked: !lang });
     const used = [1,1,0,1,1,1,0,0,1,1,0,1,0,1];
     return {
-      themeCls: theme === 'light' ? 'tk-light' : 'tk-dark',
-      themes: [opt('System', theme === 'system'), opt('Light', theme === 'light'), opt('Dark', theme === 'dark')],
+      c: c,
+      themeCls: light ? 'tk-light' : 'tk-dark',
+      themes: [opt(c.themeSystem, 'COPY-settings.themeSystem', theme === 'system'), opt(c.themeLight, 'COPY-settings.themeLight', theme === 'light'), opt(c.themeDark, 'COPY-settings.themeDark', theme === 'dark')],
+      langs: [lopt(c.device, 'COPY-language.device', '', 'device'), lopt('English', 'COPY-language.en', 'en-US', 'en-US'), lopt('Tiếng Việt', 'COPY-language.vi', 'vi-VN', 'vi-VN')],
       days: used.map((u) => ({ bg: u ? 'var(--accent)' : 'var(--surface2)' }))
     };
   }

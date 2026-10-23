@@ -54,7 +54,7 @@ Visitors and the Owner can read the whole portal in English or Vietnamese, and s
 - **AC20** Given the narrow layout with the menu open, when the user switches language from the menu, then the menu stays open with focus on the switch. (R2)
 - **AC21** Given Vietnamese is showing, when the palette shows 3 results, then "3 kết quả" is announced. (R4)
 - **AC22** Given device storage is unavailable and a device preferring English, when the user switches to Tiếng Việt, then the page is Vietnamese; when another page opens, then it is English again. (R3)
-- **AC23** Given Vietnamese is showing, when any portal page is shown at 320 px and at the narrowest full-layout width, then the header fits with no horizontal scrolling. (R4)
+- **AC23** Given Vietnamese is showing, when any portal page is shown at 320 px and at 721 px (the narrowest full layout), then the header fits with no horizontal scrolling. (R4)
 - **AC24** Given Vietnamese was chosen, when the user picks COPY-language.device in settings on a device preferring English, then English is showing and no language is stored. (R2)
 
 ## UX notes
