@@ -1,0 +1,237 @@
+== F-019
+specs/00-product/vision.md:29: - Languages beyond English and Vietnamese (F-019, D-060).
+specs/10-domain/model.md:98: - **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme 
+specs/20-features/F-004-command-palette.md:29: - **R5** Available actions: toggle the theme (RULE-03), switch to the other language (F-019.R2), export personal data (F-013), and copy the 
+specs/20-features/F-012-theme.md:22: - Out: custom accent colors; sharing anything else with tools besides the language (F-019.R7; tools stay independent, PRN-01).
+specs/20-features/F-012-theme.md:29: - **R5** When the portal shows an embedded tool, it tells the tool the theme currently showing (light or dark, never "system") as it opens t
+specs/20-features/_index.md:28: | F-019 | Choose a language | M-1 | P1 | draft |
+specs/20-features/_index.md:31: F-001 → (F-002, F-003, F-008, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013; (F-001, F-008) → F-017; (F-001, F-
+specs/30-experience/components/CMP-AppShell.md:12: Logo/name (COPY-shell.brand, links home); navigation (Home, Tools, About, Résumé when there is one, Now; COPY-nav.home, COPY-nav.tools, COPY
+specs/30-experience/components/CMP-AppShell.md:24: The current page is marked in navigation and, for the Privacy and Terms pages, in the footer. The footer sits after the page content, and th
+specs/30-experience/copy.md:10: Every string has an English (en-US) and a Vietnamese (vi-VN) version (F-019, RULE-16); both are required. The Vietnamese voice is the same T
+specs/30-experience/copy.md:28: | **COPY-shell.languageSwitch** | Switch to {language} | Chuyển sang {language} | header language switch label (F-019.R2); {language} is the
+specs/30-experience/copy.md:71: | **COPY-palette.actionLanguage** | Switch to {language} | Chuyển sang {language} | action name (F-019.R2); {language} as in COPY-shell.lang
+specs/30-experience/copy.md:120: | **COPY-settings.language** | Language | Ngôn ngữ | language setting label (F-019.R2) |
+specs/30-experience/copy.md:121: | **COPY-language.en** | English | English | name of en-US, always in English and marked en-US (F-019 UX notes) |
+specs/30-experience/copy.md:122: | **COPY-language.vi** | Tiếng Việt | Tiếng Việt | name of vi-VN, always in Vietnamese and marked vi-VN (F-019 UX notes) |
+specs/30-experience/copy.md:150: | **COPY-policy.translationNote** | This is a translation. If it differs from the English version, the English version applies. | Đây là bản
+specs/30-experience/screens/SCR-Policy.md:5: features: [F-018, F-019]
+specs/30-experience/screens/SCR-Policy.md:14: 2. Title (the policy's own title) and last updated date (COPY-policy.updated), the date shown in full as the month, day and year in the lang
+specs/30-experience/screens/SCR-Settings.md:5: features: [F-012, F-019, F-013, F-006]
+specs/30-experience/screens/SCR-Settings.md:15: 2. Appearance (COPY-settings.appearance): theme choice (COPY-settings.theme; options COPY-settings.themeSystem, COPY-settings.themeLight, CO
+specs/40-technical/adr/ADR-0011-theme-handoff-to-embedded-tools.md:44: ## Note (2026-10-23, F-019)
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:10: F-019 adds Vietnamese next to English. The switch must be instant, with no reload and no lost state (F-019.R2), the first paint must already
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:10: F-019 adds Vietnamese next to English. The switch must be instant, with no reload and no lost state (F-019.R2), the first paint must already
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:10: F-019 adds Vietnamese next to English. The switch must be instant, with no reload and no lost state (F-019.R2), the first paint must already
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:19: - **Link previews and the site index** use en-US only (F-019.R8); `og:locale` is `en_US`.
+== RULE-16
+specs/10-domain/model.md:91: The theme: `system`, `light` or `dark` (RULE-03). The language: `en-US` or `vi-VN` when the user has chosen one; with no choice, the languag
+specs/10-domain/rules.md:26: | **RULE-15** | Résumé display: sections appear in the order experience, education, skills, languages, certificates, awards, and a section w
+specs/20-features/F-007-home-dashboard.md:9: rules: [RULE-01, RULE-04, RULE-14, RULE-16]
+specs/20-features/F-007-home-dashboard.md:25: - **R1** Home shows a greeting suited to the local time of day (COPY-home.greetingMorning 05:00–11:59, COPY-home.greetingAfternoon 12:00–17:
+specs/20-features/F-019-language.md:9: rules: [RULE-16, RULE-08, RULE-15, RULE-05]
+specs/20-features/F-019-language.md:21: - In: the two languages of RULE-16 (English, en-US, and Vietnamese, vi-VN); the first-visit language taken from the device; choosing in sett
+specs/20-features/F-019-language.md:25: - **R1** The portal shows one language at a time, en-US or vi-VN. With no stored choice, the language showing is picked from the device as e
+specs/20-features/F-019-language.md:28: - **R4** Every text the portal shows is in the language showing: copy, the Owner's content (INV-09), accessible names and descriptions, anno
+specs/30-experience/copy.md:10: Every string has an English (en-US) and a Vietnamese (vi-VN) version (F-019, RULE-16); both are required. The Vietnamese voice is the same T
+specs/30-experience/screens/SCR-Policy.md:14: 2. Title (the policy's own title) and last updated date (COPY-policy.updated), the date shown in full as the month, day and year in the lang
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:14: - **Before first paint.** The theme's blocking inline script (ADR-0011, MOD-Theme) also resolves the language (stored choice, else RULE-16 f
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:32: - Unit tests cover RULE-16 resolution; e2e covers the first paint in each language, a switch with state kept, the tool handoff from a stub t
+specs/40-technical/modules/MOD-Copy.md:9: MOD-Copy generates a typed message catalog from `specs/30-experience/copy.md` at build. It produces one key per COPY ID, each with its en-US
+specs/40-technical/modules/MOD-Language.md:9: MOD-Language resolves and applies the language showing (RULE-16, ADR-0012).
+specs/40-technical/modules/MOD-Language.md:22: - `setLanguage(lang)`, `switchLanguage()`, `resolveLanguage(choice, deviceLanguages)` (pure, RULE-16).
+specs/40-technical/platform-mapping.md:60: | Local date and time in the conventions of the language showing (F-007.R1, RULE-16) | `Intl.DateTimeFormat(shownLanguage, …)`. Re-created e
+specs/40-technical/platform-mapping.md:65: | Device's preferred languages (RULE-16) | `navigator.languages` (falling back to `navigator.language`), primary subtag compared case-insens
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== INV-09
+specs/10-domain/model.md:12: Every text the Owner writes is **localized text**: it has an English (en-US) and a Vietnamese (vi-VN) version (INV-09). Names may be written
+specs/20-features/F-019-language.md:28: - **R4** Every text the portal shows is in the language showing: copy, the Owner's content (INV-09), accessible names and descriptions, anno
+specs/20-features/F-019-language.md:52: - **AC18** Given a tool entry with no Vietnamese summary, when the content is validated, then the build fails and the error names the file, 
+specs/20-features/F-019-language.md:61: - Text the Owner writes once for both languages (names, INV-09) shows the same in both, marked with the language showing.
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:13: - **Both languages in the HTML.** Every localized text is rendered twice at build, as sibling elements marked `lang="en-US" data-l` and `lan
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:17: - **Copy and content.** `copy.md` holds both columns; the generated catalog is `t(id, params?, lang?)`. Content files hold localized text as
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:17: - **Copy and content.** `copy.md` holds both columns; the generated catalog is `t(id, params?, lang?)`. Content files hold localized text as
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== ENT-Preferences
+specs/10-domain/model.md:82: The set of everything stored for the current user on this device: favorites (ENT-Favorite), recents (ENT-RecentVisit), preferences (ENT-Pref
+specs/20-features/F-012-theme.md:8: entities: [ENT-Preferences]
+specs/20-features/F-019-language.md:8: entities: [ENT-Preferences, ENT-CatalogEntry, ENT-Category, ENT-Profile, ENT-Resume, ENT-NowNote, ENT-Policy]
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== INV-05
+specs/10-domain/model.md:82: The set of everything stored for the current user on this device: favorites (ENT-Favorite), recents (ENT-RecentVisit), preferences (ENT-Pref
+specs/20-features/F-005-favorites.md:26: - **R2** Favorites persist on the device across visits and restarts, and are never sent over the network (INV-05).
+specs/20-features/F-006-recents.md:27: - **R3** Recents persist on the device and are never sent over the network (INV-05).
+specs/30-experience/copy.md:144: | **COPY-settings.privacy** | No accounts, no tracking, no cookies. Your favorites, recent tools, days used, theme and language stay in this
+specs/30-experience/copy.md:145: | **COPY-settings.privacyTools** | Each tool is its own site and tells you how it handles your data. The only things I tell a tool inside Ta
+specs/40-technical/adr/ADR-0010-personal-data-in-one-localstorage-document.md:11: - stay on the device (INV-05, NFR-05);
+specs/40-technical/adr/ADR-0010-personal-data-in-one-localstorage-document.md:30: - **Cookies.** Sent over the network, so they violate INV-05 and NFR-05.
+specs/40-technical/adr/ADR-0011-theme-handoff-to-embedded-tools.md:35: it is the one exception to INV-05 (D-039).
+specs/40-technical/architecture.md:72: 7. **Backup.** Export serializes the personal-data document to a downloaded file. Import validates it in the browser with the standalone sch
+specs/40-technical/modules/MOD-PersonalData.md:17: - Nothing it holds is ever sent over the network (INV-05).
+specs/40-technical/platform-mapping.md:45: | Stored on the device / personal data (INV-05) | `localStorage["tarokit.personal"]`, one JSON document shaped like `personalData` (ADR-0010
+specs/50-quality/nfr.md:14: | **NFR-05** | Private. | The portal makes zero requests to third parties of its own (all fonts, icons and images are bundled); no cookies; 
+specs/60-delivery/changelog.md:21: - D-039 amends D-008: nothing is shared at runtime with tools except the theme showing. F-012 gains R5/R6 and AC5–AC10 (theme hand-off, from
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== RULE-05
+specs/20-features/F-002-browse-catalog.md:9: rules: [RULE-05, RULE-06]
+specs/20-features/F-002-browse-catalog.md:28: - **R4** While a query is entered, the catalog shows a single list ranked by RULE-05 across all categories, updating as the user types. Each
+specs/20-features/F-004-command-palette.md:9: rules: [RULE-01, RULE-03, RULE-05, RULE-06]
+specs/20-features/F-004-command-palette.md:27: - **R3** Typing searches visible tools, pages and actions by RULE-05, showing the groups Tools, Pages and Actions in that order, each with a
+specs/20-features/F-019-language.md:9: rules: [RULE-16, RULE-08, RULE-15, RULE-05]
+specs/20-features/F-019-language.md:29: - **R5** Search in the palette and the catalog matches tools, pages and actions by their text in both languages, so a tool can be found by i
+specs/40-technical/adr/ADR-0012-both-languages-in-every-page.md:18: - **Search.** The catalog data file carries both languages' names, summaries and tags, and pre-normalized keys for both (RULE-05). Pages and
+specs/40-technical/dependencies.md:89: | fuse.js | Fuzzy scoring conflicts with the deterministic RULE-05 ranking (MOD-Search) |
+specs/40-technical/modules/MOD-Palette.md:45: - At most 8 results per group and 4 groups. The whole query is matched as one phrase (RULE-05); multi-token matching was considered and decl
+specs/40-technical/modules/MOD-Search.md:11: - **Ranking** follows RULE-05: exact name, then name prefix, then name contains, then tag match, then summary contains. Ties go to favorites
+specs/40-technical/modules/MOD-Search.md:18: - Fuzzy matching, which is deliberately absent (RULE-05 is deterministic).
+specs/40-technical/modules/MOD-Search.md:24: - `TIERS` (`exact`, `prefix`, `contains`, `tag`, `summary`, best first) and `matchTier(normalizedQuery, keys) → MatchTier | undefined`: an i
+specs/60-delivery/changelog.md:47: - F-002 build (no behavior change): MOD-Search documents its public surface (`normalize`, `searchKeys`, `TIERS`, `matchTier`, `rank`, `compa
+specs/60-delivery/changelog.md:48: - F-002 review round 1: RULE-05 clarified, "tag match" means a tag starts with the query. F-002 edge cases and SCR-Catalog states: when the 
+specs/60-delivery/changelog.md:49: - F-002 shipped (wave 4): catalog with search (MOD-Search, RULE-05), search-unavailable state. Tool contract: theme messages may repeat and 
+specs/60-delivery/changelog.md:50: - F-004 build: COPY-shell.search (the compact and narrow shell's search control, from design CMP-AppShell), COPY-palette.resultCount / resul
+specs/60-delivery/changelog.md:50: - F-004 build: COPY-shell.search (the compact and narrow shell's search control, from design CMP-AppShell), COPY-palette.resultCount / resul
+specs/60-delivery/changelog.md:53: - User decision: search keeps phrase matching (RULE-05 unchanged); multi-token matching declined for M-1. MOD-Palette updated.
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== RULE-08
+specs/10-domain/model.md:82: The set of everything stored for the current user on this device: favorites (ENT-Favorite), recents (ENT-RecentVisit), preferences (ENT-Pref
+specs/20-features/F-013-backup.md:9: rules: [RULE-01, RULE-08, RULE-13]
+specs/20-features/F-013-backup.md:26: - **R2** The user can import a backup file. It is fully validated first (RULE-08). An invalid file is rejected with its reason and nothing c
+specs/20-features/F-013-backup.md:27: - **R3** A file from an older schema version, or one missing optional parts, is migrated with defaults, then validated (RULE-08).
+specs/20-features/F-019-language.md:9: rules: [RULE-16, RULE-08, RULE-15, RULE-05]
+specs/20-features/F-019-language.md:59: - A backup file from before this feature has no language. Import keeps the language following the device (RULE-08).
+specs/40-technical/adr/ADR-0005-yaml-content-validated-by-domain-json-schema.md:12: The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project.schema.json`. The rule "one fact, one place" (specs/README.
+specs/40-technical/adr/ADR-0010-personal-data-in-one-localstorage-document.md:16: - map one-to-one to the backup file shape (RULE-08).
+specs/40-technical/adr/ADR-0010-personal-data-in-one-localstorage-document.md:23: - An unreadable or invalid stored document is treated like a damaged backup. Its valid parts are migrated with defaults (RULE-08), and the r
+specs/40-technical/architecture.md:72: 7. **Backup.** Export serializes the personal-data document to a downloaded file. Import validates it in the browser with the standalone sch
+specs/40-technical/modules/MOD-Backup.md:9: MOD-Backup handles backup files (RULE-08).
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== RULE-15
+specs/10-domain/model.md:64: The Owner's optional career record, in the order the Owner writes it (RULE-15):
+specs/20-features/F-017-resume.md:9: rules: [RULE-15]
+specs/20-features/F-017-resume.md:25: - **R1** When there is a résumé, the Résumé page shows its sections and entries per RULE-15.
+specs/20-features/F-017-resume.md:27: - **R3** Each skill shows its name, under its group, and its level, per RULE-15. Each language shows its name and level. Each certificate an
+specs/20-features/F-017-resume.md:47: SCR-Resume. Periods and skill levels follow RULE-15.
+specs/20-features/F-019-language.md:9: rules: [RULE-16, RULE-08, RULE-15, RULE-05]
+specs/20-features/F-019-language.md:28: - **R4** Every text the portal shows is in the language showing: copy, the Owner's content (INV-09), accessible names and descriptions, anno
+specs/30-experience/copy.md:98: | **COPY-resume.present** | present | nay | end of a current period (RULE-15) |
+specs/30-experience/copy.md:99: | **COPY-resume.period** | {start} – {end} | {start} – {end} | a period; {start} and {end} are month and year, or COPY-resume.present (RULE-
+specs/30-experience/copy.md:100: | **COPY-resume.skillLevel** | {level} out of 5 | {level} trên 5 | a skill level in words (RULE-15) |
+specs/30-experience/copy.md:101: | **COPY-resume.skillLevelShort** | {level}/5 | {level}/5 | a skill level below 5, shown on its chip (RULE-15) |
+specs/30-experience/screens/SCR-Resume.md:17: 5. Skills (COPY-resume.skills): one block per group, the group's label above its skills as chips that wrap (RULE-15); skills without a group
+specs/30-experience/screens/SCR-Resume.md:23: | default | a résumé with entries | the sections that have entries, in RULE-15 order |
+specs/40-technical/modules/MOD-Content.md:45: - `resume.ts` (ENT-Resume, F-017): `RESUME_PATH` (`/resume/`), `RESUME_SECTIONS` (RULE-15 order), `hasResumeEntries(resume)` (a résumé with 
+specs/40-technical/modules/MOD-Pages.md:60: - `resume.ts` (build time, pure): `resumeView(resume) → { sections, experience, education, skills, languages, certificates, awards }`, the s
+specs/40-technical/modules/MOD-Pages.md:60: - `resume.ts` (build time, pure): `resumeView(resume) → { sections, experience, education, skills, languages, certificates, awards }`, the s
+specs/40-technical/modules/MOD-Pages.md:61: - `ResumeView.astro`: the page body. On wide screens experience and education fill the main column and the other sections the side column, k
+specs/60-delivery/changelog.md:85: - Change request (user, 2026-10-20): a Résumé page for v1.0. New F-017 (draft), ENT-Resume, RULE-15, INV-08, SCR-Resume, glossary term Résum
+specs/60-delivery/changelog.md:93: - Change request (user decision D-056, 2026-10-20): the résumé's skills show by group as chips instead of a grid of level marks. ENT-Resume 
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== F-012
+specs/10-domain/model.md:98: - **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme 
+specs/20-features/F-013-backup.md:14: depends_on: [F-005, F-006, F-012]
+specs/20-features/F-019-language.md:14: depends_on: [F-012]
+specs/20-features/F-019-language.md:31: - **R7** When the portal shows an embedded tool, it tells the tool the language showing (en-US or vi-VN) as it opens the tool, and again whe
+specs/20-features/F-019-language.md:31: - **R7** When the portal shows an embedded tool, it tells the tool the language showing (en-US or vi-VN) as it opens the tool, and again whe
+specs/20-features/_index.md:21: | F-012 | Choose a theme | M-1 | P1 | shipped |
+specs/20-features/_index.md:31: F-001 → (F-002, F-003, F-008, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013; (F-001, F-008) → F-017; (F-001, F-
+specs/20-features/_index.md:31: F-001 → (F-002, F-003, F-008, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013; (F-001, F-008) → F-017; (F-001, F-
+specs/30-experience/copy.md:145: | **COPY-settings.privacyTools** | Each tool is its own site and tells you how it handles your data. The only things I tell a tool inside Ta
+specs/30-experience/screens/SCR-Settings.md:5: features: [F-012, F-019, F-013, F-006]
+specs/30-experience/screens/SCR-ToolView.md:5: features: [F-003, F-005, F-011, F-012]
+specs/40-technical/adr/ADR-0003-plain-css-with-generated-tokens.md:12: - The stored theme must be applied before first paint (F-012.R4).
+specs/40-technical/adr/ADR-0010-personal-data-in-one-localstorage-document.md:13: - be readable **synchronously before first paint**, so the theme never flashes (F-012.R4) and home's lists render on hydration without a loa
+specs/40-technical/adr/ADR-0010-personal-data-in-one-localstorage-document.md:15: - degrade to session-only memory when storage is unavailable (F-005.R5, F-012 edge case);
+specs/40-technical/adr/ADR-0011-theme-handoff-to-embedded-tools.md:10: F-012.R5–R6 (change request from the JSON Formatter, its decision D-008) require embedded tools
+specs/40-technical/adr/ADR-0011-theme-handoff-to-embedded-tools.md:39: ready message from another origin gets no answer (F-012.AC5–AC7).
+specs/40-technical/modules/MOD-Pages.md:78: F-002, F-016, F-007 (except R2, which is shared with MOD-Palette), F-008, F-010, F-018.R1, F-018.R2, F-017.R1 to F-017.R4 (with MOD-Shell an
+specs/40-technical/modules/MOD-PersonalData.md:56: F-005 (all requirements), F-006.R2, F-006.R3, F-006.R5 and F-006.R6, and the storage part of F-012.R4. It contributes to NFR-05.
+specs/40-technical/modules/MOD-Shell.md:39: CMP-AppShell; F-017.R4 (navigation); F-011.R3 (indicator) and F-011.R4 (message); F-012.R3 (header toggle); F-004.R1 (visible search control
+specs/40-technical/modules/MOD-Theme.md:10: - **Before first paint:** a tiny inline, CSP-hashed head script reads the stored preference and sets `data-theme` on the root element, so th
+specs/40-technical/modules/MOD-Theme.md:25: F-012 (all requirements). It contributes to NFR-03 by verifying both themes.
+specs/40-technical/modules/MOD-ToolHost.md:13: - **Loading:** creates the iframe with the attributes from `frameAttributesFor(tool)` (MOD-SecurityPolicy) and shows the loading state. The 
+specs/40-technical/modules/MOD-ToolHost.md:14: - **Theme handoff:** while the frame exists, every change of `shownTheme` is posted as `{ type: "taro:theme", value }` to the tool's exact o
+specs/40-technical/modules/MOD-ToolHost.md:36: F-003.R1 to F-003.R6 and F-003.R8 (with SP-1), F-006.R1, F-012.R5–R6 (with MOD-Theme) and F-019.R7 (with MOD-Language). It contributes to NF
+specs/40-technical/platform-mapping.md:68: | First painted screen already in the chosen theme (F-012.R4) | A blocking inline script as the first element of `<body>` (after Astro's CSP
+== F-013
+specs/20-features/F-004-command-palette.md:29: - **R5** Available actions: toggle the theme (RULE-03), switch to the other language (F-019.R2), export personal data (F-013), and copy the 
+specs/20-features/F-004-command-palette.md:39: - **AC7** Given the user runs the export action, when it completes, then a backup file is saved as in F-013. (R5)
+specs/20-features/F-005-favorites.md:22: - Out: pinning from the palette, reordering by hand, per-favorite shortcuts (M-2); moving favorites between devices (F-013).
+specs/20-features/_index.md:22: | F-013 | Export and import personal data | M-1 | P1 | shipped |
+specs/20-features/_index.md:31: F-001 → (F-002, F-003, F-008, F-010, F-014, F-015) → (F-004, F-005, F-006, F-011) → F-007; F-012 → F-013; (F-001, F-008) → F-017; (F-001, F-
+specs/30-experience/copy.md:140: | **COPY-settings.eraseUnsaved** | I erased your data for now, but couldn't save that on this device, so it may come back next time. | Mình 
+specs/30-experience/copy.md:141: | **COPY-settings.importUnsaved** | I imported that file for now, but couldn't save it on this device, so your old data may come back next t
+specs/30-experience/copy.md:142: | **COPY-settings.importFailed** | I couldn't open that file just now. Please try again. | Mình chưa mở được tệp đó. Bạn thử lại nhé. | when
+specs/30-experience/copy.md:143: | **COPY-settings.exportFailed** | I couldn't save your backup just now. Please try again. | Mình chưa lưu được bản sao lưu. Bạn thử lại nhé
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:5: features: [F-013]
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:23: 1. On the old device, SCR-Settings → export (F-013.R1).
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:25: 3. On the new device, SCR-Settings → import, then confirm (F-013.R2, F-013.R4).
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:25: 3. On the new device, SCR-Settings → import, then confirm (F-013.R2, F-013.R4).
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:28: - An invalid file leaves data unchanged (F-013.R2).
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:29: - Cancel leaves data unchanged (F-013.R4).
+specs/30-experience/screens/SCR-Settings.md:5: features: [F-012, F-019, F-013, F-006]
+specs/30-experience/screens/SCR-Settings.md:27: | error | an import or erase could not be saved on the device | COPY-settings.importUnsaved or COPY-settings.eraseUnsaved, announced (F-013 
+specs/30-experience/screens/SCR-Settings.md:28: | error | the picked file couldn't be read, or the import couldn't load | COPY-settings.importFailed, announced, nothing changed (F-013 edge
+specs/30-experience/screens/SCR-Settings.md:29: | error | export failed | COPY-settings.exportFailed, announced (F-013 edge cases) |
+specs/40-technical/adr/ADR-0010-personal-data-in-one-localstorage-document.md:25: - `navigator.storage.persist()` is **not** requested for now, because Gecko prompts the user for it. Eviction risk is covered by backups (F-
+specs/40-technical/modules/MOD-Backup.md:15: - Over 24 favorites or 20 recents: too large. Over 60 days used: damaged (F-013 edge case).
+specs/40-technical/modules/MOD-Backup.md:25: - Tool data, which is never included (F-013.R6).
+specs/40-technical/modules/MOD-Backup.md:33: F-013.R1, F-013.R2 and F-013.R3, and the data side of F-013.R4 and F-013.R5. Export is reused by F-004.R5.
+specs/40-technical/modules/MOD-Backup.md:33: F-013.R1, F-013.R2 and F-013.R3, and the data side of F-013.R4 and F-013.R5. Export is reused by F-004.R5.
+specs/40-technical/modules/MOD-Backup.md:33: F-013.R1, F-013.R2 and F-013.R3, and the data side of F-013.R4 and F-013.R5. Export is reused by F-004.R5.
+== CMP-AppShell
+specs/20-features/F-011-install-offline.md:11: components: [CMP-AppShell, CMP-ToolCard]
+specs/20-features/F-011-install-offline.md:41: The indicator and update message live in CMP-AppShell. Unavailable cards use the CMP-ToolCard unavailable state. Tool-level offline behavior
+specs/20-features/F-012-theme.md:11: components: [CMP-AppShell]
+specs/20-features/F-012-theme.md:45: The quick toggle lives in CMP-AppShell; the full choice is in SCR-Settings. Telling tools the theme happens in SCR-ToolView and has no visib
+specs/20-features/F-017-resume.md:11: components: [CMP-AppShell]
+specs/20-features/F-018-privacy-and-terms.md:11: components: [CMP-AppShell]
+specs/20-features/F-018-privacy-and-terms.md:44: SCR-Policy for both pages; the links sit in CMP-AppShell's footer. The date is shown and read in full (SCR-Policy).
+specs/20-features/F-019-language.md:11: components: [CMP-AppShell, CMP-CommandPalette]
+specs/20-features/F-019-language.md:55: The quick switch lives in CMP-AppShell's header next to the theme toggle (inside the menu on the narrow layout); the full choice is in SCR-S
+specs/30-experience/screens/SCR-About.md:6: components: [CMP-AppShell]
+specs/30-experience/screens/SCR-Catalog.md:6: components: [CMP-AppShell, CMP-ToolCard, CMP-StateMessage, CMP-CategoryTile]
+specs/30-experience/screens/SCR-Category.md:6: components: [CMP-AppShell, CMP-CategoryTile, CMP-ToolCard, CMP-StateMessage]
+specs/30-experience/screens/SCR-Home.md:6: components: [CMP-AppShell, CMP-ToolCard, CMP-CommandPalette, CMP-StateMessage, CMP-CategoryTile]
+specs/30-experience/screens/SCR-Home.md:13: 1. Shell header (CMP-AppShell).
+specs/30-experience/screens/SCR-NotFound.md:6: components: [CMP-AppShell, CMP-StateMessage]
+specs/30-experience/screens/SCR-Now.md:6: components: [CMP-AppShell, CMP-StateMessage]
+specs/30-experience/screens/SCR-Policy.md:6: components: [CMP-AppShell]
+specs/30-experience/screens/SCR-Projects.md:6: components: [CMP-AppShell, CMP-ProjectCard, CMP-StateMessage]
+specs/30-experience/screens/SCR-Resume.md:6: components: [CMP-AppShell]
+specs/30-experience/screens/SCR-Settings.md:6: components: [CMP-AppShell]
+specs/30-experience/screens/SCR-ToolView.md:6: components: [CMP-AppShell, CMP-ToolHeader, CMP-StateMessage]
+specs/40-technical/modules/MOD-Shell.md:9: MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
+specs/40-technical/modules/MOD-Shell.md:39: CMP-AppShell; F-017.R4 (navigation); F-011.R3 (indicator) and F-011.R4 (message); F-012.R3 (header toggle); F-004.R1 (visible search control
+specs/40-technical/platform-mapping.md:18: | Shell footer (CMP-AppShell, F-018.R3) | `<footer>` (contentinfo landmark) after `<main>`; the link to the shown page has `aria-current="pa
+specs/60-delivery/changelog.md:50: - F-004 build: COPY-shell.search (the compact and narrow shell's search control, from design CMP-AppShell), COPY-palette.resultCount / resul
+== SCR-Settings
+specs/20-features/F-006-recents.md:10: screens: [SCR-Home, SCR-Settings]
+specs/20-features/F-006-recents.md:44: Recents show on SCR-Home and in the palette's empty-query view. Clearing and days used are in SCR-Settings. Privacy follows NFR-05.
+specs/20-features/F-012-theme.md:10: screens: [SCR-Settings, SCR-ToolView]
+specs/20-features/F-012-theme.md:45: The quick toggle lives in CMP-AppShell; the full choice is in SCR-Settings. Telling tools the theme happens in SCR-ToolView and has no visib
+specs/20-features/F-013-backup.md:10: screens: [SCR-Settings]
+specs/20-features/F-013-backup.md:47: Controls are in SCR-Settings (COPY-settings.export, COPY-settings.import, COPY-settings.erase); the palette also offers export (F-004.R5). B
+specs/20-features/F-019-language.md:10: screens: [SCR-Settings, SCR-ToolView, SCR-Policy]
+specs/20-features/F-019-language.md:55: The quick switch lives in CMP-AppShell's header next to the theme toggle (inside the menu on the narrow layout); the full choice is in SCR-S
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:6: screens: [SCR-Settings]
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:23: 1. On the old device, SCR-Settings → export (F-013.R1).
+specs/30-experience/flows/FLOW-03-move-to-new-device.md:25: 3. On the new device, SCR-Settings → import, then confirm (F-013.R2, F-013.R4).
+specs/40-technical/modules/MOD-Pages.md:23: | `/settings/` | SCR-Settings | The theme choice, clear recents, days used, and export, import and erase with confirmations. |
+specs/40-technical/modules/MOD-Pages.md:50: Settings islands (`src/modules/pages/settings/`, SCR-Settings region 3):
+specs/60-delivery/changelog.md:45: - F-006 review round 1: F-006.R4 clarified: a clear that can't be saved on the device says so (new COPY-settings.clearRecentsUnsaved, SCR-Se
+specs/60-delivery/changelog.md:66: - F-013 build: COPY-settings.importUnsaved, COPY-settings.eraseUnsaved and COPY-settings.exportFailed added, with SCR-Settings error states.
+specs/60-delivery/changelog.md:67: - F-013 review round 1: COPY-settings.importFailed added (SCR-Settings error state, F-013 edge case): an unreadable file or an import that c
+specs/60-delivery/changelog.md:78: - QA phase 5, user decisions (Gate G5): COPY-settings.privacy rewritten and split, with COPY-settings.privacyTools and COPY-settings.privacy
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too
+== SCR-Policy
+specs/20-features/F-018-privacy-and-terms.md:10: screens: [SCR-Policy]
+specs/20-features/F-018-privacy-and-terms.md:44: SCR-Policy for both pages; the links sit in CMP-AppShell's footer. The date is shown and read in full (SCR-Policy).
+specs/20-features/F-018-privacy-and-terms.md:44: SCR-Policy for both pages; the links sit in CMP-AppShell's footer. The date is shown and read in full (SCR-Policy).
+specs/20-features/F-019-language.md:10: screens: [SCR-Settings, SCR-ToolView, SCR-Policy]
+specs/30-experience/copy.md:149: | **COPY-policy.updated** | Last updated {date} | Cập nhật lần cuối {date} | policy date, read in full (SCR-Policy) |
+specs/40-technical/modules/MOD-Pages.md:19: | `/privacy/` | SCR-Policy | Static, no island: the privacy policy (F-018.R1). |
+specs/40-technical/modules/MOD-Pages.md:20: | `/terms/` | SCR-Policy | Static, no island: the terms of use (F-018.R2). |
+specs/40-technical/modules/MOD-Pages.md:64: Policies (`src/modules/pages/policy/`), for SCR-Policy (F-018):
+specs/40-technical/platform-mapping.md:19: | A policy's date, read in full (SCR-Policy) | `<time datetime="YYYY-MM-DD">` with the full date in each language as its text ("October 22, 
+specs/60-delivery/changelog.md:97: - Change request (user, 2026-10-22): portal-wide privacy policy and terms of use. New F-018 (ready, D-057), ENT-Policy, glossary term Policy
+specs/60-delivery/changelog.md:102: - Change request (user, 2026-10-23): the portal in English and Vietnamese, switched without reload, with the language handed to embedded too

@@ -9,6 +9,8 @@ The machine-readable shape is in `10-domain/project.schema.json`. This file hold
 
 ## Content (authored by the Owner, published with the portal)
 
+Every text the Owner writes is **localized text**: it has an English (en-US) and a Vietnamese (vi-VN) version (INV-09). A tool's name, the profile's name and the nickname are always written once and read the same in both languages (lists sorted by name are then in one order for both). **Names** may be written once or once per language: an organization or institution, a skill, a certificate's or an award's name and issuer, the location, and a profile link's label. Ids, addresses, dates, skill levels (1–5), tints and tags are not localized; tags may list keywords in either language. An education level and a language's level are localized text. Length limits apply to each version.
+
 ### ENT-CatalogEntry — Catalog entry
 One item in the catalog. Its `kind` is `tool` (ENT-Tool).
 Common fields:
@@ -86,14 +88,15 @@ A tool id plus the time it was pinned. The list is ordered by pin time (RULE-02)
 A tool id plus the time it was last opened. There is at most one per tool (RULE-01).
 
 ### ENT-Preferences — Preferences
-The theme: `system`, `light` or `dark` (RULE-03).
+The theme: `system`, `light` or `dark` (RULE-03). The language: `en-US` or `vi-VN` when the user has chosen one; with no choice, the language follows the device (RULE-16).
 
 ## Invariants
 - **INV-01** Catalog entry ids are unique. They are lowercase slugs (letters, digits, hyphens), never change once published, and are never reused for a different entry.
 - **INV-02** Every tool address, profile link and link in a policy (ENT-Policy) uses a secure web address (https), except email links.
 - **INV-03** A tool whose open mode is `embedded` has origin `own` and is served from its own site address, never the portal's own address (otherwise it could not be isolated). Its permission set defaults to none (RULE-10) and its offline-capable flag defaults to false. A linked tool is never at the portal's own address either: that address belongs to the portal's own pages (and its offline worker).
 - **INV-04** Favorites and recents may hold ids of tools that are unknown or hidden. Such entries are never shown to the user. They stay in storage until the RULE-01 or RULE-02 limits remove them, and while stored they reappear if the tool becomes visible again.
-- **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme currently showing (light or dark) is passed to an embedded tool's own address (F-012.R5, D-039).
+- **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme showing (light or dark) and the language showing (en-US or vi-VN) are passed to an embedded tool's own address (F-012.R5, F-019.R7, D-039).
 - **INV-06** Every catalog entry has an `added` date. If it has an `updated` date, that date is on or after `added`.
 - **INV-07** Every tool belongs to exactly one category, and that category exists. Category ids are unique, stable slugs, like entry ids (INV-01).
 - **INV-08** In the résumé, an experience or education end month, when present, is on or after its start month.
+- **INV-09** Every localized text in the Owner's content has a non-empty en-US and vi-VN version; names may have one version for both; a tool's name, the profile's name and the nickname have exactly one version (see Content).

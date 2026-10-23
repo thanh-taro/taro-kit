@@ -34,3 +34,6 @@ Personal data (ENT-PersonalData) is small: at most 24 favorites, 20 recents, 60 
 - Rule logic (RULE-01, RULE-02, RULE-13 and INV-04) is pure functions over the document. They are trivially unit-testable.
 - Safari's script-writable storage cap (ITP) can erase data after 7 days of browser use without visiting the portal. Installed web apps are exempt. The Owner is expected to use the portal daily, and backups cover the remaining risk. This is recorded in the risks list.
 - On iOS, an installed web app has its own storage, separate from Safari tabs. Personal data and tool data can differ between the installed portal and the browser (see SP-1 and SP-4 in `spikes.md`).
+
+## Note (2026-10-23, F-019)
+The document gains `preferences.language` (`en-US` or `vi-VN`; absent follows the device) and a **set language** mutation. The schema version becomes 2 (RULE-08); version-1 documents and backups migrate with no language. A version-1 portal still open in another tab rejects a version-2 document as newer instead of rewriting it, so a language choice is never dropped; the stored-document read keeps unknown newer versions untouched.

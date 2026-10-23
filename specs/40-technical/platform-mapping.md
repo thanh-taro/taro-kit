@@ -16,7 +16,7 @@ The neutral layers (00 to 30, 50) describe behavior without naming technology. T
 | Page address (Home, Tools, About, Now, Settings) | `/`, `/tools/`, `/about/`, `/now/`, `/settings/` | MOD-Pages |
 | Page address (Privacy, Terms; F-018) | `/privacy/`, `/terms/` | MOD-Pages |
 | Shell footer (CMP-AppShell, F-018.R3) | `<footer>` (contentinfo landmark) after `<main>`; the link to the shown page has `aria-current="page"` | MOD-Shell |
-| A policy's date, read in full (SCR-Policy) | `<time datetime="YYYY-MM-DD">` with the full English date as its text ("October 22, 2026") | MOD-Pages |
+| A policy's date, read in full (SCR-Policy) | `<time datetime="YYYY-MM-DD">` with the full date in each language as its text ("October 22, 2026", "22 tháng 10, 2026"; ADR-0012) | MOD-Pages |
 | Category page address (F-016.R1) | A static route `/tools/<category-id>/` per visible category, generated from the registry. Unknown or empty categories get no page, so the host serves 404 content (F-016.R5). | MOD-Pages |
 | Not-found state (F-003.R7) | `404.html` with HTTP 404 (host `not_found_handling`). Offline, the service worker falls back to the precached `404.html`. | MOD-Pages, MOD-Offline |
 | Opens in a new tab | `<a target="_blank" rel="noopener noreferrer">`, or `window.open(url, "_blank", "noopener,noreferrer")` from the palette | MOD-ToolHost |
@@ -57,11 +57,13 @@ The neutral layers (00 to 30, 50) describe behavior without naming technology. T
 
 | Spec wording | Web platform | Owner |
 |---|---|---|
-| Local date and time in the device's locale format (F-007.R1) | `Intl.DateTimeFormat(undefined, …)`. Re-created every minute, so time-zone changes apply. A timer is aligned to the next minute boundary. | MOD-Copy, MOD-Pages |
+| Local date and time in the conventions of the language showing (F-007.R1, RULE-16) | `Intl.DateTimeFormat(shownLanguage, …)`. Re-created every minute, so time-zone changes apply. A timer is aligned to the next minute boundary. | MOD-Copy, MOD-Pages |
 | Local date, YYYY-MM-DD (RULE-13, F-013.R1) | Built from `getFullYear`, `getMonth` and `getDate`, never from `toISOString` (which is UTC) | MOD-PersonalData |
 | Mod+K, Command on Apple keyboards (F-004.R1) | `keydown` with `key === "k"` and `metaKey` on Apple platforms (`navigator.userAgentData?.platform`, falling back to `navigator.platform`), `ctrlKey` elsewhere | MOD-Palette |
 | Device with a keyboard / touch-only device (F-007.R6) | Touch-only means `matchMedia("(any-hover: none) and (any-pointer: coarse)")`. Anything else is treated as having a keyboard. | MOD-Pages |
 | Modal palette | `<dialog>` with `showModal()`, plus the ARIA combobox/listbox pattern and `aria-live` for the result count | MOD-Palette |
+| Device's preferred languages (RULE-16) | `navigator.languages` (falling back to `navigator.language`), primary subtag compared case-insensitively | MOD-Language |
+| The language showing, declared and swapped without reload (F-019.R2, R4) | `lang` and `data-lang` on `<html>`; both texts in the DOM with `lang` + `data-l`, the other hidden by CSS `display: none` (ADR-0012) | MOD-Language |
 | Follows the device's light/dark setting (RULE-03) | `prefers-color-scheme` media query plus its `change` listener; CSS `color-scheme` | MOD-Theme |
 | First painted screen already in the chosen theme (F-012.R4) | A blocking inline script as the first element of `<body>` (after Astro's CSP meta, so the hash applies), setting `data-theme` on `<html>` before any content paints | MOD-Theme |
 | Bundled fonts, icons and images; zero third-party requests (NFR-05) | Self-hosted WOFF2 and inline SVG; CSP `default-src 'self'`, `connect-src 'self'`, `img-src 'self' data:`, `font-src 'self'` | ADR-0003, ADR-0009 |

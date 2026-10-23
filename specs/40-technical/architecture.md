@@ -83,15 +83,15 @@ These are targets that implementation must meet. Measurement rigs are in ADR-000
 
 | Item (home, compressed) | Budget | Basis |
 |---|---|---|
-| HTML (including inline scripts, inline SVG icons, CSP meta) | ≤ 20 KB | Content page, about 8 cards |
+| HTML (including inline scripts, inline SVG icons, CSP meta) | ≤ 26 KB | Content page, about 8 cards, both languages (ADR-0012) |
 | CSS (tokens + base + components) | ≤ 15 KB | Scoped CSS, no framework |
 | JS: island runtime + Preact + signals | ≤ 12 KB | measured in SP-5: 9.6 KB (preact about 4.5 KB, signals 3.7 KB, astro-island about 1 KB); 11.6 KB including inline scripts |
 | JS: home islands (lists, clock) + shell islands | ≤ 15 KB | |
 | JS: palette island (idle prefetch) | ≤ 12 KB | |
-| Catalog data file | ≤ 10 KB for 50 entries; about 35 KB for 500 | About 300 B raw per entry |
-| Fonts (at most 2 WOFF2 subsets, variable) | ≤ 80 KB | Latin + Vietnamese subsets |
+| Catalog data file | ≤ 15 KB for 50 entries; about 55 KB for 500 | About 450 B raw per entry with both languages |
+| Fonts (WOFF2 subsets, variable) | ≤ 80 KB | Latin + Vietnamese subsets; with Vietnamese showing, Home loads up to 4 files |
 | Manifest, favicon, workbox-window | ≤ 8 KB | |
-| **Total initial transfer** | **≤ 170 KB** (30 KB headroom under NFR-11's 200 KB) | The avatar is excluded, per NFR-11 |
+| **Total initial transfer** | **≤ 185 KB** (15 KB headroom under NFR-11's 200 KB) | The avatar is excluded, per NFR-11 |
 
 | Interaction | Target | Design lever |
 |---|---|---|

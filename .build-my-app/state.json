@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: v1.2.0 live (F-018 privacy and terms); awaiting next change request",
+      "step": "8 Iterate: F-019 spec reviewed (2 rounds) — awaiting Owner approval D-064",
       "gate": {
         "status": "pending",
         "at": null,
@@ -882,6 +882,76 @@
       "answer": "A: deploy v1.2.0-rc.1 to production now, then push main and tags (Owner, 2026-10-22)",
       "asked": "2026-10-22T07:19:23+00:00",
       "answered": "2026-10-22T07:20:42+00:00"
+    },
+    {
+      "id": "D-060",
+      "question": "D-060 Language scope",
+      "options": [
+        "UI copy plus all Owner content in en-US and vi-VN, Claude drafts the Vietnamese, Owner reviews"
+      ],
+      "recommendation": "UI copy plus all Owner content in en-US and vi-VN, Claude drafts the Vietnamese, Owner reviews",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "UI copy plus all Owner content in en-US and vi-VN, Claude drafts the Vietnamese, Owner reviews (Owner, 2026-10-23)",
+      "asked": "2026-10-23T03:35:49+00:00",
+      "answered": "2026-10-23T03:35:49+00:00"
+    },
+    {
+      "id": "D-061",
+      "question": "D-061 First-visit language",
+      "options": [
+        "follow the device (vi* -> vi-VN, else en-US); a choice is remembered on the device"
+      ],
+      "recommendation": "follow the device (vi* -> vi-VN, else en-US); a choice is remembered on the device",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "follow the device (vi* -> vi-VN, else en-US); a choice is remembered on the device (Owner, 2026-10-23)",
+      "asked": "2026-10-23T03:35:49+00:00",
+      "answered": "2026-10-23T03:35:49+00:00"
+    },
+    {
+      "id": "D-062",
+      "question": "D-062 Addresses",
+      "options": [
+        "one address per page, language is a device preference, switch without reload; link previews stay en-US"
+      ],
+      "recommendation": "one address per page, language is a device preference, switch without reload; link previews stay en-US",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "one address per page, language is a device preference, switch without reload; link previews stay en-US (Owner, 2026-10-23)",
+      "asked": "2026-10-23T03:35:49+00:00",
+      "answered": "2026-10-23T03:35:50+00:00"
+    },
+    {
+      "id": "D-063",
+      "question": "D-063 Vietnamese policies",
+      "options": [
+        "convenience translation, English governs, note shown on vi-VN policy pages"
+      ],
+      "recommendation": "convenience translation, English governs, note shown on vi-VN policy pages",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "convenience translation, English governs, note shown on vi-VN policy pages (Owner, 2026-10-23)",
+      "asked": "2026-10-23T03:35:50+00:00",
+      "answered": "2026-10-23T03:35:50+00:00"
+    },
+    {
+      "id": "D-064",
+      "question": "D-064 Approve F-019 (ready), accept ADR-0012, and the policy text changes",
+      "options": [
+        "A approve all;B approve, revise Vietnamese first;C hold"
+      ],
+      "recommendation": "A approve all",
+      "kind": "legal",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "A: approve all — F-019 ready, ADR-0012 accepted, policy text changes (privacy language mention, terms Language clause) and Claude's Vietnamese copy/content accepted as drafted (Owner, 2026-10-23)",
+      "asked": "2026-10-23T03:53:29+00:00",
+      "answered": "2026-10-23T03:54:15+00:00"
     }
   ],
   "loops": {
@@ -948,81 +1018,17 @@
       "started": "2026-10-22T06:19:00+00:00",
       "outcome": "converged",
       "ended": "2026-10-22T06:42:55+00:00"
+    },
+    "spec-review-F-019": {
+      "round": 2,
+      "max": 3,
+      "active": false,
+      "started": "2026-10-23T03:47:47+00:00",
+      "outcome": "converged in 2 rounds; round-2 majors fixed",
+      "ended": "2026-10-23T03:53:23+00:00"
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T03:45:34+00:00",
-      "event": "design step: 2.1 style builder: discovery round"
-    },
-    {
-      "at": "2026-10-13T03:45:35+00:00",
-      "event": "architecture 3.1 delegated to architect agent in background; design step 1 with user in foreground"
-    },
-    {
-      "at": "2026-10-13T03:50:54+00:00",
-      "event": "design step: 2.1 style directions A/B/C published (artifact EKEvVa7wvuW9Qb81qNPc4p); awaiting user pick"
-    },
-    {
-      "at": "2026-10-13T03:50:55+00:00",
-      "event": "decision D-019 opened: Style direction"
-    },
-    {
-      "at": "2026-10-13T03:53:47+00:00",
-      "event": "decision D-019 answered: B · Night Market"
-    },
-    {
-      "at": "2026-10-13T03:53:48+00:00",
-      "event": "design step: 2.2 tool selection & setup"
-    },
-    {
-      "at": "2026-10-13T03:54:28+00:00",
-      "event": "set design_tool"
-    },
-    {
-      "at": "2026-10-13T03:54:28+00:00",
-      "event": "decision D-020 opened: Design tool"
-    },
-    {
-      "at": "2026-10-13T03:54:28+00:00",
-      "event": "decision D-020 answered: Claude Design canvas"
-    },
-    {
-      "at": "2026-10-13T03:54:43+00:00",
-      "event": "design step: 2.4 design loop D1 components: creating canvas"
-    },
-    {
-      "at": "2026-10-13T04:01:33+00:00",
-      "event": "design step: 2.4 D1 components drafted on canvas 64r5hyDPKT37fo6TDZ5ptV; audit round 1"
-    },
-    {
-      "at": "2026-10-13T04:01:33+00:00",
-      "event": "loop design-D1 started (max 3)"
-    },
-    {
-      "at": "2026-10-13T04:07:39+00:00",
-      "event": "decision D-021 opened: Domain + hosting account"
-    },
-    {
-      "at": "2026-10-13T04:07:39+00:00",
-      "event": "decision D-021 answered: User will buy a domain and create a Cloudflare account (hard stop, user-owned); spikes needing a real domain wait"
-    },
-    {
-      "at": "2026-10-13T04:07:39+00:00",
-      "event": "decision D-022 opened: Repo visibility"
-    },
-    {
-      "at": "2026-10-13T04:07:39+00:00",
-      "event": "decision D-022 answered: Private GitHub repo"
-    },
-    {
-      "at": "2026-10-13T04:07:39+00:00",
-      "event": "decision D-023 opened: Build-only copyleft exceptions (MPL-2.0 lightningcss/axe-core, LGPL sharp binaries)"
-    },
-    {
-      "at": "2026-10-13T04:07:39+00:00",
-      "event": "decision D-023 answered: Allowed for build/test only, never shipped"
-    },
     {
       "at": "2026-10-13T04:07:39+00:00",
       "event": "decision D-024 opened: Architect spec changes (RULE-10 allow-forms + best-effort, INV-03 own origin, F-003.R8 iOS installed exception)"
@@ -1750,9 +1756,81 @@
     {
       "at": "2026-10-22T12:06:42+00:00",
       "event": "v1.2.0 deployed to tarokit.app (version 0df943c1): F-018; smoke and catalog checks passed"
+    },
+    {
+      "at": "2026-10-23T03:33:43+00:00",
+      "event": "iterate step: 8 Iterate: change request F-019 languages (en-US, vi-VN) — scoping product decisions"
+    },
+    {
+      "at": "2026-10-23T03:33:44+00:00",
+      "event": "Change request received: multi-language portal (en-US, vi-VN), live switch, hand language to tools"
+    },
+    {
+      "at": "2026-10-23T03:35:49+00:00",
+      "event": "decision D-060 opened: D-060 Language scope"
+    },
+    {
+      "at": "2026-10-23T03:35:49+00:00",
+      "event": "decision D-060 answered: UI copy plus all Owner content in en-US and vi-VN, Claude drafts the Vietnamese, Owner reviews (Owner, 2026-10-23)"
+    },
+    {
+      "at": "2026-10-23T03:35:49+00:00",
+      "event": "decision D-061 opened: D-061 First-visit language"
+    },
+    {
+      "at": "2026-10-23T03:35:49+00:00",
+      "event": "decision D-061 answered: follow the device (vi* -> vi-VN, else en-US); a choice is remembered on the device (Owner, 2026-10-23)"
+    },
+    {
+      "at": "2026-10-23T03:35:49+00:00",
+      "event": "decision D-062 opened: D-062 Addresses"
+    },
+    {
+      "at": "2026-10-23T03:35:50+00:00",
+      "event": "decision D-062 answered: one address per page, language is a device preference, switch without reload; link previews stay en-US (Owner, 2026-10-23)"
+    },
+    {
+      "at": "2026-10-23T03:35:50+00:00",
+      "event": "decision D-063 opened: D-063 Vietnamese policies"
+    },
+    {
+      "at": "2026-10-23T03:35:50+00:00",
+      "event": "decision D-063 answered: convenience translation, English governs, note shown on vi-VN policy pages (Owner, 2026-10-23)"
+    },
+    {
+      "at": "2026-10-23T03:41:19+00:00",
+      "event": "iterate step: 8 Iterate: F-019 languages — spec drafted, impact analysis + spec review"
+    },
+    {
+      "at": "2026-10-23T03:47:47+00:00",
+      "event": "loop spec-review-F-019 started (max 3)"
+    },
+    {
+      "at": "2026-10-23T03:47:47+00:00",
+      "event": "iterate step: 8 Iterate: F-019 spec review round 1 fixes"
+    },
+    {
+      "at": "2026-10-23T03:49:32+00:00",
+      "event": "loop spec-review-F-019 round 2"
+    },
+    {
+      "at": "2026-10-23T03:53:23+00:00",
+      "event": "loop spec-review-F-019 ended: converged in 2 rounds; round-2 majors fixed"
+    },
+    {
+      "at": "2026-10-23T03:53:29+00:00",
+      "event": "decision D-064 opened: D-064 Approve F-019 (ready), accept ADR-0012, and the policy text changes"
+    },
+    {
+      "at": "2026-10-23T03:53:30+00:00",
+      "event": "iterate step: 8 Iterate: F-019 spec reviewed (2 rounds) — awaiting Owner approval D-064"
+    },
+    {
+      "at": "2026-10-23T03:54:15+00:00",
+      "event": "decision D-064 answered: A: approve all — F-019 ready, ADR-0012 accepted, policy text changes (privacy language mention, terms Language clause) and Claude's Vietnamese copy/content accepted as drafted (Owner, 2026-10-23)"
     }
   ],
-  "updated": "2026-10-22T12:06:42+00:00",
+  "updated": "2026-10-23T03:54:15+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

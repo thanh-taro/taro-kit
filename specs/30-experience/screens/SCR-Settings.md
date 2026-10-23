@@ -2,17 +2,17 @@
 id: SCR-Settings
 title: Settings
 status: draft
-features: [F-012, F-013, F-006]
+features: [F-012, F-019, F-013, F-006]
 components: [CMP-AppShell]
 ---
 
 ## Purpose
-Theme, backup and privacy controls.
+Theme, language, backup and privacy controls.
 
 ## Layout regions
 1. Shell header.
 1b. Page heading (COPY-settings.title).
-2. Appearance (COPY-settings.appearance): theme choice (COPY-settings.theme; options COPY-settings.themeSystem, COPY-settings.themeLight, COPY-settings.themeDark). Page title and description: COPY-meta.settingsTitle, COPY-meta.settingsDescription.
+2. Appearance (COPY-settings.appearance): theme choice (COPY-settings.theme; options COPY-settings.themeSystem, COPY-settings.themeLight, COPY-settings.themeDark); language choice as radio buttons (COPY-settings.language; options COPY-language.device, COPY-language.en and COPY-language.vi, the last two each marked with its own language; F-019.R2). With no stored choice, COPY-language.device is selected. Page title and description: COPY-meta.settingsTitle, COPY-meta.settingsDescription.
 3. Your data (COPY-settings.yourData): export (COPY-settings.export) with the backup scope note (COPY-settings.backupScope), import (COPY-settings.import), days used (COPY-settings.daysUsed), clear recents (COPY-settings.clearRecents), erase all (COPY-settings.erase).
 4. Privacy (COPY-settings.privacyTitle): statement in three paragraphs (COPY-settings.privacy, COPY-settings.privacyTools, COPY-settings.privacyHosting).
 

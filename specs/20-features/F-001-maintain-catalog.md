@@ -23,7 +23,7 @@ The Owner adds a new tool by writing one catalog entry, and every part of the po
 
 ## Requirements
 - **R1** The Owner can add, change or hide a tool by editing its catalog entry, and add or change a category by editing the category list, with no other change needed for it to appear everywhere it belongs.
-- **R2** Building the portal fails, naming the file, the entry and the broken rule, when any content breaks the data schema or INV-01, INV-02, INV-03, INV-06, INV-07 or RULE-14.
+- **R2** Building the portal fails, naming the file, the entry and the broken rule, when any content breaks the data schema or INV-01, INV-02, INV-03, INV-06, INV-07, INV-09 or RULE-14.
 - **R3** An own tool with no open mode opens embedded. An external tool declared as embedded is a build error (RULE-07).
 - **R4** Hidden entries are left out of the catalog, category pages, search, palette, home, changelog and site index (RULE-06).
 - **R5** A tool whose category does not exist is a build error.

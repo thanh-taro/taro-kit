@@ -18,12 +18,12 @@ MOD-PersonalData owns ENT-PersonalData on the device (ADR-0010).
 
 ## Not responsible for
 - File export and import (MOD-Backup).
-- Applying the theme to the page (MOD-Theme). It only stores the preference.
+- Applying the theme or the language to the page (MOD-Theme, MOD-Language). It only stores the preferences.
 - Deciding when a visit happens. Callers (MOD-ToolHost, MOD-Pages, MOD-Palette) report visits per F-006.R1.
 
 ## Public surface
 - Signals: `favorites`, `recents` and `visibleFavorites(toolIds)`; `visibleRecents(toolIds, { excludeFavorites, max })`; `preferences`; `daysUsedLast14`; `storageAvailable`.
-- Commands: `pin(id, visibleIds)`, which returns `ok` or `full`; `unpin(id)`; `recordVisit(id)`; `recordDay()`; `setTheme(theme)`; `clearRecents()`; `replaceAll(data)`; `eraseAll()`; `snapshot() → PersonalData`.
+- Commands: `pin(id, visibleIds)`, which returns `ok` or `full`; `unpin(id)`; `recordVisit(id)`; `recordDay()`; `setTheme(theme)`; `setLanguage(lang | null)` (null: follow the device, F-019); `clearRecents()`; `replaceAll(data)`; `eraseAll()`; `snapshot() → PersonalData`.
 - `readStoredTheme()`, a dependency-free helper whose source is inlined by MOD-Theme.
 
 ### Favorites (F-005)

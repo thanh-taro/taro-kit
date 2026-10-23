@@ -19,14 +19,14 @@ The portal looks right in light and dark, and the Owner can override the system 
 
 ## Scope
 - In: the system, light and dark themes; choosing in settings; a quick toggle in the shell header and the palette; remembering the choice; telling an embedded tool which theme is showing.
-- Out: custom accent colors; sharing anything else with tools (tools stay independent, PRN-01).
+- Out: custom accent colors; sharing anything else with tools besides the language (F-019.R7; tools stay independent, PRN-01).
 
 ## Requirements
 - **R1** The theme is system, light or dark, and defaults to system, which follows the device setting live (RULE-03).
 - **R2** Settings offers all three choices (COPY-settings.theme). The change applies immediately, with no reload.
 - **R3** The quick toggle in the shell header and the palette's theme action switch to the opposite of the theme currently showing, and store that choice (RULE-03, COPY-shell.themeToggle).
 - **R4** The chosen theme persists on the device, and the page never shows the wrong theme while loading.
-- **R5** When the portal shows an embedded tool, it tells the tool the theme currently showing (light or dark, never "system") as it opens the tool, and again whenever the theme showing changes, so the tool can match it without reloading. Only this one value is shared, and only with that tool's own address (scheme, host and port). Linked tools and the open-in-new-tab address never carry the theme.
+- **R5** When the portal shows an embedded tool, it tells the tool the theme currently showing (light or dark, never "system") as it opens the tool, and again whenever the theme showing changes, so the tool can match it without reloading. Only this value and the language showing (F-019.R7) are shared, and only with that tool's own address (scheme, host and port). Linked tools and the open-in-new-tab address never carry the theme.
 - **R6** When an embedded tool says it is ready, the portal answers with the theme currently showing; messages from any other address, or from any window that is not this tool's own frame, are ignored.
 
 ## Acceptance criteria
@@ -45,4 +45,4 @@ The portal looks right in light and dark, and the Owner can override the system 
 The quick toggle lives in CMP-AppShell; the full choice is in SCR-Settings. Telling tools the theme happens in SCR-ToolView and has no visible UI. The palette action is F-004.R5. Both themes meet the contrast targets of NFR-03.
 
 ## Edge cases
-- Device storage is unavailable. The theme follows the system, and any choice lasts only for the session.
+- Device storage is unavailable. The theme follows the system, and any choice lasts only until the page changes.

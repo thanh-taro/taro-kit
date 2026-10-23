@@ -66,3 +66,12 @@ The data shape already exists as JSON Schema 2020-12 in `specs/10-domain/project
 - A section's `body` is a literal block scalar (`|`), so line breaks are kept; a body in the folded style (`>`) is an error naming the section. Paragraphs are separated by blank lines. A paragraph whose every line starts with `- ` is a bulleted list, one item per line; a paragraph that mixes `- ` lines with other lines is an error naming the section, so a list needs a blank line before it. Inline links are written `[text](address)`, with an `https://` or `mailto:` address. A small in-house function parses this; the "no Markdown engine" decision stands. Any other text, other bracket syntax included, is literal text. A link whose address is not https or email is an INV-02 error.
 - Body-format errors (a body that is not a literal block, a paragraph mixing list lines with other lines) carry the rule tag `SCHEMA`. Line breaks inside a paragraph are joined with a space.
 - Policy errors name the section as `section <n>`, counting from 1: `content/terms.yaml:14 › section 2 › INV-02: link "http://example.com" is not https`. The error contract is otherwise unchanged.
+
+## Note (2026-10-23, F-019)
+Every text the Owner writes is localized (INV-09, `project.schema.json`). In YAML a localized field is a map with both keys:
+```yaml
+summary:
+  en-US: Format, minify and validate JSON with exact error positions.
+  vi-VN: Định dạng, thu gọn và kiểm tra JSON, chỉ đúng vị trí lỗi.
+```
+A name field may be a plain string (the same in both languages) or such a map; a tool's name, the profile name and nickname are plain strings. Policy bodies keep their paragraph, list and link format in each version. A missing or empty version fails the build as `file › entry › field › INV-09` (F-001.R2). The editor hints in `content/schemas/` follow the domain schema. Content files are saved in Unicode NFC; the validator normalizes to NFC before checking lengths.

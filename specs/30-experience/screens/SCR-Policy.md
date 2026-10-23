@@ -2,7 +2,7 @@
 id: SCR-Policy
 title: Privacy and Terms
 status: ready
-features: [F-018]
+features: [F-018, F-019]
 components: [CMP-AppShell]
 ---
 
@@ -11,7 +11,7 @@ Read the privacy policy or the terms of use. One screen, used for both documents
 
 ## Layout regions
 1. Shell header.
-2. Title (the policy's own title) and last updated date (COPY-policy.updated), the date shown in full as the English month, day and year ("October 22, 2026"), the same full format the Now note's date is read with.
+2. Title (the policy's own title) and last updated date (COPY-policy.updated), the date shown in full as the month, day and year in the language showing ("October 22, 2026", "22 tháng 10, 2026"; RULE-16), the same full format the Now note's date is read with. With Vietnamese showing, the translation note (COPY-policy.translationNote; F-019.R6) follows the date.
 3. Body: each section's heading, then its paragraphs and bulleted lists, at a comfortable reading width.
 4. Shell footer.
 

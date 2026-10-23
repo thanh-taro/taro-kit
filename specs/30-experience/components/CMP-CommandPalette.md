@@ -23,7 +23,7 @@ Dialog named COPY-palette.dialogLabel; search field (COPY-palette.placeholder); 
 | touch sheet | on touch-only or narrow screens: a full-screen sheet with the search field on top and a cancel button (COPY-palette.close); no key hints |
 
 ## Behavior
-Up and down keys move through results across groups, and Enter runs one. Actions: COPY-palette.actionTheme, COPY-palette.actionExport, COPY-palette.actionCopy. Escape or a click outside closes the palette and focus returns where it was.
+Up and down keys move through results across groups, and Enter runs one. Actions: COPY-palette.actionTheme, COPY-palette.actionLanguage (its {language} marked with its language, in the row's content), COPY-palette.actionExport, COPY-palette.actionCopy. Escape or a click outside closes the palette and focus returns where it was.
 
 ## Accessibility
 A modal dialog using the combobox and listbox pattern. The number of results is announced (COPY-palette.resultCount, COPY-palette.resultCountOne). A linked tool's row says it opens in a new tab (COPY-tool.opensNewTab).

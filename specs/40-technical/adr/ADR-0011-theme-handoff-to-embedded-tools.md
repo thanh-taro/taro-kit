@@ -40,3 +40,6 @@ their pages directly, and nothing beyond the theme may be shared (PRN-01).
 
 ## Acceptance (2026-10-14, D-039)
 Accepted after spec review. D-039 amends D-008: nothing is shared at runtime except the theme showing. The postMessage target is the tool's exact origin; the portal checks `event.origin` and `event.source` (the tool's own frame). When a frame is reloaded after coming back online (F-003.R6), its `src` carries the theme showing at that moment. Tools must ignore the `theme` query parameter when matching cached pages (`ignoreSearch`); this is listed in the tool-author guidance.
+
+## Note (2026-10-23, F-019)
+ADR-0012 adds the language showing to this handoff with the same mechanism: a `lang` parameter beside `theme`, a `taro:language` message, and both messages in the answer to `taro:ready`. The theme decision itself is unchanged.

@@ -31,9 +31,35 @@
       ],
       "properties": {
         "label": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 40
+          "description": "A name (INV-09): one text for both languages, or a version per language.",
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            {
+              "type": "object",
+              "description": "Localized text (INV-09): both versions required; limits apply to each.",
+              "required": [
+                "en-US",
+                "vi-VN"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "en-US": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "vi-VN": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              }
+            }
+          ]
         },
         "url": {
           "$comment": "INV-02: links use https, except email (mailto) links.",
@@ -77,9 +103,25 @@
           "maxLength": 40
         },
         "summary": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 120
+          "type": "object",
+          "description": "Localized text (INV-09): both versions required; limits apply to each.",
+          "required": [
+            "en-US",
+            "vi-VN"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en-US": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "vi-VN": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
         },
         "icon": {
           "$ref": "#/$defs/assetPath"
@@ -219,16 +261,49 @@
           "$ref": "#/$defs/slug"
         },
         "name": {
-          "type": "string",
-          "maxLength": 24
+          "type": "object",
+          "description": "Localized text (INV-09): both versions required; limits apply to each.",
+          "required": [
+            "en-US",
+            "vi-VN"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en-US": {
+              "type": "string",
+              "maxLength": 24,
+              "minLength": 1
+            },
+            "vi-VN": {
+              "type": "string",
+              "maxLength": 24,
+              "minLength": 1
+            }
+          }
         },
         "order": {
           "type": "integer"
         },
         "intro": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 160
+          "type": "object",
+          "description": "Localized text (INV-09): both versions required; limits apply to each.",
+          "required": [
+            "en-US",
+            "vi-VN"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en-US": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "vi-VN": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          }
         },
         "icon": {
           "$ref": "#/$defs/assetPath"
@@ -258,18 +333,76 @@
           "type": "string"
         },
         "headline": {
-          "type": "string",
-          "maxLength": 80
+          "type": "object",
+          "description": "Localized text (INV-09): both versions required; limits apply to each.",
+          "required": [
+            "en-US",
+            "vi-VN"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en-US": {
+              "type": "string",
+              "maxLength": 80,
+              "minLength": 1
+            },
+            "vi-VN": {
+              "type": "string",
+              "maxLength": 80,
+              "minLength": 1
+            }
+          }
         },
         "avatar": {
           "$ref": "#/$defs/assetPath"
         },
         "bio": {
-          "type": "string",
-          "maxLength": 1500
+          "type": "object",
+          "description": "Localized text (INV-09): both versions required; limits apply to each.",
+          "required": [
+            "en-US",
+            "vi-VN"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en-US": {
+              "type": "string",
+              "maxLength": 1500,
+              "minLength": 1
+            },
+            "vi-VN": {
+              "type": "string",
+              "maxLength": 1500,
+              "minLength": 1
+            }
+          }
         },
         "location": {
-          "type": "string"
+          "description": "A name (INV-09): one text for both languages, or a version per language.",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "description": "Localized text (INV-09): both versions required; limits apply to each.",
+              "required": [
+                "en-US",
+                "vi-VN"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "en-US": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "vi-VN": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
         },
         "links": {
           "type": "array",
@@ -292,8 +425,25 @@
       ],
       "properties": {
         "body": {
-          "type": "string",
-          "maxLength": 1500
+          "type": "object",
+          "description": "Localized text (INV-09): both versions required; limits apply to each.",
+          "required": [
+            "en-US",
+            "vi-VN"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en-US": {
+              "type": "string",
+              "maxLength": 1500,
+              "minLength": 1
+            },
+            "vi-VN": {
+              "type": "string",
+              "maxLength": 1500,
+              "minLength": 1
+            }
+          }
         },
         "updated": {
           "$ref": "#/$defs/date"
@@ -364,6 +514,13 @@
                 "dark"
               ],
               "default": "system"
+            },
+            "language": {
+              "enum": [
+                "en-US",
+                "vi-VN"
+              ],
+              "description": "F-019; absent means the language follows the device (RULE-16)."
             }
           },
           "additionalProperties": false
@@ -425,14 +582,56 @@
             ],
             "properties": {
               "role": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 80
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  }
+                }
               },
               "organization": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 80
+                "description": "A name (INV-09): one text for both languages, or a version per language.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  {
+                    "type": "object",
+                    "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                    "required": [
+                      "en-US",
+                      "vi-VN"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "en-US": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      "vi-VN": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      }
+                    }
+                  }
+                ]
               },
               "start": {
                 "$ref": "#/$defs/yearMonth"
@@ -441,17 +640,49 @@
                 "$ref": "#/$defs/yearMonth"
               },
               "summary": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 400
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 400
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 400
+                  }
+                }
               },
               "highlights": {
                 "type": "array",
                 "maxItems": 8,
                 "items": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 200
+                  "type": "object",
+                  "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                  "required": [
+                    "en-US",
+                    "vi-VN"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "en-US": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "vi-VN": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    }
+                  }
                 }
               }
             },
@@ -470,19 +701,77 @@
             ],
             "properties": {
               "program": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 80
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  }
+                }
               },
               "institution": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 100
+                "description": "A name (INV-09): one text for both languages, or a version per language.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  {
+                    "type": "object",
+                    "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                    "required": [
+                      "en-US",
+                      "vi-VN"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "en-US": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "vi-VN": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      }
+                    }
+                  }
+                ]
               },
               "level": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 40
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                }
               },
               "start": {
                 "$ref": "#/$defs/yearMonth"
@@ -491,9 +780,25 @@
                 "$ref": "#/$defs/yearMonth"
               },
               "notes": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 300
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300
+                  }
+                }
               }
             },
             "additionalProperties": false
@@ -509,14 +814,56 @@
             ],
             "properties": {
               "name": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 40
+                "description": "A name (INV-09): one text for both languages, or a version per language.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  {
+                    "type": "object",
+                    "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                    "required": [
+                      "en-US",
+                      "vi-VN"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "en-US": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                      },
+                      "vi-VN": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                      }
+                    }
+                  }
+                ]
               },
               "group": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 24
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 24
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 24
+                  }
+                }
               },
               "level": {
                 "type": "integer",
@@ -538,14 +885,46 @@
             ],
             "properties": {
               "name": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 40
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                }
               },
               "level": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 40
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                }
               }
             },
             "additionalProperties": false
@@ -563,14 +942,66 @@
             ],
             "properties": {
               "name": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 100
+                "description": "A name (INV-09): one text for both languages, or a version per language.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  {
+                    "type": "object",
+                    "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                    "required": [
+                      "en-US",
+                      "vi-VN"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "en-US": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "vi-VN": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      }
+                    }
+                  }
+                ]
               },
               "issuer": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 80
+                "description": "A name (INV-09): one text for both languages, or a version per language.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  {
+                    "type": "object",
+                    "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                    "required": [
+                      "en-US",
+                      "vi-VN"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "en-US": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      "vi-VN": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      }
+                    }
+                  }
+                ]
               },
               "year": {
                 "type": "integer",
@@ -593,14 +1024,66 @@
             ],
             "properties": {
               "title": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 100
+                "description": "A name (INV-09): one text for both languages, or a version per language.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  {
+                    "type": "object",
+                    "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                    "required": [
+                      "en-US",
+                      "vi-VN"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "en-US": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "vi-VN": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      }
+                    }
+                  }
+                ]
               },
               "issuer": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 80
+                "description": "A name (INV-09): one text for both languages, or a version per language.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  {
+                    "type": "object",
+                    "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                    "required": [
+                      "en-US",
+                      "vi-VN"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "en-US": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      "vi-VN": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      }
+                    }
+                  }
+                ]
               },
               "year": {
                 "type": "integer",
@@ -625,9 +1108,25 @@
       ],
       "properties": {
         "title": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 60
+          "type": "object",
+          "description": "Localized text (INV-09): both versions required; limits apply to each.",
+          "required": [
+            "en-US",
+            "vi-VN"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en-US": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "vi-VN": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            }
+          }
         },
         "updated": {
           "$ref": "#/$defs/date"
@@ -644,14 +1143,46 @@
             ],
             "properties": {
               "heading": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 80
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  }
+                }
               },
               "body": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 4000
+                "type": "object",
+                "description": "Localized text (INV-09): both versions required; limits apply to each.",
+                "required": [
+                  "en-US",
+                  "vi-VN"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "en-US": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000
+                  },
+                  "vi-VN": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000
+                  }
+                }
               }
             },
             "additionalProperties": false

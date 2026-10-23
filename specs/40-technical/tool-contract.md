@@ -32,7 +32,16 @@ The portal's privacy policy and terms promise these for every tool the Owner bui
 - Treat every `taro:theme` message as "apply this value": the same value can arrive more than once (for example, a theme change just before `taro:ready`).
 - When the tool is opened directly (linked, or through open-in-new-tab), no theme is passed; use your own default or the device setting.
 - If the tool has a service worker, ignore the `theme` query parameter when matching cached pages (`ignoreSearch`).
-- Nothing else is exchanged with the portal (D-039).
+- Nothing else is exchanged with the portal besides the language below (D-039, F-019.R7).
+
+## Language hand-off (F-019.R7, ADR-0012)
+- The portal shows English (`en-US`) or Vietnamese (`vi-VN`), and tells the embedded tool which: the frame address carries `?lang=en-US` or `?lang=vi-VN` next to `theme`. Read it before first paint and set `<html lang>` to match.
+- The answer to `taro:ready` includes `{ type: 'taro:language', value }` (`'en-US'` or `'vi-VN'`) next to `taro:theme`, and the portal sends `taro:language` again whenever the user switches. Apply it without reloading, keeping the user's work (typed text, open files, scroll). Same origin check as the theme.
+- Treat every `taro:language` message as "apply this value"; the same value may arrive more than once.
+- A tool that only has English keeps working: ignoring the parameter and the message is allowed. A tool that supports other languages maps the two values to its closest one.
+- A frame reloaded when the device comes back online (F-003.R6) carries the language showing at that moment.
+- When opened directly (linked, or through open-in-new-tab), no language is passed; use the browser's preferred languages or your own default.
+- If the tool has a service worker, ignore the `lang` query parameter when matching cached pages (`ignoreSearch`), as for `theme`.
 
 ## Catalog entry
 - Add one YAML file under `content/tools/` in the TaroKit repo, matching the schema (F-001). Keep `hidden: true` until the tool is deployed and passes the catalog check (D-012, F-014).

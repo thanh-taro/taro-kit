@@ -28,6 +28,8 @@ status: draft
 | Now | A short, dated, hand-written note about what the Owner is focusing on. |
 | Changelog | The list of catalog additions and updates, derived from catalog dates. |
 | Policy | The privacy policy or the terms of use: a dated document the Owner writes, shown on its own page. |
+| Language | The language the portal shows its text in: English (en-US) or Vietnamese (vi-VN). Chosen by the user or taken from the device. |
+| Localized text | Text the Owner writes in both languages, so the portal can show it in the language showing. |
 | Personal data | Favorites, recents and preferences stored on the device. |
 | Backup file | An exported file of personal data that can be imported again. |
 | Installed app | The portal installed to the device's home screen or dock, opening in its own window. |

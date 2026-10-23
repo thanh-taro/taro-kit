@@ -26,7 +26,7 @@ status: draft
 - Building individual tools in this product. Each tool is its own project.
 - Accounts, sync, a server-side backend, analytics, ads, monetization, a blog, a third-party plugin marketplace.
 - A runtime contract or shared design system between the portal and its tools.
-- Multiple UI languages. English only.
+- Languages beyond English and Vietnamese (F-019, D-060).
 - Backing up a tool's own data. Each tool owns its data.
 
 ## Success

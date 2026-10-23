@@ -15,7 +15,7 @@ depends_on: [F-005, F-006, F-012]
 ---
 
 ## Intent
-With no accounts or sync, a backup file is how the Owner moves favorites, recents, theme and days used between devices or keeps them safe (PRN-03).
+With no accounts or sync, a backup file is how the Owner moves favorites, recents, theme, language and days used between devices or keeps them safe (PRN-03).
 
 ## Scope
 - In: exporting personal data to a file; importing with validation, migration and confirmation; erasing all personal data.
@@ -30,16 +30,19 @@ With no accounts or sync, a backup file is how the Owner moves favorites, recent
 - **R6** Settings explains that tool data is not included in the backup (COPY-settings.backupScope).
 
 ## Acceptance criteria
-- **AC1** Given favorites, recents, a theme and days used, when the user exports on 2026-10-13, then a backup file with that date in its name is saved and contains them all. (R1)
+- **AC1** Given favorites, recents, a theme, the language vi-VN chosen and days used, when the user exports on 2026-10-13, then a backup file with that date in its name is saved and contains them all. (R1)
 - **AC2** Given a file that is not a backup file, when the user imports it, then the not-a-backup reason is shown and personal data is unchanged. (R2)
 - **AC3** Given a backup file from a newer schema version, when the user imports it, then the newer-version reason is shown and nothing changes. (R2)
 - **AC4** Given a backup file with the same tool twice in recents, when the user imports it, then the damaged reason is shown and nothing changes. (R2)
 - **AC5** Given a backup file with no days-used data, when the user imports and confirms, then its favorites, recents and theme are imported and days used is empty. (R3, R4)
-- **AC6** Given a valid backup file, when the user imports and confirms, then favorites, recents, theme and days used match the file. (R4)
+- **AC6** Given a valid backup file, when the user imports and confirms, then favorites, recents, theme, language and days used match the file. (R4)
 - **AC7** Given a valid backup file, when the user imports and cancels, then nothing changes. (R4)
-- **AC8** Given personal data exists, when the user confirms erase, then favorites, recents and days used are empty and the theme is system. (R5)
+- **AC8** Given personal data exists, when the user confirms erase, then favorites, recents and days used are empty, the theme is system and the language follows the device. (R5)
 - **AC9** Given settings is shown, when the user looks at export, then the note that tool data is not included is shown beside it. (R6)
 - **AC10** Given a backup file with 21 recents, when the user imports it, then the too-many reason is shown and nothing changes. (R2)
+- **AC11** Given English is showing by choice and a backup file from before languages (no language), when the user imports and confirms, then the stored choice is gone and the language follows the device. (R3, R4)
+- **AC12** Given a backup file whose language is fr-FR, when the user imports it, then the damaged reason is shown and nothing changes. (R2)
+- **AC13** Given a version-1 backup file with theme dark, when the user imports and confirms, then the theme is dark and the language follows the device. (R3)
 
 ## UX notes
 Controls are in SCR-Settings (COPY-settings.export, COPY-settings.import, COPY-settings.erase); the palette also offers export (F-004.R5). Backups never leave the device by themselves (NFR-05).

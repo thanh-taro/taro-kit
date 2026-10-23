@@ -6,7 +6,7 @@ milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
 entities: [ENT-Profile, ENT-Tool, ENT-Category]
-rules: [RULE-01, RULE-04, RULE-14]
+rules: [RULE-01, RULE-04, RULE-14, RULE-16]
 screens: [SCR-Home]
 components: [CMP-ToolCard, CMP-CommandPalette, CMP-CategoryTile]
 nfr: [NFR-01, NFR-11]
@@ -22,7 +22,7 @@ Home is the launch pad for the Owner and the front door for visitors. It is lean
 - Out: widgets such as weather or featured tools (not planned for M-1).
 
 ## Requirements
-- **R1** Home shows a greeting suited to the local time of day (COPY-home.greetingMorning 05:00–11:59, COPY-home.greetingAfternoon 12:00–17:59, COPY-home.greetingEvening otherwise). It also shows the local date and time in the device's locale format. Greeting and time update on the minute.
+- **R1** Home shows a greeting suited to the local time of day (COPY-home.greetingMorning 05:00–11:59, COPY-home.greetingAfternoon 12:00–17:59, COPY-home.greetingEvening otherwise). It also shows the local date and time in the conventions of the language showing (RULE-16). Greeting and time update on the minute.
 - **R2** Home offers a prominent search entry that opens the command palette.
 - **R3** Home shows favorites, then recents per RULE-01 (at most 8, favorites left out). Each section appears only when it has items.
 - **R4** Home shows "what's new" per RULE-04, only when it has items.
