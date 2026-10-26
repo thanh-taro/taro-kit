@@ -33,8 +33,8 @@ test.describe('F-010 Now note', () => {
   test('F010_AC1 a note updated 10 days ago shows the note and its date, without the stale label', async ({ page }) => {
     await openNowAt(page, 10);
     await expect(page).toHaveTitle('Now — TaroKit');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText("What I'm up to");
-    await expect(page.locator(`time[datetime="${noteDate}"]`).first()).toContainText('Updated');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText("What I'm up to", { useInnerText: true });
+    await expect(page.locator(`time[datetime="${noteDate}"]`).first()).toContainText('Updated', { useInnerText: true });
     await expect(page.getByTestId('now-stale')).toHaveAttribute('data-state', 'fresh');
     await expect(staleLabel(page)).toHaveCount(0);
     // Shell navigation marks Now (SCR-Now region 1).
@@ -83,21 +83,26 @@ test.describe('F-010 changelog', () => {
 
   test('F010_AC5 with no Now note and two visible tools, only the changelog is shown', async ({ page }) => {
     await page.goto(`${FX}/__fixtures__/now-no-note/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText("What I've shipped");
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText("What I've shipped", { useInnerText: true });
     await expect(page.getByText("What I'm up to")).toHaveCount(0);
     await expect(page.getByTestId('now-stale')).toHaveCount(0);
     // F-010.AC4 on the page: Regex Tester added in March and improved in May; May first.
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText(['May 2026', 'March 2026']);
+    await expect(page.getByRole('heading', { level: 2 })).toHaveText(['May 2026', 'March 2026'], {
+      ignoreCase: true,
+      useInnerText: true,
+    });
     // Each link's name carries its kind, so the two Regex Tester links can be told apart.
     await expect(page.getByRole('link', { name: 'Improved Regex Tester', exact: true })).toHaveCount(1);
     await expect(page.getByRole('link', { name: 'Added Regex Tester', exact: true })).toHaveCount(1);
     const items = page.getByRole('main').getByRole('listitem');
-    await expect(items).toHaveText([/Improved\s*Regex Tester/, /Added\s*Color Picker/, /Added\s*Regex Tester/]);
+    await expect(items).toHaveText([/Improved\s*Regex Tester/, /Added\s*Color Picker/, /Added\s*Regex Tester/], {
+      useInnerText: true,
+    });
   });
 
   test('F010_AC6 with no Now note and no visible tools, the empty state is shown', async ({ page }) => {
     await page.goto(`${FX}/__fixtures__/now-empty/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText("What I'm up to");
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText("What I'm up to", { useInnerText: true });
     await expect(page.getByText('Nothing to share yet. Check back soon.')).toBeVisible();
     await expect(page.getByText("What I've shipped")).toHaveCount(0);
   });

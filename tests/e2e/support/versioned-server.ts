@@ -51,7 +51,7 @@ export async function startVersionedHost(): Promise<VersionedHost> {
     const type = TYPES[extname(file)] ?? 'application/octet-stream';
     let body: Buffer | string = readFileSync(file);
     if (version === 2 && type.startsWith('text/html'))
-      body = body.toString('utf8').replace('<html lang="en"', '<html lang="en" data-tk-e2e-version="2"');
+      body = body.toString('utf8').replace('<html lang="en-US"', '<html lang="en-US" data-tk-e2e-version="2"');
     if (version === 2 && pathname === '/sw.js')
       body = body.toString('utf8').replace(/"revision":"([0-9a-f]+)"/g, '"revision":"$1v2"');
     const revalidate = type.startsWith('text/html') || pathname === '/sw.js' || pathname.endsWith('.webmanifest');

@@ -24,14 +24,14 @@ test.describe('F-008 About page', () => {
       'aria-current',
       'page',
     );
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(profile.name);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(profile.name, { useInnerText: true });
     if (profile.nickname) await expect(page.getByText(`aka ${profile.nickname}`)).toBeVisible();
     if (profile.location) await expect(page.getByText(pick(profile.location, 'en-US'), { exact: true })).toBeVisible();
     await expect(page.getByText(pick(profile.headline, 'en-US'), { exact: true })).toBeVisible();
     // Edge case: each bio paragraph is its own paragraph.
     const bio = paragraphs(pick(profile.bio, 'en-US'));
     const main = page.getByRole('main');
-    for (const p of bio) await expect(main.locator('p', { hasText: p.split('\n')[0] })).toHaveCount(1);
+    for (const p of bio) await expect(main.locator('p:visible', { hasText: p.split('\n')[0] })).toHaveCount(1);
   });
 
   test('F008_AC1 the avatar is optimized at build: the image loads and is WebP', async ({ page }) => {
@@ -52,7 +52,7 @@ test.describe('F-008 About page', () => {
     test.skip(!!profile.avatar, 'the sample profile has an avatar; the initials are covered in unit tests');
     await page.goto(`${PROD}/about/`);
     const portrait = page.getByRole('img', { name: `Portrait of ${profile.name}` });
-    await expect(portrait).toHaveText(initials(profile.name));
+    await expect(portrait).toHaveText(initials(profile.name), { useInnerText: true });
   });
 
   test('SCR-About the name heading comes first, and focus order is the same wide and narrow', async ({

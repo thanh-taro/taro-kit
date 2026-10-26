@@ -20,7 +20,7 @@ const groups = (page: Page) => page.getByTestId('catalog-groups');
 const results = (page: Page) => page.getByTestId('catalog-results');
 const categoryNav = (page: Page) => page.getByRole('navigation', { name: 'Categories' });
 const announcer = (page: Page) => page.getByTestId('catalog-count');
-const cardNames = (scope: ReturnType<Page['getByTestId']>) => scope.locator('.tk-toolcard__link').allTextContents();
+const cardNames = (scope: ReturnType<Page['getByTestId']>) => scope.locator('.tk-toolcard__link').allInnerTexts();
 
 /** Opens the catalog and waits until the search island has hydrated and loaded the catalog data. */
 async function openCatalog(page: Page, base = FX) {
@@ -35,14 +35,16 @@ test.describe('F-002 catalog', () => {
   }) => {
     await openCatalog(page);
     await expect(page).toHaveTitle('Tools — TaroKit');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My tools', { useInnerText: true });
     const sections = groups(page).locator('section');
     await expect(sections).toHaveCount(registry.categories.length);
     // The chevron after each heading link is decorative (aria-hidden), so it is left out of the comparison.
-    const headings = await sections.getByRole('heading', { level: 2 }).allTextContents();
-    expect(headings.map((h) => h.replace('›', '').trim())).toEqual(registry.categories.map((c) => c.name));
+    const headings = await sections.getByRole('heading', { level: 2 }).allInnerTexts();
+    expect(headings.map((h) => h.replace('›', '').trim())).toEqual(
+      registry.categories.map((c) => pick(c.name, 'en-US')),
+    );
     for (const [i, category] of registry.categories.entries()) {
-      const names = await sections.nth(i).locator('.tk-toolcard__link').allTextContents();
+      const names = await sections.nth(i).locator('.tk-toolcard__link').allInnerTexts();
       expect(names).toEqual(category.tools.map((t) => t.name).sort(byName));
       expect(names.length).toBeGreaterThan(0);
     }
@@ -67,6 +69,7 @@ test.describe('F-002 catalog', () => {
     await expect(card.locator('.tk-toolcard__icon')).toBeVisible();
     await expect(card.locator('.tk-toolcard__category')).toHaveText(
       pick(registry.categories.find((c) => c.id === linked.category)!.name, 'en-US'),
+      { useInnerText: true },
     );
     await expect(card.getByRole('button', { name: 'Add to favorites' })).toHaveAttribute('aria-pressed', 'false');
     // An embedded tool is not marked.
@@ -79,7 +82,9 @@ test.describe('F-002 catalog', () => {
     const nav = categoryNav(page);
     await nav.getByRole('link', { name: /^Converters & calculators, / }).click();
     await expect(page).toHaveURL(`${PROD}/tools/converters/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Converters & calculators');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Converters & calculators', {
+      useInnerText: true,
+    });
   });
 
   test('F002_AC3 the navigation lists every visible category with its count, in display order', async ({ page }) => {
@@ -87,12 +92,11 @@ test.describe('F-002 catalog', () => {
     const labels = await categoryNav(page)
       .getByRole('link')
       .evaluateAll((links) => links.map((a) => a.getAttribute('aria-label')));
-    expect(labels).toEqual(registry.categories.map((c) => `${c.name}, ${countText(c.tools.length)}`));
+    expect(labels).toEqual(registry.categories.map((c) => `${pick(c.name, 'en-US')}, ${countText(c.tools.length)}`));
     for (const c of registry.categories)
-      await expect(categoryNav(page).getByRole('link', { name: new RegExp(`^${c.name}, `) })).toHaveAttribute(
-        'href',
-        `/tools/${c.id}/`,
-      );
+      await expect(
+        categoryNav(page).getByRole('link', { name: new RegExp(`^${pick(c.name, 'en-US')}, `) }),
+      ).toHaveAttribute('href', `/tools/${c.id}/`);
   });
 
   test('F002_AC4 activating the "Media tools" heading opens the Media tools page', async ({ page }) => {
@@ -100,7 +104,7 @@ test.describe('F-002 catalog', () => {
     const heading = groups(page).getByRole('heading', { level: 2, name: 'Media tools' });
     await heading.getByRole('link', { name: 'Media tools' }).click();
     await expect(page).toHaveURL(`${FX}/tools/media/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools', { useInnerText: true });
   });
 
   test('F002_AC4 every category heading links to its page and works from the keyboard', async ({ page }) => {
@@ -138,7 +142,7 @@ test.describe('F-002 catalog', () => {
     await search(page).fill('');
     await expect(results(page)).toBeHidden();
     await expect(groups(page)).toBeVisible();
-    await expect(announcer(page)).toHaveText(countText(registry.visibleTools.length));
+    await expect(announcer(page)).toHaveText(countText(registry.visibleTools.length), { useInnerText: true });
   });
 
   test('F002_AC6 matches from two categories are one ranked list, each with its category label', async ({ page }) => {
@@ -148,10 +152,10 @@ test.describe('F-002 catalog', () => {
     await expect(cards).toHaveCount(2);
     // RULE-05: Image Resizer matches by name prefix, Base64 only in its summary.
     expect(await cardNames(results(page))).toEqual(['Image Resizer', 'Base64']);
-    expect(await cards.locator('.tk-toolcard__category').allTextContents()).toEqual(['Media tools', 'Developer tools']);
+    expect(await cards.locator('.tk-toolcard__category').allInnerTexts()).toEqual(['Media tools', 'Developer tools']);
     // The count is announced politely after filtering (SCR-Catalog accessibility).
     await expect(announcer(page)).toHaveAttribute('aria-live', 'polite');
-    await expect(announcer(page)).toHaveText('2 tools');
+    await expect(announcer(page)).toHaveText('2 tools', { useInnerText: true });
     // Ignores case and diacritics.
     await search(page).fill('ÍMAGE');
     expect(await cardNames(results(page))).toEqual(['Image Resizer', 'Base64']);
@@ -184,7 +188,7 @@ test.describe('F-002 catalog', () => {
     await expect(
       page.getByRole('heading', { level: 2, name: `I don't have anything matching "pdf" yet.` }),
     ).toBeVisible();
-    await expect(announcer(page)).toHaveText('0 tools');
+    await expect(announcer(page)).toHaveText('0 tools', { useInnerText: true });
     await expect(groups(page)).toBeHidden();
     // The category navigation stays (design CatalogStatesDesktop, no results).
     await expect(categoryNav(page)).toBeVisible();
@@ -199,7 +203,7 @@ test.describe('F-002 catalog', () => {
 
   test('F002_AC8 with no visible tools the empty state is shown', async ({ page }) => {
     await page.goto(`${FX}/__fixtures__/catalog-empty/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My tools', { useInnerText: true });
     await expect(
       page.getByRole('heading', { level: 2, name: "I'm still building my first tools. Check back soon." }),
     ).toBeVisible();

@@ -46,7 +46,7 @@ const stored = (page: Page): Promise<string[]> =>
   );
 
 const home = (page: Page) => page.getByTestId('home');
-const homeNames = (page: Page) => home(page).getByRole('link').allTextContents();
+const homeNames = (page: Page) => home(page).getByRole('link').allInnerTexts();
 const catalogCard = (page: Page, id: string): Locator =>
   page
     .getByTestId('catalog')
@@ -129,7 +129,7 @@ test.describe('F-005 favorites', () => {
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
     const message = catalogCard(page, 'fx-25').getByRole('status');
-    await expect(message).toHaveText(FULL);
+    await expect(message).toHaveText(FULL, { useInnerText: true });
     await expect(message).toBeVisible();
     await expect(toggle).toHaveAccessibleDescription(FULL);
     expect(await stored(page)).toEqual(range(1, 24));
@@ -148,11 +148,11 @@ test.describe('F-005 favorites', () => {
     await expect
       .poll(() => page.evaluate(() => (window as unknown as { statusTexts: string[] }).statusTexts))
       .toEqual(['', FULL]);
-    await expect(message).toHaveText(FULL);
+    await expect(message).toHaveText(FULL, { useInnerText: true });
     // Esc on the toggle dismisses the message.
     await toggle.focus();
     await page.keyboard.press('Escape');
-    await expect(message).toHaveText('');
+    await expect(message).toHaveText('', { useInnerText: true });
     await expect(toggle).not.toHaveAccessibleDescription(FULL);
   });
 

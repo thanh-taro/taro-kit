@@ -118,7 +118,7 @@ test.describe('F-004 command palette', () => {
   }) => {
     await goto(page, '/about/');
     const control = page.getByRole('banner').getByRole('button', { name: /What are you looking for\?/ });
-    await expect(control).toContainText(/⌘K|Ctrl K/);
+    await expect(control).toContainText(/⌘K|Ctrl K/, { useInnerText: true });
     await control.click();
     await expect(dialog(page)).toBeVisible();
     await expect(field(page)).toBeFocused();
@@ -151,7 +151,7 @@ test.describe('F-004 command palette', () => {
     expect(await optionNames(page, 'Recent')).toEqual([tool(c!).name, tool(d!).name]);
     expect(await optionNames(page, 'Pages')).toEqual(PAGES);
     // The first option is highlighted (CMP-CommandPalette).
-    await expect(activeOption(page)).toContainText(tool(a!).name);
+    await expect(activeOption(page)).toContainText(tool(a!).name, { useInnerText: true });
   });
 
   test('F-004.R2 favorites show at most 8 in pin order; hidden tools never show (RULE-06)', async ({ page }) => {
@@ -172,7 +172,7 @@ test.describe('F-004 command palette', () => {
     expect(await optionNames(page, 'Pages')).toEqual(['Tools']);
     expect((await optionNames(page, 'Actions'))[0]).toBe('Toggle light/dark theme');
     const first = (await optionNames(page, 'Tools'))[0]!;
-    await expect(activeOption(page)).toContainText(first);
+    await expect(activeOption(page)).toContainText(first, { useInnerText: true });
     await expect(field(page)).toHaveAttribute('aria-activedescendant', (await activeOption(page).getAttribute('id'))!);
   });
 
@@ -184,7 +184,7 @@ test.describe('F-004 command palette', () => {
     expect(await optionNames(page, 'Tools')).toEqual([tool('ft-clipboard').name]);
     expect(await optionNames(page, 'Pages')).toEqual(['About me']);
     await page.keyboard.press('ArrowDown');
-    await expect(activeOption(page)).toContainText('About me');
+    await expect(activeOption(page)).toContainText('About me', { useInnerText: true });
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(`${PORTAL}/about/`);
     await expect(dialog(page)).toBeHidden();
@@ -306,7 +306,7 @@ test.describe('F-004 command palette', () => {
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
     await openPalette(page);
     await field(page).fill('toggle');
-    await expect(activeOption(page)).toContainText('Toggle light/dark theme');
+    await expect(activeOption(page)).toContainText('Toggle light/dark theme', { useInnerText: true });
     await page.keyboard.press('Enter');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect(dialog(page)).toBeHidden();
@@ -317,13 +317,13 @@ test.describe('F-004 command palette', () => {
     await goto(page, '/');
     await openPalette(page);
     await field(page).fill('export');
-    await expect(activeOption(page)).toContainText('Export your data');
+    await expect(activeOption(page)).toContainText('Export your data', { useInnerText: true });
     const [download] = await Promise.all([page.waitForEvent('download'), page.keyboard.press('Enter')]);
     const today = localDate(new Date());
     expect(download.suggestedFilename()).toBe(`tarokit-backup-${today}.json`);
     const file = JSON.parse(readFileSync((await download.path())!, 'utf8'));
     expect(file.format).toBe('tarokit-backup');
-    expect(file.data.schemaVersion).toBe(1);
+    expect(file.data.schemaVersion).toBe(2);
     expect(file.data.favorites.map((f: { toolId: string }) => f.toolId)).toEqual(['fx-01']);
     expect(file.data.recents.map((r: { toolId: string }) => r.toolId)).toEqual(['fx-02']);
     expect(file.data.preferences.theme).toBe('dark');
@@ -349,7 +349,7 @@ test.describe('F-004 command palette', () => {
       .click();
     await expect(dialog(page).locator('.tk-palette')).toHaveAttribute('data-ready', '');
     await field(page).fill('copy');
-    await expect(activeOption(page)).toContainText('Copy link to this page');
+    await expect(activeOption(page)).toContainText('Copy link to this page', { useInnerText: true });
     await page.keyboard.press('Enter');
     await expect(dialog(page).getByRole('status').filter({ hasText: 'Link copied' })).toBeVisible();
     await expect(dialog(page)).toBeHidden();

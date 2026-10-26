@@ -50,10 +50,12 @@ test.describe('FLOW-01 launch a tool from the keyboard', () => {
     // Embedded: best match highlighted, Enter opens the tool view, a recent is recorded.
     await shortcut(page);
     await field(page).fill(embedded.name);
-    await expect(dialog(page).locator('[role="option"][aria-selected="true"]')).toContainText(embedded.name);
+    await expect(dialog(page).locator('[role="option"][aria-selected="true"]')).toContainText(embedded.name, {
+      useInnerText: true,
+    });
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(`${PORTAL}${new URL(toolPage(embedded.id)).pathname}`);
-    await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded');
+    await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded', { useInnerText: true });
     await expect.poll(() => recentIds(page)).toEqual([embedded.id]);
 
     // Linked: opens in a new tab, the portal stays, the visit is recorded first.
@@ -81,7 +83,9 @@ test.describe('FLOW-02 visitor first visit', () => {
 
     // Step 2: home on a first visit: greeting, introduction, explore invitation.
     await page.goto(`${PORTAL}/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Good (morning|afternoon|evening)$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Good (morning|afternoon|evening)$/, {
+      useInnerText: true,
+    });
     await expect(page.locator('main .tk-state').locator('visible=true')).toContainText(
       /New here\? These are the tools I've built/,
     );
@@ -97,7 +101,7 @@ test.describe('FLOW-02 visitor first visit', () => {
     await page.goto(`${PORTAL}/tools/`);
     await page.getByRole('link', { name: embedded.name }).first().click();
     await expect(page).toHaveURL(`${PORTAL}${new URL(toolPage(embedded.id)).pathname}`);
-    await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded');
+    await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded', { useInnerText: true });
 
     // Exit: a dead link leads to not-found with a way to the catalog.
     const res = await page.goto(toolPage('does-not-exist'));
@@ -109,13 +113,13 @@ test.describe('FLOW-02 visitor first visit', () => {
 
 test.describe('FLOW-03 move personal data to a new device', () => {
   const DATA = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     favorites: [{ toolId: 'fx-09', pinnedAt: '2026-09-01T00:00:00.000Z' }],
     recents: [{ toolId: 'fx-08', openedAt: '2026-09-02T00:00:00.000Z' }],
     preferences: { theme: 'dark' },
     daysUsed: ['2026-10-13'],
   };
-  const CONFIRM = 'Replace your favorites, recents, theme and days used with the ones in this file?';
+  const CONFIRM = 'Replace your favorites, recents, theme, language and days used with the ones in this file?';
 
   test('FLOW-03 export in one browser context, import and confirm in a fresh one; invalid and cancelled imports change nothing', async ({
     browser,
@@ -164,8 +168,8 @@ test.describe('FLOW-03 move personal data to a new device', () => {
 
     // Exit: an invalid file leaves data unchanged.
     await choose(join(root, 'tests/fixtures/backups', 'F013_AC2-not-a-backup.json'));
-    await expect(page.getByRole('alert')).toContainText("I couldn't import that file because");
-    await expect(page.getByRole('alert')).toContainText('Nothing changed.');
+    await expect(page.getByRole('alert')).toContainText("I couldn't import that file because", { useInnerText: true });
+    await expect(page.getByRole('alert')).toContainText('Nothing changed.', { useInnerText: true });
     expect(await stored(page)).toEqual(before);
 
     // Exit: cancel leaves data unchanged.

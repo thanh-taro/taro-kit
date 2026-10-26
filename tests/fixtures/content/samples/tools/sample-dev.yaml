@@ -5,8 +5,8 @@ id: sample-dev
 kind: tool
 name: Sample developer tool
 summary:
-  en-US: Sample entry. A placeholder until the real tool ships.
-  vi-VN: Sample entry. A placeholder until the real tool ships.
+  en-US: Sample entry. A placeholder until the real tool ships; it will format things.
+  vi-VN: Mục mẫu. Giữ chỗ cho đến khi công cụ thật ra mắt; nó sẽ định dạng mọi thứ.
 category: developer
 url: https://sample-dev.tarokit.app/
 origin: own

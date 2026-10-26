@@ -2,6 +2,7 @@
 // and the shared preview image. The production build (PROD) is checked for every public page; the fixture build
 // (FX, tests/fixtures/content/F005-favorites) for tools and categories. Expected values come from the registry.
 // Preview crawlers don't run scripts, so every check reads the served HTML, not the live DOM.
+import { pick } from '../../src/modules/language/languages.ts';
 import { join } from 'node:path';
 import { expect, test, type APIRequestContext } from '@playwright/test';
 import sharp from 'sharp';
@@ -40,7 +41,8 @@ async function readHead(request: APIRequestContext, url: string): Promise<Head> 
     const key = attrs.property ?? attrs.name;
     if (key && attrs.content !== undefined) meta.set(key, attrs.content);
   }
-  const title = head.match(/<title>([^<]*)<\/title>/)?.[1];
+  // The <title> carries both versions as data-l-* attributes (F-019.R4); its text is the English one.
+  const title = head.match(/<title(?:\s+[\w-]+="[^"]*")*>([^<]*)<\/title>/)?.[1];
   const canonical = head.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   return { status: res.status(), title: title && decode(title), meta, canonical, head };
 }
@@ -76,8 +78,8 @@ test.describe('F-015 link previews', () => {
     expect(h.status).toBe(200);
     expect(h.title).toContain(tool.name);
     expect(h.meta.get('og:title')).toBe(t('COPY-meta.toolTitle', { tool: tool.name }));
-    expect(h.meta.get('og:description')).toBe(tool.summary);
-    expect(h.meta.get('description')).toBe(tool.summary);
+    expect(h.meta.get('og:description')).toBe(pick(tool.summary, 'en-US'));
+    expect(h.meta.get('description')).toBe(pick(tool.summary, 'en-US'));
     expect(h.canonical).toBe(`${PORTAL_ORIGIN}${toolPath(tool.id)}`);
     expectSharedImage(h);
   });
@@ -87,7 +89,7 @@ test.describe('F-015 link previews', () => {
     expect(tool.openMode).toBe('linked');
     const h = await readHead(request, `${FX}${toolPath(tool.id)}`);
     expect(h.meta.get('og:title')).toBe(t('COPY-meta.toolTitle', { tool: tool.name }));
-    expect(h.meta.get('og:description')).toBe(tool.summary);
+    expect(h.meta.get('og:description')).toBe(pick(tool.summary, 'en-US'));
     expectSharedImage(h);
   });
 
@@ -117,7 +119,8 @@ test.describe('F-015 link previews', () => {
     expect(h.meta.get('og:title')).toBe(t('COPY-notFound.title'));
     expect(h.meta.get('robots')).toBe('noindex');
     expect(h.head).not.toContain(hidden.name);
-    expect(h.head).not.toContain(hidden.summary);
+    expect(h.head).not.toContain(pick(hidden.summary, 'en-US'));
+    expect(h.head).not.toContain(pick(hidden.summary, 'vi-VN'));
     expect(h.meta.has('og:url')).toBe(false);
     expect(h.canonical).toBeUndefined();
     expectSharedImage(h);
@@ -130,7 +133,7 @@ test.describe('F-015 link previews', () => {
     const h = await readHead(request, `${FX}/tools/media/`);
     expect(h.title).toContain('Media tools');
     expect(h.meta.get('og:title')).toContain('Media tools');
-    expect(h.meta.get('og:description')).toBe(media.intro);
+    expect(h.meta.get('og:description')).toBe(pick(media.intro, 'en-US'));
     expect(h.canonical).toBe(`${PORTAL_ORIGIN}/tools/media/`);
     expectSharedImage(h);
   });

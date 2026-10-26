@@ -22,7 +22,9 @@ test.describe('home', () => {
   test('renders SCR-Home inside the app shell, with Home marked in the navigation', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle("TaroKit — Taro's tools and work");
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Good (morning|afternoon|evening)$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Good (morning|afternoon|evening)$/, {
+      useInnerText: true,
+    });
     await expect(page.getByRole('banner')).toBeVisible();
     await expect(page.getByRole('region', { name: 'Browse by category' })).toBeVisible();
     await expect(page.getByRole('navigation').getByRole('link', { name: 'Home' })).toHaveAttribute(
@@ -70,7 +72,7 @@ test.describe('home', () => {
     // The inline head script applied the stored choice before the island hydrated.
     expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('light');
     const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('tarokit.personal') ?? 'null'));
-    expect(stored).toMatchObject({ schemaVersion: 1, preferences: { theme: 'light' } });
+    expect(stored).toMatchObject({ schemaVersion: 2, preferences: { theme: 'light' } });
   });
 
   for (const theme of ['dark', 'light'] as const) {

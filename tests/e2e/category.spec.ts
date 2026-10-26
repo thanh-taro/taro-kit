@@ -36,7 +36,7 @@ async function expectNotFound(page: Page, path: string) {
   // SCR-NotFound content at the same address (SCR-Category, error state).
   await expect(page).toHaveURL(`${FX}${path}`);
   await expect(page).toHaveTitle("I can't find that page");
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText("I can't find that page");
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText("I can't find that page", { useInnerText: true });
   await expect(page.getByText('It may have moved, or I took it down.')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Browse my tools' })).toHaveAttribute('href', '/tools/');
   await expect(hero(page)).toHaveCount(0);
@@ -47,7 +47,7 @@ test.describe('F-016 category page', () => {
     const res = await page.goto(`${FX}/tools/media/`);
     expect(res?.status()).toBe(200);
     await expect(page).toHaveTitle('Media tools — TaroKit');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools', { useInnerText: true });
     // SCR-Category region 1: Tools is the current navigation item (a section of it, not the page itself).
     await expect(page.getByRole('navigation').first().getByRole('link', { name: 'Tools' })).toHaveAttribute(
       'aria-current',
@@ -93,7 +93,7 @@ test.describe('F-016 category page', () => {
     await page.goto(`${FX}/tools/media/`);
     const cards = toolList(page).locator('.tk-toolcard');
     await expect(cards).toHaveCount(3);
-    const names = await cards.locator('.tk-toolcard__link').allTextContents();
+    const names = await cards.locator('.tk-toolcard__link').allInnerTexts();
     expect(names).toEqual(['Audio Trimmer', 'Clip Maker', 'Image Resizer']);
     // Each card is shown as in F-002.R2: one link named after the tool, its summary, its category, a favorite toggle.
     const first = cards.first();
@@ -111,7 +111,7 @@ test.describe('F-016 category page', () => {
     // Every visible category, in display order; the current one is marked; empty categories are left out.
     const names = await nav
       .getByRole('link')
-      .evaluateAll((links) => links.map((a) => a.getAttribute('aria-label') ?? a.textContent));
+      .evaluateAll((links) => links.map((a) => a.getAttribute('aria-label') ?? (a as HTMLElement).innerText));
     expect(names).toEqual([
       `Developer tools, ${visibleIn('developer')} tools`,
       'Media tools, 3 tools',
@@ -123,7 +123,7 @@ test.describe('F-016 category page', () => {
 
     await nav.getByRole('link', { name: /^Developer tools/ }).click();
     await expect(page).toHaveURL(`${FX}/tools/developer/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Developer tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Developer tools', { useInnerText: true });
     await expect(categoryNav(page).getByRole('link', { name: /^Developer tools/ })).toHaveAttribute(
       'aria-current',
       'page',
@@ -143,7 +143,7 @@ test.describe('F-016 category page', () => {
     ]);
     expect(res.status()).toBe(200);
     await expect(page).toHaveURL(`${FX}/tools/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My tools', { useInnerText: true });
   });
 
   test('F016_AC4 the category navigation is reachable from the keyboard', async ({ page }) => {
@@ -202,11 +202,13 @@ test.describe('F-016 sample content, production build (PROD)', () => {
     ]) {
       const res = await page.goto(`${PROD}/tools/${id}/`);
       expect(res?.status()).toBe(200);
-      await expect(page.getByRole('heading', { level: 1 })).toHaveText(name);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(name, { useInnerText: true });
       // F-016.R2, RULE-06: the hero count is the number of listed (visible) tools.
       const cards = await toolList(page).locator('.tk-toolcard').count();
       expect(cards).toBeGreaterThan(0);
-      await expect(hero(page).locator('.count')).toHaveText(cards === 1 ? '1 tool' : `${cards} tools`);
+      await expect(hero(page).locator('.count')).toHaveText(cards === 1 ? '1 tool' : `${cards} tools`, {
+        useInnerText: true,
+      });
     }
     expect(violations).toEqual([]);
   });

@@ -33,9 +33,9 @@ test('F003_AC11 a value the tool saved at its own address is shown when it is op
 
   // The cross-site control: an unrelated top-level site gets a separate, empty partition.
   await page.goto(toolPage('ft-embedded', OTHER_PORTAL));
-  await expect(stored(page)).toHaveText('none');
+  await expect(stored(page)).toHaveText('none', { useInnerText: true });
 
   // Inside the portal (same site, ADR-0001): the tool shows that value.
   await page.goto(toolPage('ft-embedded'));
-  await expect(stored(page)).toHaveText('saved directly');
+  await expect(stored(page)).toHaveText('saved directly', { useInnerText: true });
 });

@@ -67,7 +67,7 @@ const stored = (page: Page): Promise<{ recents: string[]; daysUsed: string[] }> 
 const storedRecents = async (page: Page) => (await stored(page)).recents;
 
 const recentsSection = (page: Page) => page.getByRole('region', { name: 'Recently used' });
-const recentNames = (page: Page) => recentsSection(page).locator('.tk-toolcard__link').allTextContents();
+const recentNames = (page: Page) => recentsSection(page).locator('.tk-toolcard__link').allInnerTexts();
 const catalogLink = (page: Page, id: string) =>
   page.getByTestId('catalog').getByRole('link', { name: nameOf(id), exact: true });
 
@@ -116,7 +116,7 @@ test.describe('F-006.R1 recording visits', () => {
   test('F006_AC2 an embedded tool appears first in recents when its tool view is shown', async ({ page }) => {
     await seed(page, { recents: ['fx-01'] });
     await page.goto(toolPage('ft-embedded'));
-    await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded');
+    await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded', { useInnerText: true });
     await expect.poll(() => storedRecents(page)).toEqual(['ft-embedded', 'fx-01']);
   });
 
@@ -361,7 +361,7 @@ test.describe('F-006 round 1: midnight and unsaved clears', () => {
     page,
   }) => {
     const newer = JSON.stringify({
-      schemaVersion: 2,
+      schemaVersion: 3,
       favorites: [],
       recents: [{ toolId: 'fx-01', openedAt: '2026-10-10T12:00:00.000Z' }],
       preferences: { theme: 'system' },

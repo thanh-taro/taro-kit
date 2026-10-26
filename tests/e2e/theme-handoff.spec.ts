@@ -41,7 +41,7 @@ async function openHost(page: Page, query: Record<string, string>): Promise<Fram
   });
   await page.goto(`https://portal.test/host.html?${new URLSearchParams(query)}`);
   const tool = page.frameLocator('iframe[title="Test tool"]');
-  await expect(tool.locator('#status')).toHaveText('tool loaded');
+  await expect(tool.locator('#status')).toHaveText('tool loaded', { useInnerText: true });
   const frame = page.frames().find((f) => f.url().startsWith('https://tool.test/tool.html'));
   if (!frame) throw new Error('tool frame missing');
   return frame;

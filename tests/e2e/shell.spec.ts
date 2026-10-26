@@ -43,6 +43,10 @@ test.describe('CMP-AppShell narrow menu', () => {
     for (let i = 1; i < links; i++) await page.keyboard.press(tab);
     await expect(page.getByRole('navigation').getByRole('link', { name: 'Settings' })).toBeFocused();
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
+    // After Settings comes the language switch row, the panel's last control (F-019.R2).
+    await page.keyboard.press(tab);
+    await expect(page.locator('#main-menu [data-tk-language-switch]')).toBeFocused();
+    await expect(menu).toHaveAttribute('aria-expanded', 'true');
     await page.keyboard.press(tab);
     await expect(menu).toHaveAttribute('aria-expanded', 'false');
   });

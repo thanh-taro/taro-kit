@@ -29,9 +29,12 @@ test.describe('F-018 SCR-Policy', () => {
     expect(res?.status()).toBe(200);
     await expect(page).toHaveTitle('Privacy — TaroKit');
     const main = page.getByRole('main');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText([samples.privacy.title['en-US']]);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText([samples.privacy.title['en-US']], {
+      useInnerText: true,
+    });
     await expect(main.getByRole('heading', { level: 2 })).toHaveText(
       samples.privacy.sections.map((s) => s.heading['en-US']),
+      { useInnerText: true },
     );
     // Each heading is followed by its section's paragraphs (in the body version of the language showing).
     for (const section of samples.privacy.sections) {
@@ -39,11 +42,11 @@ test.describe('F-018 SCR-Policy', () => {
       const h2 = main.getByRole('heading', { level: 2, name: section.heading['en-US'] });
       const next = h2.locator('xpath=following-sibling::div[@lang="en-US"][1]/*[1]');
       await expect(next).toHaveJSProperty('tagName', 'P');
-      await expect(next).toContainText(first.parts.map((p) => p.text).join(''));
+      await expect(next).toContainText(first.parts.map((p) => p.text).join(''), { useInnerText: true });
     }
     await expect(main.getByText('Last updated October 22, 2026', { exact: true })).toBeVisible();
-    await expect(main.locator('time')).toHaveAttribute('datetime', '2026-10-22');
-    await expect(main.locator('time')).toHaveText('October 22, 2026');
+    await expect(main.locator('time:visible')).toHaveAttribute('datetime', '2026-10-22');
+    await expect(main.locator('time:visible')).toHaveText('October 22, 2026', { useInnerText: true });
   });
 
   test('F018_AC2 the Terms page shows the title, the three headings, their paragraphs and the date', async ({
@@ -53,14 +56,16 @@ test.describe('F-018 SCR-Policy', () => {
     expect(res?.status()).toBe(200);
     await expect(page).toHaveTitle('Terms — TaroKit');
     const main = page.getByRole('main');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(['Terms']);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(['Terms'], { useInnerText: true });
     await expect(main.getByRole('heading', { level: 2 })).toHaveText(
       samples.terms.sections.map((s) => s.heading['en-US']),
+      { useInnerText: true },
     );
     expect(samples.terms.sections).toHaveLength(3);
     for (const section of samples.terms.sections)
       for (const block of section.blocks['en-US'])
-        if (block.kind === 'paragraph') await expect(main).toContainText(block.parts.map((p) => p.text).join(''));
+        if (block.kind === 'paragraph')
+          await expect(main).toContainText(block.parts.map((p) => p.text).join(''), { useInnerText: true });
     await expect(main.getByText('Last updated October 22, 2026', { exact: true })).toBeVisible();
   });
 
@@ -78,13 +83,12 @@ test.describe('F-018 SCR-Policy', () => {
     await expect(mail).not.toHaveAttribute('target', /.*/);
     const list = main.getByRole('list');
     await expect(list).toHaveCount(1);
-    await expect(list.getByRole('listitem')).toHaveText([
-      'the first sample item;',
-      'the second sample item;',
-      'the third sample item.',
-    ]);
+    await expect(list.getByRole('listitem')).toHaveText(
+      ['the first sample item;', 'the second sample item;', 'the third sample item.'],
+      { useInnerText: true },
+    );
     // Other bracket syntax stays literal text (F-018 edge case).
-    await expect(main).toContainText('with [bracketed text] that stays as it is.');
+    await expect(main).toContainText('with [bracketed text] that stays as it is.', { useInnerText: true });
     // The web link really opens a new tab (without a network request to the third party).
     await page.context().route('https://www.cloudflare.com/**', (route) => route.fulfill({ body: 'stub' }));
     const [popup] = await Promise.all([page.context().waitForEvent('page'), web.click()]);
@@ -127,8 +131,8 @@ test.describe('F-018 CMP-AppShell footer', () => {
         await expect(footerLink(page, 'Privacy')).toHaveAttribute('href', '/privacy/');
         await expect(footerLink(page, 'Terms')).toHaveAttribute('href', '/terms/');
         const current = footer(page).locator('[aria-current="page"]');
-        if (path === '/privacy/') await expect(current).toHaveText(['Privacy']);
-        else if (path === '/terms/') await expect(current).toHaveText(['Terms']);
+        if (path === '/privacy/') await expect(current).toHaveText(['Privacy'], { useInnerText: true });
+        else if (path === '/terms/') await expect(current).toHaveText(['Terms'], { useInnerText: true });
         else await expect(current).toHaveCount(0);
         // The current page is marked visibly too, not by color alone: an underline only it has.
         for (const name of ['Privacy', 'Terms'] as const)
@@ -140,7 +144,7 @@ test.describe('F-018 CMP-AppShell footer', () => {
     }
     // The hidden tool's address really is the not-found page.
     await page.goto(`${PROD}/t/${hiddenTool.id}/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText("I can't find that page");
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText("I can't find that page", { useInnerText: true });
   });
 
   test('F018_AC3 the tool view of an embedded and of a linked tool shows neither link', async ({ page }) => {
@@ -202,9 +206,12 @@ test.describe('F-018 offline', () => {
     await expect.poll(() => page.evaluate(() => navigator.onLine)).toBe(false);
     const offline = await page.goto(`${PROD}/privacy/`);
     expect(offline?.status()).toBe(200);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(samples.privacy.title['en-US']);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(samples.privacy.title['en-US'], {
+      useInnerText: true,
+    });
     await expect(page.getByRole('main').getByRole('heading', { level: 2 })).toHaveText(
       samples.privacy.sections.map((s) => s.heading['en-US']),
+      { useInnerText: true },
     );
   });
 });

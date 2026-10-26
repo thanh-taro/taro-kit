@@ -71,7 +71,7 @@ const fontsLoaded = (page: Page) =>
   });
 
 const region = (page: Page, name: string) => page.getByRole('region', { name, exact: true });
-const cardNames = (page: Page, name: string) => region(page, name).locator('.tk-toolcard__link').allTextContents();
+const cardNames = (page: Page, name: string) => region(page, name).locator('.tk-toolcard__link').allInnerTexts();
 const invitation = (page: Page) => page.locator('main .tk-state').locator('visible=true');
 const searchEntry = (page: Page) => page.getByTestId('home-search');
 
@@ -79,12 +79,12 @@ test.describe('F-007 greeting and time', () => {
   test('F007_AC1 at 08:30 home shows the morning greeting and the current date and time', async ({ page }) => {
     await page.clock.install({ time: new Date('2026-10-13T08:30:00') });
     await page.goto(`${PROD}/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good morning');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good morning', { useInnerText: true });
     const when = page.getByTestId('home-clock');
-    await expect(when).toContainText('8:30');
-    await expect(when).toContainText(/Tue/);
-    await expect(when).toContainText(/Oct/);
-    await expect(when).toContainText(/13/);
+    await expect(when).toContainText('8:30', { useInnerText: true });
+    await expect(when).toContainText(/Tue/, { useInnerText: true });
+    await expect(when).toContainText(/Oct/, { useInnerText: true });
+    await expect(when).toContainText(/13/, { useInnerText: true });
     await expect(when.locator('time')).toHaveAttribute('datetime', '2026-10-13T08:30');
     // The clock is not announced every minute (SCR-Home accessibility).
     await expect(page.locator('[aria-live]').filter({ has: when })).toHaveCount(0);
@@ -96,23 +96,23 @@ test.describe('F-007 greeting and time', () => {
   }) => {
     await page.clock.install({ time: new Date('2026-10-13T11:59:30') });
     await page.goto(`${PROD}/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good morning');
-    await expect(page.getByTestId('home-clock')).toContainText('11:59');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good morning', { useInnerText: true });
+    await expect(page.getByTestId('home-clock')).toContainText('11:59', { useInnerText: true });
     const navigations: string[] = [];
     page.on('framenavigated', (f) => navigations.push(f.url()));
     await page.clock.runFor(30_000);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good afternoon');
-    await expect(page.getByTestId('home-clock')).toContainText('12:00');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good afternoon', { useInnerText: true });
+    await expect(page.getByTestId('home-clock')).toContainText('12:00', { useInnerText: true });
     expect(navigations).toEqual([]);
   });
 
   test('F-007.R1 evening greeting at 18:00, and again at 04:59', async ({ page }) => {
     await page.clock.install({ time: new Date('2026-10-13T18:00:00') });
     await page.goto(`${PROD}/`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good evening');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good evening', { useInnerText: true });
     await page.clock.setSystemTime(new Date('2026-10-14T04:59:00'));
     await page.reload();
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good evening');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good evening', { useInnerText: true });
   });
 });
 
@@ -124,7 +124,7 @@ test.describe('F-007 search entry', () => {
     await page.goto(`${PROD}/`);
     const entry = searchEntry(page);
     await expect(entry).toBeVisible();
-    await expect(entry).toContainText('What are you looking for?');
+    await expect(entry).toContainText('What are you looking for?', { useInnerText: true });
     const dialog = page.getByRole('dialog', { name: 'Search TaroKit' });
     if (browserName === 'webkit') {
       // Safari doesn't focus a button on a mouse click, so after a click focus has no opener to return to
@@ -178,7 +178,7 @@ test.describe('F-007 favorites and recents', () => {
     await page.clock.setFixedTime(new Date('2026-10-04T12:00:00'));
     await seed(page, { favorites: [fx(1)], recents: [fx(2)] });
     await openHome(page);
-    const headings = await page.locator('main').locator('h1:visible, h2:visible').allTextContents();
+    const headings = await page.locator('main').locator('h1:visible, h2:visible').allInnerTexts();
     // Noon: the afternoon greeting; every fixture tool was added on 2026-10-01, so what's new shows.
     expect(headings.map((h) => h.trim())).toEqual(['Good afternoon', FAVORITES, RECENTS, CATEGORIES, WHATS_NEW]);
   });
@@ -198,8 +198,8 @@ test.describe('F-007 first visit', () => {
   }) => {
     await openHome(page);
     await expect(invitation(page)).toHaveCount(1);
-    await expect(invitation(page).locator('.tk-state__title')).toHaveText(INVITE);
-    await expect(invitation(page).locator('kbd')).toHaveText(/^(⌘K|Ctrl K)$/);
+    await expect(invitation(page).locator('.tk-state__title')).toHaveText(INVITE, { useInnerText: true });
+    await expect(invitation(page).locator('kbd:visible')).toHaveText(/^(⌘K|Ctrl K)$/, { useInnerText: true });
     await expect(invitation(page).getByRole('link', { name: 'Browse my tools' })).toHaveAttribute('href', '/tools/');
     await expect(region(page, FAVORITES)).toHaveCount(0);
     await expect(region(page, RECENTS)).toHaveCount(0);
@@ -209,7 +209,9 @@ test.describe('F-007 first visit', () => {
       .evaluate((main) =>
         [...main.querySelectorAll('h1, [data-testid="home-search"], .tk-state, h2')]
           .filter((el) => (el as HTMLElement).offsetParent !== null)
-          .map((el) => (el.matches('h1, h2') ? el.textContent?.trim() : el.matches('.tk-state') ? 'invite' : 'search')),
+          .map((el) =>
+            el.matches('h1, h2') ? (el as HTMLElement).innerText.trim() : el.matches('.tk-state') ? 'invite' : 'search',
+          ),
       );
     expect(order.slice(1, 4)).toEqual(['search', 'invite', CATEGORIES]);
   });
@@ -221,8 +223,8 @@ test.describe('F-007 first visit', () => {
     expect(await page.evaluate(() => matchMedia('(any-hover: none) and (any-pointer: coarse)').matches)).toBeTruthy();
     await openHome(page);
     await expect(invitation(page)).toHaveCount(1);
-    await expect(invitation(page).locator('.tk-state__title')).toHaveText(INVITE_TOUCH);
-    await expect(invitation(page).locator('kbd')).toHaveCount(0);
+    await expect(invitation(page).locator('.tk-state__title')).toHaveText(INVITE_TOUCH, { useInnerText: true });
+    await expect(invitation(page).locator('kbd:visible')).toHaveCount(0);
     await context.close();
   });
 
@@ -239,7 +241,7 @@ test.describe('F-007 first visit', () => {
     await page.goto(`${FX}/`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#tk-home-personal')).toHaveAttribute('data-state', 'empty');
     await expect(invitation(page)).toHaveCount(1);
-    await expect(invitation(page).locator('.tk-state__title')).toHaveText(INVITE);
+    await expect(invitation(page).locator('.tk-state__title')).toHaveText(INVITE, { useInnerText: true });
     const before = await page.getByRole('region', { name: CATEGORIES }).boundingBox();
     release();
     await expect(page.locator('[data-tk-home-ready]')).toBeAttached();
@@ -325,7 +327,12 @@ test.describe('F-007 introduction', () => {
   test('F007_AC9 the Owner’s name and headline are shown with a link to About', async ({ page }) => {
     await page.goto(`${PROD}/`);
     const intro = page.getByTestId('home-intro');
-    await expect(intro).toHaveText(`I'm ${prod.profile.nickname ?? prod.profile.name}. ${prod.profile.headline}`);
+    await expect(intro).toHaveText(
+      `I'm ${prod.profile.nickname ?? prod.profile.name}. ${pick(prod.profile.headline, 'en-US')}`,
+      {
+        useInnerText: true,
+      },
+    );
     const about = page.getByRole('main').getByRole('link', { name: 'About me' });
     await expect(about).toHaveAttribute('href', '/about/');
     await about.click();
@@ -335,7 +342,8 @@ test.describe('F-007 introduction', () => {
   test('F007_AC9 on the fixture profile too', async ({ page }) => {
     await page.goto(`${FX}/`);
     await expect(page.getByTestId('home-intro')).toHaveText(
-      `I'm ${fixture.profile.nickname ?? fixture.profile.name}. ${fixture.profile.headline}`,
+      `I'm ${fixture.profile.nickname ?? fixture.profile.name}. ${pick(fixture.profile.headline, 'en-US')}`,
+      { useInnerText: true },
     );
   });
 });
@@ -358,8 +366,8 @@ test.describe('F-007 browse by category', () => {
         const tile = tiles.nth(i);
         const count = n === 1 ? '1 tool' : `${n} tools`;
         await expect(tile).toHaveAccessibleName(`${pick(c.name, 'en-US')}, ${count}`);
-        await expect(tile).toContainText(pick(c.name, 'en-US'));
-        await expect(tile).toContainText(count);
+        await expect(tile).toContainText(pick(c.name, 'en-US'), { useInnerText: true });
+        await expect(tile).toContainText(count, { useInnerText: true });
         await expect(tile).toHaveAttribute('href', `/tools/${c.id}/`);
         await expect(tile).toHaveAttribute('data-tint', c.tint);
         await expect(tile.locator('.icon svg')).toBeVisible();
@@ -376,7 +384,9 @@ test.describe('F-007 browse by category', () => {
       }
       await tiles.first().click();
       await expect(page).toHaveURL(`${base}/tools/${visible[0]!.c.id}/`);
-      await expect(page.getByRole('heading', { level: 1 })).toHaveText(pick(visible[0]!.c.name, 'en-US'));
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(pick(visible[0]!.c.name, 'en-US'), {
+        useInnerText: true,
+      });
     });
   }
 });
@@ -395,14 +405,14 @@ test.describe('F-007 what’s new', () => {
   test('F007_AC6 a tool added 3 days ago is listed, one added 60 days ago is not', async ({ page }) => {
     await openAt(page, '2026-10-04');
     await expect(items(page, 'ac6')).toHaveCount(1);
-    await expect(items(page, 'ac6').first()).toContainText('Added');
-    await expect(items(page, 'ac6').first().getByRole('link')).toHaveText('Three days old');
+    await expect(items(page, 'ac6').first()).toContainText('Added', { useInnerText: true });
+    await expect(items(page, 'ac6').first().getByRole('link')).toHaveText('Three days old', { useInnerText: true });
   });
 
   test('F007_AC7 8 tools added within the last 30 days: the 6 newest are listed', async ({ page }) => {
     await openAt(page, '2026-10-04');
     await expect(items(page, 'ac7')).toHaveCount(6);
-    const names = await items(page, 'ac7').getByRole('link').allTextContents();
+    const names = await items(page, 'ac7').getByRole('link').allInnerTexts();
     expect(names).toEqual(['Tool 8', 'Tool 7', 'Tool 6', 'Tool 5', 'Tool 4', 'Tool 3']);
   });
 
@@ -412,10 +422,12 @@ test.describe('F-007 what’s new', () => {
     await openAt(page, '2026-10-04');
     await expect(items(page, 'ac8')).toHaveCount(2);
     const first = items(page, 'ac8').first();
-    await expect(first.getByRole('link')).toHaveText('Updated tool');
-    await expect(first).toContainText('Improved');
+    await expect(first.getByRole('link')).toHaveText('Updated tool', { useInnerText: true });
+    await expect(first).toContainText('Improved', { useInnerText: true });
     await expect(first.locator('time')).toHaveAttribute('datetime', '2026-10-02');
-    await expect(items(page, 'ac8').nth(1).getByRole('link')).toHaveText('Added three days ago');
+    await expect(items(page, 'ac8').nth(1).getByRole('link')).toHaveText('Added three days ago', {
+      useInnerText: true,
+    });
     await expect(items(page, 'ac8').filter({ hasText: 'Updated tool' })).toHaveCount(1);
   });
 
@@ -441,10 +453,10 @@ test.describe('F-007 what’s new', () => {
     const expected = whatsNew(prod.visibleTools, day(3));
     const list = region(page, WHATS_NEW).getByRole('listitem');
     await expect(list).toHaveCount(expected.length);
-    expect(await list.getByRole('link').allTextContents()).toEqual(expected.map((i) => i.name));
+    expect(await list.getByRole('link').allInnerTexts()).toEqual(expected.map((i) => i.name));
     for (const [i, item] of expected.entries()) {
       await expect(list.nth(i).getByRole('link')).toHaveAttribute('href', `/t/${item.id}/`);
-      await expect(list.nth(i)).toContainText(pick(prod.toolById(item.id)!.summary, 'en-US'));
+      await expect(list.nth(i)).toContainText(pick(prod.toolById(item.id)!.summary, 'en-US'), { useInnerText: true });
     }
     await page.clock.setFixedTime(new Date(`${day(40)}T12:00:00`));
     await openHome(page, PROD);

@@ -57,7 +57,7 @@ const toolRegion = (page: Page, name = EMBEDDED) => page.getByRole('region', { n
 const frameEl = (page: Page) => page.locator('iframe');
 
 async function toolFrame(page: Page, id = 'ft-embedded'): Promise<Frame> {
-  await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded');
+  await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded', { useInnerText: true });
   const frame = page.frames().find((f) => f.url().startsWith(toolUrl(id)));
   if (!frame) throw new Error(`no frame for ${id}`);
   return frame;
@@ -131,7 +131,7 @@ test.describe('F-003 tool view: embedded tools', () => {
     await toolFrame(page, 'ft-clipboard');
     // The control: the same fixture, granted clipboard-write, can write (the header and frame delegate it).
     await page.frameLocator('iframe').getByRole('button', { name: 'Copy to clipboard' }).click();
-    await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('ok');
+    await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('ok', { useInnerText: true });
     // The clipboard as the rest of the device sees it (read from another site: the portal refuses clipboard-read).
     const outside = await context.newPage();
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'https://elsewhere.test' });
@@ -141,7 +141,9 @@ test.describe('F-003 tool view: embedded tools', () => {
     await page.goto(toolPage('ft-embedded'));
     await toolFrame(page);
     await page.frameLocator('iframe').getByRole('button', { name: 'Copy to clipboard' }).click();
-    await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('NotAllowedError');
+    await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('NotAllowedError', {
+      useInnerText: true,
+    });
     await outside.bringToFront();
     expect(await outside.evaluate(() => navigator.clipboard.readText())).toBe('written elsewhere');
     await expect(page).toHaveURL(toolPage('ft-embedded'));
@@ -167,7 +169,9 @@ test.describe('F-003 tool view: embedded tools', () => {
     await page.goto(toolPage('ft-embedded'));
     await toolFrame(page);
     await page.frameLocator('iframe').getByRole('button', { name: 'Copy to clipboard' }).click();
-    await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('NotAllowedError');
+    await expect(page.frameLocator('iframe').locator('#copy-result')).toHaveText('NotAllowedError', {
+      useInnerText: true,
+    });
     // The portal's own copy-address (F-004.R5) still works under the same header.
     await page
       .getByRole('banner')
@@ -235,7 +239,7 @@ test.describe('F-003 tool view: embedded tools', () => {
     const held = sites.holdTools();
     await page.goto(toolPage('ft-embedded'), { waitUntil: 'domcontentloaded' });
     const loading = toolRegion(page).getByRole('status');
-    await expect(loading).toHaveText(`Getting ${EMBEDDED} ready…`);
+    await expect(loading).toHaveText(`Getting ${EMBEDDED} ready…`, { useInnerText: true });
     await expect(toolRegion(page)).toHaveAttribute('data-slow-since', /^\d+$/);
     const since = Number(await toolRegion(page).getAttribute('data-slow-since'));
     const margin = 5_000;
@@ -250,7 +254,7 @@ test.describe('F-003 tool view: embedded tools', () => {
     await expect(header(page).getByRole('link', { name: 'Open in new tab' })).toHaveAttribute('data-primary', '');
     // Still loading: the same frame is waiting for the tool, and the loading state stays.
     await expect(frameEl(page)).toHaveCount(1);
-    await expect(loading).toHaveText(`Getting ${EMBEDDED} ready…`);
+    await expect(loading).toHaveText(`Getting ${EMBEDDED} ready…`, { useInnerText: true });
     expect(sites.toolRequests).toHaveLength(1);
     held.release();
     await toolFrame(page);

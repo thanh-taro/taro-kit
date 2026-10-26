@@ -260,7 +260,7 @@ test.describe('reduced motion SCR-ToolView loading', () => {
     const held = sites.holdTools();
     await page.goto(toolPage('ft-embedded'), { waitUntil: 'domcontentloaded' });
     const region = page.getByRole('region', { name: `${EMBEDDED} tool` });
-    await expect(region.getByRole('status')).toHaveText(`Getting ${EMBEDDED} ready…`);
+    await expect(region.getByRole('status')).toHaveText(`Getting ${EMBEDDED} ready…`, { useInnerText: true });
     const spinner = region.locator('.tk-spinner');
     await expect(spinner).toBeVisible();
     const ring = await spinner.evaluate((el) => {

@@ -33,7 +33,7 @@ async function goOffline(context: BrowserContext, page: Page) {
 }
 
 const indicator = (page: Page) => page.getByRole('status').filter({ hasText: OFFLINE }).locator('visible=true');
-const cardNames = (page: Page, scope = page.locator('main')) => scope.locator('.tk-toolcard__link').allTextContents();
+const cardNames = (page: Page, scope = page.locator('main')) => scope.locator('.tk-toolcard__link').allInnerTexts();
 
 test.describe('F-011 install', () => {
   test('F011_AC1 every page links the manifest, and Chromium finds the portal installable as TaroKit', async ({
@@ -88,7 +88,7 @@ test.describe('F-011 offline after one online visit (production build)', () => {
     await goOffline(context, page);
     const res = await page.goto(`${PROD}/tools/media/`);
     expect(res?.status()).toBe(200);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools', { useInnerText: true });
     expect(await cardNames(page)).toEqual(['Sample media tool']);
   });
 
@@ -123,7 +123,7 @@ test.describe('F-011 offline after one online visit (production build)', () => {
     ).toBeVisible();
     // A category page too, and an unknown address without the slash is still not found.
     expect((await page.goto(`${PROD}/tools/media`))?.status()).toBe(200);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Media tools', { useInnerText: true });
     expect((await page.goto(`${PROD}/t/does-not-exist`))?.status()).toBe(404);
   });
 

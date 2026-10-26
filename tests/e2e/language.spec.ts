@@ -93,12 +93,17 @@ test.describe('F-019 switching (English device)', () => {
     const filter = page.getByRole('searchbox').or(page.locator('#tk-catalog-q')).first();
     await filter.fill('json');
     const results = await page.locator('.tk-toolcard:visible').count();
-    await page.mouse.wheel(0, 300);
+    // Scrolled down but short of the bottom, so a shorter Vietnamese page does not clamp the position.
+    await page.mouse.wheel(0, 100);
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
     const scrolled = await page.evaluate(() => window.scrollY);
-    await headerSwitch(page).click();
+    // The header is not sticky, so a pointer click would first scroll it into view; a keyboard user reaches the
+    // switch without moving the page (focus without scrolling, then Enter).
+    await headerSwitch(page).evaluate((el) => (el as HTMLElement).focus({ preventScroll: true }));
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrolled);
+    await page.keyboard.press('Enter');
     await expect(page.locator('html')).toHaveAttribute('lang', 'vi-VN');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(vi('COPY-catalog.title'));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(vi('COPY-catalog.title'), { useInnerText: true });
     await expect(filter).toHaveAttribute('placeholder', vi('COPY-catalog.searchPlaceholder'));
     await expect(page.locator('footer').getByRole('link', { name: vi('COPY-footer.privacy') })).toBeVisible();
     await expect(filter).toHaveValue('json');
@@ -113,8 +118,9 @@ test.describe('F-019 switching (English device)', () => {
     await seedLanguage(page, 'vi-VN');
     for (const path of ['/', '/about/', '/now/']) {
       await page.goto(`${PROD}${path}`, { waitUntil: 'commit' });
-      // The blocking script runs before the body is parsed: the root carries the language from the first paint on.
-      await page.waitForSelector('body', { state: 'attached' });
+      // The blocking script is the first element of <body>; the parser adds the skip link (the first content) only
+      // after it has run, so from the first paintable content on the root carries the language.
+      await page.waitForSelector('a.skip', { state: 'attached' });
       expect(await shownLanguage(page), path).toBe('vi-VN');
       await page.reload();
       expect(await shownLanguage(page), path).toBe('vi-VN');
@@ -128,7 +134,7 @@ test.describe('F-019 switching (English device)', () => {
     await page.waitForLoadState('load');
     await page.getByRole('radio', { name: 'Tiếng Việt' }).check();
     await expect(page.locator('html')).toHaveAttribute('lang', 'vi-VN');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(vi('COPY-settings.title'));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(vi('COPY-settings.title'), { useInnerText: true });
     await expect(
       page
         .getByRole('navigation')
@@ -162,15 +168,16 @@ test.describe('F-019 switching (English device)', () => {
     expect(await storedLanguage(page)).toBe('en-US');
   });
 
-  test('F019_AC9 "dinh dang" with English showing lists JSON Formatter with its English name and summary', async ({
+  test('F019_AC9 "dinh dang" with English showing lists the tool with its English name and summary', async ({
     page,
   }) => {
     await page.goto(`${PROD}/`);
     const dialog = await openPalette(page);
     await page.keyboard.type('dinh dang');
-    const option = dialog.getByRole('option', { name: /JSON Formatter/ });
+    // The sample developer tool: "format" in its English summary, "định dạng" in its Vietnamese one.
+    const option = dialog.getByRole('option', { name: /Sample developer tool/ });
     await expect(option).toBeVisible();
-    await expect(option).not.toContainText('Định dạng');
+    await expect(option).not.toContainText('định dạng', { useInnerText: true });
   });
 
   test('F019_AC19 with Vietnamese showing, "settings" lists Cài đặt; "ngôn ngữ" and "language" list the switch', async ({
@@ -195,7 +202,9 @@ test.describe('F-019 switching (English device)', () => {
     await dialog.getByRole('combobox').fill('o');
     const n = await dialog.getByRole('option').count();
     expect(n).toBeGreaterThan(1);
-    await expect(page.getByTestId('palette-count')).toHaveText(vi('COPY-palette.resultCount', { count: n }));
+    await expect(page.getByTestId('palette-count')).toHaveText(vi('COPY-palette.resultCount', { count: n }), {
+      useInnerText: true,
+    });
   });
 
   test('F019_AC10 the Privacy translation note shows with Vietnamese only', async ({ page }) => {
@@ -204,7 +213,7 @@ test.describe('F-019 switching (English device)', () => {
     await headerSwitch(page).click();
     const note = page.getByTestId('policy-translation-note');
     await expect(note).toBeVisible();
-    await expect(note).toHaveText(vi('COPY-policy.translationNote'));
+    await expect(note).toHaveText(vi('COPY-policy.translationNote'), { useInnerText: true });
     const title = await page.getByRole('heading', { level: 1 }).boundingBox();
     const box = await note.boundingBox();
     expect(box!.y).toBeGreaterThan(title!.y);
@@ -267,13 +276,15 @@ test.describe('F-019 Vietnamese on every page', () => {
       const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
       expect(serious.map((v) => `${path} ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
     }
+    // The language controls mark each language's name with its language: the header switch, and settings.
     const sw = headerSwitch(page);
     await expect(sw.locator('[data-to="en-US"]')).toHaveAttribute('lang', 'en-US');
     await expect(sw.locator('[data-to="vi-VN"]')).toHaveAttribute('lang', 'vi-VN');
+    await page.goto(`${PROD}/settings/`);
+    await expect(page.locator('[lang="en-US"]', { hasText: /^English$/ }).first()).toBeAttached();
+    await expect(page.locator('[lang="vi-VN"]', { hasText: /^Tiếng Việt$/ }).first()).toBeAttached();
     await expect(page.getByRole('radio', { name: 'English' })).toHaveCount(1);
-    const labels = page.locator('label:has(input[type=radio])');
-    await expect(labels.filter({ hasText: 'English' }).locator('[lang="en-US"]')).toHaveCount(1);
-    await expect(labels.filter({ hasText: 'Tiếng Việt' }).locator('[lang="vi-VN"]')).toHaveCount(1);
+    await expect(page.getByRole('radio', { name: 'Tiếng Việt' })).toHaveCount(1);
   });
 
   for (const width of [320, 721])
@@ -301,7 +312,7 @@ test.describe('F-019 Vietnamese on every page', () => {
     const res = await page.goto(`${PROD}/now/`);
     expect(res?.status()).toBe(200);
     await expect(page.locator('html')).toHaveAttribute('lang', 'vi-VN');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(vi('COPY-now.title'));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(vi('COPY-now.title'), { useInnerText: true });
     await context.setOffline(false);
   });
 });

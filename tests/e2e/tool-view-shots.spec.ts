@@ -22,7 +22,7 @@ for (const [size, viewport] of Object.entries(sizes))
 
       test('default, loading and slow', async ({ page }) => {
         await page.goto(toolPage('ft-embedded'));
-        await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded');
+        await expect(page.frameLocator('iframe').locator('#status')).toHaveText('tool loaded', { useInnerText: true });
         await shot(page, `default-${tag}`);
         await page.clock.install();
         const held = sites.holdTools();

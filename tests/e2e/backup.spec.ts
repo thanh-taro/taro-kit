@@ -13,7 +13,7 @@ const FIXTURES = join(import.meta.dirname, '../fixtures/backups');
 const fixturePath = (name: string) => join(FIXTURES, name);
 const fixtureData = (name: string) => JSON.parse(readFileSync(fixturePath(name), 'utf8')).data;
 
-const IMPORT_CONFIRM = 'Replace your favorites, recents, theme and days used with the ones in this file?';
+const IMPORT_CONFIRM = 'Replace your favorites, recents, theme, language and days used with the ones in this file?';
 const ERASE_CONFIRM = "Erase all your TaroKit data on this device? This can't be undone.";
 const invalid = (reason: string) => `I couldn't import that file because ${reason}. Nothing changed.`;
 const REASONS = {
@@ -25,7 +25,7 @@ const REASONS = {
 
 /** What is on the device before the test: favorites fx-09, recents fx-08, theme light, one day used. */
 const CURRENT = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   favorites: [{ toolId: 'fx-09', pinnedAt: '2026-09-01T00:00:00.000Z' }],
   recents: [{ toolId: 'fx-08', openedAt: '2026-09-02T00:00:00.000Z' }],
   preferences: { theme: 'light' },
@@ -81,7 +81,7 @@ test.describe('F-013.R1 / R6 export', () => {
   test('F013_AC9 the note that tool data is not included is shown beside export', async ({ page }) => {
     await page.goto(SETTINGS);
     const note = page.getByText(
-      'Your backup holds your favorites, recents, theme and days used. Each tool keeps its own data.',
+      'Your backup holds your favorites, recents, theme, language and days used. Each tool keeps its own data.',
     );
     await expect(note).toBeVisible();
     const exportBox = (await page.getByRole('button', { name: 'Export your data' }).boundingBox())!;
@@ -110,7 +110,9 @@ test.describe('F-013.R2 an invalid file is rejected with its reason and nothing 
       await seed(page);
       await page.goto(SETTINGS);
       await pick(page, name);
-      await expect(page.getByRole('alert')).toHaveText(new RegExp(invalid(why).replace(/[.?]/g, '\\$&')));
+      await expect(page.getByRole('alert')).toHaveText(new RegExp(invalid(why).replace(/[.?]/g, '\\$&')), {
+        useInnerText: true,
+      });
       await expect(page.getByRole('alertdialog')).toHaveCount(0);
       expect(await stored(page)).toEqual(CURRENT);
       await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
@@ -160,7 +162,7 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
     await page.goto(SETTINGS);
     await pick(page, 'F013_AC6-valid.json');
     await expect(importDialog(page)).toBeVisible();
-    await expect(importDialog(page)).toContainText('F013_AC6-valid.json');
+    await expect(importDialog(page)).toContainText('F013_AC6-valid.json', { useInnerText: true });
     // The file name is the dialog's description, so screen readers hear it.
     await expect(importDialog(page)).toHaveAccessibleDescription('F013_AC6-valid.json');
     // Focus moves into the confirmation, on Cancel (SCR-Settings accessibility).
@@ -169,7 +171,7 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
     await importDialog(page).getByRole('button', { name: 'Confirm' }).click();
     await expect(importDialog(page)).toBeHidden();
     await expect(importButton(page)).toBeFocused();
-    expect(await stored(page)).toEqual(fixtureData('F013_AC6-valid.json'));
+    expect(await stored(page)).toEqual({ ...fixtureData('F013_AC6-valid.json'), schemaVersion: 2 });
     // The theme from the file applies at once; days used follows the file (its 3 dates are in the window).
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect(page.getByText("You've used TaroKit on 3 of the last 14 days")).toBeVisible();
@@ -185,7 +187,7 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
     await importDialog(page).getByRole('button', { name: 'Confirm' }).click();
     await expect(importDialog(page)).toBeHidden();
     const valid = fixtureData('F013_AC6-valid.json');
-    expect(await stored(page)).toEqual({ ...valid, daysUsed: [] });
+    expect(await stored(page)).toEqual({ ...valid, schemaVersion: 2, daysUsed: [] });
     await expect(page.getByText("You've used TaroKit on 0 of the last 14 days")).toBeVisible();
   });
 
@@ -271,12 +273,12 @@ test.describe('F-013.R3 / R4 a valid file replaces the data only after confirmin
   });
 
   test('F-013 edge case: a confirmed import replaces a newer version’s document on the device', async ({ page }) => {
-    await seed(page, { ...CURRENT, schemaVersion: 2, addedLater: true });
+    await seed(page, { ...CURRENT, schemaVersion: 3, addedLater: true });
     await page.goto(SETTINGS);
     await pick(page, 'F013_AC6-valid.json');
     await importDialog(page).getByRole('button', { name: 'Confirm' }).click();
     await expect(importDialog(page)).toBeHidden();
-    expect(await stored(page)).toEqual(fixtureData('F013_AC6-valid.json'));
+    expect(await stored(page)).toEqual({ ...fixtureData('F013_AC6-valid.json'), schemaVersion: 2 });
   });
 
   test('NFR-05 importing reads the file locally: no request carries it and the address is unchanged', async ({
@@ -314,7 +316,7 @@ test.describe('F-013.R5 erase', () => {
     await expect(eraseDialog(page)).toBeHidden();
     await expect(erase).toBeFocused();
     expect(await stored(page)).toEqual({
-      schemaVersion: 1,
+      schemaVersion: 2,
       favorites: [],
       recents: [],
       preferences: { theme: 'system' },

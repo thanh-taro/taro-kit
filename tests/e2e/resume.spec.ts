@@ -49,10 +49,10 @@ test.describe('F-017 Résumé page', () => {
   }) => {
     const res = await page.goto(`${PROD}/resume/`);
     expect(res?.status()).toBe(200);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My résumé');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My résumé', { useInnerText: true });
     await expect(page.getByText(t('COPY-resume.intro'), { exact: true })).toBeVisible();
     const titles = view.sections.map((s) => en(sectionTitle(s)));
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText(titles);
+    await expect(page.getByRole('heading', { level: 2 })).toHaveText(titles, { useInnerText: true });
     for (const name of titles) await expect(page.getByRole('region', { name })).toBeVisible();
     await expect(mainNav(page).filter({ hasText: 'Résumé' })).toHaveAttribute('aria-current', 'page');
   });
@@ -62,25 +62,31 @@ test.describe('F-017 Résumé page', () => {
   }) => {
     await page.goto(`${PROD}/resume/`);
     const region = page.getByRole('region', { name: 'Experience' });
-    await expect(region.getByRole('heading', { level: 3 })).toHaveText(view.experience.map((e) => en(e.role)));
+    await expect(region.getByRole('heading', { level: 3 })).toHaveText(
+      view.experience.map((e) => en(e.role)),
+      { useInnerText: true },
+    );
     const current = view.experience.find((e) => e.period.current)!;
     const entry = region.locator('ol > li').filter({ has: page.getByRole('heading', { name: en(current.role) }) });
-    await expect(entry).toContainText(en(current.organization));
-    await expect(entry.locator('.period [lang="en-US"]')).toHaveText(en(current.period.text));
-    await expect(entry.locator('time')).toHaveAttribute('datetime', current.period.parts['en-US'][0]!.datetime!);
-    for (const h of current.highlights) await expect(entry).toContainText(en(h));
+    await expect(entry).toContainText(en(current.organization), { useInnerText: true });
+    await expect(entry.locator('.period [lang="en-US"]')).toHaveText(en(current.period.text), { useInnerText: true });
+    await expect(entry.locator('time:visible')).toHaveAttribute(
+      'datetime',
+      current.period.parts['en-US'][0]!.datetime!,
+    );
+    for (const h of current.highlights) await expect(entry).toContainText(en(h), { useInnerText: true });
   });
 
   test('F017_AC4 an education entry shows its program, institution, level and period', async ({ page }) => {
     await page.goto(`${PROD}/resume/`);
     const e = view.education[0]!;
     const entry = page.getByRole('region', { name: 'Education' }).locator('ol > li').first();
-    await expect(entry.getByRole('heading', { level: 3 })).toHaveText(en(e.program));
-    await expect(entry).toContainText(en(e.institution));
+    await expect(entry.getByRole('heading', { level: 3 })).toHaveText(en(e.program), { useInnerText: true });
+    await expect(entry).toContainText(en(e.institution), { useInnerText: true });
     // The level's own element: the institution's name may contain the same word ("Sample College").
     expect(e.level).toBeTruthy();
-    await expect(entry.locator('.level')).toHaveText(en(e.level!));
-    await expect(entry.locator('.period [lang="en-US"]')).toHaveText(en(e.period.text));
+    await expect(entry.locator('.level')).toHaveText(en(e.level!), { useInnerText: true });
+    await expect(entry.locator('.period [lang="en-US"]')).toHaveText(en(e.period.text), { useInnerText: true });
   });
 
   test('F017_AC5 F017_AC12 skills by group: each group a labelled list of chips, ungrouped skills last with no label', async ({
@@ -100,11 +106,11 @@ test.describe('F-017 Résumé page', () => {
       for (const [j, s] of g.skills.entries()) {
         const chip = chips.nth(j);
         if (s.levelShort) {
-          await expect(chip.locator('.chip-level')).toHaveText(en(s.levelShort));
+          await expect(chip.locator('.chip-level')).toHaveText(en(s.levelShort), { useInnerText: true });
           await expect(chip.locator('.chip-level')).toHaveAttribute('aria-hidden', 'true');
-          await expect(chip.locator('.tk-visually-hidden')).toHaveText(`, ${en(s.levelText!)}`);
+          await expect(chip.locator('.tk-visually-hidden')).toHaveText(`, ${en(s.levelText!)}`, { useInnerText: true });
         } else {
-          await expect(chip).toHaveText(en(s.name));
+          await expect(chip).toHaveText(en(s.name), { useInnerText: true });
         }
       }
     }
@@ -114,8 +120,8 @@ test.describe('F-017 Résumé page', () => {
     await page.goto(`${PROD}/resume/`);
     const rows = (name: string) => page.getByRole('region', { name }).getByRole('listitem');
     for (const [i, l] of view.languages.entries()) {
-      await expect(rows('Languages').nth(i)).toContainText(en(l.name));
-      await expect(rows('Languages').nth(i)).toContainText(en(l.level));
+      await expect(rows('Languages').nth(i)).toContainText(en(l.name), { useInnerText: true });
+      await expect(rows('Languages').nth(i)).toContainText(en(l.level), { useInnerText: true });
     }
     for (const [name, items] of [
       ['Certificates', view.certificates],
@@ -123,7 +129,7 @@ test.describe('F-017 Résumé page', () => {
     ] as const)
       for (const [i, c] of items.entries())
         for (const part of [en(c.name), en(c.issuer), String(c.year)])
-          await expect(rows(name).nth(i)).toContainText(part);
+          await expect(rows(name).nth(i)).toContainText(part, { useInnerText: true });
   });
 
   test('F017_AC7 with a résumé, navigation includes Résumé on every portal page, and About links to it', async ({
@@ -131,7 +137,7 @@ test.describe('F-017 Résumé page', () => {
   }) => {
     for (const path of ['/', '/tools/', '/about/', '/resume/', '/now/', '/settings/']) {
       await page.goto(`${PROD}${path}`);
-      await expect(mainNav(page), path).toHaveText(NAV);
+      await expect(mainNav(page), path).toHaveText(NAV, { useInnerText: true });
     }
     await page.goto(`${PROD}/about/`);
     const pointer = page.getByRole('link', { name: t('COPY-about.resume') });
@@ -157,7 +163,7 @@ test.describe('F-017 Résumé page', () => {
     expect(res?.status()).toBe(404);
     await page.goto(`${FX}/about/`);
     await page.waitForLoadState('load');
-    await expect(mainNav(page)).toHaveText(NAV_WITHOUT);
+    await expect(mainNav(page)).toHaveText(NAV_WITHOUT, { useInnerText: true });
     await expect(page.locator('a[href="/resume/"]')).toHaveCount(0);
     expect(await openPalette(page)).toEqual([...NAV_WITHOUT, 'Settings']);
     expect(await (await request.get(`${FX}/sitemap.xml`)).text()).not.toContain('/resume/');
@@ -243,7 +249,7 @@ test.describe('F-017 Résumé page', () => {
       });
       await page.reload();
       await expect(page.locator('html')).toHaveAttribute('data-tk-worker', 'registered');
-      await expect(mainNav(page)).toHaveText(NAV);
+      await expect(mainNav(page)).toHaveText(NAV, { useInnerText: true });
       host.publish();
       await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
       await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
