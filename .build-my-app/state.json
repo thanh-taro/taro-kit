@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: F-019 build review round 1 fixes in progress (1 major, 5 minor, 2 low security)",
+      "step": "8 Iterate: F-019 release — cutting v1.3.0-rc.1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -966,6 +966,20 @@
       "answer": "A: approved F-019 design boards (Owner, 2026-10-23)",
       "asked": "2026-10-23T04:18:09+00:00",
       "answered": "2026-10-23T04:18:34+00:00"
+    },
+    {
+      "id": "D-066",
+      "question": "D-066 Cut release candidate v1.3.0 (F-019 languages) and deploy to production?",
+      "options": [
+        "A cut rc and deploy;B cut rc only;C hold"
+      ],
+      "recommendation": "A cut rc and deploy",
+      "kind": "release",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "A: cut v1.3.0-rc.1 and deploy to production, then push main and tags (Owner, 2026-10-26)",
+      "asked": "2026-10-26T02:30:49+00:00",
+      "answered": "2026-10-26T02:35:18+00:00"
     }
   ],
   "loops": {
@@ -1059,22 +1073,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T04:44:27+00:00",
-      "event": "decision D-030 opened: Category identity"
-    },
-    {
-      "at": "2026-10-13T04:44:27+00:00",
-      "event": "decision D-030 answered: Icon + subtle tint"
-    },
-    {
-      "at": "2026-10-13T04:44:27+00:00",
-      "event": "loop category-change-review started (max 2)"
-    },
-    {
-      "at": "2026-10-13T04:44:27+00:00",
-      "event": "design step: 7 change request: categories — specs written, review round 1"
-    },
     {
       "at": "2026-10-13T04:46:21+00:00",
       "event": "loop category-change-review ended: converged after round 1 fixes"
@@ -1858,9 +1856,25 @@
     {
       "at": "2026-10-26T02:30:49+00:00",
       "event": "loop build-F-019 ended: converged round 2: 0 blocker, 0 major; N1 lint-rule scope deferred"
+    },
+    {
+      "at": "2026-10-26T02:30:49+00:00",
+      "event": "decision D-066 opened: D-066 Cut release candidate v1.3.0 (F-019 languages) and deploy to production?"
+    },
+    {
+      "at": "2026-10-26T02:30:49+00:00",
+      "event": "iterate step: 8 Iterate: F-019 built and reviewed locally — awaiting D-066 release decision"
+    },
+    {
+      "at": "2026-10-26T02:35:18+00:00",
+      "event": "decision D-066 answered: A: cut v1.3.0-rc.1 and deploy to production, then push main and tags (Owner, 2026-10-26)"
+    },
+    {
+      "at": "2026-10-26T02:35:18+00:00",
+      "event": "iterate step: 8 Iterate: F-019 release — cutting v1.3.0-rc.1"
     }
   ],
-  "updated": "2026-10-26T02:30:49+00:00",
+  "updated": "2026-10-26T02:35:18+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
