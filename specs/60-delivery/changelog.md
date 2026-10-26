@@ -111,3 +111,6 @@ status: draft
 - Release candidate v1.3.0-rc.1 (2026-10-26): F-019 choose a language, English and Vietnamese (D-060 to D-066), personal-data schema version 2. Code review converged in two rounds (`.build-my-app/reports/code-review-F-019-round-2.md`, `security-F-019.md`). Candidate report: `.build-my-app/reports/release-1.3.0.md`.
 - v1.3.0-rc.1 release verification found a WebKit defect: in the narrow menu, a pointer press on the language row closed the menu without switching (Safari doesn't focus a clicked button). Fixed in MOD-Shell's NavMenu (a press inside the panel doesn't close it) and MOD-Language's switch handler (focus is moved to the switch after a click); F019_AC20 passes on WebKit and Chromium.
 - Release candidate v1.3.0-rc.2 (2026-10-26): rc.1 plus the Safari fix for the narrow menu's language row (F-019.AC20). Candidate report: `.build-my-app/reports/release-1.3.0.md`.
+
+## 2026-10-26
+- **Released: v1.3.0 live at https://tarokit.app (2026-10-26).** F-019: the portal in English and Vietnamese, switched without reload, with the language handed to embedded tools (D-060 to D-066). rc.1 was superseded by rc.2 (Safari narrow-menu fix). Deploy report: `.build-my-app/reports/deploy-1.3.0.md`.
