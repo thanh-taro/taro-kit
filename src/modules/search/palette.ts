@@ -31,7 +31,7 @@ export function searchPalette<I extends PaletteIndex>(
 ): PaletteGroup<I>[] {
   const groups: PaletteGroup<I>[] = [];
   for (const id of PALETTE_GROUPS) {
-    const ranked = rank(query, index[id], id === 'tools' ? context : { lang: context.lang });
+    const ranked = rank(query, index[id], id === 'tools' ? context : {});
     if (ranked.length === 0) continue;
     const items = ranked.slice(0, PALETTE_GROUP_MAX).map((r) => r.item);
     groups.push({ id, items } as PaletteGroup<I>);

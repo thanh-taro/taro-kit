@@ -107,6 +107,23 @@ describe('the inline script (before first paint)', () => {
     expect(themeInlineScript).toContain(languageInlineScript);
   });
 
+  test('F-019.R3 an error in the theme part does not stop the language part (security review L-2)', () => {
+    const storage = new FakeStorage();
+    const { root, doc } = fakeDocument([], { en: 'Now — TaroKit', vi: 'Dạo này — TaroKit' });
+    const throwing = () => {
+      throw new Error('matchMedia is unavailable');
+    };
+    const navigator = { languages: ['vi'], language: 'vi' };
+    new Function('localStorage', 'matchMedia', 'navigator', 'document', 'MutationObserver', themeInlineScript)(
+      storage,
+      throwing,
+      navigator,
+      doc,
+      undefined,
+    );
+    expect(root.getAttribute('lang')).toBe('vi-VN');
+  });
+
   test('readStoredLanguage reads only en-US or vi-VN, and nothing when storage is unavailable', () => {
     const storage = new FakeStorage();
     const read = () => new Function('localStorage', `return (${readStoredLanguage.toString()})()`)(storage);
@@ -218,6 +235,22 @@ describe('ADR-0012 localized attributes', () => {
     expect([el.getAttribute('aria-label'), el.getAttribute('title')]).toEqual(['Tìm kiếm', 'Mở']);
     swapLocalizedAttributes(doc as unknown as Document, 'en-US');
     expect([el.getAttribute('aria-label'), el.getAttribute('title')]).toEqual(['Search', 'Open']);
+  });
+
+  test('ADR-0012 only aria-label, placeholder, alt and title are ever written (security review L-1)', () => {
+    const el = new El({
+      'data-l-a': 'href onclick placeholder',
+      'data-l-href-vi-VN': 'javascript:alert(1)',
+      'data-l-onclick-vi-VN': 'alert(1)',
+      'data-l-placeholder-vi-VN': 'Lọc',
+    });
+    const { doc } = fakeDocument([el]);
+    swapLocalizedAttributes(doc as unknown as Document, 'vi-VN');
+    expect([el.getAttribute('href'), el.getAttribute('onclick'), el.getAttribute('placeholder')]).toEqual([
+      null,
+      null,
+      'Lọc',
+    ]);
   });
 });
 

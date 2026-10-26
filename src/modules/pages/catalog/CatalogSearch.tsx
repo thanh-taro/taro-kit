@@ -101,8 +101,8 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
     const favorites = personalData()
       .favorites.peek()
       .map((f) => f.toolId);
-    return filterCatalog(query, data.tools, { favorites, lang });
-  }, [searching, data, query, lang]);
+    return filterCatalog(query, data.tools, { favorites });
+  }, [searching, data, query]);
   const categoryName = useMemo(() => new Map((data ?? NO_DATA).categories.map((c) => [c.id, c.name])), [data]);
 
   const countText = (n: number) =>

@@ -150,7 +150,7 @@ export const COPY = {
   "COPY-shell.skip": { "en-US": "Skip to content", "vi-VN": "Chuyển đến nội dung" },
   "COPY-shell.themeToggle": { "en-US": "Switch to {theme} theme", "vi-VN": "Chuyển sang giao diện {theme}" },
   "COPY-shell.updateReady": { "en-US": "I've shipped an update to TaroKit.", "vi-VN": "Mình vừa cập nhật TaroKit." },
-  "COPY-storage.unavailable": { "en-US": "Your browser isn't letting me save anything right now, so I'll forget your favorites and recents when you leave.", "vi-VN": "Trình duyệt đang không cho mình lưu gì cả, nên mình sẽ quên mục yêu thích và công cụ gần đây khi bạn rời đi." },
+  "COPY-storage.unavailable": { "en-US": "Your browser isn't letting me save anything right now, so I'll forget your favorites, recents, theme and language when you leave.", "vi-VN": "Trình duyệt đang không cho mình lưu gì cả, nên mình sẽ quên mục yêu thích, công cụ gần đây, giao diện và ngôn ngữ khi bạn rời đi." },
   "COPY-tool.back": { "en-US": "Back", "vi-VN": "Quay lại" },
   "COPY-tool.frameLabel": { "en-US": "{tool} tool", "vi-VN": "Công cụ {tool}" },
   "COPY-tool.linkedNote": { "en-US": "{tool} lives on its own site. Open it there.", "vi-VN": "{tool} nằm ở trang riêng. Bạn mở ở đó nhé." },

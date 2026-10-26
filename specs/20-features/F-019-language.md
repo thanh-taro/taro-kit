@@ -50,7 +50,7 @@ Visitors and the Owner can read the whole portal in English or Vietnamese, and s
 - **AC16** Given Vietnamese is showing and one online visit, when the device is offline and the Now page opens, then it is in Vietnamese. (R3, R4)
 - **AC17** Given Vietnamese is showing, when the automated accessibility audit runs on every portal page, then it reports zero serious issues, and the language controls mark "English" as en-US and "Tiếng Việt" as vi-VN. (R4)
 - **AC18** Given a tool entry with no Vietnamese summary, when the content is validated, then the build fails and the error names the file, the entry, the field and INV-09. (R4, F-001.R2)
-- **AC19** Given Vietnamese is showing, when the user types "settings" in the palette, then the page Cài đặt is listed; when the user types "ngôn ngữ" or "language", then the switch-language action is listed. (R5)
+- **AC19** Given Vietnamese is showing, when the user types "settings" in the palette, then the page Cài đặt is listed; when the user types "ngôn ngữ", "language" or "english", then the switch-language action is listed. (R5)
 - **AC20** Given the narrow layout with the menu open, when the user switches language from the menu, then the menu stays open with focus on the switch. (R2)
 - **AC21** Given Vietnamese is showing, when the palette shows 3 results, then "3 kết quả" is announced. (R4)
 - **AC22** Given device storage is unavailable and a device preferring English, when the user switches to Tiếng Việt, then the page is Vietnamese; when another page opens, then it is English again. (R3)
@@ -62,7 +62,7 @@ The quick switch lives in CMP-AppShell's header next to the theme toggle (inside
 
 ## Edge cases
 - Device storage is unavailable. The language follows the device, and a choice lasts only until the page changes (AC22).
-- Another open window of the portal picks up a language change the next time a page opens in it.
+- Another open window of the portal switches too, as soon as it is shown again, as it does for the theme.
 - The Vietnamese policies are approved by the Owner before release, as the English text was (D-057).
 - A backup file from before this feature has no language. Import keeps the language following the device (RULE-08).
 - A tool that ignores the language parameter and messages is unaffected; it shows in its own language.

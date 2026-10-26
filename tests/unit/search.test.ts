@@ -45,14 +45,17 @@ describe('RULE-05 normalization', () => {
     expect(keys).toEqual({ name: ['settings', 'cai dat'], tags: [], summary: ['format json.', 'dinh dang json.'] });
     expect(searchKeys({ name: { 'en-US': 'JSON', 'vi-VN': 'JSON' } }).name).toEqual(['json']);
   });
-  test('F-019.R5 RULE-05 the best tier across both languages wins, and ties on name follow the language showing', () => {
+  test('F-019.R5 RULE-05 ADR-0012 the best tier across both languages wins, and name ties sort the same in both languages', () => {
     const list = [
       { ...entry('a', 'x'), name: { 'en-US': 'Apple', 'vi-VN': 'Táo' } },
       { ...entry('b', 'x'), name: { 'en-US': 'Tangerine', 'vi-VN': 'Quýt' } },
     ];
     // "ta" is a prefix of Táo (Vietnamese) and of Tangerine (English): one tier, so the name decides.
+    // Ties sort by the one-version (en-US) name, so the order never changes on a switch.
     expect(rankedIds(rank('ta', list))).toEqual(['a', 'b']); // Apple, Tangerine
-    expect(rankedIds(rank('ta', list, { lang: 'vi-VN' }))).toEqual(['b', 'a']); // Quýt, Táo
+    // "Đa…" before "De…" in English collation (Vietnamese collation would put Đ after D).
+    const twins = [entry('d', 'Đa tool'), entry('e', 'De tool')].reverse();
+    expect(rankedIds(rank('tool', twins))).toEqual(['d', 'e']);
   });
 });
 

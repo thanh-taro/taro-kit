@@ -9,7 +9,6 @@ import {
   isApplePlatform,
   isPaletteShortcut,
   matchRange,
-  LANGUAGE_ACTION_KEYWORDS,
   PALETTE_FAVORITES_MAX,
   paletteBootstrap,
   paletteIndex,
@@ -313,7 +312,7 @@ describe('MOD-Palette in both languages (F-019.R2, R4, R5)', () => {
   const text = paletteText({ resume: undefined });
   const summary = { 'en-US': 'Format and validate JSON.', 'vi-VN': 'Định dạng và kiểm tra JSON.' };
   const tools = [{ ...tool('json', 'JSON Formatter'), summary, keys: searchKeys({ name: 'JSON Formatter', summary }) }];
-  const index = paletteIndex({ tools }, text.pages, text.actions);
+  const index = paletteIndex({ tools }, text.pages, text.actions, text.languageKeywords);
   const ids = (groups: { items: { id: string }[] }[]) => groups.flatMap((g) => g.items.map((i) => i.id));
 
   test('F-004.R5 the actions are theme, switch language, export and copy, in that order', () => {
@@ -325,21 +324,21 @@ describe('MOD-Palette in both languages (F-019.R2, R4, R5)', () => {
   });
 
   test('F019_AC19 with Vietnamese showing, "settings" lists the page Cài đặt', () => {
-    const groups = paletteView('settings', index, emptyDocument(), 'vi-VN');
+    const groups = paletteView('settings', index, emptyDocument());
     const page = groups.find((g) => g.id === 'pages')!.items[0]!;
     expect(page.id).toBe('settings');
     expect((page.name as Record<string, string>)['vi-VN']).toBe('Cài đặt');
   });
 
-  test('F019_AC19 F-004.R5 "ngôn ngữ", "language", "English", "Vietnamese" and "Tiếng Việt" list the switch-language action', () => {
-    expect(LANGUAGE_ACTION_KEYWORDS).toEqual(['language', 'ngôn ngữ', 'English', 'Vietnamese', 'Tiếng Việt']);
-    for (const lang of ['en-US', 'vi-VN'] as const)
-      for (const q of ['ngôn ngữ', 'ngon ngu', 'language', 'English', 'Vietnamese', 'Tiếng Việt'])
-        expect(ids(paletteView(q, index, emptyDocument(), lang)), `${q} (${lang})`).toContain('language');
+  test('F019_AC19 F-004.R5 "ngôn ngữ", "language", "english" and "Tiếng Việt" list the switch-language action', () => {
+    // The keywords are COPY-settings.language and the two language names, in both languages (no literals).
+    expect(text.languageKeywords).toEqual(['Language', 'Ngôn ngữ', 'English', 'Tiếng Việt']);
+    for (const q of ['ngôn ngữ', 'ngon ngu', 'language', 'english', 'Tiếng Việt'])
+      expect(ids(paletteView(q, index, emptyDocument())), q).toContain('language');
   });
 
   test('F019_AC9 "dinh dang" with English showing lists the tool by its Vietnamese summary and name', () => {
-    const groups = paletteView('dinh dang', index, emptyDocument(), 'en-US');
+    const groups = paletteView('dinh dang', index, emptyDocument());
     expect(ids(groups)).toEqual(['json']);
   });
 

@@ -2,7 +2,7 @@
 // so the island ships no copy catalog or icon set. Build-time only (the icon set is read from disk).
 import { catalogDataFile, getRegistry, RESUME_PATH, type Registry } from '../content/index.ts';
 import { t, tBoth, type CopyId } from '../copy/index.ts';
-import { mapText, otherLanguage, type Loc } from '../language/languages.ts';
+import { mapText, otherLanguage, versions, type Loc } from '../language/languages.ts';
 import { iconSvg } from '../design-system/icons.ts';
 import { SHORTCUT_LABELS, type ActionId, type PageItem, type ViewGroupId } from './logic.ts';
 
@@ -19,6 +19,9 @@ export interface PaletteText {
   actions: Record<ActionId, Loc>;
   /** COPY-language.en and COPY-language.vi, each in its own language: marked in the language action's name. */
   languageNames: Loc;
+  /** F-004.R5: the words that also find the switch-language action, in both languages (COPY-settings.language,
+   * COPY-language.en, COPY-language.vi). */
+  languageKeywords: string[];
   /** COPY-palette.hints */
   hints: Loc;
   /** COPY-palette.noResults with a literal "{query}" left in. */
@@ -92,6 +95,7 @@ function buildText(resume: boolean): PaletteText {
       copy: tBoth('COPY-palette.actionCopy'),
     },
     languageNames,
+    languageKeywords: [...new Set([...versions(tBoth('COPY-settings.language')), ...versions(languageNames)])],
     hints: tBoth('COPY-palette.hints'),
     noResults: tBoth('COPY-palette.noResults', { query: '{query}' }),
     browseAll: tBoth('COPY-palette.browseAll'),

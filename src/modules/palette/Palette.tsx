@@ -201,14 +201,11 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
   const settled = data !== null && doc !== null;
   const failed = data === 'failed';
   const index = useMemo(
-    () => paletteIndex(data && data !== 'failed' ? data : null, text.pages, text.actions),
+    () => paletteIndex(data && data !== 'failed' ? data : null, text.pages, text.actions, text.languageKeywords),
     [data, text],
   );
   const searching = query.trim() !== '';
-  const groups = useMemo(
-    () => (settled ? paletteView(query, index, doc, lang) : []),
-    [settled, query, index, doc, lang],
-  );
+  const groups = useMemo(() => (settled ? paletteView(query, index, doc) : []), [settled, query, index, doc]);
   const flat = useMemo(() => flatten(groups), [groups]);
   const current = flat[Math.min(active, flat.length - 1)];
   const activeId = current ? optionId(current.group, current.entry) : undefined;
@@ -263,7 +260,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
     // so Enter never runs a result of the previous query.
     const value = field.current?.value ?? query;
     const fresh = value === query;
-    const list = fresh ? flat : flatten(paletteView(value, index, doc, lang));
+    const list = fresh ? flat : flatten(paletteView(value, index, doc));
     if (list.length === 0) return;
     const at = fresh ? Math.min(active, list.length - 1) : 0;
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {

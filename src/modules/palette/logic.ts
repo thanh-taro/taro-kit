@@ -37,9 +37,6 @@ export const SHORTCUT_LABELS = { apple: '⌘K', other: 'Ctrl K' } as const;
 export const ACTIONS = ['theme', 'language', 'export', 'copy'] as const;
 export type ActionId = (typeof ACTIONS)[number];
 
-/** F-004.R5: the switch-language action also matches these words, whatever language is showing. */
-export const LANGUAGE_ACTION_KEYWORDS = ['language', 'ngôn ngữ', 'English', 'Vietnamese', 'Tiếng Việt'] as const;
-
 type ToolData = Pick<IndexedTool, 'id' | 'name' | 'summary' | 'tags' | 'keys' | 'openMode' | 'url'>;
 
 export interface PageItem {
@@ -76,6 +73,8 @@ export function paletteIndex(
   data: { tools: readonly ToolData[] } | null,
   pages: readonly PageItem[],
   actions: Readonly<Record<ActionId, Loc>>,
+  /** F-004.R5: words that also find the switch-language action (MOD-Palette text `languageKeywords`). */
+  languageKeywords: readonly string[] = [],
 ): PaletteEntries {
   return {
     tools: (data?.tools ?? []).map(({ id, name, summary, tags, keys, openMode, url }) => ({
@@ -93,7 +92,7 @@ export function paletteIndex(
       kind: 'action',
       id,
       name: actions[id],
-      keys: searchKeys({ name: actions[id], tags: id === 'language' ? LANGUAGE_ACTION_KEYWORDS : [] }),
+      keys: searchKeys({ name: actions[id], tags: id === 'language' ? languageKeywords : [] }),
     })),
   };
 }
@@ -119,10 +118,9 @@ export function paletteView(
   query: string,
   index: PaletteEntries,
   doc: Pick<PersonalData, 'favorites' | 'recents'>,
-  lang: Lang = 'en-US',
 ): ViewGroup[] {
   if (!normalize(query)) return emptyQueryGroups(index, doc);
-  return searchPalette(query, index, { favorites: doc.favorites.map((f) => f.toolId), lang });
+  return searchPalette(query, index, { favorites: doc.favorites.map((f) => f.toolId) });
 }
 
 export interface RunEnvironment {

@@ -7,10 +7,11 @@
 // - A blank query ranks nothing; callers show their no-query view instead.
 // - Both languages (RULE-05, F-019.R5): the keys hold every distinct version of the name and summary, and an item
 //   takes the best tier any version reaches; tags already list keywords in either language. Name ties sort by the
-//   name in the language showing (`context.lang`, default en-US).
+//   one-version name (MOD-Content `byName`, ADR-0012), so the order is the same in both languages.
 // Callers decide visibility (inputs are visible-only, RULE-06) and any grouping or caps (the palette's 8).
 // Implements: RULE-05, F-002.R4 (with filterCatalog), F-004.R3 (through searchPalette, built on rank), F-019.R5.
-import { pick, versions, type Lang, type Text } from '../language/languages.ts';
+import { byName } from '../content/derive.ts';
+import { versions, type Text } from '../language/languages.ts';
 import { normalize } from './normalize.ts';
 
 /** RULE-05 match tiers, best first. */
@@ -39,8 +40,6 @@ export interface Searchable {
 export interface RankContext {
   /** Ids of the user's favorites (MOD-PersonalData), which win ties within a tier. */
   favorites?: Iterable<string>;
-  /** The language showing: names tie-break alphabetically in it (default en-US). */
-  lang?: Lang;
 }
 
 export interface RankedItem<T> {
@@ -71,16 +70,10 @@ export function matchTier(query: string, keys: SearchKeys): MatchTier | undefine
   return undefined;
 }
 
-/** RULE-05 order between two ranked items: tier, then favorites first, then name (in `lang`). */
-export function compareRanked<T extends { name: Text }>(
-  a: RankedItem<T>,
-  b: RankedItem<T>,
-  lang: Lang = 'en-US',
-): number {
+/** RULE-05 order between two ranked items: tier, then favorites first, then name (MOD-Content `byName`). */
+export function compareRanked<T extends { name: Text }>(a: RankedItem<T>, b: RankedItem<T>): number {
   return (
-    TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) ||
-    Number(b.favorite) - Number(a.favorite) ||
-    pick(a.item.name, lang).localeCompare(pick(b.item.name, lang), lang)
+    TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || Number(b.favorite) - Number(a.favorite) || byName(a.item, b.item)
   );
 }
 
@@ -99,5 +92,5 @@ export function rank<T extends Searchable>(
     if (tier) ranked.push({ item, tier, favorite: favorites.has(item.id) });
   }
   // Array.prototype.sort is stable, so equal items keep their input order.
-  return ranked.sort((a, b) => compareRanked(a, b, context.lang));
+  return ranked.sort((a, b) => compareRanked(a, b));
 }

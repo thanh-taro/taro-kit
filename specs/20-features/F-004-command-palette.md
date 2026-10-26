@@ -26,7 +26,7 @@ One keystroke from anywhere in the portal finds and opens any tool, page or acti
 - **R2** With an empty query, the palette shows the Favorites (at most 8, in pin order), Recents and Pages groups, in that order. Recents follow RULE-01: at most 8, with favorites left out. Pages are the navigation destinations Home, Tools, About, Résumé (when there is one, F-017.R4), Now and Settings (COPY-nav.home, COPY-nav.tools, COPY-nav.about, COPY-nav.resume, COPY-nav.now, COPY-nav.settings).
 - **R3** Typing searches visible tools, pages and actions by RULE-05, showing the groups Tools, Pages and Actions in that order, each with at most 8 results.
 - **R4** Results can be moved through across groups and run entirely from the keyboard. Running a tool opens it as in F-003. Running a page goes to it. Running an action performs it. Running anything closes the palette, except copy-address, which first shows its confirmation and then closes.
-- **R5** Available actions: toggle the theme (RULE-03), switch to the other language (F-019.R2; it also matches "language", "ngôn ngữ", "English", "Vietnamese" and "Tiếng Việt"), export personal data (F-013), and copy the current page's address with confirmation (COPY-palette.copied).
+- **R5** Available actions: toggle the theme (RULE-03), switch to the other language (F-019.R2; it is also matched by COPY-settings.language, COPY-language.en and COPY-language.vi in both languages, so "language", "ngôn ngữ", "English" and "Tiếng Việt" find it), export personal data (F-013), and copy the current page's address with confirmation (COPY-palette.copied).
 - **R6** When nothing matches, the palette says so and offers to browse the catalog (COPY-palette.noResults, COPY-palette.browseAll).
 
 ## Acceptance criteria

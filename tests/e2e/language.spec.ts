@@ -97,6 +97,16 @@ test.describe('F-019 switching (English device)', () => {
     await page.mouse.wheel(0, 100);
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
     const scrolled = await page.evaluate(() => window.scrollY);
+    // F-019 UX notes: a switch announces nothing beyond the control's own state, so the result count's live region
+    // must not change (record every change to it from here on).
+    const count = page.getByTestId('catalog-count');
+    await expect(count).not.toHaveText('');
+    const announced = await count.textContent();
+    await count.evaluate((el) => {
+      const w = window as unknown as { liveChanges: number };
+      w.liveChanges = 0;
+      new MutationObserver(() => w.liveChanges++).observe(el, { childList: true, subtree: true, characterData: true });
+    });
     // The header is not sticky, so a pointer click would first scroll it into view; a keyboard user reaches the
     // switch without moving the page (focus without scrolling, then Enter).
     await headerSwitch(page).evaluate((el) => (el as HTMLElement).focus({ preventScroll: true }));
@@ -109,6 +119,9 @@ test.describe('F-019 switching (English device)', () => {
     await expect(filter).toHaveValue('json');
     await expect(page.locator('.tk-toolcard:visible')).toHaveCount(results);
     expect(await page.evaluate(() => window.scrollY)).toBe(scrolled);
+    await page.waitForTimeout(300);
+    expect(await count.textContent()).toBe(announced);
+    expect(await page.evaluate(() => (window as unknown as { liveChanges: number }).liveChanges)).toBe(0);
     await expect(headerSwitch(page)).toBeFocused();
     expect(await page.evaluate(() => (window as unknown as { marker: number }).marker)).toBe(7);
     expect(await storedLanguage(page)).toBe('vi-VN');

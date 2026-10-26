@@ -56,7 +56,7 @@ Every string has an English (en-US) and a Vietnamese (vi-VN) version (F-019, RUL
 | **COPY-fav.add** | Add to favorites | Thêm vào yêu thích | toggle label (off) |
 | **COPY-fav.remove** | Remove from favorites | Bỏ khỏi yêu thích | toggle label (on) |
 | **COPY-fav.full** | You can keep up to {limit} favorites. Unpin one to make room. | Bạn giữ được tối đa {limit} mục yêu thích. Bỏ ghim một mục để có chỗ. | limit reached; {limit} from RULE-02 |
-| **COPY-storage.unavailable** | Your browser isn't letting me save anything right now, so I'll forget your favorites and recents when you leave. | Trình duyệt đang không cho mình lưu gì cả, nên mình sẽ quên mục yêu thích và công cụ gần đây khi bạn rời đi. | one-time notice |
+| **COPY-storage.unavailable** | Your browser isn't letting me save anything right now, so I'll forget your favorites, recents, theme and language when you leave. | Trình duyệt đang không cho mình lưu gì cả, nên mình sẽ quên mục yêu thích, công cụ gần đây, giao diện và ngôn ngữ khi bạn rời đi. | one-time notice |
 | **COPY-palette.placeholder** | What are you looking for? ({shortcut}) | Bạn đang tìm gì? ({shortcut}) | search field |
 | **COPY-palette.groupFavorites** | Favorites | Yêu thích | group heading |
 | **COPY-palette.groupRecents** | Recent | Gần đây | group heading |

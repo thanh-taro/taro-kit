@@ -2,13 +2,19 @@
 // The element carries its en-US value (the no-script default, F-019.R8), both versions in `data-l-<attr>-<lang>`, and
 // the attribute names in `data-l-a`, so one function swaps every one of them at load and on each change
 // (`swapLocalizedAttributes`; its source is also inlined into the blocking script). Pure and browser-safe.
+// Only the attributes in LOCALIZED_ATTRS can be localized: the swap never writes any other attribute, so injected
+// markup can't turn `data-l-*` values into live `href` or `on*` attributes (security review F-019 L-1).
 import { pick, shared, type Lang, type Text } from './languages.ts';
+
+/** The attributes that carry text and may be localized (ADR-0012). */
+export const LOCALIZED_ATTRS = ['aria-label', 'placeholder', 'alt', 'title'] as const;
+export type LocalizedAttr = (typeof LOCALIZED_ATTRS)[number];
 
 /**
  * The attributes for a localized `attr`: `{ [attr]: en-US value, 'data-l-a': attr, 'data-l-<attr>-<lang>': … }`.
  * Text that is the same in both languages is a plain attribute. Spread several into one element with `mergeAttrs`.
  */
-export function localizedAttrs(attr: string, text: Text, showing: Lang = 'en-US'): Record<string, string> {
+export function localizedAttrs(attr: LocalizedAttr, text: Text, showing: Lang = 'en-US'): Record<string, string> {
   const same = shared(text);
   if (same !== undefined) return { [attr]: same };
   return {
@@ -40,10 +46,11 @@ export function swapLocalizedAttributes(
   root: Pick<ParentNode, 'querySelectorAll'> & Partial<Pick<Element, 'getAttribute' | 'setAttribute'>>,
   lang: string,
 ): void {
+  const allowed = /^(aria-label|placeholder|alt|title)$/;
   const one = (el: Pick<Element, 'getAttribute' | 'setAttribute'>) => {
     const names = (el.getAttribute('data-l-a') || '').split(' ');
     for (let i = 0; i < names.length; i++) {
-      const value = names[i] ? el.getAttribute('data-l-' + names[i] + '-' + lang) : null;
+      const value = allowed.test(names[i]!) ? el.getAttribute('data-l-' + names[i] + '-' + lang) : null;
       if (value !== null && el.getAttribute(names[i]!) !== value) el.setAttribute(names[i]!, value);
     }
   };

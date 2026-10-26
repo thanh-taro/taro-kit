@@ -11,7 +11,7 @@ const URL_ = `${FX}/__fixtures__/favorites/`;
 const STORAGE_KEY = 'tarokit.personal';
 const FULL = 'You can keep up to 24 favorites. Unpin one to make room.';
 const NOTICE =
-  "Your browser isn't letting me save anything right now, so I'll forget your favorites and recents when you leave.";
+  "Your browser isn't letting me save anything right now, so I'll forget your favorites, recents, theme and language when you leave.";
 
 const fx = (n: number) => `fx-${String(n).padStart(2, '0')}`;
 const name = (id: string) => `Fixture tool ${id.slice(3)}`;

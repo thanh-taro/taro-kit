@@ -7,7 +7,7 @@ depends_on: [MOD-PersonalData, MOD-Copy]
 
 ## Responsibility
 MOD-Language resolves and applies the language showing (RULE-16, ADR-0012).
-- **Before first paint:** its part of MOD-Theme's blocking inline script, the first element of `<body>`, reads the stored choice, else picks from `navigator.languages`, and sets `lang` and `data-lang` on `<html>` and the page title (F-019.R3).
+- **Before first paint:** its part of MOD-Theme's blocking inline script, the first element of `<body>`, reads the stored choice, else picks from `navigator.languages`, and sets `lang` and `data-lang` on `<html>` and the page title (F-019.R3). The theme part before it is wrapped in try/catch, so an error there cannot stop the language part.
 - **After hydration:** it exposes `shownLanguage` and swaps the localized attributes of static elements on load and on every change.
 - **Choosing:** `setLanguage(lang)` stores the choice and applies it; `switchLanguage()` flips to the other language, for the header switch and the palette action.
 
@@ -30,7 +30,7 @@ In `src/modules/language/`.
 - Markup (ADR-0012):
   - A text in both languages renders one element per language, marked `lang` + `data-l=""`. A global CSS rule hides the one not showing. A text that is the same in both renders once, unmarked.
   - `<L>` renders a text. `<Each render={(lang) => …}>` renders any markup per language. Both come as `L.tsx` for islands and `L.astro`/`Each.astro` for pages.
-  - `localizedAttrs(attr, text, showing)` gives the attribute in the language showing, `data-l-a` (the localized attribute names) and `data-l-<attr>-<lang>` for each version. `swapLocalizedAttributes` swaps them.
+  - `localizedAttrs(attr, text, showing)` gives the attribute in the language showing, `data-l-a` (the localized attribute names) and `data-l-<attr>-<lang>` for each version. `swapLocalizedAttributes` swaps them. Only `aria-label`, `placeholder`, `alt` and `title` (`LOCALIZED_ATTRS`) can be localized; the swap writes no other attribute. A local lint rule (`eslint-rules/no-literal-text.js`, `tk/no-literal-text`) flags literal text and literal text attributes in `src/**/*.tsx|astro`, allowing only the glyphs `Esc` and `T`.
   - The page title carries `data-l-en-US` / `data-l-vi-VN`.
 - Islands: `useShownLanguage()` starts at en-US (the server render) and follows `shownLanguage` after hydration. It is used only for text made at run time (results, counts, messages); static text uses `<L>`, so a switch is CSS only. Announcements read the language through a ref, so a switch announces nothing.
 - `.tk-mono-words` (global.css): mono word lines (dates, labels) use the body face while Vietnamese shows, since the mono subset is ASCII. `scripts/check-dist-fonts.ts` checks that every display and mono text in both languages is covered by the shipped subsets.
