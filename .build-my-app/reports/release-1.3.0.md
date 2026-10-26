@@ -2,7 +2,7 @@
 
 Date: 2026-10-26 · Tag: `v1.3.0-rc.1` (commit `39cbdcb`, local only) · Not deployed, not pushed.
 
-**Status: NOT ready to deploy.** One WebKit/Safari defect in the narrow menu (see "Blocking finding"). Everything else passed.
+**Status of rc.1: NOT ready to deploy (superseded by rc.2, see the end of this file).** One WebKit/Safari defect in the narrow menu (see "Blocking finding"). Everything else passed.
 Owner decision D-066 (cut rc and deploy) stands; the deploy waits for a fix as `v1.3.0-rc.2`, or for the Owner to accept it.
 
 ## What's in it
@@ -86,3 +86,35 @@ Straight to production (D-052, D-054, no staging), as for v1.2.0, from a clean w
 6. Then: tag `v1.3.0`, set F-019 `shipped` (feature file, `_index.md`), changelog "Released" line, `deploy-1.3.0.md`.
 Rollback: `npx wrangler rollback 0df943c1` (consequence above).
 Environment inventory and runbook: no change (no new variable, secret, service or domain).
+
+---
+
+# Release candidate 1.3.0-rc.2
+
+Date: 2026-10-26 · Tag: `v1.3.0-rc.2` (commit `6e82b5f`, local only) · Not deployed, not pushed.
+**Ready to deploy** (after the user-gated steps above). It is rc.1 plus commit `f82a1fc`: the narrow menu ignores focus loss
+during a press inside the panel (`NavMenu.tsx`), and the language switch handler focuses the control after a click
+(`language/index.ts`). That fixes the Safari defect that blocked rc.1. No other source change; the version stays 1.3.0.
+
+## Release build
+`scripts/release-build.sh v1.3.0-rc.2` from a clean worktree of the tag: 81 files, 1,092,537 bytes in `dist/`.
+- `release/tarokit-1.3.0-rc.2.tar.gz` 349,020 bytes, sha256 `0c2daf36372e030cd51b7a5308396d16489200f89d5a07ddf2031ac1ad18f967`
+- `release/tarokit-1.3.0-rc.2.dist.SHA256SUMS` (81 files, all verify); `sw.js` 21,356 bytes, 75 precache entries, 243.7 KB brotli
+- Built-in checks: fonts 51.9 KB, both languages covered; home initial transfer 101.8 KB brotli, 42 files; dist-clean ok.
+- A second build in the same folder gave an identical tarball. The folder path still affects island uids (see rc.1 notes).
+
+## Verification (local, release build)
+| Check | Result |
+|---|---|
+| `pnpm test` | 548 passed |
+| Playwright Chromium | 338 passed, 127 skipped, 0 failed |
+| Playwright WebKit | 303 passed, 162 skipped, 0 failed; `F019_AC20` 5 of 5 on repeat (rc.1 failed it 5 of 5) |
+| Playwright Firefox | 249 passed, 166 skipped, 50 failed; all 50 are the local Firefox killed at launch (SIGTERM), the known local issue (rc.1 had 26 in a quieter run); CI runs Firefox with `continue-on-error` |
+| CSP hashes | all 83 inline scripts (13 pages) hashed in their page's CSP meta; no unsafe-*, no remote script |
+| Local smoke (`wrangler dev --local`) | `scripts/smoke-test.sh` passed; 7 pages x 5 modes (English device, scripts off on a Vietnamese device shows English, Vietnamese device, Vietnamese chosen via Settings with stored `schemaVersion: 2`, English chosen on a Vietnamese device) behave as in rc.1 |
+| Safari narrow menu | WebKit, real mouse down and up on the menu's language row: menu stays open, language becomes vi-VN (rc.1: menu closed, no change) |
+| Privacy and terms dates | 2026-10-23 |
+Note: running two Playwright projects at once makes their web servers clash; the runs here were sequential for the reported results.
+Meta, sitemap and manifest were verified on rc.1; the rc.2 diff touches only the menu and switch scripts.
+
+Rollback consequence, environment inventory and the deploy plan are unchanged from rc.1 above: use `v1.3.0-rc.2` in the commands.
