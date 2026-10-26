@@ -60,14 +60,35 @@ export default function NavMenu({ items, menuLabel, menuIcon, languageSwitch }: 
     };
   }, [open]);
 
+  // Safari doesn't focus a button on click, so pressing one inside the panel blurs the focused link
+  // with a null relatedTarget. A press inside the panel must not close it (F-019.AC20).
+  const pressInside = useRef(false);
+  const onPointerDown = () => {
+    pressInside.current = true;
+    const release = () => {
+      pressInside.current = false;
+      document.removeEventListener('pointerup', release, true);
+      document.removeEventListener('pointercancel', release, true);
+    };
+    document.addEventListener('pointerup', release, true);
+    document.addEventListener('pointercancel', release, true);
+  };
+
   const onFocusOut = (e: FocusEvent) => {
+    if (pressInside.current) return;
     // relatedTarget is null when focus leaves for the page body or the browser itself.
     const next = e.relatedTarget as Node | null;
     if (open && !navRef.current?.contains(next)) setOpen(false);
   };
 
   return (
-    <nav class="nav" ref={navRef} data-open={open ? '' : undefined} onFocusOut={onFocusOut}>
+    <nav
+      class="nav"
+      ref={navRef}
+      data-open={open ? '' : undefined}
+      onFocusOut={onFocusOut}
+      onPointerDown={onPointerDown}
+    >
       <button
         type="button"
         class="menu"

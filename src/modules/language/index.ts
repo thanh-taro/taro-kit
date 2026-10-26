@@ -82,6 +82,10 @@ export function connectLanguageSwitch(doc: Document = document): () => void {
     if (!target) return;
     e.preventDefault();
     language().switchLanguage();
+    // Safari doesn't focus a clicked button; focus stays on the switch in every engine (F-019.R2).
+    if (target instanceof HTMLElement && target.ownerDocument.activeElement !== target) {
+      target.focus({ preventScroll: true });
+    }
   };
   doc.addEventListener('click', onClick);
   return () => doc.removeEventListener('click', onClick);
