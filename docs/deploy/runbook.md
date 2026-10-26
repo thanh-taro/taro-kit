@@ -104,6 +104,10 @@ name, delete that record in DNS first.
 - **Fast (Cloudflare keeps earlier versions):** `npx wrangler deployments list` (add `--env staging` for staging),
   then `npx wrangler rollback <version-id> --message "rollback: <reason>"`. Or dashboard → the Worker → Deployments →
   the previous version → Rollback.
+- **Personal-data schema (v1.3.0, F-019):** a browser that already wrote a version-2 document (a language choice, or any save
+  by 1.3.0) is read by 1.2.0 as "newer": favorites, recents, theme and days used show, the language is ignored, and nothing is
+  saved until the user imports or erases data (the stored document is never overwritten). Version-2 backups are refused by
+  1.2.0 import. Prefer a fix-forward release over a rollback past 1.3.0 (ADR-0010 note, `release-1.3.0.md`).
 - **Rebuild a known tag:** check out the previous tag and deploy it with Option B, or move `main` back only by a
   normal revert commit (never force-push) and run Option A.
 - **Domain:** to take the site offline, remove the custom domain in Settings → Domains & Routes; the Worker stays.

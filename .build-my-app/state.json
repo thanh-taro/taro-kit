@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: F-019 release — cutting v1.3.0-rc.1",
+      "step": "8 Iterate: F-019 v1.3.0-rc.1 cut locally; blocked by WebKit narrow-menu defect (F019_AC20), needs fix as rc.2",
       "gate": {
         "status": "pending",
         "at": null,
