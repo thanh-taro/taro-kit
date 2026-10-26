@@ -4,11 +4,13 @@
 import preact from '@astrojs/preact/server.js';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { join } from 'node:path';
+import { pick } from '../../src/modules/language/languages.ts';
 import { describe, expect, test } from 'vitest';
 import { catalogDataFile, loadRegistry } from '../../src/modules/content/index.ts';
 import CatalogView from '../../src/modules/pages/catalog/CatalogView.astro';
 import { catalogView } from '../../src/modules/pages/catalog/catalog.ts';
 import { searchKeys } from '../../src/modules/search/index.ts';
+import { en } from './lang-html.ts';
 
 const cat = (id: string, name: string, order: number, tint: 'violet' | 'mango' | 'sky' | 'mint') => ({
   id,
@@ -44,7 +46,7 @@ async function renderView(props: Record<string, unknown>) {
   const container = await AstroContainer.create();
   container.addServerRenderer({ name: '@astrojs/preact', renderer: preact });
   container.addClientRenderer({ name: '@astrojs/preact', entrypoint: '@astrojs/preact/client.js' });
-  return container.renderToString(CatalogView, { props });
+  return en(await container.renderToString(CatalogView, { props }));
 }
 const viewProps = (r: typeof fixture) => ({
   view: catalogView(r.categories, r.visibleTools),
@@ -66,7 +68,7 @@ describe('F-002 catalog view (derivations)', () => {
 
   test('F002_AC3 F002_AC4 the navigation and every heading lead to the category pages', () => {
     expect(view.groups.map((g) => g.path)).toEqual(['/tools/developer/', '/tools/media/']);
-    expect(view.nav.map((n) => [n.name, n.href, n.count])).toEqual([
+    expect(view.nav.map((n) => [pick(n.name, 'en-US'), n.href, pick(n.count, 'en-US')])).toEqual([
       ['Developer tools', '/tools/developer/', '3 tools'],
       ['Media tools', '/tools/media/', '2 tools'],
     ]);

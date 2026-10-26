@@ -6,20 +6,23 @@
 // - `live` adds role="status" to the title and body only (not the actions), for messages that appear after the
 //   page has loaded (polite announcement, CMP-StateMessage accessibility).
 // - `detail`: a short mono line under the title; `action.newTab` opens with no opener or referrer.
+// - Texts may be in both languages (`Text`, F-019.R4): they render through <L>.
 import type { ComponentChildren } from 'preact';
+import { L } from '../language/L.tsx';
+import type { Text } from '../language/languages.ts';
 
 export type StateMessageVariant = 'empty' | 'no-results' | 'offline' | 'info' | 'not-found';
 
 export interface StateMessageProps {
   variant: StateMessageVariant;
-  /** Text, or inline markup from an island (such as a key cap, F-007.R6). */
-  title: ComponentChildren;
-  body?: string;
+  /** Text (one or both languages), or inline markup from an island (such as a key cap, F-007.R6). */
+  title: Text | ComponentChildren;
+  body?: Text;
   /** The next best action (PRN-05). */
-  action?: { href: string; label: string; newTab?: boolean };
+  action?: { href: string; label: Text; newTab?: boolean };
   /** Whole-page layout (CMP-StateMessage "page" variant). */
   page?: boolean;
-  detail?: string;
+  detail?: Text;
   /** Build-time inline SVG of the icon (`iconSvg`), never user or runtime data. */
   iconSvg: string;
   headingLevel?: 1 | 2 | 3;
@@ -27,6 +30,9 @@ export interface StateMessageProps {
   /** Extra actions (links or buttons); they get the 44 px target (NFR-09). */
   children?: ComponentChildren;
 }
+
+const isText = (v: unknown): v is Text =>
+  typeof v === 'string' || (typeof v === 'object' && v !== null && 'en-US' in v && 'vi-VN' in v);
 
 export default function StateMessage({
   variant,
@@ -47,10 +53,18 @@ export default function StateMessage({
       <span class="tk-state__icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconSvg }} />
       <div class="tk-state__text">
         <div class="tk-state__message" role={live ? 'status' : undefined}>
-          <Title class="tk-state__title">{title}</Title>
-          {body && <p class="tk-state__body">{body}</p>}
+          <Title class="tk-state__title">{isText(title) ? <L text={title} /> : title}</Title>
+          {body && (
+            <p class="tk-state__body">
+              <L text={body} />
+            </p>
+          )}
         </div>
-        {detail && <p class="tk-state__detail">{detail}</p>}
+        {detail && (
+          <p class="tk-state__detail">
+            <L text={detail} />
+          </p>
+        )}
         {(action || children) && (
           <div class="tk-state__actions">
             {action && (
@@ -60,7 +74,7 @@ export default function StateMessage({
                 target={action.newTab ? '_blank' : undefined}
                 rel={action.newTab ? 'noopener noreferrer' : undefined}
               >
-                {action.label}
+                <L text={action.label} />
               </a>
             )}
             {children}

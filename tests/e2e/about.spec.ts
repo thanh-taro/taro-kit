@@ -2,6 +2,7 @@
 // (tests/fixtures/content/samples/profile.yaml), so its expectations come from that file's registry. Link behavior runs on the fixture build (FX), whose profile
 // (tests/fixtures/content/F005-favorites) has an avatar, an email link and a website link. The nickname and
 // location variants are covered on fixture profiles in tests/unit/about.test.ts.
+import { pick } from '../../src/modules/language/languages.ts';
 import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
@@ -25,10 +26,10 @@ test.describe('F-008 About page', () => {
     );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(profile.name);
     if (profile.nickname) await expect(page.getByText(`aka ${profile.nickname}`)).toBeVisible();
-    if (profile.location) await expect(page.getByText(profile.location, { exact: true })).toBeVisible();
-    await expect(page.getByText(profile.headline, { exact: true })).toBeVisible();
+    if (profile.location) await expect(page.getByText(pick(profile.location, 'en-US'), { exact: true })).toBeVisible();
+    await expect(page.getByText(pick(profile.headline, 'en-US'), { exact: true })).toBeVisible();
     // Edge case: each bio paragraph is its own paragraph.
-    const bio = paragraphs(profile.bio);
+    const bio = paragraphs(pick(profile.bio, 'en-US'));
     const main = page.getByRole('main');
     for (const p of bio) await expect(main.locator('p', { hasText: p.split('\n')[0] })).toHaveCount(1);
   });

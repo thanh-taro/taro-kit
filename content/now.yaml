@@ -1,7 +1,12 @@
 # yaml-language-server: $schema=./schemas/now.json
-# ENT-NowNote. Over 90 days old it is labeled out of date (RULE-09).
-body: |
-  Right now I'm a Fullstack AI-Native engineer at Est Rouge, shipping products end to end with AI as my pair, from the backend and data to the prompts and agents on top. I'm also mentoring the next batch of Rising Stars.
+# ENT-NowNote. Over 90 days old it is labeled out of date (RULE-09). The body is written in both languages (INV-09).
+body:
+  en-US: |
+    Right now I'm a Fullstack AI-Native engineer at Est Rouge, shipping products end to end with AI as my pair, from the backend and data to the prompts and agents on top. I'm also mentoring the next batch of Rising Stars.
 
-  On the side, I'm launching TaroKit, the site you're on, with its first tool, a JSON formatter. Next on my list: more small tools, and fewer open browser tabs. One of those is going better than the other.
+    On the side, I'm launching TaroKit, the site you're on, with its first tool, a JSON formatter. Next on my list: more small tools, and fewer open browser tabs. One of those is going better than the other.
+  vi-VN: |
+    Hiện tại mình là kỹ sư Fullstack AI-Native ở Est Rouge, làm sản phẩm từ đầu đến cuối với AI là bạn đồng hành, từ backend và dữ liệu đến các prompt và agent ở trên cùng. Mình cũng đang hướng dẫn lứa Rising Stars tiếp theo.
+
+    Ngoài giờ, mình đang ra mắt TaroKit, chính trang bạn đang xem, với công cụ đầu tiên là trình định dạng JSON. Tiếp theo trong danh sách: thêm nhiều công cụ nhỏ, và bớt mở tab trình duyệt. Một trong hai việc đó đang tiến triển tốt hơn việc còn lại.
 updated: 2026-10-20

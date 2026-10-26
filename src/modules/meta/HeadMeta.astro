@@ -1,7 +1,7 @@
 ---
 // MOD-Meta <HeadMeta>: the page's link-preview tags in <head> (Open Graph and twitter:card, NFR-12), with absolute
 // addresses on the portal origin (Astro `site`, from MOD-Content's portalOrigin). Used by MOD-Shell's BaseLayout.
-// Implements: F-015.R1, F-015.R2, F-015.R4, F-015.R5.
+// Implements: F-015.R1, F-015.R2, F-015.R4, F-015.R5, F-019.R8 (English previews; the title in both, F-019.R4).
 import { headTags, type PageMeta } from './index.ts';
 
 type Props = PageMeta;
@@ -9,5 +9,6 @@ if (!Astro.site) throw new Error('astro.config `site` must be the portal origin 
 const tags = headTags(Astro.props, Astro.site.origin);
 ---
 
-<title>{Astro.props.title}</title>
+{/* F-019.R4: the title in both languages; the language script shows the one in the language showing. */}
+<title data-l-en-US={Astro.props.titles['en-US']} data-l-vi-VN={Astro.props.titles['vi-VN']}>{Astro.props.title}</title>
 {tags.map(({ tag, attrs }) => (tag === 'link' ? <link {...attrs} /> : <meta {...attrs} />))}

@@ -2,6 +2,7 @@
 // Implements: F-014.R1 (visible tools reachable, blocking), F-014.R2 (embedded tools embeddable, blocking),
 // F-014.R3 (failures name entry, address and reason; a pass gives the count), F-014.R4 (profile
 // links are warnings only), F-014.R5 (the weekly run uses the same check; exit code fails the run).
+import { pick, type Text } from '../language/languages.ts';
 import type { Registry } from '../content/index.ts';
 import { classifyEmbedding } from './classify.ts';
 import { checkReachability, type ReachOptions, type ReachResult } from './reach.ts';
@@ -45,8 +46,10 @@ export function planCheck(registry: Pick<Registry, 'allTools' | 'profile'>): Pla
     if (t.hidden) skipped.push({ kind: 'tool', entryId: t.id, address: t.url, why: 'hidden' });
     else targets.push({ kind: 'tool', entryId: t.id, address: t.url, embedded: t.openMode === 'embedded' });
   }
-  const links = (kind: TargetKind, entryId: string, list: readonly { label: string; url: string }[]) => {
-    for (const l of list) {
+  // The report names a link by its English label (a name may have one version per language, INV-09).
+  const links = (kind: TargetKind, entryId: string, list: readonly { label: Text; url: string }[]) => {
+    for (const raw of list) {
+      const l = { label: pick(raw.label, 'en-US'), url: raw.url };
       if (isWebAddress(l.url)) targets.push({ kind, entryId, label: l.label, address: l.url, embedded: false });
       else skipped.push({ kind, entryId, label: l.label, address: l.url, why: 'not-a-web-address' });
     }

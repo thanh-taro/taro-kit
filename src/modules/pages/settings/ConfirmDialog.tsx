@@ -7,18 +7,20 @@
 //   doesn't focus a button on a mouse click, and a file pick can end with focus on the page (QA a11y m9).
 // - `tone='danger'` gives Confirm the danger color (erase, design SettingsDialogs); `detail` is a muted line under
 //   the question (the picked file's name on import).
-// Strings arrive as props (COPY ids rendered at build).
+// Strings arrive as props (COPY ids rendered at build, in both languages: <L>, F-019.R4).
 import type { RefObject } from 'preact';
 import { useEffect, useId, useRef } from 'preact/hooks';
+import { L } from '../../language/L.tsx';
+import type { Loc } from '../../language/languages.ts';
 
 export interface ConfirmDialogProps {
   open: boolean;
   /** The question, e.g. COPY-settings.clearRecentsConfirm. */
-  title: string;
+  title: Loc;
   /** COPY-common.confirm */
-  confirmLabel: string;
+  confirmLabel: Loc;
   /** COPY-common.cancel */
-  cancelLabel: string;
+  cancelLabel: Loc;
   /** A muted line under the question, e.g. the picked file's name. */
   detail?: string;
   /** `danger` for an action that can't be undone (erase). */
@@ -76,7 +78,7 @@ export default function ConfirmDialog({
       }}
     >
       <h2 id={titleId} class="tk-confirm__title">
-        {title}
+        <L text={title} />
       </h2>
       {detail && (
         <p id={detailId} class="tk-confirm__detail">
@@ -85,14 +87,14 @@ export default function ConfirmDialog({
       )}
       <div class="tk-confirm__actions">
         <button ref={cancelRef} type="button" class="tk-confirm__cancel" onClick={onCancel}>
-          {cancelLabel}
+          <L text={cancelLabel} />
         </button>
         <button
           type="button"
           class={tone === 'danger' ? 'tk-confirm__confirm tk-confirm__confirm--danger' : 'tk-confirm__confirm'}
           onClick={onConfirm}
         >
-          {confirmLabel}
+          <L text={confirmLabel} />
         </button>
       </div>
     </dialog>

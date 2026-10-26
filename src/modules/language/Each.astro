@@ -1,0 +1,20 @@
+---
+// MOD-Language `<Each>` for Astro pages (ADR-0012): the default slot is a function of the language, rendered once per
+// language, each copy wrapped in `as` (default span) marked `lang` + `data-l`, so CSS shows the language showing.
+// For markup that mixes localized text with dates, links or placeholders (policy bodies, résumé periods, the Now
+// note's date line). Usage: <Each as="p">{(lang: Lang) => …}</Each>
+import { LANGUAGES } from './languages.ts';
+
+interface Props {
+  as?: string;
+  [attr: string]: unknown;
+}
+const { as = 'span', ...rest } = Astro.props;
+// A dynamic tag name: typed loosely, as Astro types it.
+const Tag = as as any;
+const parts = await Promise.all(LANGUAGES.map((lang) => Astro.slots.render('default', [lang])));
+---
+
+{LANGUAGES.map((lang, i) => (
+  <Tag {...rest} lang={lang} data-l="" set:html={parts[i]} />
+))}

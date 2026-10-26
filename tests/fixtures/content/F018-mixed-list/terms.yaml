@@ -1,12 +1,23 @@
 # Test fixture (F-018.R5, ADR-0005 note from F-018): section 1's second paragraph mixes list lines with other lines
 # (no blank line before the list); overlays the valid base.
-title: Terms
+title:
+  en-US: Terms
+  vi-VN: Terms
 updated: 2026-10-22
 sections:
-  - heading: Fixture section
-    body: |
-      Fixture paragraph.
+  - heading:
+      en-US: Fixture section
+      vi-VN: Fixture section
+    body:
+      en-US: |
+        Fixture paragraph.
 
-      Fixture lead-in with no blank line after it:
-      - the first item;
-      - the second item.
+        Fixture lead-in with no blank line after it:
+        - the first item;
+        - the second item.
+      vi-VN: |
+        Fixture paragraph.
+
+        Fixture lead-in with no blank line after it:
+        - the first item;
+        - the second item.

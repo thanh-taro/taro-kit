@@ -4,13 +4,18 @@
 // `paletteBootstrap`, rendered and CSP-hashed by BaseLayout) opens it with showModal(), which makes the rest of
 // the page inert, and focuses the field (F-004.R1, NFR-02).
 // Implements: F-004.R1 (with the bootstrap), CMP-CommandPalette accessibility (a labelled modal dialog).
-import { t } from '../copy/index.ts';
+import { tBoth } from '../copy/index.ts';
+import { localizedAttrs } from '../language/attrs.ts';
 import { PALETTE_DIALOG_ID } from './logic.ts';
 import Palette from './Palette.tsx';
 import { paletteDataPath, paletteText } from './text.ts';
 import './palette.css';
 ---
 
-<dialog id={PALETTE_DIALOG_ID} class="tk-palette-dialog" aria-label={t('COPY-palette.dialogLabel')}>
+<dialog
+  id={PALETTE_DIALOG_ID}
+  class="tk-palette-dialog"
+  {...localizedAttrs('aria-label', tBoth('COPY-palette.dialogLabel'))}
+>
   <Palette client:palette text={paletteText()} dataUrl={paletteDataPath()} catalogPath="/tools/" />
 </dialog>

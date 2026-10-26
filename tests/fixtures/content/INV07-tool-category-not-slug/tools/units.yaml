@@ -2,7 +2,9 @@
 id: units
 kind: tool
 name: Units
-summary: Fixture tool with a malformed category.
+summary:
+  en-US: Fixture tool with a malformed category.
+  vi-VN: Fixture tool with a malformed category.
 category: Converters
 url: https://units.tarokit.app/
 origin: own

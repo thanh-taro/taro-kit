@@ -93,8 +93,8 @@ if (fontsFresh) {
   const { previewGlyphRequest } = await import('../src/modules/meta/preview-image.ts');
   const request = JSON.stringify(
     previewGlyphRequest({
-      brand: COPY['COPY-shell.brand'],
-      lead: COPY['COPY-meta.homeDescription'],
+      brand: COPY['COPY-shell.brand']['en-US'],
+      lead: COPY['COPY-meta.homeDescription']['en-US'],
       host: new URL(portalOriginFor()).host,
     }),
   );

@@ -13,7 +13,8 @@ import {
   parseBackupText,
   type ImportResult,
 } from '../../src/modules/backup/index.ts';
-import { t } from '../../src/modules/copy/index.ts';
+import { t, tBoth } from '../../src/modules/copy/index.ts';
+import { createLanguage } from '../../src/modules/language/index.ts';
 import {
   createPersonalDataStore,
   emptyDocument,
@@ -34,10 +35,10 @@ const ok = (r: ImportResult): PersonalData => {
 };
 
 const current = (): PersonalData => ({
-  schemaVersion: 1,
+  schemaVersion: 2,
   favorites: [{ toolId: 'fx-09', pinnedAt: '2026-09-01T00:00:00.000Z' }],
   recents: [{ toolId: 'fx-08', openedAt: '2026-09-02T00:00:00.000Z' }],
-  preferences: { theme: 'light' },
+  preferences: { theme: 'light', language: 'vi-VN' },
   daysUsed: ['2026-09-02'],
 });
 const seeded = () => {
@@ -47,7 +48,7 @@ const seeded = () => {
 };
 
 describe('F-013.R1 export', () => {
-  test('F013_AC1 exporting on 2026-10-13 saves a dated file holding favorites, recents, theme and days used', () => {
+  test('F013_AC1 exporting on 2026-10-13 saves a dated file holding favorites, recents, theme, language vi-VN and days used', () => {
     const now = new Date(2026, 9, 13, 9, 30);
     const download = vi.fn();
     const data = current();
@@ -55,6 +56,7 @@ describe('F-013.R1 export', () => {
     const [name, json] = download.mock.calls[0]!;
     expect(name).toBe('tarokit-backup-2026-10-13.json');
     expect(JSON.parse(json)).toEqual({ format: 'tarokit-backup', exportedAt: now.toISOString(), data });
+    expect(JSON.parse(json).data.preferences).toEqual({ theme: 'light', language: 'vi-VN' });
   });
 
   test('F013_AC1 an exported file imports back to the same data (round trip)', () => {
@@ -131,9 +133,10 @@ describe('F-013.R2 RULE-08 an invalid file is rejected with its reason', () => {
   });
 
   test('F-013.R2 a picked file is read with the File API and validated', async () => {
-    expect(ok(await parseBackup(asFile(fixture('F013_AC6-valid.json'))))).toEqual(
-      JSON.parse(fixture('F013_AC6-valid.json')).data,
-    );
+    expect(ok(await parseBackup(asFile(fixture('F013_AC6-valid.json'))))).toEqual({
+      ...JSON.parse(fixture('F013_AC6-valid.json')).data,
+      schemaVersion: 2, // a version-1 file, migrated (F-013.R3)
+    });
     expect(reason(await parseBackup(asFile(fixture('F013_AC3-newer-version.json'))))).toBe('newerVersion');
   });
 
@@ -160,11 +163,11 @@ describe('F-013.R2 RULE-08 an invalid file is rejected with its reason', () => {
   });
 
   test('F-013.R2 each reason has its COPY string inside COPY-settings.importInvalid', () => {
-    expect(importReasons().notBackup).toBe(t('COPY-import.notBackup'));
-    expect(importReasons().damaged).toBe(t('COPY-import.damaged'));
-    expect(importReasons().newerVersion).toBe(t('COPY-import.newerVersion'));
-    expect(importReasons().tooLarge).toBe(t('COPY-import.tooLarge'));
-    expect(t('COPY-settings.importInvalid', { reason: importReasons().newerVersion })).toBe(
+    expect(importReasons().notBackup).toEqual(tBoth('COPY-import.notBackup'));
+    expect(importReasons().damaged).toEqual(tBoth('COPY-import.damaged'));
+    expect(importReasons().newerVersion).toEqual(tBoth('COPY-import.newerVersion'));
+    expect(importReasons().tooLarge).toEqual(tBoth('COPY-import.tooLarge'));
+    expect(t('COPY-settings.importInvalid', { reason: importReasons().newerVersion['en-US'] })).toBe(
       "I couldn't import that file because it came from a newer version of TaroKit. Nothing changed.",
     );
   });
@@ -174,7 +177,7 @@ describe('F-013.R3 RULE-08 migration fills defaults, then validates', () => {
   test('F013_AC5 a file with no days used keeps favorites, recents and theme, with days used empty', () => {
     const data = ok(parse('F013_AC5-no-days-used.json'));
     const valid = JSON.parse(fixture('F013_AC6-valid.json')).data as PersonalData;
-    expect(data).toEqual({ ...valid, daysUsed: [] });
+    expect(data).toEqual({ ...valid, schemaVersion: 2, daysUsed: [] });
   });
 
   test('F-013.R3 an older file without a schema version and with only favorites gets every default', () => {
@@ -275,7 +278,7 @@ describe('F-013.R4 / R5 replacing and erasing in the store', () => {
 
   test('F-013 edge case: a confirmed import or erase replaces a newer version’s document; other changes never do', () => {
     const storage = new FakeStorage();
-    const newer = JSON.stringify({ ...current(), schemaVersion: 2, addedLater: true });
+    const newer = JSON.stringify({ ...current(), schemaVersion: 3, addedLater: true });
     storage.setItem(STORAGE_KEY, newer);
     const store = createPersonalDataStore({ storage: () => storage });
     store.recordVisit('fx-01');
@@ -307,5 +310,65 @@ describe('F-013.R4 / R5 replacing and erasing in the store', () => {
     mine.eraseAll();
     events.dispatchEvent(Object.assign(new Event('storage'), { key: STORAGE_KEY }));
     expect(other.snapshot()).toEqual(emptyDocument());
+  });
+});
+
+describe('F-013 with the language (F-019, RULE-08 schema version 2)', () => {
+  const withLanguage = (stored?: 'en-US' | 'vi-VN') => {
+    const storage = new FakeStorage();
+    const preferences = stored ? { theme: 'system' as const, language: stored } : { theme: 'system' as const };
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...emptyDocument(), preferences }));
+    const store = createPersonalDataStore({ storage: () => storage });
+    const language = createLanguage({ store, device: () => ['en-US'] });
+    return { storage, store, language };
+  };
+
+  test('F013_AC6 a confirmed import makes favorites, recents, theme, language and days used match the file', () => {
+    const { store, language } = withLanguage();
+    const file = JSON.parse(fixture('F013_AC6-valid-language.json')).data as PersonalData;
+    const data = ok(parse('F013_AC6-valid-language.json'));
+    expect(data).toEqual(file);
+    expect(store.replaceAll(data)).toBe('saved');
+    expect(store.snapshot()).toEqual(file);
+    expect(language.shownLanguage.value).toBe('vi-VN');
+  });
+
+  test('F013_AC8 a confirmed erase leaves no language, so the language follows the device', () => {
+    const { storage, store, language } = withLanguage('vi-VN');
+    expect(language.shownLanguage.value).toBe('vi-VN');
+    expect(store.eraseAll()).toBe('saved');
+    expect(store.snapshot().preferences).toEqual({ theme: 'system' });
+    expect(JSON.parse(storage.getItem(STORAGE_KEY)!).preferences.language).toBeUndefined();
+    expect(language.choice.value).toBeUndefined();
+    expect(language.shownLanguage.value).toBe('en-US');
+  });
+
+  test('F013_AC11 English chosen and a file from before languages: the choice is gone and the device decides', () => {
+    const { storage, store, language } = withLanguage('en-US');
+    const data = ok(parse('F013_AC5-no-days-used.json'));
+    expect(data.preferences.language).toBeUndefined();
+    expect(store.replaceAll(data)).toBe('saved');
+    expect(JSON.parse(storage.getItem(STORAGE_KEY)!).preferences).toEqual({ theme: 'dark' });
+    expect(language.choice.value).toBeUndefined();
+  });
+
+  test('F013_AC12 a file whose language is fr-FR is damaged and nothing changes', () => {
+    const { storage, store } = withLanguage('en-US');
+    const before = storage.getItem(STORAGE_KEY);
+    const result = parse('F013_AC12-language-fr.json');
+    expect(reason(result)).toBe('damaged');
+    if (result.ok) store.replaceAll(result.data);
+    expect(storage.getItem(STORAGE_KEY)).toBe(before);
+  });
+
+  test('F013_AC13 a version-1 file with theme dark imports with theme dark and the language following the device', () => {
+    const { store, language } = withLanguage('vi-VN');
+    const file = JSON.parse(fixture('F013_AC6-valid.json')).data;
+    expect(file.schemaVersion).toBe(1);
+    const data = ok(parse('F013_AC6-valid.json'));
+    expect(data.schemaVersion).toBe(2);
+    store.replaceAll(data);
+    expect(store.snapshot().preferences).toEqual({ theme: 'dark' });
+    expect(language.shownLanguage.value).toBe('en-US');
   });
 });

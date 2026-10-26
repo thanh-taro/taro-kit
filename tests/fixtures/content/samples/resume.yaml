@@ -2,55 +2,95 @@
 # Test fixture: a SAMPLE résumé for the e2e sample build (dist-samples/), so tests never read content/ (release C-1).
 # ENT-Resume (F-017). Every section has entries, and one experience is current, so SCR-Resume shows its whole layout.
 experience:
-  - role: Sample role, current
+  - role:
+      en-US: Sample role, current
+      vi-VN: Sample role, current
     organization: Sample Company
     start: 2023-07
-    summary: Sample summary. I build sample things end to end, from the backend to the bits you click.
+    summary:
+      en-US: Sample summary. I build sample things end to end, from the backend to the bits you click.
+      vi-VN: Sample summary. I build sample things end to end, from the backend to the bits you click.
     highlights:
-      - Sample highlight about a backend.
-      - Sample highlight about a data pipeline that runs every night.
-  - role: Sample mentor
+      - en-US: Sample highlight about a backend.
+        vi-VN: Sample highlight about a backend.
+      - en-US: Sample highlight about a data pipeline that runs every night.
+        vi-VN: Sample highlight about a data pipeline that runs every night.
+  - role:
+      en-US: Sample mentor
+      vi-VN: Sample mentor
     organization: Sample Academy
     start: 2022-06
     end: 2023-06
-    summary: Sample summary for a second role.
+    summary:
+      en-US: Sample summary for a second role.
+      vi-VN: Sample summary for a second role.
     highlights:
-      - Sample highlight.
-  - role: Sample developer with a longer role name
+      - en-US: Sample highlight.
+        vi-VN: Sample highlight.
+  - role:
+      en-US: Sample developer with a longer role name
+      vi-VN: Sample developer with a longer role name
     organization: Sample Studio
     start: 2014-08
     end: 2018-02
-    summary: |
-      Sample summary, first paragraph.
+    summary:
+      en-US: |
+        Sample summary, first paragraph.
 
-      Sample summary, second paragraph.
+        Sample summary, second paragraph.
+      vi-VN: |
+        Sample summary, first paragraph.
+
+        Sample summary, second paragraph.
 education:
-  - program: Sample program
+  - program:
+      en-US: Sample program
+      vi-VN: Sample program
     institution: Sample College
-    level: College
+    level:
+      en-US: College
+      vi-VN: College
     start: 2011-09
     end: 2014-09
-    notes: Sample notes.
+    notes:
+      en-US: Sample notes.
+      vi-VN: Sample notes.
 skills:
   - name: Sample skill A
-    group: Sample group one
+    group:
+      en-US: Sample group one
+      vi-VN: Sample group one
     level: 5
   - name: Sample skill B
-    group: Sample group two
+    group:
+      en-US: Sample group two
+      vi-VN: Sample group two
     level: 4
   - name: Sample skill with a long name
-    group: Sample group one
+    group:
+      en-US: Sample group one
+      vi-VN: Sample group one
     level: 3
   - name: Sample skill C
-    group: Sample group two
+    group:
+      en-US: Sample group two
+      vi-VN: Sample group two
     level: 1
   - name: Sample skill D
   - name: Sample skill E
 languages:
-  - name: Sample language
-    level: Native
-  - name: English
-    level: Advanced
+  - name:
+      en-US: Sample language
+      vi-VN: Sample language
+    level:
+      en-US: Native
+      vi-VN: Native
+  - name:
+      en-US: English
+      vi-VN: English
+    level:
+      en-US: Advanced
+      vi-VN: Advanced
 certificates:
   - name: Sample certificate with a longer name
     issuer: Sample Issuer

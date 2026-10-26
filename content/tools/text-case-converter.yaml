@@ -3,7 +3,9 @@
 id: text-case-converter
 kind: tool
 name: Text Case Converter
-summary: See any text in every case at once — camelCase, snake_case, kebab-case and more — and copy with one click.
+summary:
+  en-US: See any text in every case at once — camelCase, snake_case, kebab-case and more — and copy with one click.
+  vi-VN: Xem một đoạn văn bản ở mọi kiểu chữ cùng lúc — camelCase, snake_case, kebab-case và hơn nữa — sao chép bằng một cú nhấp.
 category: developer
 url: https://text-case-converter.tarokit.app/
 origin: own
@@ -11,5 +13,5 @@ openMode: embedded
 permissions: [clipboard-write]
 offline: true
 sourceUrl: https://github.com/thanh-taro/text-case-converter
-tags: [case, camelcase, snake_case, kebab-case, pascalcase, identifier, naming]
+tags: [case, camelcase, snake_case, kebab-case, pascalcase, identifier, naming, kiểu chữ, đổi chữ hoa, đặt tên biến]
 added: 2026-10-20

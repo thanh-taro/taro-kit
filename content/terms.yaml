@@ -1,31 +1,83 @@
 # yaml-language-server: $schema=./schemas/policy.json
-# ENT-Policy (F-018), required: the terms of use shown at /terms/. Text approved by the Owner (D-057).
-# Same format as privacy.yaml: a literal body (|), paragraphs separated by blank lines, "- " lists after a blank
-# line, links as [text](https://...) or [text](mailto:...) (INV-02). Change `updated` whenever the text changes.
-title: Terms
-updated: 2026-10-22
+# ENT-Policy (F-018), required: the terms of use shown at /terms/. Text approved by the Owner (D-057); the Vietnamese
+# translation and the Language section approved by the Owner (D-064). The English text applies (D-063).
+# Same format as privacy.yaml: headings and bodies in both languages (INV-09), a literal body (|), paragraphs
+# separated by blank lines, "- " lists after a blank line, links as [text](https://...) or [text](mailto:...)
+# (INV-02). Change `updated` whenever the text changes.
+title:
+  en-US: Terms
+  vi-VN: Điều khoản
+updated: 2026-10-23
 sections:
-  - heading: Using TaroKit
-    body: |
-      TaroKit and its tools are free to use. There are no accounts and nothing to sign up for.
-  - heading: As is
-    body: |
-      I build these tools with care, but they're provided "as is", without any warranty, express or implied, including that they're fit for a particular purpose or free of errors. To the fullest extent the law allows, I'm not liable for any loss or damage from using them, including lost data or decisions made from what a tool shows you. Keep your own copies of anything important. The tools I build don't change the files you open in them; anything they save is a new file.
-  - heading: Your files and content
-    body: |
-      What you open or type in a tool stays yours. The tools I build process it on your device and don't send it to me.
-  - heading: Fair use
-    body: |
-      Please don't use TaroKit to break the law or to try to disrupt or attack the sites.
-  - heading: Code and licenses
-    body: |
-      TaroKit's own code and content are licensed under PolyForm Noncommercial 1.0.0. Each tool has its own license, stated in its project. Open-source parts keep their own licenses; each tool lists them in its notices.
-  - heading: Governing law
-    body: |
-      These terms are governed by the laws of Vietnam. Any dispute will be handled by the competent courts of Vietnam, unless the law where you live gives you a right to bring it elsewhere.
-  - heading: Changes
-    body: |
-      I may update these terms. The date at the top shows when they last changed, and using TaroKit after that means you accept the new version.
-  - heading: Contact
-    body: |
-      Questions? Email me at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).
+  - heading:
+      en-US: Using TaroKit
+      vi-VN: Sử dụng TaroKit
+    body:
+      en-US: |
+        TaroKit and its tools are free to use. There are no accounts and nothing to sign up for.
+      vi-VN: |
+        TaroKit và các công cụ đều miễn phí. Không có tài khoản và không cần đăng ký gì cả.
+  - heading:
+      en-US: As is
+      vi-VN: Nguyên trạng
+    body:
+      en-US: |
+        I build these tools with care, but they're provided "as is", without any warranty, express or implied, including that they're fit for a particular purpose or free of errors. To the fullest extent the law allows, I'm not liable for any loss or damage from using them, including lost data or decisions made from what a tool shows you. Keep your own copies of anything important. The tools I build don't change the files you open in them; anything they save is a new file.
+      vi-VN: |
+        Mình làm các công cụ này cẩn thận, nhưng chúng được cung cấp "nguyên trạng", không có bất kỳ bảo đảm nào, dù rõ ràng hay ngụ ý, kể cả việc chúng phù hợp với một mục đích cụ thể hay không có lỗi. Trong phạm vi tối đa pháp luật cho phép, mình không chịu trách nhiệm về bất kỳ mất mát hay thiệt hại nào do việc sử dụng chúng, kể cả mất dữ liệu hay các quyết định đưa ra dựa trên những gì công cụ hiển thị. Hãy tự giữ bản sao của những gì quan trọng. Các công cụ mình làm không thay đổi tệp bạn mở trong đó; mọi thứ chúng lưu đều là một tệp mới.
+  - heading:
+      en-US: Your files and content
+      vi-VN: Tệp và nội dung của bạn
+    body:
+      en-US: |
+        What you open or type in a tool stays yours. The tools I build process it on your device and don't send it to me.
+      vi-VN: |
+        Những gì bạn mở hay gõ trong một công cụ vẫn là của bạn. Các công cụ mình làm xử lý chúng trên thiết bị của bạn và không gửi cho mình.
+  - heading:
+      en-US: Fair use
+      vi-VN: Sử dụng hợp lý
+    body:
+      en-US: |
+        Please don't use TaroKit to break the law or to try to disrupt or attack the sites.
+      vi-VN: |
+        Đừng dùng TaroKit để vi phạm pháp luật hay để tìm cách làm gián đoạn hoặc tấn công các trang nhé.
+  - heading:
+      en-US: Code and licenses
+      vi-VN: Mã nguồn và giấy phép
+    body:
+      en-US: |
+        TaroKit's own code and content are licensed under PolyForm Noncommercial 1.0.0. Each tool has its own license, stated in its project. Open-source parts keep their own licenses; each tool lists them in its notices.
+      vi-VN: |
+        Mã nguồn và nội dung của chính TaroKit được cấp phép theo PolyForm Noncommercial 1.0.0. Mỗi công cụ có giấy phép riêng, ghi trong dự án của nó. Các phần mã nguồn mở giữ giấy phép của riêng chúng; mỗi công cụ liệt kê chúng trong phần ghi chú giấy phép (notices).
+  - heading:
+      en-US: Governing law
+      vi-VN: Luật điều chỉnh
+    body:
+      en-US: |
+        These terms are governed by the laws of Vietnam. Any dispute will be handled by the competent courts of Vietnam, unless the law where you live gives you a right to bring it elsewhere.
+      vi-VN: |
+        Các điều khoản này được điều chỉnh bởi pháp luật Việt Nam. Mọi tranh chấp sẽ do toà án có thẩm quyền của Việt Nam giải quyết, trừ khi pháp luật nơi bạn sống cho bạn quyền đưa ra nơi khác.
+  - heading:
+      en-US: Language
+      vi-VN: Ngôn ngữ
+    body:
+      en-US: |
+        These terms and the privacy policy are written in English. The Vietnamese version is a translation for convenience; if they differ, the English version applies.
+      vi-VN: |
+        Các điều khoản này và chính sách quyền riêng tư được viết bằng tiếng Anh. Bản tiếng Việt là bản dịch để bạn tiện đọc; nếu có khác biệt, bản tiếng Anh được áp dụng.
+  - heading:
+      en-US: Changes
+      vi-VN: Thay đổi
+    body:
+      en-US: |
+        I may update these terms. The date at the top shows when they last changed, and using TaroKit after that means you accept the new version.
+      vi-VN: |
+        Mình có thể cập nhật các điều khoản này. Ngày ở đầu trang cho biết lần thay đổi gần nhất, và việc bạn tiếp tục dùng TaroKit sau đó nghĩa là bạn chấp nhận phiên bản mới.
+  - heading:
+      en-US: Contact
+      vi-VN: Liên hệ
+    body:
+      en-US: |
+        Questions? Email me at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).
+      vi-VN: |
+        Có câu hỏi? Gửi email cho mình tại [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).

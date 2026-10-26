@@ -1,40 +1,88 @@
 # yaml-language-server: $schema=./schemas/policy.json
-# ENT-Policy (F-018), required: the privacy policy shown at /privacy/. Text approved by the Owner (D-057).
-# Each section has a heading and a body. Write the body as a literal block (|). Paragraphs are separated by blank
-# lines; a paragraph whose every line starts with "- " is a bulleted list (leave a blank line before it); links are
-# [text](https://...) or [text](mailto:...) (INV-02). Change `updated` whenever the text changes.
-title: Privacy
-updated: 2026-10-22
+# ENT-Policy (F-018), required: the privacy policy shown at /privacy/. Text approved by the Owner (D-057); the
+# Vietnamese translation and the language changes approved by the Owner (D-064). The English text applies (D-063).
+# Each section has a heading and a body, each written in both languages (INV-09). Write each body as a literal block
+# (|). Paragraphs are separated by blank lines; a paragraph whose every line starts with "- " is a bulleted list
+# (leave a blank line before it); links are [text](https://...) or [text](mailto:...) (INV-02). Change `updated`
+# whenever the text changes.
+title:
+  en-US: Privacy
+  vi-VN: Quyền riêng tư
+updated: 2026-10-23
 sections:
-  - heading: The short version
-    body: |
-      TaroKit doesn't collect your data. There are no accounts and no cookies, and I run no analytics, ads or trackers. What you do here stays on your device.
-  - heading: What stays on your device
-    body: |
-      To make the portal yours, I keep a few things in your browser's storage on this device only:
+  - heading:
+      en-US: The short version
+      vi-VN: Tóm tắt
+    body:
+      en-US: |
+        TaroKit doesn't collect your data. There are no accounts and no cookies, and I run no analytics, ads or trackers. What you do here stays on your device.
+      vi-VN: |
+        TaroKit không thu thập dữ liệu của bạn. Không có tài khoản, không có cookie, và mình không chạy công cụ phân tích, quảng cáo hay theo dõi nào. Những gì bạn làm ở đây ở lại trên thiết bị của bạn.
+  - heading:
+      en-US: What stays on your device
+      vi-VN: Những gì ở lại trên thiết bị của bạn
+    body:
+      en-US: |
+        To make the portal yours, I keep a few things in your browser's storage on this device only:
 
-      - the tools you pin as favorites and the ones you opened recently;
-      - your theme choice (light, dark or system);
-      - the last 60 days on which you opened TaroKit, so Settings can show how often you use it.
+        - the tools you pin as favorites and the ones you opened recently;
+        - your theme choice (light, dark or system) and your language (English or Vietnamese), if you picked one;
+        - the last 60 days on which you opened TaroKit, so Settings can show how often you use it.
 
-      None of this is sent to me or anyone else. You can save it to a backup file, load it on another device, or erase it at any time from Settings. Clearing your browser's site data erases it too.
+        None of this is sent to me or anyone else. You can save it to a backup file, load it on another device, or erase it at any time from Settings. Clearing your browser's site data erases it too.
 
-      So TaroKit works offline, your browser also keeps a copy of the portal's pages and files. That copy holds no personal data.
-  - heading: The tools
-    body: |
-      Each tool is its own small website. The tools I build are made to run in your browser: files and text you give them are processed on your device and not uploaded. Each tool tells you how it handles your data inside the tool itself.
+        So TaroKit works offline, your browser also keeps a copy of the portal's pages and files. That copy holds no personal data.
+      vi-VN: |
+        Để TaroKit hợp với bạn hơn, mình lưu vài thứ trong bộ nhớ trình duyệt, chỉ trên thiết bị này:
 
-      When a tool opens inside TaroKit, it runs walled off from the portal. It can't read your favorites or anything else the portal stores. The only thing the portal passes to it is whether you're using the light or dark theme, so it can match.
+        - các công cụ bạn ghim vào yêu thích và những công cụ bạn mở gần đây;
+        - giao diện bạn chọn (sáng, tối hoặc theo hệ thống) và ngôn ngữ của bạn (tiếng Anh hoặc tiếng Việt), nếu bạn đã chọn;
+        - 60 ngày gần nhất bạn mở TaroKit, để trang Cài đặt cho biết bạn dùng thường xuyên đến đâu.
 
-      If I list a tool built by someone else, it opens on its own site in a new tab, and that site's own privacy policy applies.
-  - heading: Hosting
-    body: |
-      TaroKit and the tools I build are served by Cloudflare. Like any web host, Cloudflare sees your IP address and basic browser details when your browser asks for a page, in order to deliver it and to protect the sites from attacks.
+        Không thứ nào trong số này được gửi cho mình hay bất kỳ ai. Bạn có thể lưu chúng vào tệp sao lưu, nạp lại trên thiết bị khác, hoặc xoá bất cứ lúc nào trong Cài đặt. Xoá dữ liệu trang web của trình duyệt cũng sẽ xoá chúng.
 
-      I haven't turned on Cloudflare's visitor analytics or logs. Its dashboard still shows me overall traffic numbers, such as how many requests the sites get and from which countries, but nothing that tells me who you are. If Cloudflare blocks a request as an attack, its security log shows me that request's IP address. Cloudflare's own handling is described in [its privacy policy](https://www.cloudflare.com/privacypolicy/).
-  - heading: Changes
-    body: |
-      If this policy changes, I'll update this page and the date at the top.
-  - heading: Contact
-    body: |
-      Questions? Email me, Thanh Nguyen Tri (Taro), at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).
+        Để TaroKit dùng được cả khi không có mạng, trình duyệt của bạn cũng giữ một bản sao các trang và tệp của TaroKit. Bản sao đó không chứa dữ liệu cá nhân nào.
+  - heading:
+      en-US: The tools
+      vi-VN: Các công cụ
+    body:
+      en-US: |
+        Each tool is its own small website. The tools I build are made to run in your browser: files and text you give them are processed on your device and not uploaded. Each tool tells you how it handles your data inside the tool itself.
+
+        When a tool opens inside TaroKit, it runs walled off from the portal. It can't read your favorites or anything else the portal stores. The only things the portal passes to it are whether you're using the light or dark theme and whether you're reading in English or Vietnamese, so it can match.
+
+        If I list a tool built by someone else, it opens on its own site in a new tab, and that site's own privacy policy applies.
+      vi-VN: |
+        Mỗi công cụ là một trang web nhỏ riêng. Các công cụ mình làm đều chạy trong trình duyệt của bạn: tệp và văn bản bạn đưa vào được xử lý ngay trên thiết bị và không bị tải lên. Mỗi công cụ tự cho bạn biết cách nó xử lý dữ liệu ngay trong công cụ.
+
+        Khi một công cụ mở bên trong TaroKit, nó chạy tách biệt với TaroKit. Nó không đọc được mục yêu thích của bạn hay bất cứ thứ gì TaroKit lưu. TaroKit chỉ cho nó biết hai điều: bạn đang dùng giao diện sáng hay tối, và đang đọc bằng tiếng Anh hay tiếng Việt, để nó hiển thị cho khớp.
+
+        Nếu mình liệt kê một công cụ do người khác làm, nó sẽ mở trên trang riêng của họ trong một thẻ mới, và chính sách quyền riêng tư của trang đó được áp dụng.
+  - heading:
+      en-US: Hosting
+      vi-VN: Hosting
+    body:
+      en-US: |
+        TaroKit and the tools I build are served by Cloudflare. Like any web host, Cloudflare sees your IP address and basic browser details when your browser asks for a page, in order to deliver it and to protect the sites from attacks.
+
+        I haven't turned on Cloudflare's visitor analytics or logs. Its dashboard still shows me overall traffic numbers, such as how many requests the sites get and from which countries, but nothing that tells me who you are. If Cloudflare blocks a request as an attack, its security log shows me that request's IP address. Cloudflare's own handling is described in [its privacy policy](https://www.cloudflare.com/privacypolicy/).
+      vi-VN: |
+        TaroKit và các công cụ mình làm được phục vụ bởi Cloudflare. Như mọi nhà cung cấp hosting, Cloudflare thấy địa chỉ IP và thông tin cơ bản về trình duyệt của bạn khi trình duyệt yêu cầu một trang, để gửi trang đó và bảo vệ các trang khỏi tấn công.
+
+        Mình không bật tính năng phân tích hay nhật ký khách truy cập của Cloudflare. Bảng điều khiển của họ vẫn cho mình thấy số liệu lưu lượng tổng quát, như các trang nhận bao nhiêu yêu cầu và từ những quốc gia nào, nhưng không có gì cho biết bạn là ai. Nếu Cloudflare chặn một yêu cầu vì nghi là tấn công, nhật ký bảo mật của họ cho mình thấy địa chỉ IP của yêu cầu đó. Cách Cloudflare xử lý dữ liệu được mô tả trong [chính sách quyền riêng tư của họ](https://www.cloudflare.com/privacypolicy/).
+  - heading:
+      en-US: Changes
+      vi-VN: Thay đổi
+    body:
+      en-US: |
+        If this policy changes, I'll update this page and the date at the top.
+      vi-VN: |
+        Nếu chính sách này thay đổi, mình sẽ cập nhật trang này và ngày ở đầu trang.
+  - heading:
+      en-US: Contact
+      vi-VN: Liên hệ
+    body:
+      en-US: |
+        Questions? Email me, Thanh Nguyen Tri (Taro), at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).
+      vi-VN: |
+        Có câu hỏi? Gửi email cho mình, Nguyễn Trí Thành (Taro), tại [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).

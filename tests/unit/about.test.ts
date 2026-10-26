@@ -4,6 +4,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { pick } from '../../src/modules/language/languages.ts';
 import { describe, expect, test } from 'vitest';
 import {
   AVATAR_TYPES,
@@ -19,6 +20,7 @@ import {
   resolveAsset,
 } from '../../src/modules/content/index.ts';
 import About from '../../src/modules/pages/About.astro';
+import { en } from './lang-html.ts';
 
 const root = join(import.meta.dirname, '../..');
 const fixture = (name: string) => loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content', name) });
@@ -28,7 +30,9 @@ const avatar = { src: '/_astro/avatar.hash.webp', width: 720, height: 720 };
 
 async function render(reg: Registry, withAvatar = false) {
   const container = await AstroContainer.create();
-  return container.renderToString(About, { props: { profile: reg.profile, avatar: withAvatar ? avatar : undefined } });
+  return en(
+    await container.renderToString(About, { props: { profile: reg.profile, avatar: withAvatar ? avatar : undefined } }),
+  );
 }
 /** The <a> element (opening tag to closing tag) whose markup contains `text`. */
 const linkWith = (html: string, text: string) =>
@@ -41,7 +45,7 @@ describe('F-008 profile derivations (MOD-Content)', () => {
   });
 
   test('F008_AC1 edge: a bio with paragraphs keeps its paragraph breaks', () => {
-    expect(paragraphs(full.profile.bio)).toEqual([
+    expect(paragraphs(pick(full.profile.bio, 'en-US'))).toEqual([
       'Fixture bio, first paragraph.',
       'Fixture bio, second paragraph\nthat wraps onto a second line.',
     ]);

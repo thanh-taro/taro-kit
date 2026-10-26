@@ -5,6 +5,8 @@
 // unavailable (a sessionStorage flag). If sessionStorage is refused too, a module flag still limits it to
 // once per page. It renders nothing while storage works.
 import { useEffect, useState } from 'preact/hooks';
+import { L } from '../language/L.tsx';
+import type { Loc } from '../language/languages.ts';
 import { personalData } from '../personal-data/index.ts';
 
 /** sessionStorage key marking that the notice was shown in this browser session. */
@@ -33,7 +35,7 @@ export const resetStorageNoticeForTests = (): void => {
 
 interface Props {
   /** COPY-storage.unavailable */
-  message: string;
+  message: Loc;
 }
 
 export default function StorageNotice({ message }: Props) {
@@ -51,7 +53,9 @@ export default function StorageNotice({ message }: Props) {
       <span class="mark" aria-hidden="true">
         !
       </span>
-      <span>{message}</span>
+      <span>
+        <L text={message} />
+      </span>
     </div>
   );
 }

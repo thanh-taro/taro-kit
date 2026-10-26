@@ -44,7 +44,15 @@ export interface TaroKitDataModel {
  * via the `definition` "link".
  */
 export interface Link {
-  label: string;
+  /**
+   * A name (INV-09): one text for both languages, or a version per language.
+   */
+  label:
+    | string
+    | {
+        "en-US": string;
+        "vi-VN": string;
+      };
   url: string;
   kind?: "email" | "social" | "website" | "code" | "other";
 }
@@ -56,7 +64,13 @@ export interface EntryBase {
   id: string;
   kind: "tool";
   name: string;
-  summary: string;
+  /**
+   * Localized text (INV-09): both versions required; limits apply to each.
+   */
+  summary: {
+    "en-US": string;
+    "vi-VN": string;
+  };
   icon?: AssetPath;
   /**
    * @maxItems 12
@@ -84,9 +98,21 @@ export interface Tool {
  */
 export interface Category {
   id: string;
-  name: string;
+  /**
+   * Localized text (INV-09): both versions required; limits apply to each.
+   */
+  name: {
+    "en-US": string;
+    "vi-VN": string;
+  };
   order: number;
-  intro: string;
+  /**
+   * Localized text (INV-09): both versions required; limits apply to each.
+   */
+  intro: {
+    "en-US": string;
+    "vi-VN": string;
+  };
   icon: AssetPath;
   tint: "violet" | "mango" | "sky" | "mint";
 }
@@ -96,10 +122,30 @@ export interface Category {
  */
 export interface Profile {
   name: string;
-  headline: string;
+  /**
+   * Localized text (INV-09): both versions required; limits apply to each.
+   */
+  headline: {
+    "en-US": string;
+    "vi-VN": string;
+  };
   avatar?: AssetPath;
-  bio: string;
-  location?: string;
+  /**
+   * Localized text (INV-09): both versions required; limits apply to each.
+   */
+  bio: {
+    "en-US": string;
+    "vi-VN": string;
+  };
+  /**
+   * A name (INV-09): one text for both languages, or a version per language.
+   */
+  location?:
+    | string
+    | {
+        "en-US": string;
+        "vi-VN": string;
+      };
   /**
    * @maxItems 10
    */
@@ -111,7 +157,13 @@ export interface Profile {
  * via the `definition` "nowNote".
  */
 export interface NowNote {
-  body: string;
+  /**
+   * Localized text (INV-09): both versions required; limits apply to each.
+   */
+  body: {
+    "en-US": string;
+    "vi-VN": string;
+  };
   updated: IsoDate;
 }
 /**
@@ -136,6 +188,10 @@ export interface PersonalData {
   }[];
   preferences: {
     theme?: "system" | "light" | "dark";
+    /**
+     * F-019; absent means the language follows the device (RULE-16).
+     */
+    language?: "en-US" | "vi-VN";
   };
   /**
    * RULE-13
@@ -162,56 +218,165 @@ export interface Resume {
    * @maxItems 20
    */
   experience?: {
-    role: string;
-    organization: string;
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    role: {
+      "en-US": string;
+      "vi-VN": string;
+    };
+    /**
+     * A name (INV-09): one text for both languages, or a version per language.
+     */
+    organization:
+      | string
+      | {
+          "en-US": string;
+          "vi-VN": string;
+        };
     start: YearMonth;
     end?: YearMonth;
-    summary: string;
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    summary: {
+      "en-US": string;
+      "vi-VN": string;
+    };
     /**
      * @maxItems 8
+     *
+     * Items: Localized text (INV-09): both versions required; limits apply to each.
      */
-    highlights?: string[];
+    highlights?: {
+      "en-US": string;
+      "vi-VN": string;
+    }[];
   }[];
   /**
    * @maxItems 10
    */
   education?: {
-    program: string;
-    institution: string;
-    level?: string;
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    program: {
+      "en-US": string;
+      "vi-VN": string;
+    };
+    /**
+     * A name (INV-09): one text for both languages, or a version per language.
+     */
+    institution:
+      | string
+      | {
+          "en-US": string;
+          "vi-VN": string;
+        };
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    level?: {
+      "en-US": string;
+      "vi-VN": string;
+    };
     start: YearMonth;
     end?: YearMonth;
-    notes?: string;
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    notes?: {
+      "en-US": string;
+      "vi-VN": string;
+    };
   }[];
   /**
    * @maxItems 40
    */
   skills?: {
-    name: string;
-    group?: string;
+    /**
+     * A name (INV-09): one text for both languages, or a version per language.
+     */
+    name:
+      | string
+      | {
+          "en-US": string;
+          "vi-VN": string;
+        };
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    group?: {
+      "en-US": string;
+      "vi-VN": string;
+    };
     level?: number;
   }[];
   /**
    * @maxItems 10
    */
   languages?: {
-    name: string;
-    level: string;
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    name: {
+      "en-US": string;
+      "vi-VN": string;
+    };
+    /**
+     * Localized text (INV-09): both versions required; limits apply to each.
+     */
+    level: {
+      "en-US": string;
+      "vi-VN": string;
+    };
   }[];
   /**
    * @maxItems 20
    */
   certificates?: {
-    name: string;
-    issuer: string;
+    /**
+     * A name (INV-09): one text for both languages, or a version per language.
+     */
+    name:
+      | string
+      | {
+          "en-US": string;
+          "vi-VN": string;
+        };
+    /**
+     * A name (INV-09): one text for both languages, or a version per language.
+     */
+    issuer:
+      | string
+      | {
+          "en-US": string;
+          "vi-VN": string;
+        };
     year: number;
   }[];
   /**
    * @maxItems 20
    */
   awards?: {
-    title: string;
-    issuer: string;
+    /**
+     * A name (INV-09): one text for both languages, or a version per language.
+     */
+    title:
+      | string
+      | {
+          "en-US": string;
+          "vi-VN": string;
+        };
+    /**
+     * A name (INV-09): one text for both languages, or a version per language.
+     */
+    issuer:
+      | string
+      | {
+          "en-US": string;
+          "vi-VN": string;
+        };
     year: number;
   }[];
 }
@@ -220,7 +385,13 @@ export interface Resume {
  * via the `definition` "policy".
  */
 export interface Policy {
-  title: string;
+  /**
+   * Localized text (INV-09): both versions required; limits apply to each.
+   */
+  title: {
+    "en-US": string;
+    "vi-VN": string;
+  };
   updated: IsoDate;
   /**
    * @minItems 1
@@ -228,12 +399,36 @@ export interface Policy {
    */
   sections: [
     {
-      heading: string;
-      body: string;
+      /**
+       * Localized text (INV-09): both versions required; limits apply to each.
+       */
+      heading: {
+        "en-US": string;
+        "vi-VN": string;
+      };
+      /**
+       * Localized text (INV-09): both versions required; limits apply to each.
+       */
+      body: {
+        "en-US": string;
+        "vi-VN": string;
+      };
     },
     ...{
-      heading: string;
-      body: string;
+      /**
+       * Localized text (INV-09): both versions required; limits apply to each.
+       */
+      heading: {
+        "en-US": string;
+        "vi-VN": string;
+      };
+      /**
+       * Localized text (INV-09): both versions required; limits apply to each.
+       */
+      body: {
+        "en-US": string;
+        "vi-VN": string;
+      };
     }[]
   ];
 }

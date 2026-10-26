@@ -60,7 +60,7 @@ describe('MOD-Content validation', () => {
 
   it('F001_AC3 fails on a tool address that is not secure and names the entry', () => {
     expect(failures('F001_AC3-insecure-address')).toEqual([
-      'content/tools/units.yaml:7 › units › INV-02: url "http://units.tarokit.app/" is not a secure https address',
+      'content/tools/units.yaml:9 › units › INV-02: url "http://units.tarokit.app/" is not a secure https address',
     ]);
   });
 
@@ -68,51 +68,51 @@ describe('MOD-Content validation', () => {
     const lines = failures('F001_AC5-external-embedded');
     expect(lines).toHaveLength(1);
     expect(lines[0]).toMatch(
-      /^content\/tools\/excalidraw\.yaml:9 › excalidraw › RULE-07: an external tool cannot have openMode "embedded"/,
+      /^content\/tools\/excalidraw\.yaml:11 › excalidraw › RULE-07: an external tool cannot have openMode "embedded"/,
     );
   });
 
   it('F001_AC7 fails on a missing category and names the entry and the category', () => {
     expect(failures('F001_AC7-unknown-category')).toEqual([
-      'content/tools/units.yaml:6 › units › INV-07: category "finance" does not exist in content/categories.yaml',
+      'content/tools/units.yaml:8 › units › INV-07: category "finance" does not exist in content/categories.yaml',
     ]);
   });
 
   it('F001_AC8 fails when updated is before added and names the entry', () => {
     expect(failures('F001_AC8-updated-before-added')).toEqual([
-      'content/tools/json.yaml:10 › json › INV-06: updated 2026-01-02 is before added 2026-02-01',
+      'content/tools/json.yaml:12 › json › INV-06: updated 2026-01-02 is before added 2026-02-01',
     ]);
   });
 
   it('F001_AC9 fails when two categories share a tint and names both categories', () => {
     const lines = failures('F001_AC9-shared-tint');
     expect(lines).toEqual([
-      'content/categories.yaml:3 › media › RULE-14: tint "mango" is shared by categories "media" and "converters"',
-      'content/categories.yaml:4 › converters › RULE-14: tint "mango" is shared by categories "media" and "converters"',
+      'content/categories.yaml:16 › media › RULE-14: tint "mango" is shared by categories "media" and "converters"',
+      'content/categories.yaml:24 › converters › RULE-14: tint "mango" is shared by categories "media" and "converters"',
     ]);
   });
 
   it('INV-03 always refuses the production portal origin, even when the build is configured with another', () => {
     expect(failures('INV03-portal-origin', { portalOrigin: 'https://staging.example.com' })).toEqual([
-      'content/tools/self.yaml:7 › self-hosted › INV-03: an embedded tool must not be served from the portal origin https://tarokit.app',
+      'content/tools/self.yaml:9 › self-hosted › INV-03: an embedded tool must not be served from the portal origin https://tarokit.app',
     ]);
   });
 
   it('INV-03 a staging build (D-046) refuses a tool on the staging origin it is configured with', () => {
     expect(failures('INV03-staging-origin', { portalOrigin: 'https://staging.tarokit.app' })).toEqual([
-      'content/tools/staging-page.yaml:7 › staging-page › INV-03: an embedded tool must not be served from the portal origin https://staging.tarokit.app',
+      'content/tools/staging-page.yaml:9 › staging-page › INV-03: an embedded tool must not be served from the portal origin https://staging.tarokit.app',
     ]);
   });
 
   it('INV-03 fails on an embedded tool served from the portal origin', () => {
     expect(failures('INV03-portal-origin')).toEqual([
-      'content/tools/self.yaml:7 › self-hosted › INV-03: an embedded tool must not be served from the portal origin https://tarokit.app',
+      'content/tools/self.yaml:9 › self-hosted › INV-03: an embedded tool must not be served from the portal origin https://tarokit.app',
     ]);
   });
 
   it('INV-03 fails on a linked tool whose address is on the portal origin', () => {
     expect(failures('INV03-linked-portal-origin')).toEqual([
-      'content/tools/portal-page.yaml:8 › portal-page › INV-03: a linked tool must not be served from the portal origin https://tarokit.app',
+      'content/tools/portal-page.yaml:10 › portal-page › INV-03: a linked tool must not be served from the portal origin https://tarokit.app',
     ]);
   });
 
@@ -125,21 +125,21 @@ describe('MOD-Content validation', () => {
 
   it('INV-07 names the rule when a category id is not a lowercase slug', () => {
     expect(failures('INV07-category-id-not-slug')).toContain(
-      'content/categories.yaml:5 › Productivity › INV-07: id "Productivity" is not a lowercase slug',
+      'content/categories.yaml:27 › Productivity › INV-07: id "Productivity" is not a lowercase slug',
     );
   });
 
   it('INV-07 reports only the slug error when a tool category is not a lowercase slug', () => {
     expect(failures('INV07-tool-category-not-slug')).toEqual([
-      'content/tools/units.yaml:6 › units › INV-07: category "Converters" is not a lowercase slug',
+      'content/tools/units.yaml:8 › units › INV-07: category "Converters" is not a lowercase slug',
     ]);
   });
 
   it('reports one line per mistake when one entry has several', () => {
     expect(failures('several-errors-one-entry')).toEqual([
-      'content/tools/units.yaml:6 › units › INV-07: category "Converters" is not a lowercase slug',
-      'content/tools/units.yaml:7 › units › INV-02: url "http://units.tarokit.app/" is not a secure https address',
-      'content/tools/units.yaml:11 › units › INV-06: updated 2026-01-01 is before added 2026-02-02',
+      'content/tools/units.yaml:8 › units › INV-07: category "Converters" is not a lowercase slug',
+      'content/tools/units.yaml:9 › units › INV-02: url "http://units.tarokit.app/" is not a secure https address',
+      'content/tools/units.yaml:13 › units › INV-06: updated 2026-01-01 is before added 2026-02-02',
     ]);
   });
 
@@ -153,7 +153,7 @@ describe('MOD-Content validation', () => {
     writeFileSync(schemaPath, JSON.stringify(schema));
     const lines = failures('F001_AC5-external-embedded', { schemaPath });
     expect(lines).toHaveLength(1);
-    expect(lines[0]).toMatch(/^content\/tools\/excalidraw\.yaml:9 › excalidraw › RULE-07: /);
+    expect(lines[0]).toMatch(/^content\/tools\/excalidraw\.yaml:11 › excalidraw › RULE-07: /);
   });
 
   it('every rule-bearing subschema of the domain schema carries a rule tag', () => {
@@ -171,7 +171,7 @@ describe('MOD-Content validation', () => {
 
   it('fails on a misspelled field instead of silently defaulting', () => {
     expect(failures('typo-field')).toEqual([
-      'content/tools/units.yaml:9 › units › SCHEMA: (root): unknown field "opnMode"',
+      'content/tools/units.yaml:11 › units › SCHEMA: (root): unknown field "opnMode"',
     ]);
   });
 

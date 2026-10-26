@@ -8,7 +8,9 @@
 // Design: design/canvas/CatalogDesktop.dc.html, CatalogMobile.dc.html, CatalogStatesDesktop.dc.html.
 // Implements: F-002.R1, F-002.R2 (through CMP-ToolCard), F-002.R3, F-002.R6.
 import type { Category } from '../../../generated/domain.ts';
-import { t } from '../../copy/index.ts';
+import { tBoth } from '../../copy/index.ts';
+import L from '../../language/L.astro';
+import { localizedAttrs } from '../../language/attrs.ts';
 import CategoryTile from '../../design-system/CategoryTile.astro';
 import StateMessage from '../../design-system/StateMessage.astro';
 import ToolCard from '../../design-system/ToolCard.astro';
@@ -29,7 +31,7 @@ const { view, icons, dataUrl } = Astro.props;
 
 <CatalogSearch client:idle text={catalogSearchText()} dataUrl={view.empty ? undefined : dataUrl}>
   {!view.empty && (
-    <nav slot="nav" class="cats" aria-label={t('COPY-category.navLabel')}>
+    <nav slot="nav" class="cats" {...localizedAttrs('aria-label', tBoth('COPY-category.navLabel'))}>
       {view.nav.map((c) => (
         <CategoryTile name={c.name} href={c.href} count={c.count} tint={c.tint} iconSvg={icons[c.id] ?? ''} />
       ))}
@@ -37,7 +39,7 @@ const { view, icons, dataUrl } = Astro.props;
   )}
   {view.empty ? (
     <div class="state">
-      <StateMessage variant="empty" page title={t('COPY-catalog.empty')} />
+      <StateMessage variant="empty" page title={tBoth('COPY-catalog.empty')} />
     </div>
   ) : (
     <div class="groups" data-testid="catalog-groups">
@@ -46,7 +48,7 @@ const { view, icons, dataUrl } = Astro.props;
           <h2 id={`group-${category.id}`}>
             <span class="group-icon" data-tint={category.tint} aria-hidden="true" set:html={icons[category.id]} />
             <a href={path}>
-              {category.name}
+              <L text={category.name} />
               <span class="chevron" aria-hidden="true">
                 ›
               </span>

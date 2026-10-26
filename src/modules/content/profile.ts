@@ -1,9 +1,11 @@
 // MOD-Content derived views of the profile (ENT-Profile), as SCR-About shows it. Pure, no Node imports.
 // Implements: F-008.R1 (initials when there is no avatar; paragraph breaks kept), F-008.R2 (link behavior).
+import type { Text } from '../language/languages.ts';
 
 /** A profile link ready to render (F-008.R2). */
 export interface ProfileLink {
-  label: string;
+  /** A name (INV-09): one text, or one per language. */
+  label: Text;
   href: string;
   kind: 'email' | 'social' | 'website' | 'code' | 'other';
   /** Web links open in a new tab; email links start a message in the mail app. */
@@ -30,7 +32,7 @@ export const paragraphs = (text: string): string[] =>
 
 /** Profile links with their kind, new-tab behavior and destination (F-008.R2). */
 export function profileLinks(
-  links: readonly { label: string; url: string; kind?: ProfileLink['kind'] }[],
+  links: readonly { label: Text; url: string; kind?: ProfileLink['kind'] }[],
 ): ProfileLink[] {
   return links.map(({ label, url, kind }): ProfileLink => {
     if (url.startsWith('mailto:')) {

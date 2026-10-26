@@ -6,7 +6,7 @@
 //   2. a catalog stand-in: regular static ToolCards for every visible tool, whose linked cards record visits.
 // Content: tests/fixtures/content/F005-favorites (fx-01 … fx-26, ft-*, fx-linked; fx-hidden is hidden).
 import { getRegistry } from '../../../src/modules/content/index.ts';
-import { t } from '../../../src/modules/copy/index.ts';
+import { t, tBoth } from '../../../src/modules/copy/index.ts';
 import ToolCard from '../../../src/modules/design-system/ToolCard.astro';
 import { toolCardText } from '../../../src/modules/design-system/text.ts';
 import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
@@ -26,7 +26,7 @@ const tools = registry.visibleTools.map(({ id, name, summary, openMode, url, off
 <BaseLayout title="F-006 fixture" description="Tests-only page." path="/__fixtures__/recents/">
   <div class="fx">
     <h1>{t('COPY-nav.home')}</h1>
-    <F006RecentsHost client:load tools={tools} text={toolCardText()} heading={t('COPY-home.recents')} />
+    <F006RecentsHost client:load tools={tools} text={toolCardText()} heading={tBoth('COPY-home.recents')} />
 
     <section aria-labelledby="fx-catalog" data-testid="catalog">
       <h2 id="fx-catalog">{t('COPY-nav.tools')}</h2>

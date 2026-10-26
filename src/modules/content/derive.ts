@@ -2,6 +2,7 @@
 // No Node imports, and nothing relative to the viewer's date (that is MOD-Pages', in the browser).
 // Every function drops hidden entries itself (RULE-06).
 // Implements: F-001.R1 (an entry appears everywhere it belongs), F-001.R4 (hidden entries appear nowhere).
+import { pick, type Text } from '../language/languages.ts';
 import { PRIVACY_PATH, TERMS_PATH } from './policy.ts';
 import { RESUME_PATH } from './resume.ts';
 
@@ -45,7 +46,9 @@ export const toolPath = (id: string): string => `/t/${id}/`;
 export const categoryPath = (id: string): string => `/tools/${id}/`;
 
 /** Alphabetical by name, the same in Node and every browser locale. */
-export const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, 'en');
+/** Alphabetical by name; a name per language sorts by its en-US version (INV-09: a tool's name is one text). */
+export const byName = (a: { name: Text }, b: { name: Text }) =>
+  pick(a.name, 'en-US').localeCompare(pick(b.name, 'en-US'), 'en');
 /** Newest first; ties by name, then updated before added, so output is stable. */
 export const newestFirst = (a: DatedItem, b: DatedItem) =>
   b.date.localeCompare(a.date) || byName(a, b) || b.type.localeCompare(a.type);

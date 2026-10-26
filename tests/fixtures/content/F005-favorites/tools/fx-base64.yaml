@@ -3,9 +3,11 @@
 id: fx-base64
 kind: tool
 name: Base64
-summary: Encode and decode Base64 text and images.
+summary:
+  en-US: Encode and decode Base64 text and images.
+  vi-VN: Encode and decode Base64 text and images.
 category: developer
 url: https://fx-base64.example.com/
 origin: own
-tags: [encoding]
+tags: [ encoding ]
 added: 2026-10-01

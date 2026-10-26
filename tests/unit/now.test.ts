@@ -8,6 +8,7 @@ import { changelog, loadRegistry } from '../../src/modules/content/index.ts';
 import NowView from '../../src/modules/pages/now/NowView.astro';
 import { around, nowView, type NowViewData } from '../../src/modules/pages/now/now.ts';
 import { isStale, STALE_DAYS, staleToday } from '../../src/modules/pages/now/stale.ts';
+import { en } from './lang-html.ts';
 
 const root = join(import.meta.dirname, '../..');
 const fixture = (name: string) => loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content', name) });
@@ -19,12 +20,15 @@ const tool = (id: string, name: string, added: string, updated?: string, hidden 
   updated,
   hidden,
 });
-const note = (updated: string) => ({ body: 'First paragraph.\n\nSecond paragraph.\n', updated });
+const note = (updated: string) => ({
+  body: { 'en-US': 'First paragraph.\n\nSecond paragraph.\n', 'vi-VN': 'Đoạn một.\n\nĐoạn hai.\n' },
+  updated,
+});
 
 async function render(view: NowViewData) {
   const container = await AstroContainer.create();
   container.addServerRenderer({ renderer: preact, name: '@astrojs/preact' });
-  return container.renderToString(NowView, { props: { view } });
+  return en(await container.renderToString(NowView, { props: { view } }));
 }
 
 afterEach(() => {

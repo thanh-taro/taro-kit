@@ -6,44 +6,49 @@
 import { join } from 'node:path';
 import type { Profile } from '../../../generated/domain.ts';
 import { contentDirectory, type Registry } from '../../content/index.ts';
-import { t } from '../../copy/index.ts';
+import { tBoth } from '../../copy/index.ts';
+import { mapText, pick, type Loc } from '../../language/languages.ts';
 import { svgFromFile } from '../../design-system/icons.ts';
 import type { ToolCardTool } from '../../design-system/ToolCard.tsx';
 import { categoryRow, type CategoryNavItem } from '../category.ts';
-import { around, dateText, type Around, type DateText } from '../now/now.ts';
+import { aroundBoth, copyAround, dateText, type DateText, type LocAround } from '../now/now.ts';
 import type { WhatsNewProps, WhatsNewTool } from './WhatsNew.tsx';
 
 const SLOT = '\u0000';
 
-/** COPY-home.intro around the name, so the name can carry its own style (design HomeDesktop). */
+/** COPY-home.intro around the name in each language, so the name can carry its own style (design HomeDesktop). */
 export interface HomeIntro {
-  before: string;
+  text: LocAround;
+  /** The nickname or full name: one text for both languages (INV-09). */
   name: string;
-  after: string;
 }
 
-/** F-007.R5: "I'm {nickname}. {headline}", with the full name when there is no nickname. */
+/** F-007.R5: "I'm {nickname}. {headline}", with the full name when there is no nickname; in both languages. */
 export function homeIntro(profile: Pick<Profile, 'name' | 'nickname' | 'headline'>): HomeIntro {
-  const text = around(t('COPY-home.intro', { nickname: SLOT, headline: profile.headline }));
-  return { before: text.before, name: profile.nickname || profile.name, after: text.after };
+  const text = aroundBoth(
+    tBoth('COPY-home.intro', (lang) => ({ nickname: SLOT, headline: pick(profile.headline, lang) })),
+  );
+  return { text, name: profile.nickname || profile.name };
 }
 
 /** F-007.R6: COPY-home.firstVisit around its {shortcut} (shown as a key cap), and COPY-home.firstVisitTouch. */
-export function firstVisitText(): { keyboard: Around; touch: string } {
-  return { keyboard: around(t('COPY-home.firstVisit', { shortcut: SLOT })), touch: t('COPY-home.firstVisitTouch') };
+export function firstVisitText(): { keyboard: LocAround; touch: Loc } {
+  return { keyboard: copyAround('COPY-home.firstVisit', 'shortcut'), touch: tBoth('COPY-home.firstVisitTouch') };
 }
 
 /** WhatsNew's props from candidate tools: each date's text formatted once, as SCR-Now's changelog items (absolute dates, without the year). */
 export function whatsNewProps(tools: readonly WhatsNewTool[]): WhatsNewProps {
   const dates: Record<string, DateText> = {};
   for (const tool of tools) for (const d of [tool.added, tool.updated]) if (d) dates[d] ??= dateText(d, false);
-  const label = (id: 'COPY-now.changelogAdded' | 'COPY-now.changelogUpdated') =>
-    around(t(id, { tool: SLOT })).before.trim();
+  const label = (id: 'COPY-now.changelogAdded' | 'COPY-now.changelogUpdated'): Loc => {
+    const parts = copyAround(id, 'tool');
+    return mapText('', (_, lang) => parts[lang].before.trim());
+  };
   return {
     tools: tools.map(({ id, name, summary, added, updated }) => ({ id, name, summary, added, updated })),
     dates,
     labels: { added: label('COPY-now.changelogAdded'), updated: label('COPY-now.changelogUpdated') },
-    heading: t('COPY-home.whatsNew'),
+    heading: tBoth('COPY-home.whatsNew'),
   };
 }
 

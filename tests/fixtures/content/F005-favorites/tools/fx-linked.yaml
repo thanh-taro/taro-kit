@@ -2,7 +2,9 @@
 id: fx-linked
 kind: tool
 name: Fixture linked tool
-summary: Fixture tool on its own site.
+summary:
+  en-US: Fixture tool on its own site.
+  vi-VN: Fixture tool on its own site.
 category: productivity
 url: https://fx-linked.example.com/
 origin: external

@@ -6,8 +6,10 @@
 //   is the tool's address plus the theme showing at that moment (F-012.R5, ADR-0011). The loading state shows
 //   until the frame's `load` (F-003.R5); after RULE-11's threshold the header switches to its slow variant and
 //   the same frame keeps loading.
-// - Theme hand-off: connected for as long as the frame exists (F-012.R5/R6).
-// - Open-in-new-tab uses the catalog address as is: no theme (F-012.R5).
+// - Theme and language hand-off: connected for as long as the frame exists (F-012.R5/R6, F-019.R7); the `src`
+//   carries both values showing when the frame is made (a frame made again on reconnect gets the current ones).
+// - Open-in-new-tab uses the catalog address as is: no theme, no language (F-012.R5, F-019.R7).
+// - Texts are in both languages (<L>, localized attributes; F-019.R4).
 // - Visits: showing the view records the tool in recents (F-006.R1), offline or slow included.
 // Strings, icons and attributes arrive as build-time props, so the island ships no copy catalog or icon set.
 import type { ComponentChildren } from 'preact';
@@ -15,19 +17,23 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { FrameAttributes } from '../security-policy/frame.ts';
 import FavoriteToggle, { type FavoriteToggleLabels } from '../design-system/FavoriteToggle.tsx';
 import ToolHeader, { type ToolHeaderText } from '../design-system/ToolHeader.tsx';
+import { language } from '../language/index.ts';
+import { localizedAttrs } from '../language/attrs.ts';
+import { L } from '../language/L.tsx';
+import type { Loc } from '../language/languages.ts';
 import { personalData } from '../personal-data/index.ts';
 import { theme } from '../theme/index.ts';
 import { initialPhase, SLOW_LOAD_MS, type ToolPhase } from './phase.ts';
-import { connectThemeHandoff, embeddedSrc, type HandoffTheme } from './theme-handoff.ts';
+import { connectThemeHandoff, embeddedSrc, type HandoffLanguage, type HandoffTheme } from './theme-handoff.ts';
 
 export interface ToolFrameProps {
   tool: { id: string; name: string; url: string; offline: boolean };
   /** frameAttributesFor(tool) plus the frame's title (COPY-tool.frameLabel). */
-  frame: FrameAttributes & { title: string };
+  frame: FrameAttributes & { title: Loc };
   header: ToolHeaderText;
   favorite: { labels: FavoriteToggleLabels; star: string };
   /** COPY-tool.loading for this tool. */
-  loading: string;
+  loading: Loc;
   /** The offline state (CMP-StateMessage page variant with COPY-tool.offline), rendered by Astro at build. */
   children?: ComponentChildren;
 }
@@ -37,6 +43,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
   const [phase, setPhase] = useState<ToolPhase>('loading');
   const [src, setSrc] = useState<string | null>(null);
   const srcTheme = useRef<HandoffTheme>('dark');
+  const srcLanguage = useRef<HandoffLanguage>('en-US');
   const frameRef = useRef<HTMLIFrameElement>(null);
   const areaRef = useRef<HTMLElement>(null);
 
@@ -48,7 +55,8 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
   useEffect(() => {
     const start = () => {
       srcTheme.current = theme().shownTheme.peek();
-      setSrc(embeddedSrc(tool.url, srcTheme.current));
+      srcLanguage.current = language().shownLanguage.peek();
+      setSrc(embeddedSrc(tool.url, srcTheme.current, srcLanguage.current));
       setPhase('loading');
     };
     if (initialPhase({ online: navigator.onLine, offlineCapable: tool.offline }) === 'loading') return start();
@@ -82,6 +90,8 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
       toolUrl: tool.url,
       srcTheme: srcTheme.current,
       theme: theme().shownTheme,
+      srcLanguage: srcLanguage.current,
+      language: language().shownLanguage,
       host: window,
     });
   }, [src, tool.url]);
@@ -95,7 +105,14 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
           <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: favorite.star }} />
         </FavoriteToggle>
       </ToolHeader>
-      <section ref={areaRef} id="tool" class="tk-toolarea" aria-label={frame.title} tabindex={-1} data-phase={phase}>
+      <section
+        ref={areaRef}
+        id="tool"
+        class="tk-toolarea"
+        {...localizedAttrs('aria-label', frame.title)}
+        tabindex={-1}
+        data-phase={phase}
+      >
         {phase === 'offline' ? (
           children
         ) : (
@@ -104,7 +121,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
               <iframe
                 ref={frameRef}
                 src={src}
-                title={frame.title}
+                {...localizedAttrs('title', frame.title, language().shownLanguage.peek())}
                 sandbox={frame.sandbox}
                 allow={frame.allow}
                 referrerpolicy={frame.referrerpolicy}
@@ -114,7 +131,9 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
             {waiting && (
               <div class="tk-toolarea__loading" role="status">
                 <span class="tk-spinner" aria-hidden="true" />
-                <span>{loading}</span>
+                <span>
+                  <L text={loading} />
+                </span>
               </div>
             )}
           </>

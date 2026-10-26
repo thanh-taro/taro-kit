@@ -4,7 +4,14 @@
 // full in <time datetime>; 3 each section as an <h2> followed by its paragraphs (<p>) and bulleted lists (<ul>), at
 // the reading width. Web links open in a new tab (platform-mapping); email links open the mail app.
 // Design: design/canvas/PolicyDesktop.dc.html, PolicyMobile.dc.html.
-// Implements: F-018.R1, F-018.R2.
+// Languages (F-019.R4, R6): title, headings and bodies in both (<L>, <Each>), the date in each language's
+// conventions; while Vietnamese shows, the translation note follows the date (it is only in the vi-VN text, marked
+// `data-l`, so CSS hides it with English showing). Design: PolicyDesktop/PolicyMobile (vi).
+// Implements: F-018.R1, F-018.R2, F-019.R6.
+import Icon from '../../design-system/Icon.astro';
+import Each from '../../language/Each.astro';
+import L from '../../language/L.astro';
+import type { Lang } from '../../language/languages.ts';
 import type { PolicyViewData } from './policy.ts';
 import PolicyText from './PolicyText.astro';
 
@@ -16,31 +23,49 @@ const { view } = Astro.props;
 
 <article class="policy">
   <div class="head">
-    <h1>{view.title}</h1>
-    <p class="updated">
-      {view.updatedLabel.before}
-      <time datetime={view.updated}>{view.updatedText}</time>
-      {view.updatedLabel.after}
+    <h1>
+      <L text={view.title} />
+    </h1>
+    <p class="updated tk-mono-words">
+      <Each>
+        {(lang: Lang) => (
+          <Fragment>
+            {view.updatedLabel[lang].before}
+            <time datetime={view.updated}>{view.updatedText[lang]}</time>
+            {view.updatedLabel[lang].after}
+          </Fragment>
+        )}
+      </Each>
     </p>
+    <div class="translation-note" lang="vi-VN" data-l data-testid="policy-translation-note">
+      <Icon name="info" size={16} />
+      <p>{view.translationNote}</p>
+    </div>
   </div>
   {view.sections.map((section) => (
     <section>
-      <h2>{section.heading}</h2>
-      {section.blocks.map((block) =>
-        block.kind === 'paragraph' ? (
-          <p>
-            <PolicyText parts={block.parts} />
-          </p>
-        ) : (
-          <ul>
-            {block.items.map((item) => (
-              <li>
-                <PolicyText parts={item} />
-              </li>
-            ))}
-          </ul>
-        ),
-      )}
+      <h2>
+        <L text={section.heading} />
+      </h2>
+      <Each as="div" class="body">
+        {(lang: Lang) =>
+          section.blocks[lang].map((block) =>
+            block.kind === 'paragraph' ? (
+              <p>
+                <PolicyText parts={block.parts} />
+              </p>
+            ) : (
+              <ul>
+                {block.items.map((item) => (
+                  <li>
+                    <PolicyText parts={item} />
+                  </li>
+                ))}
+              </ul>
+            ),
+          )
+        }
+      </Each>
     </section>
   ))}
 </article>
@@ -70,10 +95,31 @@ const { view } = Astro.props;
     font-size: var(--tk-font-size-sm);
     font-weight: var(--tk-font-weight-medium);
   }
-  section {
+  section,
+  .body {
     display: flex;
     flex-direction: column;
     gap: var(--tk-space-3);
+  }
+  /* F-019.R6 (design PolicyDesktop vi): the translation note, a tinted panel with the info icon in the accent. */
+  .translation-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--tk-space-3);
+    padding: var(--tk-space-3) var(--tk-space-4);
+    background: var(--tk-color-tint);
+    color: var(--tk-color-fg);
+    border-radius: var(--tk-radius-lg);
+  }
+  .translation-note :global(svg) {
+    flex: none;
+    margin-block-start: 2px;
+    color: var(--tk-color-accent);
+  }
+  .translation-note p {
+    margin: 0;
+    font-size: var(--tk-font-size-md);
+    line-height: var(--tk-font-line-height-normal);
   }
   h2 {
     font-family: var(--tk-font-family-display);

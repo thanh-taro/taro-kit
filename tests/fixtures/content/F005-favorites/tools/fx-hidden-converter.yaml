@@ -2,7 +2,9 @@
 id: fx-hidden-converter
 kind: tool
 name: Fixture hidden converter
-summary: Fixture tool, hidden.
+summary:
+  en-US: Fixture tool, hidden.
+  vi-VN: Fixture tool, hidden.
 category: converters
 url: https://fx-hidden-converter.example.com/
 origin: own

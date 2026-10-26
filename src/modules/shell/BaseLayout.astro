@@ -1,6 +1,7 @@
 ---
 // MOD-Shell <BaseLayout>: the page frame used by every route (CMP-AppShell).
-// Head: CSP meta (Astro, ADR-0009), the theme script before first paint (MOD-Theme, F-012.R4),
+// Head: CSP meta (Astro, ADR-0009), the theme and language script before first paint (MOD-Theme, F-012.R4;
+// MOD-Language, F-019.R3; <html> says en-US until it runs, F-019.R8),
 // the link-preview metadata (MOD-Meta <HeadMeta>, F-015), the single font preload (ADR-0003), the catalog data preload. Body: skip link first, banner, main,
 // and on the full variant the footer (contentinfo, F-018.R3), which main's minimum height keeps below the first screen.
 // Slot: default (page content). Offline and updates (F-011): the manifest link here, the worker registration in
@@ -10,7 +11,9 @@
 import '../design-system/styles/global.css';
 import manropeLatin from '../../generated/fonts/manrope-latin.woff2?url';
 import { getRegistry } from '../content/index.ts';
-import { t } from '../copy/index.ts';
+import { tBoth } from '../copy/index.ts';
+import L from '../language/L.astro';
+import type { Loc } from '../language/languages.ts';
 import HeadMeta from '../meta/HeadMeta.astro';
 import { FAVICONS, MANIFEST_PATH } from '../offline/manifest.ts';
 import { paletteBootstrap } from '../palette/logic.ts';
@@ -23,7 +26,10 @@ import AppShell from './AppShell.astro';
 import AppShellFooter from './AppShellFooter.astro';
 
 interface Props {
+  /** The English title (link previews, F-019.R8). */
   title: string;
+  /** The page title in both languages (the browser's title, F-019.R4). */
+  titles: Loc;
   description: string;
   /** Current route path, e.g. "/". */
   path: string;
@@ -36,7 +42,7 @@ interface Props {
   /** Where the skip link jumps: the main region (default), or into the tool on the tool view. */
   skipTo?: string;
 }
-const { title, description, path, noindex, embeddedToolUrl, variant = 'full', skipTo = '#main' } = Astro.props;
+const { title, titles, description, path, noindex, embeddedToolUrl, variant = 'full', skipTo = '#main' } = Astro.props;
 
 // The CSP meta renders with <head>, so inline-script hashes and the page's frame-src go in here (SP-6).
 if (!Astro.csp) throw new Error('security.csp must be enabled (ADR-0009)');
@@ -46,11 +52,12 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
 ---
 
 <!doctype html>
-<html lang="en">
+{/* F-019.R8: English without scripts and for every crawler; the blocking script switches both when vi-VN shows. */}
+<html lang="en-US" data-lang="en-US">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <HeadMeta title={title} description={description} path={path} noindex={noindex} />
+    <HeadMeta title={title} titles={titles} description={description} path={path} noindex={noindex} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatin} />
     {/* NFR-01 (QA perf): the catalog data file starts downloading with the page, so the palette and catalog search,
     which fetch it when they hydrate, are ready sooner on a first visit. Same origin (CSP connect-src 'self');
@@ -71,7 +78,7 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
     {/* set:html on a build-time constant only (themeInlineScript, hashed for the CSP). */}
     <script is:inline set:html={themeInlineScript} />
     <a href={skipTo} class="skip">
-      {t('COPY-shell.skip')}
+      <L text={tBoth('COPY-shell.skip')} />
     </a>
     <div class="frame" data-variant={variant}>
       <AppShell path={path} variant={variant} resume={!!getRegistry().resume} />
@@ -87,10 +94,14 @@ Astro.csp.insertDirective(frameSrcDirective(embeddedToolUrl));
       // MOD-Theme after first paint: follow the device setting live and apply every change (F-012.R1, R2).
       import { connectCardAvailability } from '../design-system/tool-card-availability.ts';
       import { connectOffline, online } from '../offline/index.ts';
+      import { connectLanguageSwitch, language } from '../language/index.ts';
       import { theme } from '../theme/index.ts';
       import { connectVisitRecording } from '../tool-host/visits.ts';
       import { connectDayRecording } from './day-recording.ts';
       theme();
+      // MOD-Language after first paint: applies every change of the language showing, and arms the switches (F-019.R2).
+      language();
+      connectLanguageSwitch();
       // F-006.R6 (RULE-13): every page view, and every return to the page, records today's local date once.
       connectDayRecording();
       // F-006.R1: following a link to a linked tool's own address records the visit (cards, the linked note).

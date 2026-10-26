@@ -2,18 +2,22 @@
 // Switches to the opposite of the theme showing and stores that choice (MOD-Theme `toggle`).
 // Labels and icons arrive as props rendered at build, so the island ships no copy catalog or icon set.
 import { useEffect, useState } from 'preact/hooks';
+import { localizedAttrs } from '../language/attrs.ts';
+import type { Loc } from '../language/languages.ts';
+import { useShownLanguage } from '../language/use.ts';
 import { theme, type ShownTheme } from '../theme/index.ts';
 import { useHydrated } from './hydrated.ts';
 
 interface Props {
-  /** COPY-shell.themeToggle, rendered for each target theme. */
-  labels: Record<ShownTheme, string>;
+  /** COPY-shell.themeToggle, rendered for each target theme in both languages (F-019.R4). */
+  labels: Record<ShownTheme, Loc>;
   /** Inline SVG markup per target theme. */
   icons: Record<ShownTheme, string>;
 }
 
 export default function ThemeToggle({ labels, icons }: Props) {
   const hydrated = useHydrated();
+  const lang = useShownLanguage();
   const [shown, setShown] = useState<ShownTheme>('dark');
   // Subscribes after hydration: the build has no device, so the first client render matches the server's.
   useEffect(() => theme().shownTheme.subscribe(setShown), []);
@@ -23,7 +27,7 @@ export default function ThemeToggle({ labels, icons }: Props) {
     <button
       type="button"
       class="tk-iconbtn"
-      aria-label={labels[next]}
+      {...localizedAttrs('aria-label', labels[next], lang)}
       disabled={!hydrated}
       onClick={() => theme().toggle()}
       dangerouslySetInnerHTML={{ __html: icons[next] }}

@@ -2,9 +2,11 @@
 id: fx-json-formatter
 kind: tool
 name: JSON Formatter
-summary: Pretty-print and validate JSON.
+summary:
+  en-US: Pretty-print and validate JSON.
+  vi-VN: Pretty-print and validate JSON.
 category: developer
 url: https://fx-json-formatter.example.com/
 origin: own
-tags: [json, formatter]
+tags: [ json, formatter ]
 added: 2026-10-01

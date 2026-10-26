@@ -9,6 +9,8 @@
 // - `data-tk-whatsnew-ready` marks the island as run, also when there is nothing to show.
 import { useEffect, useId, useState } from 'preact/hooks';
 import { toolPath } from '../../content/derive.ts';
+import { L } from '../../language/L.tsx';
+import type { Loc } from '../../language/languages.ts';
 import type { DateText } from '../now/now.ts';
 import { localDate, whatsNew } from '../whats-new.ts';
 import './home.css';
@@ -17,7 +19,7 @@ import './home.css';
 export interface WhatsNewTool {
   id: string;
   name: string;
-  summary: string;
+  summary: Loc;
   added: string;
   updated?: string;
 }
@@ -27,9 +29,9 @@ export interface WhatsNewProps {
   /** Each candidate date's text, formatted once at build. */
   dates: Record<string, DateText>;
   /** The kind labels: "Added" and "Improved". */
-  labels: { added: string; updated: string };
+  labels: { added: Loc; updated: Loc };
   /** COPY-home.whatsNew */
-  heading: string;
+  heading: Loc;
 }
 
 export default function WhatsNew({ tools, dates, labels, heading }: WhatsNewProps) {
@@ -43,22 +45,30 @@ export default function WhatsNew({ tools, dates, labels, heading }: WhatsNewProp
   return (
     <section class="tk-whatsnew" aria-labelledby={headingId} data-tk-whatsnew-ready>
       <h2 id={headingId} class="tk-whatsnew__heading">
-        {heading}
+        <L text={heading} />
       </h2>
       <ul class="tk-whatsnew__list">
         {items.map((item) => {
           const date = dates[item.date];
           return (
             <li key={item.id} class="tk-whatsnew__item" data-type={item.type}>
-              <span class="tk-whatsnew__kind">{item.type === 'updated' ? labels.updated : labels.added}</span>
+              <span class="tk-whatsnew__kind">
+                <L text={item.type === 'updated' ? labels.updated : labels.added} />
+              </span>
               <a class="tk-whatsnew__link" href={toolPath(item.id)}>
                 {item.name}
               </a>
-              <span class="tk-whatsnew__summary">{byId.get(item.id)?.summary}</span>
+              <span class="tk-whatsnew__summary">
+                <L text={byId.get(item.id)?.summary ?? ''} />
+              </span>
               {date && (
-                <time class="tk-whatsnew__date" dateTime={date.iso}>
-                  <span aria-hidden="true">{date.shown}</span>
-                  <span class="tk-visually-hidden">{date.full}</span>
+                <time class="tk-whatsnew__date tk-mono-words" dateTime={date.iso}>
+                  <span aria-hidden="true">
+                    <L text={date.shown} />
+                  </span>
+                  <span class="tk-visually-hidden">
+                    <L text={date.full} />
+                  </span>
                 </time>
               )}
             </li>

@@ -1,27 +1,43 @@
 # yaml-language-server: $schema=./schemas/categories.json
 # The M-1 categories (ENT-Category, D-027), in display order. Each tint is used once (RULE-14).
-# Intros in Taro's voice (PRN-04), at most 160 characters.
+# Intros in Taro's voice (PRN-04), at most 160 characters. Names and intros are written in both languages (INV-09).
 - id: developer
-  name: Developer tools
+  name:
+    en-US: Developer tools
+    vi-VN: Công cụ lập trình
   order: 1
-  intro: The helpers I reach for while I write code. Built by a backend dev, so expect fewer pixels and more JSON.
+  intro:
+    en-US: The helpers I reach for while I write code. Built by a backend dev, so expect fewer pixels and more JSON.
+    vi-VN: Mấy món mình hay dùng khi viết code. Dân backend làm ra, nên ít pixel mà nhiều JSON.
   icon: icons/code.svg
   tint: violet
 - id: media
-  name: Media tools
+  name:
+    en-US: Media tools
+    vi-VN: Công cụ đa phương tiện
   order: 2
-  intro: Quick fixes for images, audio and video, for when opening a heavy editor feels like overkill.
+  intro:
+    en-US: Quick fixes for images, audio and video, for when opening a heavy editor feels like overkill.
+    vi-VN: Sửa nhanh ảnh, âm thanh và video, cho những lúc mở cả một trình chỉnh sửa nặng nề thì hơi quá.
   icon: icons/clapperboard.svg
   tint: mango
 - id: converters
-  name: Converters & calculators
+  name:
+    en-US: Converters & calculators
+    vi-VN: Chuyển đổi & tính toán
   order: 3
-  intro: Numbers and units worked out for you, because mental math at 5 p.m. is not a feature.
+  intro:
+    en-US: Numbers and units worked out for you, because mental math at 5 p.m. is not a feature.
+    vi-VN: Mình tính sẵn số liệu và đổi đơn vị giúp bạn, vì tính nhẩm lúc 5 giờ chiều đâu phải là một tính năng.
   icon: icons/calculator.svg
   tint: sky
 - id: productivity
-  name: Productivity & relax
+  name:
+    en-US: Productivity & relax
+    vi-VN: Năng suất & thư giãn
   order: 4
-  intro: Tools that keep my day on track, and a few that remind me to take a break. Both matter.
+  intro:
+    en-US: Tools that keep my day on track, and a few that remind me to take a break. Both matter.
+    vi-VN: Mấy công cụ giúp mình giữ nhịp cả ngày, và vài món nhắc mình nghỉ ngơi. Cả hai đều quan trọng.
   icon: icons/coffee.svg
   tint: mint

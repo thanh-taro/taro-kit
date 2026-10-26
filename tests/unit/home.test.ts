@@ -4,6 +4,8 @@
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { loadRegistry } from '../../src/modules/content/index.ts';
+import { tBoth } from '../../src/modules/copy/index.ts';
+import { pick } from '../../src/modules/language/languages.ts';
 import { categoryRow } from '../../src/modules/pages/category.ts';
 import { firstVisitText, homeIntro, homeView } from '../../src/modules/pages/home/home.ts';
 import {
@@ -53,34 +55,71 @@ describe('F-007.R1 greeting', () => {
   });
 });
 
+describe('F-019.R4 the clock in both languages', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+  /** One element of the clock: a version per language, as <L> renders it. */
+  const clockPart = () => {
+    const parts = (['en-US', 'vi-VN'] as const).map((lang) => ({
+      textContent: '',
+      getAttribute: (k: string) => (k === 'lang' ? lang : null),
+    }));
+    return { parts, querySelectorAll: () => parts, setAttribute: vi.fn() };
+  };
+
+  it('F019_AC8 Friday 2026-10-23 at 08:00 reads "Chào buổi sáng", "Thứ 6, 23 thg 10" and "8:00" in Vietnamese', () => {
+    vi.useFakeTimers({ toFake: ['Date', 'setTimeout'] });
+    vi.setSystemTime(new Date(2026, 9, 23, 8, 0));
+    const els: Record<string, ReturnType<typeof clockPart>> = {};
+    vi.stubGlobal('document', { getElementById: (id: string) => (els[id] ??= clockPart()) });
+    new Function(homeClockScript())();
+    const vi_ = (id: string) => els[id]!.parts[1]!.textContent;
+    const en_ = (id: string) => els[id]!.parts[0]!.textContent;
+    expect(vi_('home-greeting')).toBe('Chào buổi sáng');
+    expect(vi_('home-date')).toBe('Thứ 6, 23 thg 10');
+    expect(vi_('home-time')).toBe('8:00');
+    expect(en_('home-greeting')).toBe('Good morning');
+    expect(en_('home-date')).toBe('Fri, Oct 23');
+    expect(els['home-clock-time']!.setAttribute).toHaveBeenCalledWith('datetime', '2026-10-23T08:00');
+  });
+});
+
 describe('F-007.R5 introduction', () => {
   it('F007_AC9 uses the nickname and the headline, around COPY-home.intro', () => {
-    expect(homeIntro({ name: 'Nguyen Tri Thanh', nickname: 'Taro', headline: 'I build tools.' })).toEqual({
-      before: "I'm ",
-      name: 'Taro',
-      after: '. I build tools.',
+    const intro = homeIntro({
+      name: 'Nguyen Tri Thanh',
+      nickname: 'Taro',
+      headline: { 'en-US': 'I build tools.', 'vi-VN': 'Tôi làm công cụ.' },
     });
+    expect(intro.name).toBe('Taro');
+    expect(intro.text['en-US']).toEqual({ before: "I'm ", after: '. I build tools.' });
   });
 
   it('F007_AC9 falls back to the full name without a nickname', () => {
-    expect(homeIntro({ name: 'Nguyen Tri Thanh', headline: 'I build tools.' }).name).toBe('Nguyen Tri Thanh');
+    expect(
+      homeIntro({ name: 'Nguyen Tri Thanh', headline: { 'en-US': 'I build tools.', 'vi-VN': 'Tôi làm công cụ.' } })
+        .name,
+    ).toBe('Nguyen Tri Thanh');
   });
 
   it('F007_AC9 the production view introduces the profile', () => {
     const view = homeView(prod, samplesDir);
     expect(view.intro.name).toBe(prod.profile.nickname ?? prod.profile.name);
-    expect(view.intro.after).toContain(prod.profile.headline);
+    expect(view.intro.text['en-US'].after).toContain(pick(prod.profile.headline, 'en-US'));
+    expect(view.intro.text['vi-VN'].after).toContain(pick(prod.profile.headline, 'vi-VN'));
   });
 });
 
 describe('F-007.R6 first-visit invitation', () => {
   it('F007_AC10 splits COPY-home.firstVisit around the shortcut, and keeps the touch text whole', () => {
     const text = firstVisitText();
-    expect(text.keyboard.before).toBe(
+    expect(text.keyboard['en-US'].before).toBe(
       "New here? These are the tools I've built for work and life. Browse them, or press ",
     );
-    expect(text.keyboard.after).toBe(" and I'll find anything for you.");
-    expect(text.touch).toBe(
+    expect(text.keyboard['en-US'].after).toBe(" and I'll find anything for you.");
+    expect(text.touch['en-US']).toBe(
       "New here? These are the tools I've built for work and life. Browse them, or tap search and I'll find anything for you.",
     );
   });
@@ -109,7 +148,7 @@ describe('F-007.R7 browse by category', () => {
       tool('d', 'media'),
       tool('e', 'converters', true),
     ];
-    expect(categoryRow(categories, tools)).toEqual([
+    expect(categoryRow(categories, tools).map((c) => ({ ...c, count: c.count['en-US'] }))).toEqual([
       { id: 'developer', name: 'Developer tools', tint: 'violet', href: '/tools/developer/', count: '3 tools' },
       { id: 'media', name: 'Media tools', tint: 'mango', href: '/tools/media/', count: '1 tool' },
     ]);
@@ -123,7 +162,7 @@ describe('F-007.R7 browse by category', () => {
     expect(view.categories.map((c) => c.id)).toEqual(expected.map((c) => c.id));
     for (const c of view.categories) {
       const n = expected.find((e) => e.id === c.id)!.n;
-      expect(c.count).toBe(n === 1 ? '1 tool' : `${n} tools`);
+      expect(c.count['en-US']).toBe(n === 1 ? '1 tool' : `${n} tools`);
       expect(c.iconSvg).toContain('<svg');
     }
   });
@@ -137,7 +176,8 @@ describe('F-007.R4 what’s new candidates', () => {
       expect(view.whatsNew.dates[t.added]).toMatchObject({ iso: t.added });
       if (t.updated) expect(view.whatsNew.dates[t.updated]).toMatchObject({ iso: t.updated });
     }
-    expect(view.whatsNew.labels).toEqual({ added: 'Added', updated: 'Improved' });
+    expect(view.whatsNew.labels.added['en-US']).toBe('Added');
+    expect(view.whatsNew.labels.updated['en-US']).toBe('Improved');
   });
 });
 
@@ -166,7 +206,10 @@ describe('F-007.R3 predicting the personal sections before first paint', () => {
   });
   const ids = Array.from({ length: 30 }, (_, i) => `t-${i}`);
   const tools = Object.fromEntries(ids.map((id, i) => [id, [`Tool ${i}`, i % 2 ? 1 : 0] as [string, 0 | 1]]));
-  const headings = { favorites: 'Your favorites', recents: 'Recently used' };
+  const headings = {
+    favorites: { 'en-US': 'Your favorites', 'vi-VN': 'Mục yêu thích' },
+    recents: { 'en-US': 'Recently used', 'vi-VN': 'Dùng gần đây' },
+  };
 
   it('F007_AC4 two favorites and no recents predict two favorites and no recents', () => {
     stub(doc(['t-1', 't-2'], []));
@@ -298,10 +341,14 @@ describe('F-007.R3 predicting the personal sections before first paint', () => {
         this.children.push(c);
       },
     });
-    const run = (online: boolean, touch = false) => {
+    const run = (online: boolean, touch = false, lang = 'en-US') => {
       const reserve = node('div');
       const region = { ...node('div'), querySelector: () => reserve };
-      vi.stubGlobal('document', { getElementById: () => region, createElement: node });
+      vi.stubGlobal('document', {
+        getElementById: () => region,
+        createElement: node,
+        documentElement: { getAttribute: (k: string) => (k === 'lang' ? lang : null) },
+      });
       vi.stubGlobal('matchMedia', () => ({ matches: touch }));
       vi.stubGlobal('navigator', { onLine: online });
       new Function(homeReserveScript(tools, headings))();
@@ -328,6 +375,15 @@ describe('F-007.R3 predicting the personal sections before first paint', () => {
       const [one, two] = cards(reserve.children[0]!);
       expect(one!.children.at(-1)).toMatchObject({ className: 'tk-toolcard__unavailable' });
       expect(two!.children).toHaveLength(1);
+    });
+
+    it('F-019.R4 the placeholder headings and unavailable line are in the language showing', () => {
+      stub(doc(['t-1'], []));
+      const { reserve } = run(false, false, 'vi-VN');
+      const section = reserve.children[0]!;
+      expect(section.children[0]!.children[0]!.textContent).toBe('Mục yêu thích');
+      const unavailable = cards(section)[0]!.children.at(-1)!;
+      expect(unavailable.textContent).toBe(tBoth('COPY-tool.unavailable')['vi-VN']);
     });
 
     it('F007_AC10 with nothing stored: the empty state, keyboard or touch, and no placeholders', () => {

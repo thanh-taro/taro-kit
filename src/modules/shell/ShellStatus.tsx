@@ -6,15 +6,17 @@
 // Each region is a polite status that is always present (empty, and taking no space, while there is nothing to
 // say), so its message is announced when it appears (CMP-AppShell accessibility).
 // Implements: F-011.R3 (indicator) and F-011.R4 (message).
+import { L } from '../language/L.tsx';
+import type { Loc } from '../language/languages.ts';
 import { activateUpdate, online, updateReady } from '../offline/index.ts';
 
 export interface ShellStatusText {
-  /** COPY-shell.offline */
-  offline: string;
+  /** COPY-shell.offline, in both languages (F-019.R4: <L> shows the language showing). */
+  offline: Loc;
   /** COPY-shell.updateReady */
-  updateReady: string;
+  updateReady: Loc;
   /** COPY-shell.refresh */
-  refresh: string;
+  refresh: Loc;
   /** Build-time SVG markup from the icon set (16 px). */
   icons: { offline: string; update: string };
 }
@@ -34,7 +36,7 @@ export default function ShellStatus({ place, text }: Props) {
   const offlineNote = offline && (
     <>
       <Svg markup={text.icons.offline} />
-      {text.offline}
+      <L text={text.offline} />
     </>
   );
   if (place === 'header')
@@ -52,9 +54,11 @@ export default function ShellStatus({ place, text }: Props) {
         {updateReady.value && (
           <>
             <Svg markup={text.icons.update} />
-            <span class="tk-status__text">{text.updateReady}</span>
+            <span class="tk-status__text">
+              <L text={text.updateReady} />
+            </span>
             <button type="button" class="tk-status__refresh" onClick={() => void activateUpdate()}>
-              {text.refresh}
+              <L text={text.refresh} />
             </button>
           </>
         )}

@@ -2,7 +2,9 @@
 id: json
 kind: tool
 name: JSON Formatter
-summary: Fixture tool updated before it was added.
+summary:
+  en-US: Fixture tool updated before it was added.
+  vi-VN: Fixture tool updated before it was added.
 category: developer
 url: https://json.tarokit.app/
 origin: own

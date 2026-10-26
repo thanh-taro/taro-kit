@@ -4,7 +4,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadRegistry, PORTAL_ORIGIN, toolPath } from '../../src/modules/content/index.ts';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { t } from '../../src/modules/copy/index.ts';
+import { t, tBoth } from '../../src/modules/copy/index.ts';
+import { pick } from '../../src/modules/language/languages.ts';
 import HeadMeta from '../../src/modules/meta/HeadMeta.astro';
 import {
   headTags,
@@ -31,6 +32,21 @@ const linkHref = (tags: HeadTag[], rel: string) => tags.find((tag) => tag.attrs.
 const sharedImage = `${PORTAL_ORIGIN}${PREVIEW_IMAGE.path}`;
 
 describe('F-015 page metadata', () => {
+  it('F019_AC15 F-019.R8 link previews are English (og:locale en_US) whatever language shows; the title is in both', () => {
+    const meta = metaFor({ page: 'home' }, registry);
+    const tags = headTags(meta, PORTAL_ORIGIN);
+    expect(content(tags, 'og:locale')).toBe('en_US');
+    expect(content(tags, 'og:title')).toBe(t('COPY-meta.homeTitle', undefined, 'en-US'));
+    expect(content(tags, 'og:description')).toBe(t('COPY-meta.homeDescription', undefined, 'en-US'));
+    expect(content(tags, 'og:site_name')).toBe(t('COPY-shell.brand', undefined, 'en-US'));
+    expect(meta.titles).toEqual(tBoth('COPY-meta.homeTitle'));
+    expect(meta.path).toBe('/');
+  });
+
+  it('F019_AC7 the Résumé page title is "CV — TaroKit" with Vietnamese showing', () => {
+    expect(metaFor({ page: 'resume' }, registry).titles['vi-VN']).toBe('CV — TaroKit');
+  });
+
   it('F015_AC1 the About page declares the About title, description and the shared image', () => {
     const meta = metaFor({ page: 'about' }, registry);
     expect(meta).toMatchObject({
@@ -63,7 +79,7 @@ describe('F-015 page metadata', () => {
     for (const [page, path, title, description] of pages) {
       const meta = metaFor({ page }, registry);
       const noindex = page === 'settings' ? { noindex: true } : {};
-      expect(meta).toEqual({ title: t(title), description: t(description), path, ...noindex });
+      expect(meta).toEqual({ title: t(title), titles: tBoth(title), description: t(description), path, ...noindex });
       const tags = headTags(meta, PORTAL_ORIGIN);
       expect(content(tags, 'og:image')).toBe(sharedImage);
       expect(content(tags, 'og:url')).toBe(`${PORTAL_ORIGIN}${path}`);
@@ -72,14 +88,21 @@ describe('F-015 page metadata', () => {
   });
 
   it('F-015.R1 tool names and descriptions are escaped in <title> and in every attribute', async () => {
-    const tricky = { title: 'A "q" & <b> — TaroKit', description: 'Sum "x" & <y> > z.', path: '/t/tricky/' };
+    const title = 'A "q" & <b> — TaroKit';
+    const tricky = {
+      title,
+      titles: { 'en-US': title, 'vi-VN': title },
+      description: 'Sum "x" & <y> > z.',
+      path: '/t/tricky/',
+    };
     const container = await AstroContainer.create({ astroConfig: { site: PORTAL_ORIGIN } });
     const html = await container.renderToString(HeadMeta, {
       props: tricky,
       request: new Request(`${PORTAL_ORIGIN}/t/tricky/`),
     });
     // Text content: every special character is escaped.
-    expect(html).toContain('<title>A &quot;q&quot; &amp; &lt;b&gt; — TaroKit</title>');
+    expect(html).toMatch(/<title (?:"[^"]*"|[^">])*>A &quot;q&quot; &amp; &lt;b&gt; — TaroKit<\/title>/);
+    expect(html).toContain('data-l-vi-VN="A &quot;q&quot; &amp; <b> — TaroKit"');
     // Attributes: quotes and ampersands are escaped, so a value cannot end its attribute early; inside a quoted
     // value, < and > are plain text (HTML spec), and Astro leaves them as they are.
     const attrs = [...html.matchAll(/<meta (?:name|property)="([^"]+)" content="([^"]*)">/g)];
@@ -97,11 +120,11 @@ describe('F-015 page metadata', () => {
     const meta = metaFor({ page: 'tool', id: 'fx-json-formatter' }, registry);
     expect(meta.title).toBe(t('COPY-meta.toolTitle', { tool: tool!.name }));
     expect(meta.title).toContain(tool!.name);
-    expect(meta.description).toBe(tool!.summary);
+    expect(meta.description).toBe(pick(tool!.summary, 'en-US'));
     expect(meta.path).toBe(toolPath('fx-json-formatter'));
     const tags = headTags(meta, PORTAL_ORIGIN);
     expect(content(tags, 'og:title')).toContain(tool!.name);
-    expect(content(tags, 'og:description')).toBe(tool!.summary);
+    expect(content(tags, 'og:description')).toBe(pick(tool!.summary, 'en-US'));
     expect(content(tags, 'og:image')).toBe(sharedImage);
   });
 
@@ -110,7 +133,8 @@ describe('F-015 page metadata', () => {
     expect(tool.openMode).toBe('linked');
     expect(metaFor({ page: 'tool', id: tool.id }, registry)).toEqual({
       title: t('COPY-meta.toolTitle', { tool: tool.name }),
-      description: tool.summary,
+      titles: tBoth('COPY-meta.toolTitle', { tool: tool.name }),
+      description: pick(tool.summary, 'en-US'),
       path: toolPath(tool.id),
     });
   });
@@ -123,7 +147,8 @@ describe('F-015 page metadata', () => {
     expect(meta.noindex).toBe(true);
     const text = JSON.stringify(headTags(meta, PORTAL_ORIGIN));
     expect(text).not.toContain(hidden.name);
-    expect(text).not.toContain(hidden.summary);
+    expect(text).not.toContain(pick(hidden.summary, 'en-US'));
+    expect(text).not.toContain(pick(hidden.summary, 'vi-VN'));
     expect(text).not.toContain(hidden.id);
   });
 
@@ -132,6 +157,7 @@ describe('F-015 page metadata', () => {
     expect(metaFor({ page: 'tool', id: 'no-such-tool' }, registry)).toEqual(notFound);
     expect(notFound).toEqual({
       title: t('COPY-notFound.title'),
+      titles: tBoth('COPY-notFound.title'),
       description: t('COPY-notFound.body'),
       path: '/404/',
       noindex: true,
@@ -146,13 +172,13 @@ describe('F-015 page metadata', () => {
 
   it('F015_AC5 the Media tools category declares its name in the title and its intro as the description', () => {
     const media = registry.categories.find((c) => c.id === 'media')!;
-    expect(media.name).toBe('Media tools');
+    expect(pick(media.name, 'en-US')).toBe('Media tools');
     const meta = metaFor({ page: 'category', id: 'media' }, registry);
     expect(meta.title).toContain('Media tools');
-    expect(meta.title).toBe(t('COPY-meta.categoryTitle', { category: media.name }));
-    expect(meta.description).toBe(media.intro);
+    expect(meta.title).toBe(t('COPY-meta.categoryTitle', { category: pick(media.name, 'en-US') }));
+    expect(meta.description).toBe(pick(media.intro, 'en-US'));
     expect(meta.path).toBe('/tools/media/');
-    expect(content(headTags(meta, PORTAL_ORIGIN), 'og:description')).toBe(media.intro);
+    expect(content(headTags(meta, PORTAL_ORIGIN), 'og:description')).toBe(pick(media.intro, 'en-US'));
   });
 
   it('F-015.R5 RULE-06 an empty category gets the not-found preview', () => {
@@ -162,7 +188,12 @@ describe('F-015 page metadata', () => {
   });
 
   it('NFR-12 the build fails on a title over 60 or a description over 160 characters, naming the page', () => {
-    const ok = { title: 'x'.repeat(60), description: 'y'.repeat(160), path: '/tools/media/' };
+    const ok = {
+      title: 'x'.repeat(60),
+      titles: { 'en-US': 'x'.repeat(60), 'vi-VN': 'x'.repeat(60) },
+      description: 'y'.repeat(160),
+      path: '/tools/media/',
+    };
     expect(() => headTags(ok, PORTAL_ORIGIN)).not.toThrow();
     expect(() => headTags({ ...ok, title: 'x'.repeat(61) }, PORTAL_ORIGIN)).toThrow(
       /NFR-12: \/tools\/media\/ title is 61 characters \(at most 60\)/,

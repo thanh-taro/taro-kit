@@ -1,5 +1,33 @@
 # Test fixture: a valid category list (one tint each, RULE-14).
-- { id: developer, name: Developer tools, order: 1, intro: Fixture intro., icon: icons/code.svg, tint: violet }
-- { id: media, name: Media tools, order: 2, intro: Fixture intro., icon: icons/clapperboard.svg, tint: mango }
-- { id: converters, name: Converters, order: 3, intro: Fixture intro., icon: icons/code.svg, tint: sky }
-- { id: productivity, name: Productivity, order: 4, intro: Fixture intro., icon: icons/code.svg, tint: mint }
+- {
+    id: developer,
+    name: { en-US: Developer tools, vi-VN: Developer tools },
+    order: 1,
+    intro: { en-US: Fixture intro., vi-VN: Fixture intro. },
+    icon: icons/code.svg,
+    tint: violet,
+  }
+- {
+    id: media,
+    name: { en-US: Media tools, vi-VN: Media tools },
+    order: 2,
+    intro: { en-US: Fixture intro., vi-VN: Fixture intro. },
+    icon: icons/clapperboard.svg,
+    tint: mango,
+  }
+- {
+    id: converters,
+    name: { en-US: Converters, vi-VN: Converters },
+    order: 3,
+    intro: { en-US: Fixture intro., vi-VN: Fixture intro. },
+    icon: icons/code.svg,
+    tint: sky,
+  }
+- {
+    id: productivity,
+    name: { en-US: Productivity, vi-VN: Productivity },
+    order: 4,
+    intro: { en-US: Fixture intro., vi-VN: Fixture intro. },
+    icon: icons/code.svg,
+    tint: mint,
+  }

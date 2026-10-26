@@ -1,0 +1,31 @@
+---
+// MOD-Language `<L>` for Astro pages: the same markup as L.tsx (ADR-0012). A text in both languages renders as one
+// element per language marked `lang` + `data-l` (CSS shows the language showing); a text that is the same in both
+// renders once with no `lang` (inheriting the language showing). Extra attributes go on each element.
+import { LANGUAGES, shared, type Text } from './languages.ts';
+
+interface Props {
+  text: Text;
+  /** The element for each version (default `span`). */
+  as?: string;
+  [attr: string]: unknown;
+}
+const { text, as = 'span', ...rest } = Astro.props;
+// A dynamic tag name: typed loosely, as Astro types it.
+const Tag = as as any;
+const same = shared(text);
+// Astro's scoping attribute alone does not need an element: a shared text is then plain text.
+const plain = same !== undefined && Tag === 'span' && Object.keys(rest).every((k) => k.startsWith('data-astro-cid'));
+---
+
+{plain ? (
+  same
+) : same !== undefined ? (
+  <Tag {...rest}>{same}</Tag>
+) : (
+  LANGUAGES.map((lang) => (
+    <Tag {...rest} lang={lang} data-l="">
+      {typeof text === 'string' ? text : text[lang]}
+    </Tag>
+  ))
+)}

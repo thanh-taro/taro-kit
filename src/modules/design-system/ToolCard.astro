@@ -2,6 +2,7 @@
 // MOD-DesignSystem: CMP-ToolCard for static pages (catalog, category pages, F-002, F-016). A thin wrapper:
 // the markup is ToolCard.tsx, rendered here without hydration, and only the favorite toggle is an island.
 // Behavior and accessibility are documented in ToolCard.tsx and MOD-DesignSystem.
+import type { Text } from '../language/languages.ts';
 import FavoriteToggle from './FavoriteToggle.astro';
 import { toolCardText } from './text.ts';
 import ToolCardView, { type ToolCardTool } from './ToolCard.tsx';
@@ -12,7 +13,7 @@ interface Props {
   /** `regular` (catalog, category pages) or `compact` (home favorites and recents). Default `regular`. */
   variant?: 'regular' | 'compact';
   /** The category's name, shown as a label on regular cards (F-002.R2). */
-  categoryName?: string;
+  categoryName?: Text;
   /**
    * Force the unavailable state. Default: decided live in the browser, offline and the tool needs the internet
    * (F-011.R3, tool-card-availability.ts).

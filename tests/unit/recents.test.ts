@@ -371,7 +371,7 @@ describe('F-006.R4 a clear that is not saved says so', () => {
   test('F-006.R4 with a newer schema on disk the clear reports unsaved and the document is never overwritten', () => {
     const storage = new FakeStorage();
     const newer = JSON.stringify({
-      schemaVersion: 2,
+      schemaVersion: 3,
       favorites: [],
       recents: [{ toolId: 'a', openedAt: '2026-10-14T09:30:00.000Z' }],
       preferences: { theme: 'dark' },

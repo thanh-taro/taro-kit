@@ -5,6 +5,8 @@
 // Implements: F-018.R1, F-018.R2 (sections parsed into blocks), F-018.R5 (INV-02 on policy links, mixed list
 // paragraphs, sections named "section <n>").
 
+import { LANGUAGES, type Lang, type Loc } from '../language/languages.ts';
+
 /** The Privacy page's portal address (MOD-Pages, platform-mapping). */
 export const PRIVACY_PATH = '/privacy/';
 /** The Terms page's portal address (MOD-Pages, platform-mapping). */
@@ -18,12 +20,15 @@ export type PolicyPart =
 /** A paragraph, or a simple bulleted list whose items are runs of text and links (ENT-Policy). */
 export type PolicyBlock = { kind: 'paragraph'; parts: PolicyPart[] } | { kind: 'list'; items: PolicyPart[][] };
 export interface PolicySection {
-  heading: string;
-  blocks: PolicyBlock[];
+  /** The heading in both languages (INV-09). */
+  heading: Loc;
+  /** The body's blocks in each language. */
+  blocks: Record<Lang, PolicyBlock[]>;
 }
 /** A validated policy with each section's body parsed into blocks (MOD-Content `Registry.privacy`, `.terms`). */
 export interface Policy {
-  title: string;
+  /** The title in both languages (INV-09). */
+  title: Loc;
   /** The last updated date, YYYY-MM-DD. */
   updated: string;
   sections: PolicySection[];
@@ -136,13 +141,17 @@ export const policyBlocks = (body: string): PolicyBlock[] =>
     return p.list ? { kind: 'list', items: runs } : { kind: 'paragraph', parts: runs[0] ?? [] };
   });
 
-/** Each section's index and paragraphs, for the sections whose body is text. */
-function sectionParagraphs(policy: unknown): { index: number; paragraphs: Paragraph[] }[] {
+/** Each section's index, language and paragraphs, for each version of a body that is text (INV-09). */
+function sectionParagraphs(policy: unknown): { index: number; lang: Lang; paragraphs: Paragraph[] }[] {
   const sections = (policy as { sections?: unknown } | null)?.sections;
   if (!Array.isArray(sections)) return [];
   return sections.flatMap((section: unknown, index) => {
     const body = (section as { body?: unknown } | null)?.body;
-    return typeof body === 'string' ? [{ index, paragraphs: paragraphsOf(body) }] : [];
+    if (typeof body !== 'object' || body === null) return [];
+    return LANGUAGES.flatMap((lang) => {
+      const text = (body as Record<string, unknown>)[lang];
+      return typeof text === 'string' ? [{ index, lang, paragraphs: paragraphsOf(text) }] : [];
+    });
   });
 }
 
@@ -153,6 +162,8 @@ function sectionParagraphs(policy: unknown): { index: number; paragraphs: Paragr
  */
 export interface PolicyLinkError {
   index: number;
+  /** The version of the body it is in. */
+  lang: Lang;
   line: number;
   kind: 'insecure' | 'malformed';
   link: string;
@@ -160,10 +171,10 @@ export interface PolicyLinkError {
 
 /** INV-02: every link-like place in the policy's sections that is not a valid https or email link. */
 export const policyLinkErrors = (policy: unknown): PolicyLinkError[] =>
-  sectionParagraphs(policy).flatMap(({ index, paragraphs }) =>
+  sectionParagraphs(policy).flatMap(({ index, lang, paragraphs }) =>
     paragraphs.flatMap((p) =>
       runsOf(p).flatMap(({ line, text }) =>
-        findLinks(text).flatMap((f) => (f.ok ? [] : [{ index, line, kind: f.kind, link: f.link }])),
+        findLinks(text).flatMap((f) => (f.ok ? [] : [{ index, lang, line, kind: f.kind, link: f.link }])),
       ),
     ),
   );
@@ -171,6 +182,7 @@ export const policyLinkErrors = (policy: unknown): PolicyLinkError[] =>
 /** One paragraph that mixes list lines with other lines: paragraph `paragraph` (from 0), starting on body line `line`. */
 export interface PolicyMixedList {
   index: number;
+  lang: Lang;
   paragraph: number;
   line: number;
 }
@@ -180,14 +192,17 @@ export interface PolicyMixedList {
  * it, so a list never shows as one run of text.
  */
 export const policyMixedLists = (policy: unknown): PolicyMixedList[] =>
-  sectionParagraphs(policy).flatMap(({ index, paragraphs }) =>
-    paragraphs.flatMap((p, paragraph) => (p.mixed ? [{ index, paragraph, line: p.start }] : [])),
+  sectionParagraphs(policy).flatMap(({ index, lang, paragraphs }) =>
+    paragraphs.flatMap((p, paragraph) => (p.mixed ? [{ index, lang, paragraph, line: p.start }] : [])),
   );
 
 /** The validated policy, with every section body parsed into blocks. */
-export const parsePolicy = (raw: { title: string; updated: string; sections: { heading: string; body: string }[] }) =>
+export const parsePolicy = (raw: { title: Loc; updated: string; sections: { heading: Loc; body: Loc }[] }) =>
   ({
     title: raw.title,
     updated: raw.updated,
-    sections: raw.sections.map((s) => ({ heading: s.heading, blocks: policyBlocks(s.body) })),
+    sections: raw.sections.map((s) => ({
+      heading: s.heading,
+      blocks: { 'en-US': policyBlocks(s.body['en-US']), 'vi-VN': policyBlocks(s.body['vi-VN']) },
+    })),
   }) satisfies Policy;

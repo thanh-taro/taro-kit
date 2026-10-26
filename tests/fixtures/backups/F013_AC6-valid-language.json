@@ -1,0 +1,36 @@
+{
+  "format": "tarokit-backup",
+  "exportedAt": "2026-10-13T09:30:00.000Z",
+  "data": {
+    "schemaVersion": 2,
+    "favorites": [
+      {
+        "toolId": "fx-01",
+        "pinnedAt": "2026-10-01T00:00:00.000Z"
+      },
+      {
+        "toolId": "fx-02",
+        "pinnedAt": "2026-10-01T00:01:00.000Z"
+      }
+    ],
+    "recents": [
+      {
+        "toolId": "fx-03",
+        "openedAt": "2026-10-10T12:59:00.000Z"
+      },
+      {
+        "toolId": "fx-01",
+        "openedAt": "2026-10-10T12:58:00.000Z"
+      },
+      {
+        "toolId": "fx-linked",
+        "openedAt": "2026-10-10T12:57:00.000Z"
+      }
+    ],
+    "preferences": {
+      "theme": "dark",
+      "language": "vi-VN"
+    },
+    "daysUsed": ["2026-10-12", "2026-10-11", "2026-10-09"]
+  }
+}

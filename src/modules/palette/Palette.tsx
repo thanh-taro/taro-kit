@@ -15,11 +15,20 @@
 // - The result count is announced politely after each query (COPY-palette.resultCount); no results shows
 //   CMP-StateMessage with the browse-catalog link (F-004.R6), announced as a status.
 // - Copy-address shows COPY-palette.copied, then closes (F-004.R4, R5).
-// Implements: F-004.R2 to F-004.R6 (with logic.ts), RULE-01 and RULE-05 on screen.
+// - Languages (F-019.R4, R5): text that is in the page before hydration (the field's label and placeholder, Cancel,
+//   the hints) is in both languages (<L>, localized attributes); results, counts and messages are made at run time
+//   in the language showing (`useShownLanguage`). The language action's name marks the other language's name with
+//   its own language (CMP-CommandPalette).
+// Implements: F-004.R2 to F-004.R6 (with logic.ts), RULE-01 and RULE-05 on screen, F-019.R2 (the action).
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { CatalogDataFileContent } from '../content/emit-catalog-data.ts';
 import StateMessage from '../design-system/StateMessage.tsx';
 import { monogram } from '../design-system/tool-card.ts';
+import { language } from '../language/index.ts';
+import { localizedAttrs, mergeAttrs } from '../language/attrs.ts';
+import { L } from '../language/L.tsx';
+import { otherLanguage, pick, type Lang, type Loc, type Text } from '../language/languages.ts';
+import { useShownLanguage } from '../language/use.ts';
 import { personalData, type PersonalData } from '../personal-data/index.ts';
 import { theme } from '../theme/index.ts';
 import { openTool } from '../tool-host/open-tool.ts';
@@ -30,6 +39,7 @@ import {
   PALETTE_INPUT_ID,
   paletteIndex,
   paletteView,
+  resultCountText,
   runEntry,
   type PaletteEntry,
   type RunEnvironment,
@@ -76,17 +86,59 @@ const fill = (template: string, name: string, value: string | number) =>
 const flatten = (groups: ViewGroup[]) => groups.flatMap((g) => g.items.map((entry) => ({ group: g.id, entry })));
 const optionId = (group: ViewGroupId, entry: PaletteEntry) => `tk-palette-${group}-${entry.kind}-${entry.id}`;
 
-function Name({ name, query }: { name: string; query: string }) {
-  const range = query ? matchRange(name, query) : undefined;
-  if (!range) return <>{name}</>;
-  const [from, to] = range;
+/** A run of a name, marked with its own language when it differs from the language showing. */
+interface Run {
+  text: string;
+  lang?: Lang;
+}
+
+/** The name with the query's match marked; runs in another language keep their `lang` (F-019.R4). */
+function Name({ runs, query }: { runs: Run[]; query: string }) {
+  const whole = runs.map((r) => r.text).join('');
+  const range = query ? matchRange(whole, query) : undefined;
+  let at = 0;
   return (
     <>
-      {name.slice(0, from)}
-      <mark>{name.slice(from, to)}</mark>
-      {name.slice(to)}
+      {runs.map((run, i) => {
+        const start = at;
+        at += run.text.length;
+        const [from, to] = range
+          ? [Math.max(range[0] - start, 0), Math.min(range[1] - start, run.text.length)]
+          : [0, 0];
+        const body =
+          from < to ? (
+            <>
+              {run.text.slice(0, from)}
+              <mark>{run.text.slice(from, to)}</mark>
+              {run.text.slice(to)}
+            </>
+          ) : (
+            run.text
+          );
+        return run.lang ? (
+          <span key={i} lang={run.lang}>
+            {body}
+          </span>
+        ) : (
+          <span key={i}>{body}</span>
+        );
+      })}
     </>
   );
+}
+
+/** The runs of an entry's name in `lang`: the language action marks the other language's name (COPY-language.*). */
+function nameRuns(entry: PaletteEntry, lang: Lang, names: Loc): Run[] {
+  const name = pick(entry.name, lang);
+  if (entry.kind !== 'action' || entry.id !== 'language') return [{ text: name }];
+  const other = otherLanguage(lang);
+  const at = name.indexOf(names[other]);
+  if (at < 0) return [{ text: name }];
+  return [
+    { text: name.slice(0, at) },
+    { text: names[other], lang: other },
+    { text: name.slice(at + names[other].length) },
+  ].filter((r) => r.text);
 }
 
 export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
@@ -102,6 +154,10 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
   const [apple, setApple] = useState(false);
   const [announcement, setAnnouncement] = useState('');
   const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+  const lang = useShownLanguage();
+  // The announcement follows queries, not language switches (F-019 UX notes: switching announces nothing).
+  const langRef = useRef(lang);
+  langRef.current = lang;
 
   useEffect(() => {
     setApple(isApplePlatform(navigator));
@@ -149,7 +205,10 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
     [data, text],
   );
   const searching = query.trim() !== '';
-  const groups = useMemo(() => (settled ? paletteView(query, index, doc) : []), [settled, query, index, doc]);
+  const groups = useMemo(
+    () => (settled ? paletteView(query, index, doc, lang) : []),
+    [settled, query, index, doc, lang],
+  );
   const flat = useMemo(() => flatten(groups), [groups]);
   const current = flat[Math.min(active, flat.length - 1)];
   const activeId = current ? optionId(current.group, current.entry) : undefined;
@@ -161,7 +220,8 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
     if (!settled) return;
     const n = flat.length;
     // No results is announced by its own status message.
-    setAnnouncement(searching && n > 0 ? (n === 1 ? text.count.one : fill(text.count.other, 'count', n)) : '');
+    const l = langRef.current;
+    setAnnouncement(searching ? resultCountText(n, text.count, l) : '');
   }, [settled, searching, flat, text]);
 
   const dialog = () => field.current?.closest('dialog');
@@ -170,6 +230,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
     openTool: (tool) => openTool(tool),
     assign: (path) => location.assign(new URL(path, location.href).href),
     toggleTheme: () => theme().toggle(),
+    switchLanguage: () => language().switchLanguage(),
     exportData: () => import('../backup/index.ts').then((m) => m.exportBackup()),
     copy: (value) => navigator.clipboard.writeText(value),
     href: () => location.href,
@@ -202,7 +263,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
     // so Enter never runs a result of the previous query.
     const value = field.current?.value ?? query;
     const fresh = value === query;
-    const list = fresh ? flat : flatten(paletteView(value, index, doc));
+    const list = fresh ? flat : flatten(paletteView(value, index, doc, lang));
     if (list.length === 0) return;
     const at = fresh ? Math.min(active, list.length - 1) : 0;
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -227,7 +288,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
           dangerouslySetInnerHTML={{ __html: text.icons.search }}
         />
         <label for={PALETTE_INPUT_ID} class="tk-visually-hidden">
-          {placeholder}
+          <L text={placeholder} />
         </label>
         <input
           ref={field}
@@ -243,9 +304,9 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
           autocapitalize="off"
           spellcheck={false}
           enterkeyhint="go"
-          placeholder={placeholder}
-          data-placeholder-apple={text.placeholder.apple}
-          data-placeholder-other={text.placeholder.other}
+          {...mergeAttrs(localizedAttrs('placeholder', placeholder, lang))}
+          data-placeholder-apple-en-US={text.placeholder.apple['en-US']}
+          data-placeholder-apple-vi-VN={text.placeholder.apple['vi-VN']}
           onInput={(e) => {
             // The first result is highlighted whenever the query changes (CMP-CommandPalette "results"); set in the
             // same update, so a key pressed right after typing never lands on a stale highlight.
@@ -258,12 +319,12 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
           Esc
         </kbd>
         <button type="button" class="tk-palette__cancel" data-tk-palette-close>
-          {text.close}
+          <L text={text.close} />
         </button>
       </div>
       {failed && (
         <p class="tk-palette__unavailable" role="status">
-          {text.unavailable}
+          {pick(text.unavailable, lang)}
         </p>
       )}
       {flat.length > 0 && (
@@ -275,13 +336,13 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
           id={LIST_ID}
           class="tk-palette__list"
           role="listbox"
-          aria-label={text.label}
+          aria-label={pick(text.label, lang)}
           onMouseDown={(e) => e.preventDefault()}
         >
           {groups.map((g) => (
             <div key={g.id} class="tk-palette__group" role="group" aria-labelledby={`tk-palette-h-${g.id}`}>
               <div id={`tk-palette-h-${g.id}`} class="tk-palette__heading" role="presentation">
-                {text.groups[g.id]}
+                {pick(text.groups[g.id], lang)}
               </div>
               {g.items.map((entry) => {
                 row += 1;
@@ -289,7 +350,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
                 const id = optionId(g.id, entry);
                 const selected = id === activeId;
                 const linked = entry.kind === 'tool' && entry.openMode === 'linked';
-                const sub = entry.kind === 'tool' ? entry.summary : '';
+                const sub = entry.kind === 'tool' ? pick(entry.summary as Text, lang) : '';
                 const glyph = entry.kind === 'tool' ? monogram(entry.name) : (GLYPHS[entry.id] ?? '');
                 return (
                   // Reached from the field (aria-activedescendant); the click handler is the pointer path only.
@@ -304,12 +365,21 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
                     onMouseMove={() => i !== active && setActive(i)}
                     onClick={() => void run(entry)}
                   >
-                    <span class="tk-palette__glyph" aria-hidden="true">
-                      {glyph}
-                    </span>
+                    {entry.kind === 'action' && entry.id === 'language' ? (
+                      // The globe from the icon set (design PaletteDesktop language), build-time SVG.
+                      <span
+                        class="tk-palette__glyph tk-palette__glyph--icon"
+                        aria-hidden="true"
+                        dangerouslySetInnerHTML={{ __html: text.icons.language }}
+                      />
+                    ) : (
+                      <span class="tk-palette__glyph" aria-hidden="true">
+                        {glyph}
+                      </span>
+                    )}
                     <span class="tk-palette__text">
                       <span class="tk-palette__name">
-                        <Name name={entry.name} query={searching ? query : ''} />
+                        <Name runs={nameRuns(entry, lang, text.languageNames)} query={searching ? query : ''} />
                         {linked && (
                           <>
                             <span
@@ -317,7 +387,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
                               aria-hidden="true"
                               dangerouslySetInnerHTML={{ __html: text.icons.newTab }}
                             />
-                            <span class="tk-visually-hidden">, {text.opensNewTab}</span>
+                            <span class="tk-visually-hidden">, {pick(text.opensNewTab, lang)}</span>
                           </>
                         )}
                       </span>
@@ -337,9 +407,9 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
         <div class="tk-palette__empty">
           <StateMessage
             variant="no-results"
-            title={fill(text.noResults, 'query', query.trim())}
+            title={fill(text.noResults[lang], 'query', query.trim())}
             iconSvg={text.icons.noResults}
-            action={{ href: catalogPath, label: text.browseAll }}
+            action={{ href: catalogPath, label: text.browseAll[lang] }}
             live
           />
         </div>
@@ -348,16 +418,20 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
         {announcement}
       </p>
       <p class="tk-palette__hints">
-        {text.hints.split(' · ').map((part) => (
-          <span key={part}>{part}</span>
+        {(['en-US', 'vi-VN'] as const).map((l) => (
+          <span key={l} lang={l} data-l="" class="tk-palette__hints-lang">
+            {text.hints[l].split(' · ').map((part) => (
+              <span key={part}>{part}</span>
+            ))}
+          </span>
         ))}
       </p>
       <div class="tk-palette__toast" role="status">
-        {exportFailed && <span class="tk-palette__failed">{text.exportFailed}</span>}
+        {exportFailed && <span class="tk-palette__failed">{pick(text.exportFailed, lang)}</span>}
         {copied && (
           <span class="tk-palette__copied">
             <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: text.icons.copied }} />
-            {text.copied}
+            {pick(text.copied, lang)}
           </span>
         )}
       </div>

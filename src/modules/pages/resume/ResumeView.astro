@@ -8,8 +8,13 @@
 // shown on a skill chip is hidden from assistive technology, which reads COPY-resume.skillLevel instead. Narrow: one
 // column, and the timeline stacks (the period sits under the organization).
 // Design: design/canvas/ResumeDesktop.dc.html, ResumeMobile.dc.html.
+// Languages (F-019.R4): every text is in both (<L>, <Each>); periods use each language's month names (RULE-15,
+// F-019.AC7); mono word lines use the body face while Vietnamese shows (`tk-mono-words`).
 // Implements: F-017.R1, F-017.R2, F-017.R3.
-import { t } from '../../copy/index.ts';
+import { tBoth } from '../../copy/index.ts';
+import Each from '../../language/Each.astro';
+import L from '../../language/L.astro';
+import type { Lang } from '../../language/languages.ts';
 import { sectionTitle, type ResumeViewData } from './resume.ts';
 
 interface Props {
@@ -25,32 +30,48 @@ const credits = (['certificates', 'awards'] as const).filter(has);
 
 <div class="resume" data-layout={main && side ? 'both' : 'single'}>
   <div class="head">
-    <h1>{t('COPY-resume.title')}</h1>
-    <p class="intro">{t('COPY-resume.intro')}</p>
+    <h1>
+      <L text={tBoth('COPY-resume.title')} />
+    </h1>
+    <p class="intro">
+      <L text={tBoth('COPY-resume.intro')} />
+    </p>
   </div>
 
   {main && (
     <div class="main">
       {has('experience') && (
         <section aria-labelledby={id('experience')}>
-          <h2 id={id('experience')}>{sectionTitle('experience')}</h2>
+          <h2 id={id('experience')}>
+            <L text={sectionTitle('experience')} />
+          </h2>
           <ol class="timeline">
             {view.experience.map((e) => (
               <li data-current={e.period.current ? '' : undefined}>
-                <h3 class="title">{e.role}</h3>
-                <p class="org">{e.organization}</p>
-                <p class="period">
-                  {e.period.parts.map((p) => (p.datetime ? <time datetime={p.datetime}>{p.text}</time> : p.text))}
+                <h3 class="title">
+                  <L text={e.role} />
+                </h3>
+                <p class="org">
+                  <L text={e.organization} />
                 </p>
-                <div class="text">
-                  {e.summary.map((p) => (
-                    <p>{p}</p>
-                  ))}
-                </div>
+                <p class="period tk-mono-words">
+                  <Each>
+                    {(lang: Lang) =>
+                      e.period.parts[lang].map((p) =>
+                        p.datetime ? <time datetime={p.datetime}>{p.text}</time> : p.text,
+                      )
+                    }
+                  </Each>
+                </p>
+                <Each as="div" class="text">
+                  {(lang: Lang) => e.summary[lang].map((p) => <p>{p}</p>)}
+                </Each>
                 {e.highlights.length > 0 && (
                   <ul class="highlights">
                     {e.highlights.map((h) => (
-                      <li>{h}</li>
+                      <li>
+                        <L text={h} />
+                      </li>
                     ))}
                   </ul>
                 )}
@@ -61,24 +82,38 @@ const credits = (['certificates', 'awards'] as const).filter(has);
       )}
       {has('education') && (
         <section aria-labelledby={id('education')}>
-          <h2 id={id('education')}>{sectionTitle('education')}</h2>
+          <h2 id={id('education')}>
+            <L text={sectionTitle('education')} />
+          </h2>
           <ol class="timeline">
             {view.education.map((e) => (
               <li data-current={e.period.current ? '' : undefined}>
-                <h3 class="title">{e.program}</h3>
+                <h3 class="title">
+                  <L text={e.program} />
+                </h3>
                 <p class="org">
-                  <span>{e.institution}</span>
-                  {e.level && <span class="level">{e.level}</span>}
+                  <span>
+                    <L text={e.institution} />
+                  </span>
+                  {e.level && (
+                    <span class="level">
+                      <L text={e.level} />
+                    </span>
+                  )}
                 </p>
-                <p class="period">
-                  {e.period.parts.map((p) => (p.datetime ? <time datetime={p.datetime}>{p.text}</time> : p.text))}
+                <p class="period tk-mono-words">
+                  <Each>
+                    {(lang: Lang) =>
+                      e.period.parts[lang].map((p) =>
+                        p.datetime ? <time datetime={p.datetime}>{p.text}</time> : p.text,
+                      )
+                    }
+                  </Each>
                 </p>
-                {e.notes.length > 0 && (
-                  <div class="text">
-                    {e.notes.map((p) => (
-                      <p>{p}</p>
-                    ))}
-                  </div>
+                {e.notes['en-US'].length > 0 && (
+                  <Each as="div" class="text">
+                    {(lang: Lang) => e.notes[lang].map((p) => <p>{p}</p>)}
+                  </Each>
                 )}
               </li>
             ))}
@@ -92,25 +127,29 @@ const credits = (['certificates', 'awards'] as const).filter(has);
     <div class="side">
       {has('skills') && (
         <section aria-labelledby={id('skills')}>
-          <h2 id={id('skills')}>{sectionTitle('skills')}</h2>
+          <h2 id={id('skills')}>
+            <L text={sectionTitle('skills')} />
+          </h2>
           <div class="skill-groups">
             {view.skills.map((g, i) => (
               <div class="skill-group">
                 {g.label && (
-                  <h3 class="group-label" id={id(`skills-${i}`)}>
-                    {g.label}
+                  <h3 class="group-label tk-mono-words" id={id(`skills-${i}`)}>
+                    <L text={g.label} />
                   </h3>
                 )}
                 <ul class="chips" aria-labelledby={g.label ? id(`skills-${i}`) : undefined}>
                   {g.skills.map((s) => (
                     <li class="chip">
-                      {s.name}
-                      {s.levelShort && (
+                      <L text={s.name} />
+                      {s.levelShort && s.levelText && (
                         <>
                           <span class="chip-level" aria-hidden="true">
-                            {s.levelShort}
+                            <L text={s.levelShort} />
                           </span>
-                          <span class="tk-visually-hidden">, {s.levelText}</span>
+                          <span class="tk-visually-hidden">
+                            , <L text={s.levelText} />
+                          </span>
                         </>
                       )}
                     </li>
@@ -123,12 +162,18 @@ const credits = (['certificates', 'awards'] as const).filter(has);
       )}
       {has('languages') && (
         <section aria-labelledby={id('languages')}>
-          <h2 id={id('languages')}>{sectionTitle('languages')}</h2>
+          <h2 id={id('languages')}>
+            <L text={sectionTitle('languages')} />
+          </h2>
           <ul class="rows">
             {view.languages.map((l) => (
               <li>
-                <span class="name">{l.name}</span>
-                <span class="aside">{l.level}</span>
+                <span class="name">
+                  <L text={l.name} />
+                </span>
+                <span class="aside tk-mono-words">
+                  <L text={l.level} />
+                </span>
               </li>
             ))}
           </ul>
@@ -136,13 +181,19 @@ const credits = (['certificates', 'awards'] as const).filter(has);
       )}
       {credits.map((section) => (
         <section aria-labelledby={id(section)}>
-          <h2 id={id(section)}>{sectionTitle(section)}</h2>
+          <h2 id={id(section)}>
+            <L text={sectionTitle(section)} />
+          </h2>
           <ul class="rows">
             {view[section].map((c) => (
               <li>
                 <span class="credit">
-                  <span class="name">{c.name}</span>
-                  <span class="issuer">{c.issuer}</span>
+                  <span class="name">
+                    <L text={c.name} />
+                  </span>
+                  <span class="issuer">
+                    <L text={c.issuer} />
+                  </span>
                 </span>
                 <span class="aside year">{c.year}</span>
               </li>

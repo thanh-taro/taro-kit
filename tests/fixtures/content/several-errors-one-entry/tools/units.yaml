@@ -2,7 +2,9 @@
 id: units
 kind: tool
 name: Units
-summary: Fixture tool with several errors.
+summary:
+  en-US: Fixture tool with several errors.
+  vi-VN: Fixture tool with several errors.
 category: Converters
 url: http://units.tarokit.app/
 origin: own

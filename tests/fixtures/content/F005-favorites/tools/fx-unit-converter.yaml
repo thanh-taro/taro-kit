@@ -3,7 +3,9 @@
 id: fx-unit-converter
 kind: tool
 name: Unit Converter
-summary: Convert lengths, weights and temperatures.
+summary:
+  en-US: Convert lengths, weights and temperatures.
+  vi-VN: Convert lengths, weights and temperatures.
 category: developer
 url: https://fx-unit-converter.example.com/
 origin: own

@@ -12,6 +12,9 @@
 //   (COPY-catalog.clear), which empties the field and returns focus to it.
 // - The result count (COPY-category.toolCount / toolCountOne) is announced politely after each filtering, and
 //   is empty at load (SCR-Catalog accessibility).
+// - Languages (F-019.R4, R5): the static texts are in both languages (<L>, a localized placeholder); search matches
+//   both versions of every tool (MOD-Search keys); counts and messages are made in the language showing. A switch
+//   keeps the typed query and its results, and announces nothing (F-019.AC3).
 // Strings, icons and card text arrive as build-time props, so the island ships no copy catalog.
 import type { ComponentChildren } from 'preact';
 import { useEffect, useId, useMemo, useRef, useState } from 'preact/hooks';
@@ -22,21 +25,25 @@ import { online } from '../../offline/index.ts';
 import StateMessage from '../../design-system/StateMessage.tsx';
 import { personalData } from '../../personal-data/index.ts';
 import { filterCatalog, normalize } from '../../search/index.ts';
+import { localizedAttrs } from '../../language/attrs.ts';
+import { L } from '../../language/L.tsx';
+import { pick, type Loc } from '../../language/languages.ts';
+import { useShownLanguage } from '../../language/use.ts';
 
 /** Build-time strings and icons (see `catalogSearchText()` in catalog-text.ts). */
 export interface CatalogSearchText {
   /** COPY-catalog.title */
-  title: string;
+  title: Loc;
   /** COPY-catalog.searchPlaceholder: the field's label and placeholder. */
-  placeholder: string;
+  placeholder: Loc;
   /** COPY-catalog.noResults with a literal "{query}" left in. */
-  noResults: string;
+  noResults: Loc;
   /** COPY-catalog.clear */
-  clear: string;
+  clear: Loc;
   /** COPY-catalog.searchUnavailable: why the field is disabled when the catalog data can't load. */
-  unavailable: string;
+  unavailable: Loc;
   /** COPY-category.toolCountOne, and COPY-category.toolCount with a literal "{count}" left in. */
-  count: { one: string; other: string };
+  count: { one: Loc; other: Loc };
   card: ToolCardText;
   icons: { search: string; noResults: string };
 }
@@ -67,6 +74,10 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
   const [announcement, setAnnouncement] = useState('');
   const [failed, setFailed] = useState(false);
   const reasonId = `${uid}-unavailable`;
+  const lang = useShownLanguage();
+  // Counts are announced after filtering, in the language showing; a switch alone announces nothing.
+  const langRef = useRef(lang);
+  langRef.current = lang;
 
   useEffect(() => {
     // Text typed before hydration is kept (the field is plain HTML until then).
@@ -90,11 +101,12 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
     const favorites = personalData()
       .favorites.peek()
       .map((f) => f.toolId);
-    return filterCatalog(query, data.tools, { favorites });
-  }, [searching, data, query]);
+    return filterCatalog(query, data.tools, { favorites, lang });
+  }, [searching, data, query, lang]);
   const categoryName = useMemo(() => new Map((data ?? NO_DATA).categories.map((c) => [c.id, c.name])), [data]);
 
-  const countText = (n: number) => (n === 1 ? text.count.one : fill(text.count.other, 'count', n));
+  const countText = (n: number) =>
+    n === 1 ? text.count.one[langRef.current] : fill(text.count.other[langRef.current], 'count', n);
   useEffect(() => {
     if (!data) return;
     // Announced after filtering only: nothing at load, the total again once the query is cleared.
@@ -115,7 +127,9 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
       data-failed={failed ? '' : undefined}
     >
       <div class="tk-catalog__head">
-        <h1 id={titleId}>{text.title}</h1>
+        <h1 id={titleId}>
+          <L text={text.title} />
+        </h1>
         {/* With no visible tools there is nothing to search: only the empty state shows (F-002.R6). */}
         {dataUrl && (
           <div
@@ -129,13 +143,13 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
               dangerouslySetInnerHTML={{ __html: text.icons.search }}
             />
             <label for={fieldId} class="tk-visually-hidden">
-              {text.placeholder}
+              <L text={text.placeholder} />
             </label>
             <input
               ref={field}
               id={fieldId}
               type="search"
-              placeholder={text.placeholder}
+              {...localizedAttrs('placeholder', text.placeholder, lang)}
               autocomplete="off"
               spellcheck={false}
               disabled={failed}
@@ -147,7 +161,7 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
       </div>
       {dataUrl && (
         <p id={reasonId} class="tk-catalog__unavailable" role="status">
-          {failed ? text.unavailable : null}
+          {failed ? pick(text.unavailable, lang) : null}
         </p>
       )}
       <p class="tk-visually-hidden" aria-live="polite" data-testid="catalog-count">
@@ -174,11 +188,11 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
             <StateMessage
               variant="no-results"
               page
-              title={fill(text.noResults, 'query', query.trim())}
+              title={fill(text.noResults[lang], 'query', query.trim())}
               iconSvg={text.icons.noResults}
             >
               <button type="button" data-primary onClick={clear}>
-                {text.clear}
+                <L text={text.clear} />
               </button>
             </StateMessage>
           </div>

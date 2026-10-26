@@ -8,6 +8,7 @@
 export {
   emptyDocument,
   isCalendarDate,
+  isLanguageChoice,
   isThemePreference,
   isTimestamp,
   isToolId,
@@ -17,6 +18,7 @@ export {
   STORAGE_KEY,
   storedSchemaVersion,
   type PersonalData,
+  type LanguageChoice,
   type ThemePreference,
 } from './document.ts';
 export {
@@ -54,4 +56,4 @@ export {
   type PersonalDataStore,
   type StoreEnvironment,
 } from './store.ts';
-export { readStoredTheme } from './read-stored-theme.ts';
+export { readStoredLanguage, readStoredTheme } from './read-stored-theme.ts';

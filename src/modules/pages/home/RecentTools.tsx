@@ -8,6 +8,8 @@
 // - Before hydration (the build has no device) nothing renders, like the other device-data lists.
 // - Reactive: visits, clears, pins and unpins from any island or window update it at once (F-005.R1).
 import { useEffect, useId, useMemo, useState } from 'preact/hooks';
+import { L } from '../../language/L.tsx';
+import type { Loc } from '../../language/languages.ts';
 import ToolCard, { type ToolCardText, type ToolCardTool } from '../../design-system/ToolCard.tsx';
 import { needsInternet } from '../../design-system/tool-card.ts';
 import { online } from '../../offline/index.ts';
@@ -19,8 +21,8 @@ export interface RecentToolsProps {
   tools: ToolCardTool[];
   /** `toolCardText()` (MOD-DesignSystem), built once at build time. */
   text: ToolCardText;
-  /** COPY-home.recents */
-  heading: string;
+  /** COPY-home.recents, in both languages. */
+  heading: Loc;
 }
 
 export default function RecentTools({ tools, text, heading }: RecentToolsProps) {
@@ -40,7 +42,7 @@ export default function RecentTools({ tools, text, heading }: RecentToolsProps) 
   return (
     <section class="tk-recents" aria-labelledby={headingId}>
       <h2 id={headingId} class="tk-recents__heading">
-        {heading}
+        <L text={heading} />
       </h2>
       <ul class="tk-recents__list">
         {shown.map((tool) => (

@@ -10,9 +10,14 @@
 //   predicts before first paint (empty or default, keyboard or touch), with invisible placeholders until the island
 //   is ready, so nothing below moves and nothing wrong shows.
 // - Region 6 is static (category row, regular CMP-CategoryTile). Region 7: the WhatsNew island.
+// - Languages (F-019.R4): every text is in both (<L>, <Each>); the clock writes each language's greeting, date and
+//   time (inline.ts), the date line in the body face while Vietnamese shows (`tk-mono-words`).
 // Implements: F-007.R1, F-007.R2, F-007.R3, F-007.R4, F-007.R5, F-007.R6, F-007.R7.
 import { getRegistry } from '../modules/content/index.ts';
-import { t } from '../modules/copy/index.ts';
+import { tBoth } from '../modules/copy/index.ts';
+import Each from '../modules/language/Each.astro';
+import L from '../modules/language/L.astro';
+import type { Lang } from '../modules/language/languages.ts';
 import CategoryTile from '../modules/design-system/CategoryTile.astro';
 import Icon from '../modules/design-system/Icon.astro';
 import { iconSvg } from '../modules/design-system/icons.ts';
@@ -30,7 +35,7 @@ import BaseLayout from '../modules/shell/BaseLayout.astro';
 
 const registry = getRegistry();
 const view = homeView(registry);
-const headings = { favorites: t('COPY-home.favorites'), recents: t('COPY-home.recents') };
+const headings = { favorites: tBoth('COPY-home.favorites'), recents: tBoth('COPY-home.recents') };
 const clockScript = homeClockScript();
 const reserveScript = homeReserveScript(
   Object.fromEntries(view.tools.map((tool) => [tool.id, [tool.name, needsInternet(tool) ? 1 : 0]])),
@@ -44,7 +49,7 @@ Astro.csp.insertScriptHash(inlineScriptHash(reserveScript));
 const personalText: HomePersonalText = {
   ...headings,
   invite: firstVisitText(),
-  browse: { label: t('COPY-notFound.toCatalog'), href: '/tools/' },
+  browse: { label: tBoth('COPY-notFound.toCatalog'), href: '/tools/' },
   inviteIcon: iconSvg('sparkles'),
   cards: toolCardText(),
 };
@@ -53,28 +58,43 @@ const personalText: HomePersonalText = {
 <BaseLayout {...metaFor({ page: 'home' }, registry)}>
   <div class="home">
     <section class="greet" aria-labelledby={HOME_IDS.greeting}>
-      <p class="when" data-testid="home-clock">
+      <p class="when tk-mono-words" data-testid="home-clock">
         <time id={HOME_IDS.clock}>
-          <span id={HOME_IDS.date}></span>
+          <span id={HOME_IDS.date}>
+            <span lang="en-US" data-l></span>
+            <span lang="vi-VN" data-l></span>
+          </span>
           <span class="sep" aria-hidden="true">
             ·
           </span>
-          <span id={HOME_IDS.time}></span>
+          <span id={HOME_IDS.time}>
+            <span lang="en-US" data-l></span>
+            <span lang="vi-VN" data-l></span>
+          </span>
         </time>
       </p>
-      <h1 id={HOME_IDS.greeting}>{t('COPY-nav.home')}</h1>
+      <h1 id={HOME_IDS.greeting}>
+        <span lang="en-US" data-l>
+          {tBoth('COPY-nav.home')['en-US']}
+        </span>
+        <span lang="vi-VN" data-l>
+          {tBoth('COPY-nav.home')['vi-VN']}
+        </span>
+      </h1>
       {/* set:html on a build-time constant only (homeClockScript, hashed for the CSP above). */}
       <script is:inline set:html={clockScript} />
       {/* One line: whitespace between the parts would show before the period. */}
       <!-- prettier-ignore -->
-      <p class="intro" data-testid="home-intro">{view.intro.before}<span class="name">{view.intro.name}</span>{view.intro.after}</p>
+      <div class="intro-wrap" data-testid="home-intro"><Each as="p" class="intro">{(lang: Lang) => <Fragment>{view.intro.text[lang].before}<span class="name">{view.intro.name}</span>{view.intro.text[lang].after}</Fragment>}</Each></div>
       <a class="about" href="/about/">
-        {t('COPY-nav.about')}
+        <L text={tBoth('COPY-nav.about')} />
         <span aria-hidden="true">→</span>
       </a>
       <button type="button" class="search" data-tk-palette-open data-testid="home-search">
         <Icon name="search" />
-        <span class="search-text">{searchControlLead()}</span>
+        <span class="search-text">
+          <L text={searchControlLead()} />
+        </span>
         <kbd data-tk-shortcut>{SHORTCUT_LABELS.other}</kbd>
       </button>
     </section>
@@ -88,7 +108,7 @@ const personalText: HomePersonalText = {
     {view.categories.length > 0 && (
       <section class="cats" aria-labelledby="home-categories">
         <h2 id="home-categories" class="section-title">
-          {t('COPY-home.categories')}
+          <L text={tBoth('COPY-home.categories')} />
         </h2>
         <ul class="cat-row">
           {view.categories.map((c) => (
@@ -138,6 +158,9 @@ const personalText: HomePersonalText = {
     font-size: var(--tk-font-size-5xl);
     line-height: var(--tk-font-line-height-tight);
     letter-spacing: -0.03em;
+  }
+  .intro-wrap {
+    display: contents;
   }
   .intro {
     max-inline-size: calc(var(--tk-size-palette-width) - var(--tk-space-5));

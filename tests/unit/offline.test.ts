@@ -15,13 +15,14 @@ import { online, updateReady } from '../../src/modules/offline/state.ts';
 import { cacheRules, headersFile } from '../../src/modules/security-policy/index.ts';
 import AppShell from '../../src/modules/shell/AppShell.astro';
 import StatusIsland from '../fixtures/shell/StatusIsland.astro';
+import { en } from './lang-html.ts';
 
 const root = join(import.meta.dirname, '../..');
 
 async function render(component: Parameters<AstroContainer['renderToString']>[0], props = {}) {
   const container = await AstroContainer.create();
   container.addServerRenderer({ renderer: preact, name: '@astrojs/preact' });
-  return container.renderToString(component, { props });
+  return en(await container.renderToString(component, { props }));
 }
 
 /** Width and height from a PNG's IHDR chunk. */

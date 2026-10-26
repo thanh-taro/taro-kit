@@ -1,7 +1,14 @@
 # Test fixture (F-018.AC6): a privacy policy whose last updated date is not a real date; overlays the valid base.
-title: Privacy
+title:
+  en-US: Privacy
+  vi-VN: Privacy
 updated: 2026-13-01
 sections:
-  - heading: Fixture section
-    body: |
-      Fixture paragraph.
+  - heading:
+      en-US: Fixture section
+      vi-VN: Fixture section
+    body:
+      en-US: |
+        Fixture paragraph.
+      vi-VN: |
+        Fixture paragraph.

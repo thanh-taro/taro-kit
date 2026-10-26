@@ -37,13 +37,14 @@ export const FAVICONS: readonly FaviconLink[] = [
 ];
 
 export function webManifest() {
-  const name = t('COPY-shell.brand');
+  // RULE-16, F-019.R8: the installed app's name and description are in English.
+  const name = t('COPY-shell.brand', undefined, 'en-US');
   return {
     id: '/',
     name,
     short_name: name,
-    description: t('COPY-meta.homeDescription'),
-    lang: 'en',
+    description: t('COPY-meta.homeDescription', undefined, 'en-US'),
+    lang: 'en-US',
     start_url: '/',
     scope: '/',
     display: 'standalone' as const,

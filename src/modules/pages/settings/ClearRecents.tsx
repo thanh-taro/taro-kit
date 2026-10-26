@@ -9,19 +9,21 @@
 import { useRef, useState } from 'preact/hooks';
 import { personalData } from '../../personal-data/index.ts';
 import { useHydrated } from '../../shell/hydrated.ts';
+import { L } from '../../language/L.tsx';
+import type { Loc } from '../../language/languages.ts';
 import ConfirmDialog from './ConfirmDialog.tsx';
 
 interface Props {
   /** COPY-settings.clearRecents */
-  label: string;
+  label: Loc;
   /** COPY-settings.clearRecentsConfirm */
-  question: string;
+  question: Loc;
   /** COPY-common.confirm */
-  confirmLabel: string;
+  confirmLabel: Loc;
   /** COPY-common.cancel */
-  cancelLabel: string;
+  cancelLabel: Loc;
   /** COPY-settings.clearRecentsUnsaved */
-  unsaved: string;
+  unsaved: Loc;
 }
 
 export default function ClearRecents({ label, question, confirmLabel, cancelLabel, unsaved }: Props) {
@@ -41,14 +43,16 @@ export default function ClearRecents({ label, question, confirmLabel, cancelLabe
           setOpen(true);
         }}
       >
-        {label}
+        <L text={label} />
       </button>
       {failed && (
         <p class="action-error" role="alert">
           <span class="mark" aria-hidden="true">
             !
           </span>
-          <span>{unsaved}</span>
+          <span>
+            <L text={unsaved} />
+          </span>
         </p>
       )}
       <ConfirmDialog

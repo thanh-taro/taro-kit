@@ -4,9 +4,10 @@
 // home category row (F-007.R7).
 import type { Category } from '../../generated/domain.ts';
 import { categoryPath, toolsByCategory, visibleCategories } from '../content/derive.ts';
-import { t } from '../copy/index.ts';
+import { tBoth } from '../copy/index.ts';
+import type { Loc, Text } from '../language/languages.ts';
 
-type CategoryLike = Pick<Category, 'id' | 'name' | 'order' | 'tint'>;
+type CategoryLike = Pick<Category, 'id' | 'order' | 'tint'> & { name: Text };
 interface ToolLike {
   id: string;
   name: string;
@@ -17,11 +18,12 @@ interface ToolLike {
 /** A compact CMP-CategoryTile in the category navigation. */
 export interface CategoryNavItem {
   id: string;
-  name: string;
+  /** In both languages (INV-09). */
+  name: Text;
   tint: Category['tint'];
   href: string;
-  /** COPY-category.toolCount or COPY-category.toolCountOne. */
-  count: string;
+  /** COPY-category.toolCount or COPY-category.toolCountOne, in both languages. */
+  count: Loc;
 }
 
 export interface CategoryPage<C, T> {
@@ -30,15 +32,15 @@ export interface CategoryPage<C, T> {
   path: string;
   /** The category's visible tools, alphabetically (F-016.R3). */
   tools: T[];
-  /** The number of visible tools, as copy (F-016.R2). */
-  count: string;
+  /** The number of visible tools, as copy in both languages (F-016.R2). */
+  count: Loc;
   /** Every visible category, in display order (F-016.R4); the page's own is marked by id. */
   nav: CategoryNavItem[];
 }
 
 /** "{count} tools", or "1 tool" for exactly one (COPY-category.toolCount, COPY-category.toolCountOne). */
-export const toolCountText = (count: number): string =>
-  count === 1 ? t('COPY-category.toolCountOne') : t('COPY-category.toolCount', { count });
+export const toolCountText = (count: number): Loc =>
+  count === 1 ? tBoth('COPY-category.toolCountOne') : tBoth('COPY-category.toolCount', { count });
 
 /**
  * The visible categories as tiles, in display order, each with its visible tool count: the category navigation

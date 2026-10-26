@@ -1,18 +1,36 @@
 # yaml-language-server: $schema=../../../../content/schemas/policy.json
 # Test fixture (ENT-Policy, F-018), a copy of samples/privacy.yaml: a SAMPLE privacy policy with two sections (F-018.AC1), a bulleted list of three
 # items and a paragraph with a web link and an email link (F-018.AC8). Not the real policy (content/privacy.yaml).
-title: Privacy
+title:
+  en-US: Privacy
+  vi-VN: Privacy
 updated: 2026-10-22
 sections:
-  - heading: Sample section with a list
-    body: |
-      Sample paragraph. I keep a few sample things on your device:
+  - heading:
+      en-US: Sample section with a list
+      vi-VN: Sample section with a list
+    body:
+      en-US: |
+        Sample paragraph. I keep a few sample things on your device:
 
-      - the first sample item;
-      - the second sample item;
-      - the third sample item.
+        - the first sample item;
+        - the second sample item;
+        - the third sample item.
 
-      A sample paragraph after the list, with [bracketed text] that stays as it is.
-  - heading: Sample section with links
-    body: |
-      Sample hosting text. My host's handling is described in [its privacy policy](https://www.cloudflare.com/privacypolicy/), and you can email me at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).
+        A sample paragraph after the list, with [bracketed text] that stays as it is.
+      vi-VN: |
+        Sample paragraph. I keep a few sample things on your device:
+
+        - the first sample item;
+        - the second sample item;
+        - the third sample item.
+
+        A sample paragraph after the list, with [bracketed text] that stays as it is.
+  - heading:
+      en-US: Sample section with links
+      vi-VN: Sample section with links
+    body:
+      en-US: |
+        Sample hosting text. My host's handling is described in [its privacy policy](https://www.cloudflare.com/privacypolicy/), and you can email me at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).
+      vi-VN: |
+        Sample hosting text. My host's handling is described in [its privacy policy](https://www.cloudflare.com/privacypolicy/), and you can email me at [adamnguyen.itdn@gmail.com](mailto:adamnguyen.itdn@gmail.com).

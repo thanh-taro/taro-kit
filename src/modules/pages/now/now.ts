@@ -4,41 +4,47 @@
 // Implements: F-010.R1 (note and date), F-010.R3 (changelog), F-010.R4 (states).
 import type { NowNote } from '../../../generated/domain.ts';
 import { changelog, toolPath, type Dated, type DatedItem } from '../../content/derive.ts';
-import { t } from '../../copy/index.ts';
+import { formatDate, formatMonth, tBoth, type CopyId } from '../../copy/index.ts';
+import { LANGUAGES, type Lang, type Loc, type Text } from '../../language/languages.ts';
 
-/** A calendar date as shown (`Oct 13, 2026` or `Oct 13`), read in full (`October 13, 2026`) and machine-readable. */
+/**
+ * A calendar date as shown (`Oct 13, 2026` / `13 thg 10, 2026`, or without the year), read in full
+ * (`October 13, 2026` / `13 tháng 10, 2026`) and machine-readable; in both languages (F-019.R4, RULE-16).
+ */
 export interface DateText {
   iso: string;
-  shown: string;
-  full: string;
+  shown: Loc;
+  full: Loc;
 }
 /** A copy string split around its one placeholder, so the placeholder's value can carry its own markup. */
 export interface Around {
   before: string;
   after: string;
 }
+/** `Around` for each language. */
+export type LocAround = Record<Lang, Around>;
 export interface ChangelogEntry {
   id: string;
   type: DatedItem['type'];
   href: string;
   tool: string;
   /** COPY-now.changelogAdded or COPY-now.changelogUpdated around {tool}. */
-  label: Around;
+  label: LocAround;
   date: DateText;
 }
 export interface ChangelogGroup {
   /** YYYY-MM. */
   month: string;
-  /** `October 2026`. */
-  label: string;
+  /** `October 2026` / `Tháng 10 năm 2026`. */
+  label: Loc;
   items: ChangelogEntry[];
 }
 export interface NowViewData {
   note?: {
-    paragraphs: string[];
+    paragraphs: Record<Lang, string[]>;
     updated: DateText;
     /** COPY-now.updated around {date}. */
-    updatedLabel: Around;
+    updatedLabel: LocAround;
   };
   months: ChangelogGroup[];
   /** No note and no visible tools: CMP-StateMessage with COPY-now.empty (F-010.R4). */
@@ -53,27 +59,36 @@ export const around = (text: string): Around => {
   return { before: text.slice(0, i), after: text.slice(i + SLOT.length) };
 };
 
-const fmt = (options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat('en-US', { ...options, timeZone: 'UTC' });
-const SHORT = fmt({ month: 'short', day: 'numeric', year: 'numeric' });
-const DAY = fmt({ month: 'short', day: 'numeric' });
-const FULL = fmt({ month: 'long', day: 'numeric', year: 'numeric' });
-const MONTH = fmt({ month: 'long', year: 'numeric' });
-const utc = (iso: string) => new Date(`${iso}T00:00:00Z`);
+/** `around` for both versions of a localized text. */
+export const aroundBoth = (text: Loc): LocAround =>
+  Object.fromEntries(LANGUAGES.map((l) => [l, around(text[l])])) as LocAround;
+
+/** A COPY string with one placeholder, split around it in both languages. */
+export const copyAround = (id: CopyId, slot: string): LocAround =>
+  aroundBoth(tBoth(id as 'COPY-now.updated', { [slot]: SLOT } as { date: string }));
+
+const perLanguage = (fn: (lang: Lang) => string): Loc => ({ 'en-US': fn('en-US'), 'vi-VN': fn('vi-VN') });
 
 /** `withYear`: the note's date; without, a changelog item's date inside its month group. */
 export const dateText = (iso: string, withYear = true): DateText => ({
   iso,
-  shown: (withYear ? SHORT : DAY).format(utc(iso)),
-  full: FULL.format(utc(iso)),
+  shown: perLanguage((l) => formatDate(iso, l, withYear ? 'short' : 'day')),
+  full: perLanguage((l) => formatDate(iso, l, 'full')),
 });
-/** `2026-10` → `October 2026`. */
-export const monthLabel = (month: string): string => MONTH.format(utc(`${month}-01`));
+/** `2026-10` → `October 2026` / `Tháng 10 năm 2026` (a group title starts with a capital). */
+export const monthLabel = (month: string): Loc => perLanguage((l) => formatMonth(month, l, true));
 /** Paragraphs are separated by blank lines (ADR-0005). */
 export const paragraphs = (body: string): string[] =>
   body
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean);
+/** `paragraphs` of each version. */
+export const paragraphsBoth = (body: Text): Record<Lang, string[]> =>
+  Object.fromEntries(LANGUAGES.map((l) => [l, paragraphs(typeof body === 'string' ? body : body[l])])) as Record<
+    Lang,
+    string[]
+  >;
 
 export function nowView(content: { now?: NowNote; tools: readonly Dated[] }): NowViewData {
   const { now } = content;
@@ -85,15 +100,15 @@ export function nowView(content: { now?: NowNote; tools: readonly Dated[] }): No
       type: i.type,
       href: toolPath(i.id),
       tool: i.name,
-      label: around(t(i.type === 'added' ? 'COPY-now.changelogAdded' : 'COPY-now.changelogUpdated', { tool: SLOT })),
+      label: copyAround(i.type === 'added' ? 'COPY-now.changelogAdded' : 'COPY-now.changelogUpdated', 'tool'),
       date: dateText(i.date, false),
     })),
   }));
   return {
     note: now && {
-      paragraphs: paragraphs(now.body),
+      paragraphs: paragraphsBoth(now.body),
       updated: dateText(now.updated),
-      updatedLabel: around(t('COPY-now.updated', { date: SLOT })),
+      updatedLabel: copyAround('COPY-now.updated', 'date'),
     },
     months,
     empty: !now && months.length === 0,

@@ -9,36 +9,39 @@
 //     the personal data (MOD-PersonalData `replaceAll`), so every island and other open windows follow. Cancel or
 //     Escape changes nothing. When the replace can't be saved on the device, COPY-settings.importUnsaved says so.
 // - The note under the buttons says tool data is not in the backup (COPY-settings.backupScope).
+// Every text is in both languages (<L>, F-019.R4).
 // The import control is never disabled while busy, so focus stays on it and returns to it from the confirmation.
 import { useRef, useState } from 'preact/hooks';
 import type { ImportReason } from '../../backup/index.ts';
 import { personalData, type PersonalData } from '../../personal-data/index.ts';
 import { useHydrated } from '../../shell/hydrated.ts';
+import { L } from '../../language/L.tsx';
+import { mapText, type Loc } from '../../language/languages.ts';
 import ConfirmDialog from './ConfirmDialog.tsx';
 
 interface Props {
   /** COPY-settings.export */
-  exportLabel: string;
+  exportLabel: Loc;
   /** COPY-settings.import */
-  importLabel: string;
+  importLabel: Loc;
   /** COPY-settings.backupScope */
-  scope: string;
+  scope: Loc;
   /** COPY-settings.importInvalid rendered with the literal `{reason}` left in place. */
-  invalidTemplate: string;
+  invalidTemplate: Loc;
   /** COPY-import.* by reason. */
-  reasons: Record<ImportReason, string>;
+  reasons: Record<ImportReason, Loc>;
   /** COPY-settings.importConfirm */
-  question: string;
+  question: Loc;
   /** COPY-common.confirm */
-  confirmLabel: string;
+  confirmLabel: Loc;
   /** COPY-common.cancel */
-  cancelLabel: string;
+  cancelLabel: Loc;
   /** COPY-settings.importUnsaved */
-  unsaved: string;
+  unsaved: Loc;
   /** COPY-settings.exportFailed */
-  exportFailed: string;
+  exportFailed: Loc;
   /** COPY-settings.importFailed */
-  importFailed: string;
+  importFailed: Loc;
 }
 
 type Problem =
@@ -88,7 +91,7 @@ export default function BackupControls(props: Props) {
 
   const message =
     problem?.kind === 'invalid'
-      ? props.invalidTemplate.replace('{reason}', props.reasons[problem.reason])
+      ? mapText(props.invalidTemplate, (v, lang) => v.replace('{reason}', props.reasons[problem.reason][lang]))
       : problem?.kind === 'unsaved'
         ? props.unsaved
         : problem?.kind === 'exportFailed'
@@ -101,7 +104,7 @@ export default function BackupControls(props: Props) {
     <div class="backup">
       <div class="actions">
         <button type="button" class="action action--primary" disabled={!hydrated} onClick={exportNow}>
-          {props.exportLabel}
+          <L text={props.exportLabel} />
         </button>
         <button
           ref={importControl}
@@ -113,7 +116,7 @@ export default function BackupControls(props: Props) {
           onClick={pick}
         >
           {busy && <span class="spinner" aria-hidden="true" />}
-          {props.importLabel}
+          <L text={props.importLabel} />
         </button>
         <input
           ref={input}
@@ -131,10 +134,14 @@ export default function BackupControls(props: Props) {
           <span class="mark" aria-hidden="true">
             !
           </span>
-          <span>{message}</span>
+          <span>
+            <L text={message} />
+          </span>
         </p>
       )}
-      <p class="scope">{props.scope}</p>
+      <p class="scope">
+        <L text={props.scope} />
+      </p>
       <ConfirmDialog
         open={pending !== null}
         title={props.question}

@@ -1,14 +1,22 @@
 # Test fixture (F-008.AC1, AC3, AC4): a full profile with an avatar, nickname, location and paragraphs.
 name: Nguyen Tri Thanh
 nickname: Taro
-headline: Fixture headline. I build small tools.
+headline:
+  en-US: Fixture headline. I build small tools.
+  vi-VN: Fixture headline. I build small tools.
 avatar: avatar.png
 location: Da Nang, Vietnam
-bio: |
-  Fixture bio, first paragraph.
+bio:
+  en-US: |
+    Fixture bio, first paragraph.
 
-  Fixture bio, second paragraph
-  that wraps onto a second line.
+    Fixture bio, second paragraph
+    that wraps onto a second line.
+  vi-VN: |
+    Fixture bio, first paragraph.
+
+    Fixture bio, second paragraph
+    that wraps onto a second line.
 links:
   - { label: Code, url: 'https://github.com/fixture-owner', kind: code }
   - { label: LinkedIn, url: 'https://www.linkedin.com/in/fixture-owner/', kind: social }

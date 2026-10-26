@@ -108,6 +108,89 @@ function tagOnInstancePath(doc: Node, def: Def, path: (string | number)[]): stri
   return nodes.map(tagOf).find(Boolean);
 }
 
+// ---------- INV-09: localized text (F-019, ADR-0005 note) ----------
+// A localized field's schema is an object requiring both language keys; a name field is a oneOf of a string and such
+// an object. Errors inside either are reported as INV-09 naming the field, never as raw schema noise.
+const LANG_KEYS = ['en-US', 'vi-VN'];
+const isLocalizedSchema = (n: Node): boolean =>
+  Array.isArray(n.required) && LANG_KEYS.every((k) => (n.required as unknown[]).includes(k));
+
+/** The schemas at an instance path, through $ref, allOf and oneOf branches. */
+function schemasAt(doc: Node, def: Def, path: (string | number)[]): Node[] {
+  const start = walk(doc, ['$defs', def]);
+  const open = (n: Node): Node[] =>
+    expand(doc, n).flatMap((s) => [s, ...(Array.isArray(s.oneOf) ? s.oneOf.filter(isNode).flatMap(open) : [])]);
+  let nodes: Node[] = isNode(start) ? open(start) : [];
+  for (const key of path)
+    nodes = nodes
+      .map((s) => (typeof key === 'number' ? s.items : isNode(s.properties) ? s.properties[key] : undefined))
+      .filter(isNode)
+      .flatMap(open);
+  return nodes;
+}
+
+const isLangKey = (k: string | number | undefined): k is string => typeof k === 'string' && LANG_KEYS.includes(k);
+
+/**
+ * Drops the noise Ajv reports for a name field (a oneOf of a string and a localized object): the branch that does not
+ * fit the value's type, and the oneOf summary when a branch error explains it. Implements: INV-09 (one error per
+ * mistake, F-001.R2).
+ */
+export function relevantErrors(errors: readonly ErrorObject[], data: unknown): ErrorObject[] {
+  const pathOf = (e: ErrorObject) => e.instancePath.split('/').slice(1);
+  return errors.filter((e) => {
+    const branch = /\/oneOf\/(\d+)\//.exec(e.schemaPath);
+    if (e.keyword === 'oneOf')
+      return !errors.some((o) => o !== e && o.schemaPath.startsWith(e.schemaPath + '/') && keepBranch(o));
+    return !branch || keepBranch(e);
+  });
+  function keepBranch(e: ErrorObject): boolean {
+    const m = /\/oneOf\/(\d+)\//.exec(e.schemaPath);
+    if (!m) return true;
+    const segs = pathOf(e);
+    const field = isLangKey(segs.at(-1)) ? segs.slice(0, -1) : segs;
+    const value = field.reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], data);
+    // Branch 0 is the plain string, the other the localized object (project.schema.json name fields).
+    return (typeof value === 'string') === (m[1] === '0');
+  }
+}
+
+/** The INV-09 reading of an error, if it is about localized text. */
+function localizedError(
+  err: ErrorObject,
+  data: unknown,
+  doc: Node,
+  def: Def,
+  path: (string | number)[],
+): MappedError | null {
+  const last = path.at(-1);
+  const fieldPath = isLangKey(last) ? path.slice(0, -1) : path;
+  const field = fieldPath.join('.') || '(root)';
+  const schemas = schemasAt(doc, def, fieldPath);
+  const localized = schemas.some(isLocalizedSchema);
+  const value = at(data, fieldPath);
+  if (localized && err.keyword === 'required' && isLangKey(String(err.params.missingProperty)))
+    return {
+      rule: 'INV-09',
+      message: `${field} has no ${String(err.params.missingProperty)} version`,
+      path: fieldPath,
+    };
+  if (localized && isLangKey(last) && err.keyword === 'minLength' && at(data, path) === '')
+    return { rule: 'INV-09', message: `${field} has an empty ${last} version`, path };
+  if (localized && !isLangKey(last) && err.keyword === 'type' && typeof value === 'string')
+    return { rule: 'INV-09', message: `${field} must have an en-US and a vi-VN version`, path: fieldPath };
+  // A field that is one text for both languages (a tool's name, the profile name, the nickname) written per language.
+  if (
+    !localized &&
+    err.keyword === 'type' &&
+    err.params.type === 'string' &&
+    isNode(value) &&
+    Object.keys(value).some(isLangKey)
+  )
+    return { rule: 'INV-09', message: `${field} must be one text for both languages`, path: fieldPath };
+  return null;
+}
+
 const at = (data: unknown, path: (string | number)[]): unknown =>
   path.reduce<unknown>((o, k) => (o as Record<string | number, unknown> | undefined)?.[k], data);
 
@@ -126,6 +209,8 @@ export function mapAjvError(
   const field = path.join('.') || '(root)';
   const value = `"${String(at(data, path))}"`;
   const doc = schemaDoc(schemaPath);
+  const localized = localizedError(err, data, doc, def, path);
+  if (localized) return localized;
   const rule = tagOnSchemaPath(doc, def, err.schemaPath) ?? tagOnInstancePath(doc, def, path);
 
   if (rule === 'RULE-07')
@@ -144,6 +229,8 @@ export function mapAjvError(
   }
   if (rule) return { rule, message: `${field} ${err.message ?? 'is invalid'}`, path };
 
+  if (err.keyword === 'oneOf')
+    return { rule: 'SCHEMA', message: `${field} must be a text or a text per language`, path };
   if (err.keyword === 'format')
     return { rule: 'SCHEMA', message: `${field} ${value} is not a valid ${String(err.params.format)}`, path };
   if (err.keyword === 'required')

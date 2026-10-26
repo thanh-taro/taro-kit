@@ -12,8 +12,11 @@
 // - Linked tools: the marker (COPY-tool.opensNewTab) is visible on regular cards and screen-reader text on
 //   compact ones; both describe the link (aria-describedby). The link carries `data-tk-visit` so following it
 //   records the visit (F-006.R1, MOD-ToolHost visits.ts); the card itself holds no state.
+// - Every text is in both languages (<L>, F-019.R4); the tool's name is one text (INV-09).
 import type { ComponentChildren } from 'preact';
 import { useId } from 'preact/hooks';
+import { L } from '../language/L.tsx';
+import type { Loc, Text } from '../language/languages.ts';
 import FavoriteToggle, { type FavoriteToggleLabels } from './FavoriteToggle.tsx';
 import {
   describedBy,
@@ -30,9 +33,9 @@ export type { ToolCardTool, ToolCardVariant };
 export interface ToolCardText {
   favorite: FavoriteToggleLabels;
   /** COPY-tool.opensNewTab */
-  opensNewTab: string;
+  opensNewTab: Loc;
   /** COPY-tool.unavailable */
-  unavailable: string;
+  unavailable: Loc;
   /** Inline SVG markup from the icon set: star 20 px, star 16 px, new tab and offline at 16 px. */
   icons: { star: string; starSmall: string; newTab: string; offline: string };
 }
@@ -42,7 +45,7 @@ export interface ToolCardProps {
   /** `regular` (catalog, category pages) or `compact` (home favorites and recents). Default `regular`. */
   variant?: ToolCardVariant;
   /** The category's name, shown as a label on regular cards (F-002.R2). */
-  categoryName?: string;
+  categoryName?: Text;
   /** Offline, and the tool is linked or not offline-capable: dimmed, with COPY-tool.unavailable (F-011.R3). */
   unavailable?: boolean;
   /**
@@ -106,15 +109,23 @@ export default function ToolCard({
           >
             {tool.name}
           </a>
-          {regular && <p class="tk-toolcard__summary">{tool.summary}</p>}
+          {regular && (
+            <p class="tk-toolcard__summary">
+              <L text={tool.summary} />
+            </p>
+          )}
         </div>
       </div>
       {regular && (categoryName || newTab) && (
         <div class="tk-toolcard__meta">
-          {categoryName && <span class="tk-toolcard__category">{categoryName}</span>}
+          {categoryName && (
+            <span class="tk-toolcard__category">
+              <L text={categoryName} />
+            </span>
+          )}
           {newTab && (
             <span id={newTabId} class="tk-toolcard__newtab">
-              {text.opensNewTab}
+              <L text={text.opensNewTab} />
               <Svg markup={text.icons.newTab} />
             </span>
           )}
@@ -122,13 +133,13 @@ export default function ToolCard({
       )}
       {!regular && newTab && (
         <span id={newTabId} class="tk-visually-hidden">
-          {text.opensNewTab}
+          <L text={text.opensNewTab} />
         </span>
       )}
       {(unavailable || live) && (
         <span id={noteId} class="tk-toolcard__unavailable" hidden={live}>
           <Svg markup={text.icons.offline} />
-          {text.unavailable}
+          <L text={text.unavailable} />
         </span>
       )}
       <span class="tk-toolcard__fav">

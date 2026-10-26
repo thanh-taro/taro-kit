@@ -19,12 +19,15 @@ import {
 } from '../../src/modules/content/index.ts';
 import { headTags, metaFor, PREVIEW_IMAGE, siteIndexXml } from '../../src/modules/meta/index.ts';
 import About from '../../src/modules/pages/About.astro';
-import { period, resumeView, skillGroups } from '../../src/modules/pages/resume/resume.ts';
+import { period, resumeView, sectionTitle, skillGroups } from '../../src/modules/pages/resume/resume.ts';
+import { pick } from '../../src/modules/language/languages.ts';
 import ResumeView from '../../src/modules/pages/resume/ResumeView.astro';
 import { emptyQueryGroups, paletteIndex } from '../../src/modules/palette/logic.ts';
 import { palettePages, paletteText } from '../../src/modules/palette/text.ts';
 import { emptyDocument } from '../../src/modules/personal-data/index.ts';
 import AppShell from '../../src/modules/shell/AppShell.astro';
+import type { Lang } from '../../src/modules/language/languages.ts';
+import { showing } from './lang-html.ts';
 
 const root = join(import.meta.dirname, '../..');
 const fixtures = join(root, 'tests/fixtures/content');
@@ -53,10 +56,14 @@ function failures(overlay: string): string[] {
   throw new Error(`${overlay}: expected the content to fail validation`);
 }
 
-async function render(component: Parameters<AstroContainer['renderToString']>[0], props: Record<string, unknown>) {
+async function render(
+  component: Parameters<AstroContainer['renderToString']>[0],
+  props: Record<string, unknown>,
+  lang: Lang = 'en-US',
+) {
   const container = await AstroContainer.create();
   container.addServerRenderer({ renderer: preact, name: '@astrojs/preact' });
-  return container.renderToString(component, { props });
+  return showing(await container.renderToString(component, { props }), lang);
 }
 const renderResume = (reg: Registry) => render(ResumeView, { view: resumeView(reg.resume!) });
 /** Text content of the HTML, tags removed and whitespace collapsed. */
@@ -88,7 +95,7 @@ describe('ENT-Resume: the optional résumé (MOD-Content)', () => {
   });
 
   test('ENT-Resume entries keep the order the Owner wrote them in', () => {
-    expect(full.resume?.experience?.map((e) => e.role)).toEqual(['Mentor', 'Fixture engineer B']);
+    expect(full.resume?.experience?.map((e) => pick(e.role, 'en-US'))).toEqual(['Mentor', 'Fixture engineer B']);
   });
 });
 
@@ -144,24 +151,43 @@ describe('RULE-15 résumé display', () => {
   });
 
   test('RULE-15 a period is the full English month and year, with "present" when there is no end', () => {
-    expect(period('2022-06').text).toBe('June 2022 – present');
-    expect(period('2011-09', '2014-09').text).toBe('September 2011 – September 2014');
+    expect(period('2022-06').text['en-US']).toBe('June 2022 – present');
+    expect(period('2011-09', '2014-09').text['en-US']).toBe('September 2011 – September 2014');
     expect(period('2022-06').current).toBe(true);
-    expect(period('2011-09', '2014-09').parts).toEqual([
+    expect(period('2011-09', '2014-09').parts['en-US']).toEqual([
       { text: 'September 2011', datetime: '2011-09' },
       { text: ' – ' },
       { text: 'September 2014', datetime: '2014-09' },
     ]);
   });
 
-  test('F017_AC5 PHP (5) and Go (3) under "Languages", then Docker with no group: only Go shows its level', () => {
-    expect(resumeView(full.resume!).skills).toEqual([
-      {
-        label: 'Languages',
-        skills: [{ name: 'PHP' }, { name: 'Go', levelShort: '3/5', levelText: '3 out of 5' }],
-      },
-      { skills: [{ name: 'Docker' }] },
+  test('F019_AC7 RULE-15 with Vietnamese showing, a period from 2022-06 with no end reads "tháng 6 năm 2022 – nay"', () => {
+    expect(period('2022-06').text['vi-VN']).toBe('tháng 6 năm 2022 – nay');
+    expect(period('2022-06').parts['vi-VN']).toEqual([
+      { text: 'tháng 6 năm 2022', datetime: '2022-06' },
+      { text: ' – ' },
+      { text: 'nay' },
     ]);
+    expect(period('2011-09', '2014-09').text['vi-VN']).toBe('tháng 9 năm 2011 – tháng 9 năm 2014');
+  });
+
+  test('F019_AC7 section headings are Vietnamese with Vietnamese showing', () => {
+    for (const section of RESUME_SECTIONS)
+      expect(sectionTitle(section)['vi-VN']).not.toBe(sectionTitle(section)['en-US']);
+  });
+
+  test('F017_AC5 PHP (5) and Go (3) under "Languages", then Docker with no group: only Go shows its level', () => {
+    const groups = resumeView(full.resume!).skills;
+    expect(groups.map((g) => (g.label === undefined ? undefined : pick(g.label, 'en-US')))).toEqual([
+      'Languages',
+      undefined,
+    ]);
+    expect(groups.map((g) => g.skills.map((k) => pick(k.name, 'en-US')))).toEqual([['PHP', 'Go'], ['Docker']]);
+    const go = groups[0]!.skills[1]!;
+    expect(go.levelShort).toEqual({ 'en-US': '3/5', 'vi-VN': '3/5' });
+    expect(go.levelText?.['en-US']).toBe('3 out of 5');
+    expect(groups[0]!.skills[0]!.levelShort).toBeUndefined();
+    expect(groups[1]!.skills[0]!.levelShort).toBeUndefined();
   });
 
   test('F017_AC12 groups come in the order their first skill appears, skills in written order', () => {
@@ -179,11 +205,11 @@ describe('RULE-15 résumé display', () => {
   test('RULE-15 a skill level below 5 shows as "{level}/5" and in words; 5 or none shows the name only', () => {
     const [g] = skillGroups([{ name: 'a', level: 1 }, { name: 'b', level: 4 }, { name: 'c', level: 5 }, { name: 'd' }]);
     expect(g!.label).toBeUndefined();
-    expect(g!.skills).toEqual([
-      { name: 'a', levelShort: '1/5', levelText: '1 out of 5' },
-      { name: 'b', levelShort: '4/5', levelText: '4 out of 5' },
-      { name: 'c' },
-      { name: 'd' },
+    expect(g!.skills.map((k) => [k.name, k.levelShort?.['en-US'], k.levelText?.['en-US']])).toEqual([
+      ['a', '1/5', '1 out of 5'],
+      ['b', '4/5', '4 out of 5'],
+      ['c', undefined, undefined],
+      ['d', undefined, undefined],
     ]);
     expect(skillGroups([])).toEqual([]);
   });
@@ -195,6 +221,13 @@ describe('F-017 Résumé page body (SCR-Resume)', () => {
     expect(headings(html, 1)).toEqual(['My résumé']);
     expect(headings(html, 2)).toEqual(['Experience', 'Education', 'Skills']);
     expect(html).toContain('The long version: where I&#39;ve worked');
+  });
+
+  test('F019_AC7 rendered with Vietnamese showing: Vietnamese headings and "tháng 6 năm 2022 – nay"', async () => {
+    const html = await render(ResumeView, { view: resumeView(full.resume!) }, 'vi-VN');
+    expect(headings(html, 2)).toEqual(RESUME_SECTIONS.map((s) => sectionTitle(s)['vi-VN']));
+    expect(text(html)).toContain('tháng 6 năm 2022 – nay');
+    expect(text(html)).not.toContain('present');
   });
 
   test('F017_AC2 experience entries A then B are shown A before B', async () => {
@@ -236,7 +269,7 @@ describe('F-017 Résumé page body (SCR-Resume)', () => {
 
   test('F017_AC5 rendered: "Languages" labels a list with PHP (name only) and Go ("3/5", read as "3 out of 5"); Docker last, unlabelled', async () => {
     const html = await renderResume(full);
-    expect(html).toMatch(/<h3 class="group-label"[^>]*id="resume-skills-0"[^>]*>\s*Languages\s*<\/h3>/);
+    expect(html).toMatch(/<h3 class="group-label tk-mono-words"[^>]*id="resume-skills-0"[^>]*>\s*Languages\s*<\/h3>/);
     expect(html).toMatch(/<ul class="chips"[^>]*aria-labelledby="resume-skills-0"/);
     expect(text(itemWith(html, '>PHP<')!)).toBe('PHP');
     const go = itemWith(html, '>Go<')!;
@@ -284,15 +317,16 @@ describe('F-017.R4 links to the Résumé page', () => {
 
   test("F017_AC7 with a résumé, the palette's empty-query Pages group includes Résumé", () => {
     const pages = paletteText(full).pages;
-    expect(pages.map((p) => p.name)).toEqual(['Home', 'Tools', 'About me', 'Résumé', 'Now', 'Settings']);
+    expect(pages.map((p) => p.name['en-US'])).toEqual(['Home', 'Tools', 'About me', 'Résumé', 'Now', 'Settings']);
     expect(pages.find((p) => p.id === 'resume')?.path).toBe('/resume/');
     const index = paletteIndex({ tools: [] }, pages, {
-      theme: 'Theme',
-      export: 'Export',
-      copy: 'Copy',
+      theme: { 'en-US': 'Theme', 'vi-VN': 'Giao diện' },
+      language: { 'en-US': 'Language', 'vi-VN': 'Ngôn ngữ' },
+      export: { 'en-US': 'Export', 'vi-VN': 'Xuất' },
+      copy: { 'en-US': 'Copy', 'vi-VN': 'Sao chép' },
     });
     const groups = emptyQueryGroups(index, emptyDocument());
-    expect(groups.find((g) => g.id === 'pages')?.items.map((i) => i.name)).toContain('Résumé');
+    expect(groups.find((g) => g.id === 'pages')?.items.map((i) => pick(i.name, 'en-US'))).toContain('Résumé');
   });
 
   for (const [label, overlay] of [
@@ -320,6 +354,7 @@ describe('F-017.R6 link preview and site index', () => {
     const meta = metaFor({ page: 'resume' }, full);
     expect(meta).toEqual({
       title: 'Résumé — TaroKit',
+      titles: { 'en-US': 'Résumé — TaroKit', 'vi-VN': 'CV — TaroKit' },
       description: "Where I've worked, what I studied, and what I'm good at.",
       path: '/resume/',
     });

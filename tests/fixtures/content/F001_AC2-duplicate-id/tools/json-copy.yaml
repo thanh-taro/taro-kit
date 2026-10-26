@@ -2,7 +2,9 @@
 id: json
 kind: tool
 name: JSON Copy
-summary: Same id as tools/json.yaml.
+summary:
+  en-US: Same id as tools/json.yaml.
+  vi-VN: Same id as tools/json.yaml.
 category: developer
 url: https://json-copy.tarokit.app/
 origin: own

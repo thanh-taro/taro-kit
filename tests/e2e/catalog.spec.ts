@@ -3,6 +3,7 @@
 // (Audio Trimmer, Clip Maker, Image Resizer), Converters (one hidden tool only) and Productivity (one linked tool).
 // The production build (PROD) carries the sample categories, including "Converters & calculators".
 // Expected names and counts come from the fixture registry, never from constants.
+import { pick } from '../../src/modules/language/languages.ts';
 import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
@@ -62,10 +63,10 @@ test.describe('F-002 catalog', () => {
     await expect(link).toHaveAccessibleDescription('Opens in a new tab');
     await expect(card.getByText('Opens in a new tab')).toBeVisible();
     // F-002.R2: name, summary, icon, category and favorite state on every card.
-    await expect(card.getByText(linked.summary)).toBeVisible();
+    await expect(card.getByText(pick(linked.summary, 'en-US'))).toBeVisible();
     await expect(card.locator('.tk-toolcard__icon')).toBeVisible();
     await expect(card.locator('.tk-toolcard__category')).toHaveText(
-      registry.categories.find((c) => c.id === linked.category)!.name,
+      pick(registry.categories.find((c) => c.id === linked.category)!.name, 'en-US'),
     );
     await expect(card.getByRole('button', { name: 'Add to favorites' })).toHaveAttribute('aria-pressed', 'false');
     // An embedded tool is not marked.
@@ -105,10 +106,11 @@ test.describe('F-002 catalog', () => {
   test('F002_AC4 every category heading links to its page and works from the keyboard', async ({ page }) => {
     await openCatalog(page);
     for (const c of registry.categories)
-      await expect(groups(page).getByRole('heading', { level: 2, name: c.name }).getByRole('link')).toHaveAttribute(
-        'href',
-        `/tools/${c.id}/`,
-      );
+      await expect(
+        groups(page)
+          .getByRole('heading', { level: 2, name: pick(c.name, 'en-US') })
+          .getByRole('link'),
+      ).toHaveAttribute('href', `/tools/${c.id}/`);
     await groups(page).getByRole('heading', { level: 2, name: 'Media tools' }).getByRole('link').focus();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(`${FX}/tools/media/`);

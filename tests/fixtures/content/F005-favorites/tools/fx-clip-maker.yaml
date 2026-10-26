@@ -2,7 +2,9 @@
 id: fx-clip-maker
 kind: tool
 name: Clip Maker
-summary: Fixture tool for the category tests.
+summary:
+  en-US: Fixture tool for the category tests.
+  vi-VN: Fixture tool for the category tests.
 category: media
 url: https://fx-clip-maker.example.com/
 origin: own

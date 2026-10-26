@@ -1,0 +1,13 @@
+# INV-09: a tool's name has exactly one version.
+id: json
+kind: tool
+name:
+  en-US: JSON Formatter
+  vi-VN: Trình định dạng JSON
+summary:
+  en-US: Fixture tool, own, no open mode.
+  vi-VN: Công cụ mẫu.
+category: developer
+url: https://json.tarokit.app/
+origin: own
+added: 2026-02-01

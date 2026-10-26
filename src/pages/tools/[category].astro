@@ -9,7 +9,9 @@
 import { join } from 'node:path';
 import type { GetStaticPaths } from 'astro';
 import { contentDirectory, getRegistry } from '../../modules/content/index.ts';
-import { t } from '../../modules/copy/index.ts';
+import { tBoth } from '../../modules/copy/index.ts';
+import L from '../../modules/language/L.astro';
+import { localizedAttrs } from '../../modules/language/attrs.ts';
 import CategoryTile from '../../modules/design-system/CategoryTile.astro';
 import { svgFromFile } from '../../modules/design-system/icons.ts';
 import ToolCard from '../../modules/design-system/ToolCard.astro';
@@ -39,13 +41,13 @@ const { category, tools, count, nav } = page;
     <section class="hero" data-tint={category.tint} data-testid="category-hero" aria-labelledby="category-name">
       <span class="hero-icon" aria-hidden="true" set:html={icons[category.id]} />
       <div class="hero-text">
-        <h1 id="category-name">{category.name}</h1>
-        <p class="intro">{category.intro}</p>
-        <p class="count">{count}</p>
+        <h1 id="category-name"><L text={category.name} /></h1>
+        <p class="intro"><L text={category.intro} /></p>
+        <p class="count tk-mono-words"><L text={count} /></p>
       </div>
     </section>
 
-    <nav class="cats" aria-label={t('COPY-category.navLabel')}>
+    <nav class="cats" {...localizedAttrs('aria-label', tBoth('COPY-category.navLabel'))}>
       {
         nav.map((c) => (
           <CategoryTile
@@ -58,7 +60,7 @@ const { category, tools, count, nav } = page;
           />
         ))
       }
-      <a class="all" href="/tools/">{t('COPY-category.allTools')}</a>
+      <a class="all" href="/tools/"><L text={tBoth('COPY-category.allTools')} /></a>
     </nav>
 
     <ul class="tools" data-testid="category-tools" aria-labelledby="category-name">

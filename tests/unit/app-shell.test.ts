@@ -3,11 +3,12 @@ import preact from '@astrojs/preact/server.js';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, test } from 'vitest';
 import AppShell from '../../src/modules/shell/AppShell.astro';
+import { en } from './lang-html.ts';
 
 async function render(component: Parameters<AstroContainer['renderToString']>[0], props = {}) {
   const container = await AstroContainer.create();
   container.addServerRenderer({ renderer: preact, name: '@astrojs/preact' });
-  return container.renderToString(component, { props });
+  return en(await container.renderToString(component, { props }));
 }
 
 describe('CMP-AppShell', () => {

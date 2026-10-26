@@ -9,34 +9,49 @@ import {
   isApplePlatform,
   isPaletteShortcut,
   matchRange,
+  LANGUAGE_ACTION_KEYWORDS,
   PALETTE_FAVORITES_MAX,
   paletteBootstrap,
   paletteIndex,
   paletteView,
+  resultCountText,
   runEntry,
+  type ActionId,
+  type PageItem,
   type PaletteEntry,
   type RunEnvironment,
+  type ToolEntry,
 } from '../../src/modules/palette/logic.ts';
+import type { Loc } from '../../src/modules/language/languages.ts';
+import { paletteText } from '../../src/modules/palette/text.ts';
 import { emptyDocument, type PersonalData } from '../../src/modules/personal-data/index.ts';
 import { PALETTE_GROUP_MAX, PALETTE_GROUPS, searchPalette, searchKeys } from '../../src/modules/search/index.ts';
 
-const tool = (id: string, name: string, extra: { summary?: string; tags?: string[]; linked?: boolean } = {}) => ({
-  id,
-  name,
-  summary: extra.summary ?? '',
-  tags: extra.tags ?? [],
-  openMode: extra.linked ? ('linked' as const) : ('embedded' as const),
-  url: `https://${id}.example.com/`,
-  keys: searchKeys({ name, summary: extra.summary ?? '', tags: extra.tags }),
-});
+// Plain strings stand for texts that are the same in both languages (MOD-Language `Text`); the palette's types ask
+// for both versions, so the fixtures are cast.
+const tool = (id: string, name: string, extra: { summary?: string; tags?: string[]; linked?: boolean } = {}) =>
+  ({
+    id,
+    name,
+    summary: extra.summary ?? '',
+    tags: extra.tags ?? [],
+    openMode: extra.linked ? ('linked' as const) : ('embedded' as const),
+    url: `https://${id}.example.com/`,
+    keys: searchKeys({ name, summary: extra.summary ?? '', tags: extra.tags }),
+  }) as unknown as ToolEntry;
 const PAGES = [
   { id: 'home', name: 'Home', path: '/' },
   { id: 'tools', name: 'Tools', path: '/tools/' },
   { id: 'about', name: 'About me', path: '/about/' },
   { id: 'now', name: 'Now', path: '/now/' },
   { id: 'settings', name: 'Settings', path: '/settings/' },
-];
-const ACTIONS = { theme: 'Toggle light/dark theme', export: 'Export your data', copy: 'Copy link to this page' };
+] as unknown as PageItem[];
+const ACTIONS = {
+  theme: 'Toggle light/dark theme',
+  language: 'Switch to Tiếng Việt',
+  export: 'Export your data',
+  copy: 'Copy link to this page',
+} as unknown as Record<ActionId, string> & Record<ActionId, Loc>;
 
 const doc = (favorites: string[], recents: string[]): PersonalData => ({
   ...emptyDocument(),
@@ -46,8 +61,8 @@ const doc = (favorites: string[], recents: string[]): PersonalData => ({
     openedAt: new Date(Date.UTC(2026, 9, 10, 12, 59 - i)).toISOString(),
   })),
 });
-const names = (items: { name: string }[]) => items.map((i) => i.name);
-const groupSummary = (groups: { id: string; items: { name: string }[] }[]) =>
+const names = (items: readonly { name: unknown }[]) => items.map((i) => i.name);
+const groupSummary = (groups: readonly { id: string; items: readonly { name: unknown }[] }[]) =>
   groups.map((g) => [g.id, names(g.items)] as const);
 
 describe('MOD-Search searchPalette (F-004.R3, RULE-05)', () => {
@@ -62,7 +77,7 @@ describe('MOD-Search searchPalette (F-004.R3, RULE-05)', () => {
     expect(groupSummary(searchPalette('to', one))).toEqual([
       ['tools', ['Tomato Timer']],
       ['pages', ['Tools']],
-      ['actions', [ACTIONS.theme, ACTIONS.copy]],
+      ['actions', [ACTIONS.theme, ACTIONS.copy, ACTIONS.language]],
     ]);
   });
 
@@ -169,6 +184,7 @@ describe('MOD-Palette running a result (F-004.R4, R5)', () => {
       openTool: (t) => calls.push(`open:${t.id}`),
       assign: (p) => calls.push(`assign:${p}`),
       toggleTheme: () => calls.push('theme'),
+      switchLanguage: () => calls.push('language'),
       exportData: async () => void calls.push('export'),
       copy: async (text) => void calls.push(`copy:${text}`),
       href: () => 'https://tarokit.test/t/json/',
@@ -205,6 +221,12 @@ describe('MOD-Palette running a result (F-004.R4, R5)', () => {
     expect(calls).toEqual(['close', 'theme']);
   });
 
+  test('F019_AC6 F-004.R5 the switch-language action switches the language and closes the palette', async () => {
+    const { e, calls } = env();
+    expect(await runEntry(find('action', 'language'), e)).toBe('closed');
+    expect(calls).toEqual(['close', 'language']);
+  });
+
   test('F004_AC7 the export action exports the backup, then closes the palette', async () => {
     const { e, calls } = env();
     expect(await runEntry(find('action', 'export'), e)).toBe('closed');
@@ -237,7 +259,7 @@ describe('MOD-Backup export, reused by the palette (F-004.R5, F-013.R1)', () => 
     const data = doc(['a'], ['b']);
     const file = backupFile(data, now);
     expect(file).toEqual({ format: 'tarokit-backup', exportedAt: now.toISOString(), data });
-    expect(file.data.schemaVersion).toBe(1);
+    expect(file.data.schemaVersion).toBe(2);
   });
   test('F004_AC7 the file is named with the local date and saved through a download', () => {
     expect(backupFileName(now)).toBe('tarokit-backup-2026-10-13.json');
@@ -284,5 +306,47 @@ describe('MOD-Palette match highlight (CMP-CommandPalette rows)', () => {
     expect(matchRange('Đồng hồ', 'dong')).toEqual([0, 4]);
     expect(matchRange('Base64', 'zzz')).toBeUndefined();
     expect(matchRange('Base64', '  ')).toBeUndefined();
+  });
+});
+
+describe('MOD-Palette in both languages (F-019.R2, R4, R5)', () => {
+  const text = paletteText({ resume: undefined });
+  const summary = { 'en-US': 'Format and validate JSON.', 'vi-VN': 'Định dạng và kiểm tra JSON.' };
+  const tools = [{ ...tool('json', 'JSON Formatter'), summary, keys: searchKeys({ name: 'JSON Formatter', summary }) }];
+  const index = paletteIndex({ tools }, text.pages, text.actions);
+  const ids = (groups: { items: { id: string }[] }[]) => groups.flatMap((g) => g.items.map((i) => i.id));
+
+  test('F-004.R5 the actions are theme, switch language, export and copy, in that order', () => {
+    expect(index.actions.map((a) => a.id)).toEqual(['theme', 'language', 'export', 'copy']);
+  });
+
+  test('F-004.R5 F-019.R2 each version of the switch-language action names the other language', () => {
+    expect(text.actions.language).toEqual({ 'en-US': 'Switch to Tiếng Việt', 'vi-VN': 'Chuyển sang English' });
+  });
+
+  test('F019_AC19 with Vietnamese showing, "settings" lists the page Cài đặt', () => {
+    const groups = paletteView('settings', index, emptyDocument(), 'vi-VN');
+    const page = groups.find((g) => g.id === 'pages')!.items[0]!;
+    expect(page.id).toBe('settings');
+    expect((page.name as Record<string, string>)['vi-VN']).toBe('Cài đặt');
+  });
+
+  test('F019_AC19 F-004.R5 "ngôn ngữ", "language", "English", "Vietnamese" and "Tiếng Việt" list the switch-language action', () => {
+    expect(LANGUAGE_ACTION_KEYWORDS).toEqual(['language', 'ngôn ngữ', 'English', 'Vietnamese', 'Tiếng Việt']);
+    for (const lang of ['en-US', 'vi-VN'] as const)
+      for (const q of ['ngôn ngữ', 'ngon ngu', 'language', 'English', 'Vietnamese', 'Tiếng Việt'])
+        expect(ids(paletteView(q, index, emptyDocument(), lang)), `${q} (${lang})`).toContain('language');
+  });
+
+  test('F019_AC9 "dinh dang" with English showing lists the tool by its Vietnamese summary and name', () => {
+    const groups = paletteView('dinh dang', index, emptyDocument(), 'en-US');
+    expect(ids(groups)).toEqual(['json']);
+  });
+
+  test('F019_AC21 three results are announced as "3 kết quả" with Vietnamese showing', () => {
+    expect(resultCountText(3, text.count, 'vi-VN')).toBe('3 kết quả');
+    expect(resultCountText(3, text.count, 'en-US')).toBe('3 results');
+    expect(resultCountText(1, text.count, 'en-US')).toBe(text.count.one['en-US']);
+    expect(resultCountText(0, text.count, 'vi-VN')).toBe('');
   });
 });

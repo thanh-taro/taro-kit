@@ -15,11 +15,12 @@ import ToolCard from '../../src/modules/design-system/ToolCard.astro';
 import SameToolTwice from '../fixtures/design-system/SameToolTwice.astro';
 import { favoriteToggleLabels } from '../../src/modules/design-system/text.ts';
 import { monogram, toolCardLink } from '../../src/modules/design-system/tool-card.ts';
+import { en } from './lang-html.ts';
 
 async function render(component: Parameters<AstroContainer['renderToString']>[0], props = {}) {
   const container = await AstroContainer.create();
   container.addServerRenderer({ renderer: preact, name: '@astrojs/preact' });
-  return container.renderToString(component, { props });
+  return en(await container.renderToString(component, { props }));
 }
 
 const embedded = {
@@ -109,20 +110,26 @@ describe('CMP-FavoriteToggle', () => {
     const html = await render(FavoriteToggle, { toolId: 'units' });
     expect(html).toMatch(/<span class="tk-fav" data-appearance="framed" data-size="md">/);
     expect(html).toMatch(
-      /<button type="button" class="tk-fav__btn" aria-pressed="false" aria-label="Add to favorites" disabled/,
+      /<button type="button" class="tk-fav__btn" aria-pressed="false" aria-label="Add to favorites" data-l-a="aria-label" data-l-aria-label-en-US="Add to favorites" data-l-aria-label-vi-VN="Thêm vào yêu thích" disabled/,
     );
     expect(html).toMatch(/<span id="[^"]+" class="tk-fav__full" role="status"><\/span>/);
     expect(html).toContain('<svg class="tk-icon" width="20" height="20"');
   });
 });
 
+const pickAll = (o: object, lang: 'en-US' | 'vi-VN') =>
+  Object.fromEntries(Object.entries(o as Record<string, Record<string, string>>).map(([k, v]) => [k, v[lang]]));
+
 describe('CMP-FavoriteToggle labels', () => {
   test('CMP-FavoriteToggle labels come from COPY-fav.add, COPY-fav.remove and COPY-fav.full with the RULE-02 limit', () => {
-    expect(favoriteToggleLabels()).toEqual({
+    const labels = favoriteToggleLabels();
+    expect(pickAll(labels, 'en-US')).toEqual({
       add: 'Add to favorites',
       remove: 'Remove from favorites',
       full: 'You can keep up to 24 favorites. Unpin one to make room.',
     });
+    expect(labels.add['vi-VN']).toBe('Thêm vào yêu thích');
+    expect(labels.full['vi-VN']).toContain('24');
   });
 });
 

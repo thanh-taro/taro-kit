@@ -7,6 +7,7 @@
 //   which renders the real WhatsNew island over fixed sets of tools (tests/fixtures/pages/F007-whats-new.astro).
 // The page clock is set before loading wherever the date or time matters. The islands mark themselves ready
 // (`data-tk-home-ready`, `data-tk-whatsnew-ready`); tests wait on those, never on time.
+import { pick } from '../../src/modules/language/languages.ts';
 import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
 import { devices, expect, test, type Page } from '@playwright/test';
@@ -356,8 +357,8 @@ test.describe('F-007 browse by category', () => {
       for (const [i, { c, n }] of visible.entries()) {
         const tile = tiles.nth(i);
         const count = n === 1 ? '1 tool' : `${n} tools`;
-        await expect(tile).toHaveAccessibleName(`${c.name}, ${count}`);
-        await expect(tile).toContainText(c.name);
+        await expect(tile).toHaveAccessibleName(`${pick(c.name, 'en-US')}, ${count}`);
+        await expect(tile).toContainText(pick(c.name, 'en-US'));
         await expect(tile).toContainText(count);
         await expect(tile).toHaveAttribute('href', `/tools/${c.id}/`);
         await expect(tile).toHaveAttribute('data-tint', c.tint);
@@ -375,7 +376,7 @@ test.describe('F-007 browse by category', () => {
       }
       await tiles.first().click();
       await expect(page).toHaveURL(`${base}/tools/${visible[0]!.c.id}/`);
-      await expect(page.getByRole('heading', { level: 1 })).toHaveText(visible[0]!.c.name);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(pick(visible[0]!.c.name, 'en-US'));
     });
   }
 });
@@ -443,7 +444,7 @@ test.describe('F-007 what’s new', () => {
     expect(await list.getByRole('link').allTextContents()).toEqual(expected.map((i) => i.name));
     for (const [i, item] of expected.entries()) {
       await expect(list.nth(i).getByRole('link')).toHaveAttribute('href', `/t/${item.id}/`);
-      await expect(list.nth(i)).toContainText(prod.toolById(item.id)!.summary);
+      await expect(list.nth(i)).toContainText(pick(prod.toolById(item.id)!.summary, 'en-US'));
     }
     await page.clock.setFixedTime(new Date(`${day(40)}T12:00:00`));
     await openHome(page, PROD);

@@ -7,19 +7,20 @@
 // - `page`: whole-page empty or blocking states (tool offline, linked note; catalog empty or no results):
 //   centered, a larger icon tile and the title as a heading in the display face (default level 2).
 // - Extra actions go in the default slot. The other props are documented in StateMessage.tsx.
+import type { Text } from '../language/languages.ts';
 import { iconSvg } from './icons.ts';
 import StateMessageView, { type StateMessageVariant } from './StateMessage.tsx';
 
 interface Props {
   variant: StateMessageVariant;
-  title: string;
-  body?: string;
+  title: Text;
+  body?: Text;
   /** The next best action (PRN-05). */
-  action?: { href: string; label: string; newTab?: boolean };
+  action?: { href: string; label: Text; newTab?: boolean };
   /** Whole-page layout (CMP-StateMessage "page" variant). */
   page?: boolean;
   /** A short mono line under the title. */
-  detail?: string;
+  detail?: Text;
   /** An icon-set name; default per variant (not-found: circle-question-mark). */
   icon?: string;
   headingLevel?: 1 | 2 | 3;

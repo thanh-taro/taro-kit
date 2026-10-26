@@ -1,4 +1,6 @@
 # Test fixture (F-018.AC10): terms of use with no sections; overlays the valid base.
-title: Terms
+title:
+  en-US: Terms
+  vi-VN: Terms
 updated: 2026-10-22
 sections: []

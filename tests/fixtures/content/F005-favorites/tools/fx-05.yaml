@@ -2,7 +2,9 @@
 id: fx-05
 kind: tool
 name: Fixture tool 05
-summary: Fixture tool for the favorites tests.
+summary:
+  en-US: Fixture tool for the favorites tests.
+  vi-VN: Fixture tool for the favorites tests.
 category: developer
 url: https://fx-05.example.com/
 origin: own

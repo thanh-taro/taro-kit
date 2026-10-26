@@ -4,8 +4,9 @@
 // Implements: F-002.R1, F-002.R3, F-002.R6.
 import type { Category } from '../../../generated/domain.ts';
 import { categoryPages, type CategoryNavItem } from '../category.ts';
+import type { Text } from '../../language/languages.ts';
 
-type CategoryLike = Pick<Category, 'id' | 'name' | 'order' | 'tint'>;
+type CategoryLike = Pick<Category, 'id' | 'order' | 'tint'> & { name: Text };
 interface ToolLike {
   id: string;
   name: string;

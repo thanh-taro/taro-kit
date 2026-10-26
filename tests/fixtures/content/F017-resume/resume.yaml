@@ -1,39 +1,66 @@
 # yaml-language-server: $schema=../../../../content/schemas/resume.json
 # Test fixture (overlay on tests/fixtures/content/valid): a résumé with every section, for F-017.AC2 to AC7 and AC11.
 experience:
-  - role: Mentor
+  - role:
+      en-US: Mentor
+      vi-VN: Mentor
     organization: Rising Stars
     start: 2022-06
-    summary: |
-      Fixture summary, first paragraph.
+    summary:
+      en-US: |
+        Fixture summary, first paragraph.
 
-      Fixture summary, second paragraph.
+        Fixture summary, second paragraph.
+      vi-VN: |
+        Fixture summary, first paragraph.
+
+        Fixture summary, second paragraph.
     highlights:
-      - Fixture highlight one.
-      - Fixture highlight two.
-  - role: Fixture engineer B
+      - en-US: Fixture highlight one.
+        vi-VN: Fixture highlight one.
+      - en-US: Fixture highlight two.
+        vi-VN: Fixture highlight two.
+  - role:
+      en-US: Fixture engineer B
+      vi-VN: Fixture engineer B
     organization: Fixture Org B
     start: 2018-08
     end: 2022-05
-    summary: Fixture summary B.
+    summary:
+      en-US: Fixture summary B.
+      vi-VN: Fixture summary B.
 education:
-  - program: Information Technology
+  - program:
+      en-US: Information Technology
+      vi-VN: Information Technology
     institution: Fixture College
-    level: College
+    level:
+      en-US: College
+      vi-VN: College
     start: 2011-09
     end: 2014-09
-    notes: Fixture notes.
+    notes:
+      en-US: Fixture notes.
+      vi-VN: Fixture notes.
 skills:
   - name: PHP
-    group: Languages
+    group:
+      en-US: Languages
+      vi-VN: Languages
     level: 5
   - name: Docker
   - name: Go
-    group: Languages
+    group:
+      en-US: Languages
+      vi-VN: Languages
     level: 3
 languages:
-  - name: English
-    level: Advanced
+  - name:
+      en-US: English
+      vi-VN: English
+    level:
+      en-US: Advanced
+      vi-VN: Advanced
 certificates:
   - name: Mindfulness
     issuer: Est Rouge

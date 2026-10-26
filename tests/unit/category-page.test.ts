@@ -5,6 +5,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, test } from 'vitest';
 import { categoryPages, toolCountText } from '../../src/modules/pages/category.ts';
 import CategoryTile from '../../src/modules/design-system/CategoryTile.astro';
+import { en } from './lang-html.ts';
 
 const cat = (id: string, name: string, order: number, tint: 'violet' | 'mango' | 'sky' | 'mint') => ({
   id,
@@ -41,13 +42,13 @@ describe('F-016 category pages (derivations)', () => {
 
   test('F016_AC2 the tool count reads "3 tools" for three visible tools; hidden tools are not counted', () => {
     expect(pageOf('media')?.tools).toHaveLength(3);
-    expect(pageOf('media')?.count).toBe('3 tools');
-    expect(toolCountText(3)).toBe('3 tools');
+    expect(pageOf('media')?.count['en-US']).toBe('3 tools');
+    expect(toolCountText(3)).toEqual({ 'en-US': '3 tools', 'vi-VN': '3 công cụ' });
   });
 
   test('F016_AC2 edge: exactly one visible tool reads "1 tool"', () => {
-    expect(pageOf('developer')?.count).toBe('1 tool');
-    expect(toolCountText(1)).toBe('1 tool');
+    expect(pageOf('developer')?.count['en-US']).toBe('1 tool');
+    expect(toolCountText(1)['en-US']).toBe('1 tool');
   });
 
   test('F016_AC3 tools are listed alphabetically: "Audio Trimmer" before "Clip Maker"', () => {
@@ -56,7 +57,7 @@ describe('F-016 category pages (derivations)', () => {
 
   test('F016_AC4 the category navigation lists every visible category, in display order', () => {
     expect(pageOf('media')?.nav.map((c) => c.id)).toEqual(['developer', 'media']);
-    expect(pageOf('media')?.nav.map((c) => c.count)).toEqual(['1 tool', '3 tools']);
+    expect(pageOf('media')?.nav.map((c) => c.count['en-US'])).toEqual(['1 tool', '3 tools']);
   });
 
   test('F016_AC5 an unknown category id has no page (the not-found content is served)', () => {
@@ -74,14 +75,21 @@ describe('CMP-CategoryTile (compact)', () => {
   async function render(props: Record<string, unknown>) {
     const container = await AstroContainer.create();
     container.addServerRenderer({ renderer: preact, name: '@astrojs/preact' });
-    return container.renderToString(CategoryTile, { props });
+    return en(await container.renderToString(CategoryTile, { props }));
   }
-  const base = { name: 'Media tools', href: '/tools/media/', count: '3 tools', tint: 'mango', iconSvg: '<svg></svg>' };
+  const base = {
+    name: 'Media tools',
+    href: '/tools/media/',
+    count: { 'en-US': '3 tools', 'vi-VN': '3 công cụ' },
+    tint: 'mango',
+    iconSvg: '<svg></svg>',
+  };
 
   test('one link to the category page whose name reads "<name>, <count>", tint as a decorative attribute', async () => {
     const html = await render(base);
     expect(html).toMatch(/<a href="\/tools\/media\/"[^>]*class="tk-cattile"[^>]*data-tint="mango"/);
     expect(html).toMatch(/<a [^>]*aria-label="Media tools, 3 tools"/);
+    expect(html).toMatch(/<a [^>]*data-l-aria-label-vi-VN="Media tools, 3 công cụ"/);
     expect(html).toMatch(/<\/span>Media tools\s*<\/a>/);
     expect(html).not.toContain('aria-current');
   });

@@ -2,7 +2,9 @@
 id: color
 kind: tool
 name: Color Picker
-summary: Fixture tool for the Now page.
+summary:
+  en-US: Fixture tool for the Now page.
+  vi-VN: Fixture tool for the Now page.
 category: developer
 url: https://color.tarokit.app/
 origin: own

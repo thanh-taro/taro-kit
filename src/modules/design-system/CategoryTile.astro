@@ -7,12 +7,17 @@
 // - The whole tile is one link to the category page; its name reads "<name>, <count>" (aria-label, as in the
 //   design; the compact pill shows only the name, which starts the label, so label-in-name holds).
 // - The tint (RULE-14, styles/category-tint.css) is decorative; the name always shows. Touch target 44 px (NFR-09).
+// - Name and count are in both languages (<L>, a localized aria-label; F-019.R4).
+import L from '../language/L.astro';
+import { localizedAttrs } from '../language/attrs.ts';
+import { mapText, pick, type Loc, type Text } from '../language/languages.ts';
+
 interface Props {
-  name: string;
+  name: Text;
   /** The category page address, `categoryPath(id)` (F-016.R1). */
   href: string;
   /** COPY-category.toolCount or COPY-category.toolCountOne. */
-  count: string;
+  count: Loc;
   tint: 'violet' | 'mango' | 'sky' | 'mint';
   /** Build-time inline SVG of the category icon (`svgFromFile`), never user or runtime data. */
   iconSvg: string;
@@ -30,17 +35,24 @@ const regular = variant === 'regular';
   class="tk-cattile"
   data-variant={variant}
   data-tint={tint}
-  aria-label={`${name}, ${count}`}
+  {...localizedAttrs(
+    'aria-label',
+    mapText(count, (c, lang) => `${pick(name, lang)}, ${c}`),
+  )}
   aria-current={current ? 'page' : undefined}
 >
   <span class="icon" aria-hidden="true" set:html={iconSvg} />
   {regular ? (
     <span class="text">
-      <span class="name">{name}</span>
-      <span class="count">{count}</span>
+      <span class="name">
+        <L text={name} />
+      </span>
+      <span class="count">
+        <L text={count} />
+      </span>
     </span>
   ) : (
-    name
+    <L text={name} />
   )}
 </a>
 

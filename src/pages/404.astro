@@ -5,7 +5,8 @@
 // The page title states that the page was not found (SCR-NotFound accessibility).
 // Design: design/canvas/NotFoundDesktop.dc.html, NotFoundMobile.dc.html.
 // Implements: F-016.R5.
-import { t } from '../modules/copy/index.ts';
+import { tBoth } from '../modules/copy/index.ts';
+import L from '../modules/language/L.astro';
 import StateMessage from '../modules/design-system/StateMessage.astro';
 import BaseLayout from '../modules/shell/BaseLayout.astro';
 import { metaFor } from '../modules/meta/index.ts';
@@ -21,11 +22,13 @@ import { getRegistry } from '../modules/content/index.ts';
     <StateMessage
       variant="not-found"
       headingLevel={1}
-      title={t('COPY-notFound.title')}
-      body={t('COPY-notFound.body')}
-      action={{ href: '/tools/', label: t('COPY-notFound.toCatalog') }}
+      title={tBoth('COPY-notFound.title')}
+      body={tBoth('COPY-notFound.body')}
+      action={{ href: '/tools/', label: tBoth('COPY-notFound.toCatalog') }}
     >
-      <a href="/">{t('COPY-nav.home')}</a>
+      <a href="/">
+        <L text={tBoth('COPY-nav.home')} />
+      </a>
     </StateMessage>
   </div>
 </BaseLayout>

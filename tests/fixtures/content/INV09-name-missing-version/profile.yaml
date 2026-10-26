@@ -1,0 +1,13 @@
+# INV-09: a name written per language must have both versions (the location here has no vi-VN).
+name: Fixture Owner
+nickname: Fixture
+headline:
+  en-US: Fixture headline.
+  vi-VN: Tiêu đề mẫu.
+bio:
+  en-US: Fixture bio.
+  vi-VN: Tiểu sử mẫu.
+location:
+  en-US: Da Nang
+links:
+  - { label: Email, url: 'mailto:owner@example.com', kind: email }

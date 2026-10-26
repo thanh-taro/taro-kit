@@ -1,2 +1,4 @@
 # Test fixture: a Now note without its last updated date (RULE-09 needs it); overlays the valid base.
-body: Fixture Now note with no date.
+body:
+  en-US: Fixture Now note with no date.
+  vi-VN: Fixture Now note with no date.

@@ -5,7 +5,7 @@ Needs fonttools + brotli (requirements-build.txt).
 
 Ships exactly these faces, and nothing else (scripts/check-dist-fonts.ts enforces it):
 - Manrope: variable 400-700, Latin core + Vietnamese.
-- Unbounded: static 600, Latin (headings: ASCII set plus é) + Vietnamese.
+- Unbounded: static 600, Latin (headings: ASCII set plus the Latin-1 letters Vietnamese uses, é included) + Vietnamese.
 - JetBrains Mono: variable 400-600, ASCII only, code ligatures off.
 No latin-ext: its range overlaps Vietnamese, so any Vietnamese text would download both faces.
 """
@@ -23,8 +23,11 @@ VIET = ('U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0
         'U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB')
 # Headings and mono text: ASCII letters, digits and basic punctuation.
 ASCII = 'U+0020-007E,U+00A0,U+00B7,U+2013-2014,U+2018-201D,U+2026'
-# Headings also get é: COPY-resume.title is "My résumé" (F-017).
-HEADINGS = ASCII + ',U+00E9'
+# Headings also get é (COPY-resume.title is "My résumé", F-017) and the other Latin-1 letters Vietnamese uses
+# (F-019, ADR-0012: à á â ã è é ê ì í ò ó ô õ ù ú ý and their capitals); the Vietnamese file has the rest.
+VIET_LATIN1 = ('U+00C0-00C3,U+00C8-00CA,U+00CC-00CD,U+00D2-00D5,U+00D9-00DA,U+00DD,'
+               'U+00E0-00E3,U+00E8-00EA,U+00EC-00ED,U+00F2-00F5,U+00F9-00FA,U+00FD')
+HEADINGS = ASCII + ',' + VIET_LATIN1
 
 TEXT_FEATURES = ('kern', 'liga', 'calt', 'ccmp', 'locl', 'mark', 'mkmk')
 NO_LIGATURES = ('kern', 'ccmp', 'locl', 'mark', 'mkmk')

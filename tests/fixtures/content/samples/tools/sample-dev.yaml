@@ -4,9 +4,11 @@
 id: sample-dev
 kind: tool
 name: Sample developer tool
-summary: Sample entry. A placeholder until the real tool ships.
+summary:
+  en-US: Sample entry. A placeholder until the real tool ships.
+  vi-VN: Sample entry. A placeholder until the real tool ships.
 category: developer
 url: https://sample-dev.tarokit.app/
 origin: own
-tags: [sample]
+tags: [ sample ]
 added: 2026-10-13

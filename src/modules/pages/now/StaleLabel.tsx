@@ -3,13 +3,15 @@
 // truth the day it is viewed. `data-state` is `pending` until the check has run, then `fresh` or `stale`.
 // Implements: F-010.R2.
 import { useEffect, useState } from 'preact/hooks';
+import { L } from '../../language/L.tsx';
+import type { Loc } from '../../language/languages.ts';
 import { staleToday } from './stale.ts';
 
 interface Props {
   /** The Now note's last updated date, YYYY-MM-DD. */
   updated: string;
-  /** COPY-now.stale */
-  label: string;
+  /** COPY-now.stale, in both languages. */
+  label: Loc;
 }
 
 export default function StaleLabel({ updated, label }: Props) {
@@ -17,7 +19,11 @@ export default function StaleLabel({ updated, label }: Props) {
   useEffect(() => setState(staleToday(updated) ? 'stale' : 'fresh'), [updated]);
   return (
     <span class="now-stale" data-testid="now-stale" data-state={state}>
-      {state === 'stale' && <span class="label">{label}</span>}
+      {state === 'stale' && (
+        <span class="label">
+          <L text={label} />
+        </span>
+      )}
     </span>
   );
 }

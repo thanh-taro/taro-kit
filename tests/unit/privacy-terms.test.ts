@@ -20,11 +20,12 @@ import {
   type Policy,
   type Registry,
 } from '../../src/modules/content/index.ts';
-import { t } from '../../src/modules/copy/index.ts';
+import { t, tBoth } from '../../src/modules/copy/index.ts';
 import { headTags, metaFor, PREVIEW_IMAGE, siteIndexXml, type HeadTag } from '../../src/modules/meta/index.ts';
 import { policyView } from '../../src/modules/pages/policy/policy.ts';
 import PolicyView from '../../src/modules/pages/policy/PolicyView.astro';
 import AppShellFooter from '../../src/modules/shell/AppShellFooter.astro';
+import { showing } from './lang-html.ts';
 
 const root = join(import.meta.dirname, '../..');
 const fixtures = join(root, 'tests/fixtures/content');
@@ -60,10 +61,40 @@ afterEach(() => {
   for (const d of tmpDirs.splice(0)) rmSync(d, { recursive: true, force: true });
 });
 
-async function render(component: Parameters<AstroContainer['renderToString']>[0], props = {}) {
+async function render(
+  component: Parameters<AstroContainer['renderToString']>[0],
+  props = {},
+  lang: 'en-US' | 'vi-VN' = 'en-US',
+) {
   const container = await AstroContainer.create();
   container.addServerRenderer({ renderer: preact, name: '@astrojs/preact' });
-  return container.renderToString(component, { props });
+  return showing(await container.renderToString(component, { props }), lang);
+}
+
+/**
+ * A policy file as YAML, every text the same in both languages (INV-09): the title, then each section's heading and
+ * literal body. The en-US body starts on the line after its `en-US: |`, the vi-VN one likewise.
+ */
+function policyYaml(title: string, sections: { heading: string; body: string }[], updated = '2026-10-22'): string {
+  const both = (v: string) => `\n      en-US: ${v}\n      vi-VN: ${v}`;
+  const body = (b: string) =>
+    b
+      .replace(/\n$/, '')
+      .split('\n')
+      .map((l) => (l ? `        ${l}` : ''))
+      .join('\n');
+  return (
+    `title:\n  en-US: ${title}\n  vi-VN: ${title}\nupdated: ${updated}\n` +
+    (sections.length
+      ? 'sections:\n' +
+        sections
+          .map(
+            (sec) =>
+              `  - heading:${both(sec.heading).replace(/\n {6}/g, '\n      ')}\n    body:\n      en-US: |\n${body(sec.body)}\n      vi-VN: |\n${body(sec.body)}\n`,
+          )
+          .join('')
+      : '')
+  );
 }
 
 const count = (html: string, re: RegExp) => [...html.matchAll(re)].length;
@@ -77,15 +108,16 @@ const text = (html: string) =>
 describe('F-018 policies as content (MOD-Content)', () => {
   it('loads both policies, with section bodies parsed into paragraphs, lists and links', () => {
     const r = load();
-    expect(r.privacy.title).toBe('Privacy');
+    expect(r.privacy.title['en-US']).toBe('Privacy');
     expect(r.privacy.updated).toBe('2026-10-22');
-    expect(r.privacy.sections.map((s) => s.heading)).toEqual([
+    expect(r.privacy.sections.map((s) => s.heading['en-US'])).toEqual([
       'Sample section with a list',
       'Sample section with links',
     ]);
-    expect(r.terms.title).toBe('Terms');
+    expect(r.terms.title['en-US']).toBe('Terms');
     expect(r.terms.sections).toHaveLength(3);
-    expect(r.privacy.sections[0]!.blocks.map((b) => b.kind)).toEqual(['paragraph', 'list', 'paragraph']);
+    for (const lang of ['en-US', 'vi-VN'] as const)
+      expect(r.privacy.sections[0]!.blocks[lang].map((b) => b.kind)).toEqual(['paragraph', 'list', 'paragraph']);
   });
 
   it('F018_AC5 fails when content/terms.yaml is missing, naming it as missing', () => {
@@ -107,13 +139,14 @@ describe('F-018 policies as content (MOD-Content)', () => {
 
   it('F018_AC6 fails on an updated date that is not a date, naming the file, the updated field and the value', () => {
     expect(failures('valid', 'F018_AC6-bad-updated')).toEqual([
-      'content/privacy.yaml:3 › - › SCHEMA: updated "2026-13-01" is not a valid date',
+      'content/privacy.yaml:5 › - › SCHEMA: updated "2026-13-01" is not a valid date',
     ]);
   });
 
   it('F018_AC9 fails on an http link in a terms paragraph, naming the file, the section and INV-02', () => {
     expect(failures('valid', 'F018_AC9-http-link')).toEqual([
-      'content/terms.yaml:12 › section 2 › INV-02: link "http://example.com" is not https',
+      'content/terms.yaml:22 › section 2 › INV-02: link "http://example.com" is not https (en-US)',
+      'content/terms.yaml:26 › section 2 › INV-02: link "http://example.com" is not https (vi-VN)',
     ]);
   });
 
@@ -121,10 +154,10 @@ describe('F-018 policies as content (MOD-Content)', () => {
     const dir = contentFrom('valid');
     writeFileSync(
       join(dir, 'terms.yaml'),
-      'title: Terms\nupdated: 2026-10-22\nsections:\n  - heading: A\n    body: |\n      Fine.\n\n      See [the example\n      site](http://example.com) for more.\n',
+      policyYaml('Terms', [{ heading: 'A', body: 'Fine.\n\nSee [the example\nsite](http://example.com) for more.\n' }]),
     );
     expect(() => loadRegistry({ root, contentDir: dir })).toThrow(
-      /content\/terms\.yaml:8 › section 1 › INV-02: link "http:\/\/example\.com" is not https/,
+      /content\/terms\.yaml:13 › section 1 › INV-02: link "http:\/\/example\.com" is not https \(en-US\)/,
     );
   });
 
@@ -144,12 +177,12 @@ describe('F-018 policies as content (MOD-Content)', () => {
   it('F018_AC10 fails on terms with no sections, naming the file and the missing sections', () => {
     const lines = failures('valid', 'F018_AC10-no-sections');
     expect(lines).toHaveLength(1);
-    expect(lines[0]).toMatch(/^content\/terms\.yaml:4 › - › SCHEMA: sections must NOT have fewer than 1 items$/);
+    expect(lines[0]).toMatch(/^content\/terms\.yaml:6 › - › SCHEMA: sections must NOT have fewer than 1 items$/);
   });
 
   it('F018_AC10 fails on terms without a sections field, naming the file and the missing field', () => {
     const dir = contentFrom('valid');
-    writeFileSync(join(dir, 'terms.yaml'), 'title: Terms\nupdated: 2026-10-22\n');
+    writeFileSync(join(dir, 'terms.yaml'), policyYaml('Terms', []));
     expect(() => loadRegistry({ root, contentDir: dir })).toThrow(
       /content\/terms\.yaml:1 › - › SCHEMA: missing required field "sections"/,
     );
@@ -157,13 +190,15 @@ describe('F-018 policies as content (MOD-Content)', () => {
 
   it('F-018.R5 a folded body (>) fails, naming the file and the section', () => {
     expect(failures('valid', 'F018-folded-body')).toEqual([
-      'content/privacy.yaml:10 › section 2 › SCHEMA: body must be a literal block (|), so its line breaks are kept',
+      'content/privacy.yaml:20 › section 2 › SCHEMA: body must be a literal block (|), so its line breaks are kept (en-US)',
+      'content/privacy.yaml:24 › section 2 › SCHEMA: body must be a literal block (|), so its line breaks are kept (vi-VN)',
     ]);
   });
 
   it('F-018.R5 a paragraph that mixes list lines with other lines fails, naming the file and the section', () => {
     expect(failures('valid', 'F018-mixed-list')).toEqual([
-      'content/terms.yaml:10 › section 1 › SCHEMA: paragraph 2 mixes list lines ("- ") with other lines; put a blank line before the list',
+      'content/terms.yaml:15 › section 1 › SCHEMA: paragraph 2 mixes list lines ("- ") with other lines; put a blank line before the list (en-US)',
+      'content/terms.yaml:21 › section 1 › SCHEMA: paragraph 2 mixes list lines ("- ") with other lines; put a blank line before the list (vi-VN)',
     ]);
   });
 
@@ -171,10 +206,13 @@ describe('F-018 policies as content (MOD-Content)', () => {
     const dir = contentFrom('valid');
     writeFileSync(
       join(dir, 'privacy.yaml'),
-      `title: Privacy\nupdated: 2026-10-22\nsections:\n  - heading: Fine\n    body: |\n      Text.\n  - heading: ${'x'.repeat(81)}\n    body: |\n      Text.\n`,
+      policyYaml('Privacy', [
+        { heading: 'Fine', body: 'Text.\n' },
+        { heading: 'x'.repeat(81), body: 'Text.\n' },
+      ]),
     );
     expect(() => loadRegistry({ root, contentDir: dir })).toThrow(
-      /content\/privacy\.yaml:7 › section 2 › SCHEMA: heading must NOT have more than 80 characters/,
+      /content\/privacy\.yaml:15 › section 2 › SCHEMA: heading\.en-US must NOT have more than 80 characters/,
     );
   });
 });
@@ -241,10 +279,10 @@ describe('F-018 policy body format (policyBlocks, policyLinkErrors)', () => {
   it('INV-02 text that looks like a link but has no readable https or email address is an error', () => {
     const errors = policyLinkErrors({
       sections: [
-        { heading: 'A', body: 'Run [run](javascript:alert(1)) now.\n' },
-        { heading: 'B', body: 'See [x](http://a.com "t").\n' },
-        { heading: 'C', body: 'Read [wiki](https://en.wikipedia.org/wiki/Foo_(bar)).\n' },
-        { heading: 'D', body: 'Spaced [s](https://a b).\n' },
+        { heading: 'A', body: { 'en-US': 'Run [run](javascript:alert(1)) now.\n' } },
+        { heading: 'B', body: { 'en-US': 'See [x](http://a.com "t").\n' } },
+        { heading: 'C', body: { 'en-US': 'Read [wiki](https://en.wikipedia.org/wiki/Foo_(bar)).\n' } },
+        { heading: 'D', body: { 'en-US': 'Spaced [s](https://a b).\n' } },
       ],
     });
     expect(errors.map((e) => [e.index, e.line, e.kind, e.link])).toEqual([
@@ -259,49 +297,63 @@ describe('F-018 policy body format (policyBlocks, policyLinkErrors)', () => {
     const dir = contentFrom('valid');
     writeFileSync(
       join(dir, 'privacy.yaml'),
-      'title: Privacy\nupdated: 2026-10-22\nsections:\n  - heading: A\n    body: |\n      Fine.\n  - heading: B\n    body: |\n      Read [wiki](https://en.wikipedia.org/wiki/Foo_(bar)).\n',
+      policyYaml('Privacy', [
+        { heading: 'A', body: 'Fine.\n' },
+        { heading: 'B', body: 'Read [wiki](https://en.wikipedia.org/wiki/Foo_(bar)).\n' },
+      ]),
     );
     expect(() => loadRegistry({ root, contentDir: dir })).toThrow(
-      /content\/privacy\.yaml:9 › section 2 › INV-02: link "\[wiki\]\(https:\/\/en\.wikipedia\.org\/wiki\/Foo_\(bar\)" must be \[text\]\(address\) with an https or mailto address and no spaces; write \( and \) in an address as %28 and %29/,
+      /content\/privacy\.yaml:19 › section 2 › INV-02: link "\[wiki\]\(https:\/\/en\.wikipedia\.org\/wiki\/Foo_\(bar\)" must be \[text\]\(address\) with an https or mailto address and no spaces; write \( and \) in an address as %28 and %29/,
     );
   });
 
   it('INV-02 a link whose address is not https or email is an error naming its section', () => {
     const errors = policyLinkErrors({
       sections: [
-        { heading: 'A', body: 'Fine [x](https://example.com/) and [y](mailto:a@b.c).\n' },
-        { heading: 'B', body: 'Fine.\n\n- [bad](http://example.com)\n- [worse](ftp://example.com/f)\n' },
-        { heading: 'C', body: 'Relative [z](/privacy/).\n' },
+        { heading: 'A', body: { 'en-US': 'Fine [x](https://example.com/) and [y](mailto:a@b.c).\n' } },
+        {
+          heading: 'B',
+          body: {
+            'en-US': 'Fine.\n\n- [bad](http://example.com)\n- [worse](ftp://example.com/f)\n',
+            'vi-VN': 'Ổn.\n\n- [tệ](http://example.com)\n',
+          },
+        },
+        { heading: 'C', body: { 'vi-VN': 'Relative [z](/privacy/).\n' } },
       ],
     });
     expect(errors).toEqual([
-      { index: 1, line: 2, kind: 'insecure', link: 'http://example.com' },
-      { index: 1, line: 3, kind: 'insecure', link: 'ftp://example.com/f' },
-      { index: 2, line: 0, kind: 'insecure', link: '/privacy/' },
+      { index: 1, lang: 'en-US', line: 2, kind: 'insecure', link: 'http://example.com' },
+      { index: 1, lang: 'en-US', line: 3, kind: 'insecure', link: 'ftp://example.com/f' },
+      { index: 1, lang: 'vi-VN', line: 2, kind: 'insecure', link: 'http://example.com' },
+      { index: 2, lang: 'vi-VN', line: 0, kind: 'insecure', link: '/privacy/' },
     ]);
   });
 });
 
 /** A parsed policy for the page tests: `n` sections with one paragraph each. */
 const samplePolicy = (title: string, n: number): Policy => ({
-  title,
+  title: { 'en-US': title, 'vi-VN': `${title} (vi)` },
   updated: '2026-10-22',
   sections: Array.from({ length: n }, (_, i) => ({
-    heading: `Heading ${i + 1}`,
-    blocks: policyBlocks(`Paragraph ${i + 1}.\n`),
+    heading: { 'en-US': `Heading ${i + 1}`, 'vi-VN': `Tiêu đề ${i + 1}` },
+    blocks: { 'en-US': policyBlocks(`Paragraph ${i + 1}.\n`), 'vi-VN': policyBlocks(`Đoạn ${i + 1}.\n`) },
   })),
 });
 
 describe('F-018 SCR-Policy (policyView, PolicyView.astro)', () => {
   it('F018_AC1 the title is the only h1, two sections are h2 with their paragraphs, and the full date is marked up', async () => {
     const view = policyView(samplePolicy('Privacy', 2));
-    expect(view).toMatchObject({ title: 'Privacy', updated: '2026-10-22', updatedText: 'October 22, 2026' });
+    expect(view).toMatchObject({ updated: '2026-10-22' });
+    expect(view.title['en-US']).toBe('Privacy');
+    expect(view.updatedText['en-US']).toBe('October 22, 2026');
     const html = await render(PolicyView, { view });
     expect(count(html, /<h1[\s>]/g)).toBe(1);
     expect(html).toMatch(/<h1[^>]*>Privacy<\/h1>/);
     expect(count(html, /<h2[\s>]/g)).toBe(2);
-    expect(html).toMatch(/<h2[^>]*>Heading 1<\/h2>\s*<p[^>]*>Paragraph 1\.<\/p>/);
-    expect(html).toMatch(/<h2[^>]*>Heading 2<\/h2>\s*<p[^>]*>Paragraph 2\.<\/p>/);
+    expect(html).toMatch(/<h2[^>]*>Heading 1<\/h2>\s*<div class="body"[^>]*>\s*<p[^>]*>Paragraph 1\.<\/p>/);
+    expect(html).toMatch(/<h2[^>]*>Heading 2<\/h2>\s*<div class="body"[^>]*>\s*<p[^>]*>Paragraph 2\.<\/p>/);
+    // F-019.R6: no translation note while English shows.
+    expect(html).not.toContain('policy-translation-note');
     expect(html).toMatch(/<time[^>]*datetime="2026-10-22"[^>]*>October 22, 2026<\/time>/);
     expect(text(html)).toContain(t('COPY-policy.updated', { date: 'October 22, 2026' }));
   });
@@ -318,18 +370,29 @@ describe('F-018 SCR-Policy (policyView, PolicyView.astro)', () => {
     expect(text(html)).toContain('Last updated October 22, 2026');
   });
 
+  it('F019_AC10 with Vietnamese showing, the translation note follows the title; the page is in Vietnamese', async () => {
+    const html = await render(PolicyView, { view: policyView(samplePolicy('Privacy', 2)) }, 'vi-VN');
+    expect(html).toMatch(/<h1[^>]*>Privacy \(vi\)<\/h1>/);
+    const note = /<div[^>]*data-testid="policy-translation-note"[^>]*>([\s\S]*?)<\/div>/.exec(html);
+    expect(note).not.toBeNull();
+    expect(note![0]).toContain('lang="vi-VN"');
+    expect(text(note![1]!)).toBe(t('COPY-policy.translationNote', undefined, 'vi-VN'));
+    expect(html.indexOf('policy-translation-note')).toBeGreaterThan(html.indexOf('</h1>'));
+    expect(html.indexOf('policy-translation-note')).toBeLessThan(html.indexOf('<h2'));
+    expect(html).toMatch(/<h2[^>]*>Tiêu đề 1<\/h2>/);
+    expect(html).toContain('Đoạn 1.</p>');
+    expect(text(html)).toContain('22 tháng 10, 2026');
+    expect(html).not.toContain('Paragraph 1.');
+  });
+
   it('F018_AC8 renders web links in a new tab, email links plainly, and a list as a list', async () => {
+    const body = policyBlocks(
+      'See [its privacy policy](https://www.cloudflare.com/privacypolicy/) or [email me](mailto:adamnguyen.itdn@gmail.com).\n\n- a\n- b\n- c\n',
+    );
     const policy: Policy = {
-      title: 'Privacy',
+      title: { 'en-US': 'Privacy', 'vi-VN': 'Quyền riêng tư' },
       updated: '2026-10-22',
-      sections: [
-        {
-          heading: 'Links',
-          blocks: policyBlocks(
-            'See [its privacy policy](https://www.cloudflare.com/privacypolicy/) or [email me](mailto:adamnguyen.itdn@gmail.com).\n\n- a\n- b\n- c\n',
-          ),
-        },
-      ],
+      sections: [{ heading: { 'en-US': 'Links', 'vi-VN': 'Liên kết' }, blocks: { 'en-US': body, 'vi-VN': body } }],
     };
     const html = await render(PolicyView, { view: policyView(policy) });
     expect(html).toMatch(
@@ -355,7 +418,7 @@ describe('F-018 link previews and site index (MOD-Meta)', () => {
     ] as const;
     for (const [page, path, title, description] of pages) {
       const meta = metaFor({ page }, r);
-      expect(meta).toEqual({ title: t(title), description: t(description), path });
+      expect(meta).toEqual({ title: t(title), titles: tBoth(title), description: t(description), path });
       const tags = headTags(meta, PORTAL_ORIGIN);
       expect(content(tags, 'og:title')).toBe(t(title));
       expect(content(tags, 'og:description')).toBe(t(description));

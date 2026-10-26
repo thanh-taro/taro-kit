@@ -2,7 +2,9 @@
 id: ft-offline
 kind: tool
 name: Fixture offline tool
-summary: Fixture tool that works offline.
+summary:
+  en-US: Fixture tool that works offline.
+  vi-VN: Fixture tool that works offline.
 category: developer
 url: https://ft-offline.tarokit.test/
 origin: own

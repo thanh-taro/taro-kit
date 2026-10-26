@@ -1,12 +1,26 @@
 # Test fixture (F-018.AC9, INV-02): a terms of use paragraph with an http link in section 2; overlays the valid base.
-title: Terms
+title:
+  en-US: Terms
+  vi-VN: Terms
 updated: 2026-10-22
 sections:
-  - heading: Fixture first section
-    body: |
-      Fixture paragraph with [a secure link](https://example.com/).
-  - heading: Fixture second section
-    body: |
-      Fixture paragraph.
+  - heading:
+      en-US: Fixture first section
+      vi-VN: Fixture first section
+    body:
+      en-US: |
+        Fixture paragraph with [a secure link](https://example.com/).
+      vi-VN: |
+        Fixture paragraph with [a secure link](https://example.com/).
+  - heading:
+      en-US: Fixture second section
+      vi-VN: Fixture second section
+    body:
+      en-US: |
+        Fixture paragraph.
 
-      See [the example site](http://example.com) for more.
+        See [the example site](http://example.com) for more.
+      vi-VN: |
+        Fixture paragraph.
+
+        See [the example site](http://example.com) for more.

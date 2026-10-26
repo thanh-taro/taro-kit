@@ -133,3 +133,79 @@
     white-space: nowrap;
   }
 }
+
+/* MOD-Language (ADR-0012, F-019.R2, R4): every localized text is in the page in both languages, each marked with its
+   `lang` and `data-l`; only the language showing (`data-lang` on <html>, set before first paint) is displayed. The
+   hidden one is out of the accessibility tree. Switching changes only that attribute, so DOM, focus, scroll and typed
+   text are untouched. */
+:root[data-lang='en-US'] [data-l][lang='vi-VN'],
+:root[data-lang='vi-VN'] [data-l][lang='en-US'] {
+  display: none !important;
+}
+
+/* ADR-0012: text in the mono face that holds words (dates, periods, counts, labels) uses the body face while
+   Vietnamese shows, so the mono subset stays ASCII-only. */
+:root[data-lang='vi-VN'] .tk-mono-words {
+  font-family: var(--tk-font-family-body);
+}
+
+/* CMP-AppShell language switch (MOD-Shell LanguageSwitch; design CMP-AppShell "language switch · states"): like the
+   theme toggle, borderless and muted until hovered or focused, 13 px medium, 44 px tall. In the bar both names share
+   one grid cell and the one not offered is hidden but keeps its room (stable width); in the narrow menu it is a
+   full-width row showing the whole COPY-shell.languageSwitch text. */
+@layer components {
+  .tk-langswitch {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--tk-space-2);
+    min-block-size: var(--tk-size-touch-target);
+    padding-inline: var(--tk-space-2);
+    background: transparent;
+    color: var(--tk-color-muted);
+    border: 0;
+    border-radius: var(--tk-radius-md);
+    font: inherit;
+    font-size: var(--tk-font-size-sm);
+    font-weight: var(--tk-font-weight-medium);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .tk-langswitch:hover {
+    background: var(--tk-color-surface2);
+    color: var(--tk-color-fg);
+  }
+  .tk-langswitch:focus-visible {
+    color: var(--tk-color-fg);
+  }
+  .tk-langswitch__icon {
+    display: inline-flex;
+  }
+  .tk-langswitch__icon svg {
+    inline-size: var(--tk-font-size-md);
+    block-size: var(--tk-font-size-md);
+  }
+  .tk-langswitch__names {
+    display: inline-grid;
+  }
+  .tk-langswitch__names > * {
+    grid-area: 1 / 1;
+  }
+  :root[data-lang='en-US'] .tk-langswitch__names > [data-to='en-US'],
+  :root[data-lang='vi-VN'] .tk-langswitch__names > [data-to='vi-VN'] {
+    visibility: hidden;
+  }
+  .tk-langswitch--row {
+    display: flex;
+    inline-size: 100%;
+    padding-inline: var(--tk-space-3);
+    font-size: var(--tk-font-size-base);
+  }
+  .tk-langswitch--row .tk-langswitch__names {
+    display: inline;
+  }
+  :root[data-lang='en-US'] .tk-langswitch--row .tk-langswitch__names > [data-to='en-US'],
+  :root[data-lang='vi-VN'] .tk-langswitch--row .tk-langswitch__names > [data-to='vi-VN'] {
+    display: none;
+  }
+}

@@ -1,24 +1,45 @@
 # yaml-language-server: $schema=./schemas/profile.json
 # ENT-Profile. Name and nickname come from PER-01. Written from the Owner's VietnamWorks profile (2026-10-20); contact links from the Owner.
+# The name and nickname are written once; the headline and bio in both languages; the location and link labels are
+# names, written once or in both languages (INV-09).
 name: Nguyen Tri Thanh
 nickname: Taro
-headline: Fullstack AI-Native engineer. I pair with AI and turn coffee into tidy products.
-location: Đà Nẵng, Vietnam
-bio: |
-  Hi, I'm Thanh, though most people call me Taro. I've been writing software for more than ten years, mostly on the backend: APIs, data pipelines and, lately, a lot of prompts for AI models. Yes, talking politely to machines is part of my job now.
+headline:
+  en-US: Fullstack AI-Native engineer. I pair with AI and turn coffee into tidy products.
+  vi-VN: Kỹ sư Fullstack AI-Native. Mình cặp với AI, biến cà phê thành sản phẩm gọn gàng.
+location:
+  en-US: Đà Nẵng, Vietnam
+  vi-VN: Đà Nẵng, Việt Nam
+bio:
+  en-US: |
+    Hi, I'm Thanh, though most people call me Taro. I've been writing software for more than ten years, mostly on the backend: APIs, data pipelines and, lately, a lot of prompts for AI models. Yes, talking politely to machines is part of my job now.
 
-  These days I'm a Fullstack AI-Native engineer at Est Rouge. I build products end to end with AI as part of the team: REST and WebSocket backends, big-data pipelines, the frontends people actually click, and the prompts and agents that get language models doing useful work. Before that I led commerce teams on projects for the Japanese market, ran an AI team as a technical leader, and built social networks, newsfeeds and geolocation features. My usual toolbox is Python, Node.js and PHP with FastAPI, NestJS and Laravel, on MySQL, MongoDB, DynamoDB, Redis and Neo4j. All of it in Docker, naturally.
+    These days I'm a Fullstack AI-Native engineer at Est Rouge. I build products end to end with AI as part of the team: REST and WebSocket backends, big-data pipelines, the frontends people actually click, and the prompts and agents that get language models doing useful work. Before that I led commerce teams on projects for the Japanese market, ran an AI team as a technical leader, and built social networks, newsfeeds and geolocation features. My usual toolbox is Python, Node.js and PHP with FastAPI, NestJS and Laravel, on MySQL, MongoDB, DynamoDB, Redis and Neo4j. All of it in Docker, naturally.
 
-  Since 2022 I've also mentored Rising Stars bootcamp students in backend, soft skills and presenting. Watching a mentee's first demo go right is still my favorite kind of deploy.
+    Since 2022 I've also mentored Rising Stars bootcamp students in backend, soft skills and presenting. Watching a mentee's first demo go right is still my favorite kind of deploy.
 
-  People describe me as active, responsible, quick at coding and research, and a bit funny. I'll take all of it, especially the last part. A few Employee of the Year and Exceptional Effort awards suggest it isn't only my friends saying so. I like heavy tasks, tight deadlines and learning new things fast.
+    People describe me as active, responsible, quick at coding and research, and a bit funny. I'll take all of it, especially the last part. A few Employee of the Year and Exceptional Effort awards suggest it isn't only my friends saying so. I like heavy tasks, tight deadlines and learning new things fast.
 
-  TaroKit is where I keep the small tools I build for work and everyday life. Help yourself.
+    TaroKit is where I keep the small tools I build for work and everyday life. Help yourself.
+  vi-VN: |
+    Chào bạn, mình là Thành, nhưng hầu hết mọi người gọi mình là Taro. Mình viết phần mềm hơn mười năm rồi, chủ yếu ở mảng backend: API, pipeline dữ liệu, và dạo gần đây là rất nhiều prompt cho các mô hình AI. Đúng vậy, nói chuyện lịch sự với máy giờ cũng là việc của mình.
+
+    Hiện tại mình là kỹ sư Fullstack AI-Native ở Est Rouge. Mình làm sản phẩm từ đầu đến cuối, với AI là một thành viên trong nhóm: backend REST và WebSocket, pipeline dữ liệu lớn, phần giao diện mà người dùng thật sự bấm vào, cùng các prompt và agent giúp mô hình ngôn ngữ làm việc có ích. Trước đó mình dẫn dắt các nhóm làm dự án thương mại cho thị trường Nhật, phụ trách một nhóm AI với vai trò trưởng nhóm kỹ thuật, và xây dựng mạng xã hội, newsfeed và các tính năng định vị. Bộ đồ nghề quen thuộc của mình là Python, Node.js và PHP với FastAPI, NestJS và Laravel, trên MySQL, MongoDB, DynamoDB, Redis và Neo4j.
+
+    Từ năm 2022, mình còn hướng dẫn các bạn học viên bootcamp Rising Stars về backend, kỹ năng mềm và thuyết trình. Nhìn buổi demo đầu tiên của một bạn học viên chạy trơn tru vẫn là kiểu "deploy" mình thích nhất.
+
+    Mọi người hay tả mình là năng động, có trách nhiệm, code và tìm hiểu nhanh, và hơi vui tính. Mình nhận hết, nhất là vế cuối. Vài giải "Employee of the Year" và "Exceptional Effort" cho thấy không chỉ bạn bè mình nói vậy. Mình thích việc nặng, deadline gấp và học nhanh những điều mới.
+
+    TaroKit là nơi mình cất những công cụ nhỏ mình làm cho công việc và cuộc sống hằng ngày. Cứ tự nhiên nhé.
 links:
-  - label: Email me
+  - label:
+      en-US: Email me
+      vi-VN: Gửi email cho mình
     url: mailto:adamnguyen.itdn@gmail.com
     kind: email
-  - label: 'Zalo / Phone: 0974 389 028'
+  - label:
+      en-US: 'Zalo / Phone: 0974 389 028'
+      vi-VN: 'Zalo / Điện thoại: 0974 389 028'
     url: https://zalo.me/0974389028
     kind: social
   - label: GitHub

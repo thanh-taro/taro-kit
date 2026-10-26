@@ -1,6 +1,10 @@
 # Test fixture (F-008.AC2): no avatar, so the initials of the full name stand in.
 name: Taro Example
-headline: Fixture headline.
-bio: Fixture bio.
+headline:
+  en-US: Fixture headline.
+  vi-VN: Fixture headline.
+bio:
+  en-US: Fixture bio.
+  vi-VN: Fixture bio.
 links:
   - { label: Site, url: 'https://example.com/' }

@@ -4,10 +4,12 @@
 id: sample-media-hidden
 kind: tool
 name: Sample hidden media tool
-summary: Sample entry. Hidden until a real tool replaces it.
+summary:
+  en-US: Sample entry. Hidden until a real tool replaces it.
+  vi-VN: Sample entry. Hidden until a real tool replaces it.
 category: media
 url: https://sample-media-hidden.tarokit.app/
 origin: own
-tags: [sample]
+tags: [ sample ]
 added: 2026-10-13
 hidden: true

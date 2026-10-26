@@ -29,13 +29,15 @@ test.describe('F-018 SCR-Policy', () => {
     expect(res?.status()).toBe(200);
     await expect(page).toHaveTitle('Privacy — TaroKit');
     const main = page.getByRole('main');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText([samples.privacy.title]);
-    await expect(main.getByRole('heading', { level: 2 })).toHaveText(samples.privacy.sections.map((s) => s.heading));
-    // Each heading is followed by its section's paragraphs.
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText([samples.privacy.title['en-US']]);
+    await expect(main.getByRole('heading', { level: 2 })).toHaveText(
+      samples.privacy.sections.map((s) => s.heading['en-US']),
+    );
+    // Each heading is followed by its section's paragraphs (in the body version of the language showing).
     for (const section of samples.privacy.sections) {
-      const first = section.blocks.find((b) => b.kind === 'paragraph')!;
-      const h2 = main.getByRole('heading', { level: 2, name: section.heading });
-      const next = h2.locator('xpath=following-sibling::*[1]');
+      const first = section.blocks['en-US'].find((b) => b.kind === 'paragraph')!;
+      const h2 = main.getByRole('heading', { level: 2, name: section.heading['en-US'] });
+      const next = h2.locator('xpath=following-sibling::div[@lang="en-US"][1]/*[1]');
       await expect(next).toHaveJSProperty('tagName', 'P');
       await expect(next).toContainText(first.parts.map((p) => p.text).join(''));
     }
@@ -52,10 +54,12 @@ test.describe('F-018 SCR-Policy', () => {
     await expect(page).toHaveTitle('Terms — TaroKit');
     const main = page.getByRole('main');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(['Terms']);
-    await expect(main.getByRole('heading', { level: 2 })).toHaveText(samples.terms.sections.map((s) => s.heading));
+    await expect(main.getByRole('heading', { level: 2 })).toHaveText(
+      samples.terms.sections.map((s) => s.heading['en-US']),
+    );
     expect(samples.terms.sections).toHaveLength(3);
     for (const section of samples.terms.sections)
-      for (const block of section.blocks)
+      for (const block of section.blocks['en-US'])
         if (block.kind === 'paragraph') await expect(main).toContainText(block.parts.map((p) => p.text).join(''));
     await expect(main.getByText('Last updated October 22, 2026', { exact: true })).toBeVisible();
   });
@@ -198,9 +202,9 @@ test.describe('F-018 offline', () => {
     await expect.poll(() => page.evaluate(() => navigator.onLine)).toBe(false);
     const offline = await page.goto(`${PROD}/privacy/`);
     expect(offline?.status()).toBe(200);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(samples.privacy.title);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(samples.privacy.title['en-US']);
     await expect(page.getByRole('main').getByRole('heading', { level: 2 })).toHaveText(
-      samples.privacy.sections.map((s) => s.heading),
+      samples.privacy.sections.map((s) => s.heading['en-US']),
     );
   });
 });

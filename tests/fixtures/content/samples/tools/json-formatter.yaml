@@ -5,13 +5,15 @@
 id: json-formatter
 kind: tool
 name: JSON Formatter
-summary: Format, minify and validate JSON with exact error positions — nothing leaves your browser.
+summary:
+  en-US: Format, minify and validate JSON with exact error positions — nothing leaves your browser.
+  vi-VN: Format, minify and validate JSON with exact error positions — nothing leaves your browser.
 category: developer
 url: https://json-formatter.tarokit.app/
 origin: own
 openMode: embedded
-permissions: [clipboard-write, downloads, file-pick]
+permissions: [ clipboard-write, downloads, file-pick ]
 offline: true
-tags: [json, formatter, validator]
+tags: [ json, formatter, validator ]
 added: 2026-10-13
 hidden: true

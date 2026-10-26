@@ -25,7 +25,8 @@ import {
 } from './derive.ts';
 import { AVATAR_TYPES, resolveAsset } from './assets.ts';
 import { type ContentError, ContentErrors } from './errors.ts';
-import { type Def, defaultSchemaPath, mapAjvError, validatorFor } from './schema.ts';
+import { LANGUAGES, type Lang } from '../language/languages.ts';
+import { type Def, defaultSchemaPath, mapAjvError, relevantErrors, validatorFor } from './schema.ts';
 
 /** The portal's own origin (ADR-0001, D-025). */
 export const PORTAL_ORIGIN = 'https://tarokit.app';
@@ -101,6 +102,13 @@ interface Loaded {
 
 type Obj = Record<string, unknown>;
 const isObj = (v: unknown): v is Obj => typeof v === 'object' && v !== null && !Array.isArray(v);
+/** Every string in loaded content in Unicode NFC, so lengths count letters, not code points (ADR-0005 note, F-019). */
+function nfc(v: unknown): unknown {
+  if (typeof v === 'string') return v.normalize('NFC');
+  if (Array.isArray(v)) return v.map(nfc);
+  if (isObj(v)) return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, nfc(x)]));
+  return v;
+}
 const idOf = (v: unknown): string => (isObj(v) && typeof v.id === 'string' && v.id ? v.id : '-');
 
 function loadYaml(relRoot: string, abs: string, errors: ContentError[]): Loaded {
@@ -120,7 +128,7 @@ function loadYaml(relRoot: string, abs: string, errors: ContentError[]): Loaded 
     const node = doc.getIn(path, true);
     return isScalar(node) ? node.type : undefined;
   };
-  return { file, data: doc.toJS(), lineOf, scalarType };
+  return { file, data: nfc(doc.toJS()), lineOf, scalarType };
 }
 
 const listYaml = (dir: string) =>
@@ -179,7 +187,7 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
     const validate = validatorFor(schemaPath, def);
     if (validate(target)) return;
     const seen = new Set<string>();
-    for (const err of validate.errors ?? []) {
+    for (const err of relevantErrors(validate.errors ?? [], target)) {
       const m = mapAjvError(err, isObj(target) ? target : undefined, schemaPath, def);
       if (!m) continue;
       schemaFailed.add(fieldKey(l.file, [...prefix, ...m.path]));
@@ -368,44 +376,51 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   for (const l of policyFiles) {
     const sections = isObj(l.data) && Array.isArray(l.data.sections) ? (l.data.sections as unknown[]) : [];
     /** The file line of a body's line `i` (from 0): a literal block's text starts on the line after its `|`. */
-    const bodyLine = (index: number, i: number) => {
-      const at = l.lineOf(['sections', index, 'body']);
-      return at !== undefined && l.scalarType(['sections', index, 'body']) === 'BLOCK_LITERAL' ? at + 1 + i : at;
+    const bodyLine = (index: number, lang: Lang, i: number) => {
+      const path = ['sections', index, 'body', lang];
+      const at = l.lineOf(path);
+      return at !== undefined && l.scalarType(path) === 'BLOCK_LITERAL' ? at + 1 + i : at;
     };
-    const literal = new Set<number>();
+    // Each language's body is checked on its own (INV-09); the message names the language.
+    const literal = new Set<string>();
     sections.forEach((section, index) => {
-      if (!isObj(section) || typeof section.body !== 'string') return;
+      const body = isObj(section) ? section.body : undefined;
+      if (!isObj(body)) return;
       if (schemaFailed.has(fieldKey(l.file, ['sections', index, 'body']))) return;
-      if (l.scalarType(['sections', index, 'body']) === 'BLOCK_LITERAL') {
-        literal.add(index);
-        return;
+      for (const lang of LANGUAGES) {
+        if (typeof body[lang] !== 'string') continue;
+        if (l.scalarType(['sections', index, 'body', lang]) === 'BLOCK_LITERAL') {
+          literal.add(`${index}|${lang}`);
+          continue;
+        }
+        errors.push({
+          file: l.file,
+          line: l.lineOf(['sections', index, 'body', lang]),
+          entryId: policySectionName(index),
+          rule: 'SCHEMA',
+          message: `body must be a literal block (|), so its line breaks are kept (${lang})`,
+        });
       }
-      errors.push({
-        file: l.file,
-        line: l.lineOf(['sections', index, 'body']),
-        entryId: policySectionName(index),
-        rule: 'SCHEMA',
-        message: 'body must be a literal block (|), so its line breaks are kept',
-      });
     });
-    for (const m of policyMixedLists(l.data).filter((m) => literal.has(m.index)))
+    for (const m of policyMixedLists(l.data).filter((m) => literal.has(`${m.index}|${m.lang}`)))
       errors.push({
         file: l.file,
-        line: bodyLine(m.index, m.line),
+        line: bodyLine(m.index, m.lang, m.line),
         entryId: policySectionName(m.index),
         rule: 'SCHEMA',
-        message: `paragraph ${m.paragraph + 1} mixes list lines ("- ") with other lines; put a blank line before the list`,
+        message: `paragraph ${m.paragraph + 1} mixes list lines ("- ") with other lines; put a blank line before the list (${m.lang})`,
       });
     for (const e of policyLinkErrors(l.data))
       errors.push({
         file: l.file,
-        line: bodyLine(e.index, e.line),
+        line: bodyLine(e.index, e.lang, e.line),
         entryId: policySectionName(e.index),
         rule: 'INV-02',
         message:
-          e.kind === 'insecure'
+          (e.kind === 'insecure'
             ? `link "${e.link}" is not https`
-            : `link "${e.link}" must be [text](address) with an https or mailto address and no spaces; write ( and ) in an address as %28 and %29`,
+            : `link "${e.link}" must be [text](address) with an https or mailto address and no spaces; write ( and ) in an address as %28 and %29`) +
+          ` (${e.lang})`,
       });
   }
 

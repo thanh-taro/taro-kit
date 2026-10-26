@@ -12,7 +12,11 @@
 //   ready it renders the real state and `data-tk-home-ready`, which removes the placeholders (index.astro CSS).
 // - Reactive: pins, unpins, visits and clears from any island or window update it at once (F-005.R1); offline,
 //   tools that need the internet are marked unavailable (F-011.R3).
+// - Texts are in both languages (<L>, <Each>; F-019.R4).
 import { useEffect, useId, useMemo, useState } from 'preact/hooks';
+import { Each, L } from '../../language/L.tsx';
+import type { Loc } from '../../language/languages.ts';
+import type { LocAround } from '../now/now.ts';
 import StateMessage from '../../design-system/StateMessage.tsx';
 import ToolCard, { type ToolCardText, type ToolCardTool } from '../../design-system/ToolCard.tsx';
 import { needsInternet } from '../../design-system/tool-card.ts';
@@ -27,13 +31,13 @@ export const TOUCH_ONLY_QUERY = '(any-hover: none) and (any-pointer: coarse)';
 
 export interface HomePersonalText {
   /** COPY-home.favorites */
-  favorites: string;
+  favorites: Loc;
   /** COPY-home.recents */
-  recents: string;
+  recents: Loc;
   /** COPY-home.firstVisit around {shortcut}, and COPY-home.firstVisitTouch. */
-  invite: { keyboard: { before: string; after: string }; touch: string };
+  invite: { keyboard: LocAround; touch: Loc };
   /** COPY-notFound.toCatalog and the catalog's address. */
-  browse: { label: string; href: string };
+  browse: { label: Loc; href: string };
   /** The invitation's icon (build-time SVG). */
   inviteIcon: string;
   cards: ToolCardText;
@@ -56,11 +60,15 @@ function Invitation({ text, touch, pending }: { text: HomePersonalText; touch: b
   const title = touch ? (
     text.invite.touch
   ) : (
-    <>
-      {text.invite.keyboard.before}
-      <kbd data-tk-shortcut>{shortcutLabel()}</kbd>
-      {text.invite.keyboard.after}
-    </>
+    <Each
+      render={(lang) => (
+        <>
+          {text.invite.keyboard[lang].before}
+          <kbd data-tk-shortcut>{shortcutLabel()}</kbd>
+          {text.invite.keyboard[lang].after}
+        </>
+      )}
+    />
   );
   return (
     <div class="tk-home-invite" data-pending={pending ? (touch ? 'touch' : 'keyboard') : undefined}>
@@ -106,7 +114,7 @@ export default function HomePersonal({ tools, text }: HomePersonalProps) {
         <section class="tk-favorites" aria-labelledby={headingId}>
           <div class="tk-favorites__head">
             <h2 id={headingId} class="tk-favorites__heading">
-              {text.favorites}
+              <L text={text.favorites} />
             </h2>
             {/* Visual only: the list itself tells assistive technology how many there are. */}
             <span class="tk-favorites__count" aria-hidden="true">

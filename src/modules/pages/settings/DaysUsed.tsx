@@ -7,11 +7,13 @@
 // - Before hydration the device data is unknown, so the line is blank and the strip empty.
 import { effect } from '@preact/signals';
 import { useEffect, useState } from 'preact/hooks';
+import { Each } from '../../language/L.tsx';
+import type { Loc } from '../../language/languages.ts';
 import { daysUsedWindow, DAYS_USED_WINDOW, personalData } from '../../personal-data/index.ts';
 
 interface Props {
   /** COPY-settings.daysUsed rendered at build with the literal `{count}` left in place. */
-  template: string;
+  template: Loc;
 }
 
 export default function DaysUsed({ template }: Props) {
@@ -24,7 +26,9 @@ export default function DaysUsed({ template }: Props) {
   const count = strip?.filter(Boolean).length;
   return (
     <div class="days">
-      <p class="days-line">{count === undefined ? ' ' : template.replace('{count}', String(count))}</p>
+      <p class="days-line">
+        {count === undefined ? ' ' : <Each render={(lang) => template[lang].replace('{count}', String(count))} />}
+      </p>
       <div class="days-strip" aria-hidden="true" data-testid="days-strip">
         {(strip ?? Array.from({ length: DAYS_USED_WINDOW }, () => false)).map((used, i) => (
           <span key={i} data-used={used ? '' : undefined} />

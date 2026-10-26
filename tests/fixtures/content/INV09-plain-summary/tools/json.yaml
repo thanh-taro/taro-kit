@@ -1,0 +1,9 @@
+# INV-09: a summary written once, as a plain string, instead of in both languages.
+id: json
+kind: tool
+name: JSON Formatter
+summary: Fixture tool, own, no open mode.
+category: developer
+url: https://json.tarokit.app/
+origin: own
+added: 2026-02-01

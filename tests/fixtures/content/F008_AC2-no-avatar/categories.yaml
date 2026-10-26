@@ -1,2 +1,9 @@
 # Test fixture (F-008): a category list; the About page reads only the profile.
-- { id: developer, name: Developer tools, order: 1, intro: Fixture intro., icon: icons/code.svg, tint: violet }
+- {
+    id: developer,
+    name: { en-US: Developer tools, vi-VN: Developer tools },
+    order: 1,
+    intro: { en-US: Fixture intro., vi-VN: Fixture intro. },
+    icon: icons/code.svg,
+    tint: violet,
+  }

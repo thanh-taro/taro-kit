@@ -1,0 +1,13 @@
+# INV-09 / ADR-0005 note: a summary saved in NFD (decomposed) is normalized to NFC before lengths are checked.
+id: json
+kind: tool
+name: JSON Formatter
+summary:
+  en-US: Fixture tool, own, no open mode.
+  vi-VN: "Định dạng, thu gọn và kiểm tra JSON, chỉ đúng vị trí lỗi — dữ liệu không rời khỏi trình duyệt của bạn nhé, bạn ơi ạ!!!!!"
+category: developer
+url: https://json.tarokit.app/
+origin: own
+tags: [ json ]
+added: 2026-02-01
+updated: 2026-03-10

@@ -2,9 +2,11 @@
 id: ft-clipboard
 kind: tool
 name: Fixture clipboard tool
-summary: Fixture tool that may write to the clipboard.
+summary:
+  en-US: Fixture tool that may write to the clipboard.
+  vi-VN: Fixture tool that may write to the clipboard.
 category: developer
 url: https://ft-clipboard.tarokit.test/
 origin: own
-permissions: [clipboard-write]
+permissions: [ clipboard-write ]
 added: 2026-10-01

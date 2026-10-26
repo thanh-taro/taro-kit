@@ -3,9 +3,9 @@
 // - Embedded (F-003.R1–R3, R5, R6): the ToolFrame island, with the frame attributes from MOD-SecurityPolicy.
 // - Linked (F-003.R4): the tool header and the linked note with the link; nothing opens by itself, and the page
 //   embeds nothing (its frame-src is 'none').
-// Strings are COPY ids rendered at build; icons come from the icon set.
+// Strings are COPY ids rendered at build in both languages (F-019.R4); icons come from the icon set.
 import type { RegTool } from '../content/index.ts';
-import { t } from '../copy/index.ts';
+import { tBoth } from '../copy/index.ts';
 import FavoriteToggle from '../design-system/FavoriteToggle.astro';
 import { iconSvg } from '../design-system/icons.ts';
 import { favoriteStar, favoriteToggleLabels } from '../design-system/text.ts';
@@ -19,13 +19,13 @@ interface Props {
 }
 const { tool } = Astro.props;
 const name = { tool: tool.name };
-const label = t('COPY-tool.frameLabel', name);
+const label = tBoth('COPY-tool.frameLabel', name);
 const header: ToolHeaderText = {
-  back: t('COPY-tool.back'),
-  openNewTab: t('COPY-tool.openNewTab'),
-  label: t('COPY-tool.toolbarLabel', name),
-  slow: t('COPY-tool.slow', name),
-  search: t('COPY-shell.search'),
+  back: tBoth('COPY-tool.back'),
+  openNewTab: tBoth('COPY-tool.openNewTab'),
+  label: tBoth('COPY-tool.toolbarLabel', name),
+  slow: tBoth('COPY-tool.slow', name),
+  search: tBoth('COPY-shell.search'),
   icons: { back: iconSvg('chevron-left', 16), newTab: iconSvg('arrow-up-right', 16), search: iconSvg('search', 16) },
 };
 ---
@@ -37,9 +37,9 @@ const header: ToolHeaderText = {
     frame={{ ...frameAttributesFor(tool), title: label }}
     header={header}
     favorite={{ labels: favoriteToggleLabels(), star: favoriteStar(20) }}
-    loading={t('COPY-tool.loading', name)}
+    loading={tBoth('COPY-tool.loading', name)}
   >
-    <StateMessage variant="offline" page live title={t('COPY-tool.offline', name)} />
+    <StateMessage variant="offline" page live title={tBoth('COPY-tool.offline', name)} />
   </ToolFrame>
 ) : (
   <>
@@ -52,9 +52,9 @@ const header: ToolHeaderText = {
         variant="info"
         page
         icon="arrow-up-right"
-        title={t('COPY-tool.linkedNote', name)}
+        title={tBoth('COPY-tool.linkedNote', name)}
         detail={new URL(tool.url).host}
-        action={{ href: tool.url, label: t('COPY-tool.openNewTab'), newTab: true }}
+        action={{ href: tool.url, label: tBoth('COPY-tool.openNewTab'), newTab: true }}
       />
     </div>
   </>

@@ -12,3 +12,16 @@ export function readStoredTheme(): 'system' | 'light' | 'dark' {
   }
   return 'system';
 }
+
+// MOD-PersonalData `readStoredLanguage()`: the stored language choice, read synchronously (ADR-0010 note, F-019).
+// MOD-Language inlines its source into the blocking script, so the same rules apply: self-contained, no imports.
+export function readStoredLanguage(): 'en-US' | 'vi-VN' | undefined {
+  try {
+    const doc = JSON.parse(localStorage.getItem('tarokit.personal') || 'null');
+    const language = doc && doc.preferences && doc.preferences.language;
+    if (language === 'en-US' || language === 'vi-VN') return language;
+  } catch {
+    // Unreadable or unavailable storage: follow the device (F-019 edge case).
+  }
+  return undefined;
+}

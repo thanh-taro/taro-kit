@@ -10,6 +10,7 @@ import { join } from 'node:path';
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import { loadRegistry } from '../../src/modules/content/index.ts';
 import { t } from '../../src/modules/copy/index.ts';
+import { pick, type Text } from '../../src/modules/language/languages.ts';
 import { resumeView, sectionTitle } from '../../src/modules/pages/resume/resume.ts';
 import { FX, PROD, SAMPLES_CONTENT } from './ports.ts';
 import { startVersionedHost } from './support/versioned-server.ts';
@@ -20,6 +21,9 @@ const fx = loadRegistry({ root, contentDir: join(root, 'tests/fixtures/content/F
 const view = resumeView(samples.resume!);
 const NAV = ['Home', 'Tools', 'About me', 'Résumé', 'Now'];
 const NAV_WITHOUT = ['Home', 'Tools', 'About me', 'Now'];
+
+/** The English version, as the page shows it to an English device (F-019). */
+const en = (text: Text) => pick(text, 'en-US');
 
 const mainNav = (page: Page) => page.locator('#main-menu > li:not(.narrow-only) > a');
 
@@ -47,7 +51,7 @@ test.describe('F-017 Résumé page', () => {
     expect(res?.status()).toBe(200);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('My résumé');
     await expect(page.getByText(t('COPY-resume.intro'), { exact: true })).toBeVisible();
-    const titles = view.sections.map(sectionTitle);
+    const titles = view.sections.map((s) => en(sectionTitle(s)));
     await expect(page.getByRole('heading', { level: 2 })).toHaveText(titles);
     for (const name of titles) await expect(page.getByRole('region', { name })).toBeVisible();
     await expect(mainNav(page).filter({ hasText: 'Résumé' })).toHaveAttribute('aria-current', 'page');
@@ -58,25 +62,25 @@ test.describe('F-017 Résumé page', () => {
   }) => {
     await page.goto(`${PROD}/resume/`);
     const region = page.getByRole('region', { name: 'Experience' });
-    await expect(region.getByRole('heading', { level: 3 })).toHaveText(view.experience.map((e) => e.role));
+    await expect(region.getByRole('heading', { level: 3 })).toHaveText(view.experience.map((e) => en(e.role)));
     const current = view.experience.find((e) => e.period.current)!;
-    const entry = region.locator('ol > li').filter({ has: page.getByRole('heading', { name: current.role }) });
-    await expect(entry).toContainText(current.organization);
-    await expect(entry.locator('.period')).toHaveText(current.period.text);
-    await expect(entry.locator('time')).toHaveAttribute('datetime', current.period.parts[0]!.datetime!);
-    for (const h of current.highlights) await expect(entry).toContainText(h);
+    const entry = region.locator('ol > li').filter({ has: page.getByRole('heading', { name: en(current.role) }) });
+    await expect(entry).toContainText(en(current.organization));
+    await expect(entry.locator('.period [lang="en-US"]')).toHaveText(en(current.period.text));
+    await expect(entry.locator('time')).toHaveAttribute('datetime', current.period.parts['en-US'][0]!.datetime!);
+    for (const h of current.highlights) await expect(entry).toContainText(en(h));
   });
 
   test('F017_AC4 an education entry shows its program, institution, level and period', async ({ page }) => {
     await page.goto(`${PROD}/resume/`);
     const e = view.education[0]!;
     const entry = page.getByRole('region', { name: 'Education' }).locator('ol > li').first();
-    await expect(entry.getByRole('heading', { level: 3 })).toHaveText(e.program);
-    await expect(entry).toContainText(e.institution);
+    await expect(entry.getByRole('heading', { level: 3 })).toHaveText(en(e.program));
+    await expect(entry).toContainText(en(e.institution));
     // The level's own element: the institution's name may contain the same word ("Sample College").
     expect(e.level).toBeTruthy();
-    await expect(entry.locator('.level')).toHaveText(e.level!);
-    await expect(entry.locator('.period')).toHaveText(e.period.text);
+    await expect(entry.locator('.level')).toHaveText(en(e.level!));
+    await expect(entry.locator('.period [lang="en-US"]')).toHaveText(en(e.period.text));
   });
 
   test('F017_AC5 F017_AC12 skills by group: each group a labelled list of chips, ungrouped skills last with no label', async ({
@@ -88,18 +92,19 @@ test.describe('F-017 Résumé page', () => {
     await expect(lists).toHaveCount(view.skills.length);
     for (const [i, g] of view.skills.entries()) {
       // A labelled group is a list named by its <h3>; the ungrouped one has no label.
-      const list = g.label ? region.getByRole('list', { name: g.label, exact: true }) : lists.nth(i);
-      if (g.label) await expect(region.getByRole('heading', { level: 3, name: g.label, exact: true })).toBeVisible();
+      const list = g.label ? region.getByRole('list', { name: en(g.label), exact: true }) : lists.nth(i);
+      if (g.label)
+        await expect(region.getByRole('heading', { level: 3, name: en(g.label), exact: true })).toBeVisible();
       const chips = list.getByRole('listitem');
       await expect(chips).toHaveCount(g.skills.length);
       for (const [j, s] of g.skills.entries()) {
         const chip = chips.nth(j);
         if (s.levelShort) {
-          await expect(chip.locator('.chip-level')).toHaveText(s.levelShort);
+          await expect(chip.locator('.chip-level')).toHaveText(en(s.levelShort));
           await expect(chip.locator('.chip-level')).toHaveAttribute('aria-hidden', 'true');
-          await expect(chip.locator('.tk-visually-hidden')).toHaveText(`, ${s.levelText}`);
+          await expect(chip.locator('.tk-visually-hidden')).toHaveText(`, ${en(s.levelText!)}`);
         } else {
-          await expect(chip).toHaveText(s.name);
+          await expect(chip).toHaveText(en(s.name));
         }
       }
     }
@@ -109,15 +114,16 @@ test.describe('F-017 Résumé page', () => {
     await page.goto(`${PROD}/resume/`);
     const rows = (name: string) => page.getByRole('region', { name }).getByRole('listitem');
     for (const [i, l] of view.languages.entries()) {
-      await expect(rows('Languages').nth(i)).toContainText(l.name);
-      await expect(rows('Languages').nth(i)).toContainText(l.level);
+      await expect(rows('Languages').nth(i)).toContainText(en(l.name));
+      await expect(rows('Languages').nth(i)).toContainText(en(l.level));
     }
     for (const [name, items] of [
       ['Certificates', view.certificates],
       ['Awards', view.awards],
     ] as const)
       for (const [i, c] of items.entries())
-        for (const part of [c.name, c.issuer, String(c.year)]) await expect(rows(name).nth(i)).toContainText(part);
+        for (const part of [en(c.name), en(c.issuer), String(c.year)])
+          await expect(rows(name).nth(i)).toContainText(part);
   });
 
   test('F017_AC7 with a résumé, navigation includes Résumé on every portal page, and About links to it', async ({
@@ -162,7 +168,7 @@ test.describe('F-017 Résumé page', () => {
   }) => {
     const html = await (await request.get(`${PROD}/resume/`)).text();
     const head = html.slice(0, html.indexOf('</head>'));
-    expect(head).toContain('<title>Résumé — TaroKit</title>');
+    expect(head).toMatch(/<title [^>]*>Résumé — TaroKit<\/title>/);
     expect(head).toMatch(/<meta property="og:title" content="Résumé — TaroKit"/);
     expect(head).toContain(`<meta property="og:description" content="${t('COPY-meta.resumeDescription')}"`);
     expect(head).toMatch(new RegExp(`<meta property="og:image" content="${samples.portalOrigin}/preview.png"`));

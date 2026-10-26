@@ -2,7 +2,9 @@
 id: staging-page
 kind: tool
 name: Staging page
-summary: Fixture embedded tool on the staging portal origin.
+summary:
+  en-US: Fixture embedded tool on the staging portal origin.
+  vi-VN: Fixture embedded tool on the staging portal origin.
 category: developer
 url: https://staging.tarokit.app/tool/
 origin: own

@@ -3,7 +3,9 @@
 id: json-formatter
 kind: tool
 name: JSON Formatter
-summary: Format, minify and validate JSON with exact error positions — nothing leaves your browser.
+summary:
+  en-US: Format, minify and validate JSON with exact error positions — nothing leaves your browser.
+  vi-VN: Định dạng, thu gọn và kiểm tra JSON, chỉ đúng vị trí lỗi — dữ liệu không rời khỏi trình duyệt của bạn.
 category: developer
 url: https://json-formatter.tarokit.app/
 origin: own
@@ -11,5 +13,5 @@ openMode: embedded
 permissions: [clipboard-write, downloads, file-pick]
 offline: true
 sourceUrl: https://github.com/thanh-taro/json-formatter
-tags: [json, formatter, validator, minify, pretty print]
+tags: [json, formatter, validator, minify, pretty print, định dạng, kiểm tra, làm đẹp]
 added: 2026-10-20

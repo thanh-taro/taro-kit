@@ -3,7 +3,9 @@
 id: portal-page
 kind: tool
 name: Portal page
-summary: Fixture linked tool on the portal origin.
+summary:
+  en-US: Fixture linked tool on the portal origin.
+  vi-VN: Fixture linked tool on the portal origin.
 category: developer
 url: https://tarokit.app/elsewhere/
 origin: external

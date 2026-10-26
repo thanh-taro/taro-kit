@@ -7,8 +7,13 @@
 // Dates are machine-readable (<time datetime>) and read in full (SCR-Now accessibility): the short text is hidden
 // from assistive technology, which reads the full date instead.
 // Design: design/canvas/NowDesktop.dc.html, NowMobile.dc.html, EmptyPagesDesktop.dc.html (now empty).
+// Every text is in both languages (<L>, <Each>; F-019.R4); dates use each language's conventions (RULE-16), and the
+// mono date lines use the body face while Vietnamese shows (`tk-mono-words`, ADR-0012).
 // Implements: F-010.R1, F-010.R2, F-010.R3, F-010.R4.
-import { t } from '../../copy/index.ts';
+import { tBoth } from '../../copy/index.ts';
+import Each from '../../language/Each.astro';
+import L from '../../language/L.astro';
+import { mapText, type Lang } from '../../language/languages.ts';
 import StateMessage from '../../design-system/StateMessage.astro';
 import type { NowViewData } from './now.ts';
 import StaleLabel from './StaleLabel.tsx';
@@ -26,42 +31,61 @@ const MonthTitle = note ? 'h3' : 'h2';
 <div class="now" data-layout={both ? 'both' : 'single'}>
   {note && (
     <section class="note" aria-labelledby="now-title">
-      <h1 id="now-title">{t('COPY-now.title')}</h1>
+      <h1 id="now-title">
+        <L text={tBoth('COPY-now.title')} />
+      </h1>
       <div class="meta">
-        <time class="updated" datetime={note.updated.iso}>
-          {note.updatedLabel.before}
-          <span aria-hidden="true">{note.updated.shown}</span>
-          <span class="tk-visually-hidden">{note.updated.full}</span>
-          {note.updatedLabel.after}
+        <time class="updated tk-mono-words" datetime={note.updated.iso}>
+          <Each>
+            {(lang: Lang) => (
+              <>
+                {note.updatedLabel[lang].before}
+                <span aria-hidden="true">{note.updated.shown[lang]}</span>
+                <span class="tk-visually-hidden">{note.updated.full[lang]}</span>
+                {note.updatedLabel[lang].after}
+              </>
+            )}
+          </Each>
         </time>
-        <StaleLabel client:load updated={note.updated.iso} label={t('COPY-now.stale')} />
+        <StaleLabel client:load updated={note.updated.iso} label={tBoth('COPY-now.stale')} />
       </div>
-      <div class="body">
-        {note.paragraphs.map((p) => (
-          <p>{p}</p>
-        ))}
-      </div>
+      <Each as="div" class="body">
+        {(lang: Lang) => note.paragraphs[lang].map((p) => <p>{p}</p>)}
+      </Each>
     </section>
   )}
   {months.length > 0 && (
     <section class="log" aria-labelledby="log-title">
       <LogTitle id="log-title" class="log-title">
-        {t('COPY-now.changelogTitle')}
+        <L text={tBoth('COPY-now.changelogTitle')} />
       </LogTitle>
       {months.map((m) => (
         <div class="month">
-          <MonthTitle class="month-title">{m.label}</MonthTitle>
+          <MonthTitle class="month-title tk-mono-words">
+            <L text={m.label} />
+          </MonthTitle>
           <ul>
             {m.items.map((i) => (
               <li data-type={i.type}>
                 {/* The kind is part of the link, so each link's name is unique: "Added Regex Tester". */}
                 <a href={i.href}>
-                  <span class="kind">{i.label.before.trim()}</span> <span class="tool">{i.tool}</span>
-                  {i.label.after.trim() && <span>{i.label.after.trim()}</span>}
+                  <span class="kind">
+                    <L text={mapText(i.label['en-US'].before, (_, l) => i.label[l].before.trim())} />
+                  </span>{' '}
+                  <span class="tool">{i.tool}</span>
+                  {(i.label['en-US'].after.trim() || i.label['vi-VN'].after.trim()) && (
+                    <span>
+                      <L text={mapText('', (_, l) => i.label[l].after.trim())} />
+                    </span>
+                  )}
                 </a>
-                <time class="date" datetime={i.date.iso}>
-                  <span aria-hidden="true">{i.date.shown}</span>
-                  <span class="tk-visually-hidden">{i.date.full}</span>
+                <time class="date tk-mono-words" datetime={i.date.iso}>
+                  <span aria-hidden="true">
+                    <L text={i.date.shown} />
+                  </span>
+                  <span class="tk-visually-hidden">
+                    <L text={i.date.full} />
+                  </span>
                 </time>
               </li>
             ))}
@@ -72,9 +96,11 @@ const MonthTitle = note ? 'h3' : 'h2';
   )}
   {empty && (
     <section class="note" aria-labelledby="now-title">
-      <h1 id="now-title">{t('COPY-now.title')}</h1>
+      <h1 id="now-title">
+        <L text={tBoth('COPY-now.title')} />
+      </h1>
       <div class="empty">
-        <StateMessage variant="empty" title={t('COPY-now.empty')} />
+        <StateMessage variant="empty" title={tBoth('COPY-now.empty')} />
       </div>
     </section>
   )}

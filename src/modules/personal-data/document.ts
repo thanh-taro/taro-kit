@@ -1,5 +1,5 @@
 // MOD-PersonalData: the stored document (ADR-0010). One JSON document under `tarokit.personal`, shaped
-// exactly like `personalData` in the domain schema, schema version 1 (RULE-08).
+// exactly like `personalData` in the domain schema, schema version 2 (RULE-08; version 1 had no language, F-019).
 // Pure functions only: no storage access here, so the rules stay trivially unit-testable.
 import type { PersonalData } from '../../generated/domain.ts';
 import { isCalendarDate, isTimestamp, isToolId } from './entry-checks.ts';
@@ -8,15 +8,17 @@ export { isCalendarDate, isTimestamp, isToolId };
 
 export type { PersonalData };
 export type ThemePreference = NonNullable<PersonalData['preferences']['theme']>;
+/** A stored language choice (F-019, RULE-16); absent means the language follows the device. */
+export type LanguageChoice = NonNullable<PersonalData['preferences']['language']>;
 
 export const STORAGE_KEY = 'tarokit.personal';
-/** The M-1 schema version (RULE-08). */
-export const SCHEMA_VERSION = 1;
+/** The schema version (RULE-08): 2 since F-019 added the language; version 1 (M-1 up to v1.2) had none. */
+export const SCHEMA_VERSION = 2;
 
 /** Limits from the domain schema: RULE-02 (24 favorites), RULE-01 (20 recents), RULE-13 (60 dates). */
 const LIMITS = { favorites: 24, recents: 20, daysUsed: 60 } as const;
 
-/** RULE-08 defaults: empty favorites, recents and days used; theme system. */
+/** RULE-08 defaults: empty favorites, recents and days used; theme system; no language (it follows the device). */
 export const emptyDocument = (): PersonalData => ({
   schemaVersion: SCHEMA_VERSION,
   favorites: [],
@@ -29,6 +31,7 @@ const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'obj
 
 // Entry checks (tool id, calendar date, timestamp) live in entry-checks.ts, shared with home's inline prediction.
 export const isThemePreference = (v: unknown): v is ThemePreference => v === 'system' || v === 'light' || v === 'dark';
+export const isLanguageChoice = (v: unknown): v is LanguageChoice => v === 'en-US' || v === 'vi-VN';
 
 /** Keeps well-formed items with a unique key, in order, up to the limit. */
 function keepValid<T>(
@@ -80,7 +83,10 @@ export function normalizeDocument(raw: unknown): PersonalData {
           : undefined,
       (r) => r.toolId,
     ),
-    preferences: { theme: isThemePreference(prefs.theme) ? prefs.theme : 'system' },
+    preferences: {
+      theme: isThemePreference(prefs.theme) ? prefs.theme : 'system',
+      ...(isLanguageChoice(prefs.language) ? { language: prefs.language } : {}),
+    },
     daysUsed: keepValid(
       raw.daysUsed,
       LIMITS.daysUsed,

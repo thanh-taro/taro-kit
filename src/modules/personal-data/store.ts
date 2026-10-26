@@ -23,6 +23,7 @@ import {
   STORAGE_KEY,
   storedSchemaVersion,
   type PersonalData,
+  type LanguageChoice,
   type ThemePreference,
 } from './document.ts';
 import { localDate } from './dates.ts';
@@ -102,6 +103,8 @@ export interface PersonalDataStore {
    */
   update(recipe: (current: PersonalData) => PersonalData): boolean;
   setTheme(theme: ThemePreference): void;
+  /** F-019.R2: stores the language choice; `null` removes it, so the language follows the device (RULE-16). */
+  setLanguage(language: LanguageChoice | null): void;
   /**
    * F-013.R4: replaces all personal data with a validated backup's (the caller confirms first). The user asked for
    * exactly this, so it also replaces a newer version's document on disk. `unsaved` when the device refuses the
@@ -109,7 +112,7 @@ export interface PersonalDataStore {
    */
   replaceAll(data: PersonalData): SaveResult;
   /**
-   * F-013.R5: erases all personal data (the caller confirms first): empty lists, theme system. As `replaceAll`, but
+   * F-013.R5: erases all personal data (the caller confirms first): empty lists, theme system, no language. As `replaceAll`, but
    * when writing the empty document fails, the stored document is removed instead, so the data is really gone.
    */
   eraseAll(): SaveResult;
@@ -237,6 +240,12 @@ export function createPersonalDataStore(env: StoreEnvironment): PersonalDataStor
     },
     setTheme(theme) {
       store.update((doc) => ({ ...doc, preferences: { ...doc.preferences, theme } }));
+    },
+    setLanguage(language) {
+      store.update((doc) => {
+        const { language: _old, ...preferences } = doc.preferences;
+        return { ...doc, preferences: language ? { ...preferences, language } : preferences };
+      });
     },
     replaceAll: (doc) => (commit(structuredClone(doc), true) ? 'saved' : 'unsaved'),
     eraseAll() {

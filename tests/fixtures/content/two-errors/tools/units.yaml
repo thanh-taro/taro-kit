@@ -2,7 +2,9 @@
 id: units
 kind: tool
 name: Units
-summary: Fixture tool with an http address.
+summary:
+  en-US: Fixture tool with an http address.
+  vi-VN: Fixture tool with an http address.
 category: converters
 url: http://units.tarokit.app/
 origin: own

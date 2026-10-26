@@ -1,17 +1,36 @@
 # yaml-language-server: $schema=../../../../content/schemas/policy.json
 # Test fixture (ENT-Policy, F-018): SAMPLE terms of use with three sections (F-018.AC2). Not the real terms
 # (content/terms.yaml).
-title: Terms
+title:
+  en-US: Terms
+  vi-VN: Terms
 updated: 2026-10-22
 sections:
-  - heading: Sample first section
-    body: |
-      Sample paragraph about using the portal.
-  - heading: Sample second section
-    body: |
-      Sample paragraph about the tools.
+  - heading:
+      en-US: Sample first section
+      vi-VN: Sample first section
+    body:
+      en-US: |
+        Sample paragraph about using the portal.
+      vi-VN: |
+        Sample paragraph about using the portal.
+  - heading:
+      en-US: Sample second section
+      vi-VN: Sample second section
+    body:
+      en-US: |
+        Sample paragraph about the tools.
 
-      A second sample paragraph in the same section.
-  - heading: Sample third section
-    body: |
-      Sample paragraph about changes to these terms.
+        A second sample paragraph in the same section.
+      vi-VN: |
+        Sample paragraph about the tools.
+
+        A second sample paragraph in the same section.
+  - heading:
+      en-US: Sample third section
+      vi-VN: Sample third section
+    body:
+      en-US: |
+        Sample paragraph about changes to these terms.
+      vi-VN: |
+        Sample paragraph about changes to these terms.

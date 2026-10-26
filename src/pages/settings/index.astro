@@ -2,8 +2,11 @@
 // SCR-Settings (MOD-Pages). Regions: 1 shell header, 1b page heading, 2 Appearance with the theme
 // choice (F-012.R2), 3 Your data, 4 Privacy statement. Region 3 holds days used (F-006.R6), export and import with
 // the backup scope note (F-013.R1, R2, R4, R6), then clear recents (F-006.R4) and erase (F-013.R5), each with its
-// confirmation (design: SettingsDesktop, SettingsMobile, SettingsDialogs*).
-import { t } from '../../modules/copy/index.ts';
+// confirmation (design: SettingsDesktop, SettingsMobile, SettingsDialogs*). Appearance also holds the language choice
+// (F-019.R2), and every text is in both languages (<L>, F-019.R4).
+import { t, tBoth } from '../../modules/copy/index.ts';
+import L from '../../modules/language/L.astro';
+import LanguageChoice from '../../modules/pages/settings/LanguageChoice.tsx';
 import Icon from '../../modules/design-system/Icon.astro';
 import BackupControls from '../../modules/pages/settings/BackupControls.tsx';
 import ClearRecents from '../../modules/pages/settings/ClearRecents.tsx';
@@ -16,61 +19,73 @@ import { metaFor } from '../../modules/meta/index.ts';
 import { getRegistry } from '../../modules/content/index.ts';
 
 // F-012.R2: the three choices, in RULE-03 order.
+const languageChoice = {
+  legend: tBoth('COPY-settings.language'),
+  device: tBoth('COPY-language.device'),
+  names: { 'en-US': t('COPY-language.en', undefined, 'en-US'), 'vi-VN': t('COPY-language.vi', undefined, 'vi-VN') },
+};
 const choice = {
-  legend: t('COPY-settings.theme'),
+  legend: tBoth('COPY-settings.theme'),
   options: [
-    { value: 'system' as const, label: t('COPY-settings.themeSystem') },
-    { value: 'light' as const, label: t('COPY-settings.themeLight') },
-    { value: 'dark' as const, label: t('COPY-settings.themeDark') },
+    { value: 'system' as const, label: tBoth('COPY-settings.themeSystem') },
+    { value: 'light' as const, label: tBoth('COPY-settings.themeLight') },
+    { value: 'dark' as const, label: tBoth('COPY-settings.themeDark') },
   ],
 };
 ---
 
 <BaseLayout {...metaFor({ page: 'settings' }, getRegistry())}>
   <div class="settings">
-    <h1>{t('COPY-settings.title')}</h1>
+    <h1>
+      <L text={tBoth('COPY-settings.title')} />
+    </h1>
 
     <section class="card appearance" aria-labelledby="s-appearance">
-      <h2 id="s-appearance">{t('COPY-settings.appearance')}</h2>
+      <h2 id="s-appearance">
+        <L text={tBoth('COPY-settings.appearance')} />
+      </h2>
       <ThemeChoice client:load {...choice} />
+      <LanguageChoice client:load {...languageChoice} />
     </section>
 
     <section class="card data" aria-labelledby="s-data">
-      <h2 id="s-data">{t('COPY-settings.yourData')}</h2>
+      <h2 id="s-data">
+        <L text={tBoth('COPY-settings.yourData')} />
+      </h2>
       {/* The count is filled in on the device (RULE-13); `{count}` stays a placeholder at build. */}
-      <DaysUsed client:load template={t('COPY-settings.daysUsed', { count: '{count}' })} />
+      <DaysUsed client:load template={tBoth('COPY-settings.daysUsed', { count: '{count}' })} />
       <hr />
       <BackupControls
         client:load
-        exportLabel={t('COPY-settings.export')}
-        importLabel={t('COPY-settings.import')}
-        scope={t('COPY-settings.backupScope')}
-        invalidTemplate={t('COPY-settings.importInvalid', { reason: '{reason}' })}
+        exportLabel={tBoth('COPY-settings.export')}
+        importLabel={tBoth('COPY-settings.import')}
+        scope={tBoth('COPY-settings.backupScope')}
+        invalidTemplate={tBoth('COPY-settings.importInvalid', { reason: '{reason}' })}
         reasons={importReasons()}
-        question={t('COPY-settings.importConfirm')}
-        confirmLabel={t('COPY-common.confirm')}
-        cancelLabel={t('COPY-common.cancel')}
-        unsaved={t('COPY-settings.importUnsaved')}
-        exportFailed={t('COPY-settings.exportFailed')}
-        importFailed={t('COPY-settings.importFailed')}
+        question={tBoth('COPY-settings.importConfirm')}
+        confirmLabel={tBoth('COPY-common.confirm')}
+        cancelLabel={tBoth('COPY-common.cancel')}
+        unsaved={tBoth('COPY-settings.importUnsaved')}
+        exportFailed={tBoth('COPY-settings.exportFailed')}
+        importFailed={tBoth('COPY-settings.importFailed')}
       />
       <hr />
       <div class="actions">
         <ClearRecents
           client:load
-          label={t('COPY-settings.clearRecents')}
-          question={t('COPY-settings.clearRecentsConfirm')}
-          confirmLabel={t('COPY-common.confirm')}
-          cancelLabel={t('COPY-common.cancel')}
-          unsaved={t('COPY-settings.clearRecentsUnsaved')}
+          label={tBoth('COPY-settings.clearRecents')}
+          question={tBoth('COPY-settings.clearRecentsConfirm')}
+          confirmLabel={tBoth('COPY-common.confirm')}
+          cancelLabel={tBoth('COPY-common.cancel')}
+          unsaved={tBoth('COPY-settings.clearRecentsUnsaved')}
         />
         <EraseData
           client:load
-          label={t('COPY-settings.erase')}
-          question={t('COPY-settings.eraseConfirm')}
-          confirmLabel={t('COPY-common.confirm')}
-          cancelLabel={t('COPY-common.cancel')}
-          unsaved={t('COPY-settings.eraseUnsaved')}
+          label={tBoth('COPY-settings.erase')}
+          question={tBoth('COPY-settings.eraseConfirm')}
+          confirmLabel={tBoth('COPY-common.confirm')}
+          cancelLabel={tBoth('COPY-common.cancel')}
+          unsaved={tBoth('COPY-settings.eraseUnsaved')}
         />
       </div>
     </section>
@@ -80,10 +95,18 @@ const choice = {
         <Icon name="shield" />
       </span>
       <div class="privacy-text">
-        <h2 id="s-privacy">{t('COPY-settings.privacyTitle')}</h2>
-        <p>{t('COPY-settings.privacy')}</p>
-        <p>{t('COPY-settings.privacyTools')}</p>
-        <p>{t('COPY-settings.privacyHosting')}</p>
+        <h2 id="s-privacy">
+          <L text={tBoth('COPY-settings.privacyTitle')} />
+        </h2>
+        <p>
+          <L text={tBoth('COPY-settings.privacy')} />
+        </p>
+        <p>
+          <L text={tBoth('COPY-settings.privacyTools')} />
+        </p>
+        <p>
+          <L text={tBoth('COPY-settings.privacyHosting')} />
+        </p>
       </div>
     </section>
   </div>
@@ -168,6 +191,20 @@ const choice = {
   .appearance :global(.options label:has(input:focus-visible)) {
     outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
     outline-offset: var(--tk-border-width-focus);
+  }
+  /* F-019.R2 (design SettingsDesktop / SettingsMobile): the language choice under the theme choice, the same
+     segmented group; below 480 px its three options stack in one column, so no label wraps in either language. */
+  .appearance :global(.choice--language) {
+    margin-block-start: var(--tk-space-2);
+  }
+  @media (max-width: 479px) {
+    .appearance :global(.choice--language .options) {
+      flex-direction: column;
+      align-self: stretch;
+    }
+    .appearance :global(.choice--language .options label) {
+      justify-content: flex-start;
+    }
   }
 
   /* Your data (design: SettingsDesktop / SettingsMobile): days used, then the actions. */

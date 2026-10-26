@@ -14,9 +14,9 @@ import { FakeStorage } from './fakes.ts';
 const stored = (s: FakeStorage) => JSON.parse(s.getItem(STORAGE_KEY) ?? 'null');
 
 describe('document (ADR-0010, RULE-08 defaults)', () => {
-  test('nothing stored yields the defaults with schemaVersion 1', () => {
+  test('nothing stored yields the defaults with schemaVersion 2 and no language (RULE-08, F-019)', () => {
     expect(parseDocument(null)).toEqual({
-      schemaVersion: 1,
+      schemaVersion: 2,
       favorites: [],
       recents: [],
       preferences: { theme: 'system' },
@@ -37,7 +37,7 @@ describe('document (ADR-0010, RULE-08 defaults)', () => {
       daysUsed: ['2026-10-01', 'yesterday', '2026-10-01'],
     });
     expect(doc).toEqual({
-      schemaVersion: 1,
+      schemaVersion: 2,
       favorites: [{ toolId: 'json', pinnedAt: '2026-10-01T00:00:00Z' }],
       recents: [],
       preferences: { theme: 'system' },
@@ -163,7 +163,7 @@ describe('store (ADR-0010)', () => {
 describe('store with a document from a newer schema version', () => {
   test('reads what it can but never writes it back', () => {
     const storage = new FakeStorage();
-    const newer = JSON.stringify({ schemaVersion: 2, preferences: { theme: 'light' }, favorites: 'v2 shape' });
+    const newer = JSON.stringify({ schemaVersion: 3, preferences: { theme: 'light' }, favorites: 'v3 shape' });
     storage.setItem(STORAGE_KEY, newer);
     const store = createPersonalDataStore({ storage: () => storage });
     expect(store.preferences.value.theme).toBe('light');

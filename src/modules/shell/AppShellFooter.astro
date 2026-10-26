@@ -5,7 +5,8 @@
 // Design: design/canvas/CMP-AppShell.dc.html (full · footer, narrow · footer).
 // Implements: F-018.R3.
 import { PRIVACY_PATH, TERMS_PATH } from '../content/policy.ts';
-import { t, type CopyId } from '../copy/index.ts';
+import { tBoth, type CopyId } from '../copy/index.ts';
+import L from '../language/L.astro';
 
 interface Props {
   /** Current route path, e.g. "/privacy/" (marks the current link). */
@@ -21,7 +22,7 @@ const links: [href: string, copy: CopyId][] = [
 <footer class="shell-footer">
   {links.map(([href, id]) => (
     <a href={href} aria-current={href === path ? 'page' : undefined}>
-      {t(id)}
+      <L text={tBoth(id)} />
     </a>
   ))}
 </footer>

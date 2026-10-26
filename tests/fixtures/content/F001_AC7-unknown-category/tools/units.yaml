@@ -2,7 +2,9 @@
 id: units
 kind: tool
 name: Units
-summary: Fixture tool in a missing category.
+summary:
+  en-US: Fixture tool in a missing category.
+  vi-VN: Fixture tool in a missing category.
 category: finance
 url: https://units.tarokit.app/
 origin: own

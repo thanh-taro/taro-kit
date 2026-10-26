@@ -2,140 +2,249 @@
 # ENT-Resume (F-017), optional: without this file, or with no entries in any section, there is no Résumé page.
 # Written from the Owner's VietnamWorks profile (2026-10-20). Phone, street address and salary are left out.
 # Sections show in RULE-15 order, entries in the order written here. Months are YYYY-MM; leave out `end` while a
-# role is current, and an end is on or after its start (INV-08).
+# role is current, and an end is on or after its start (INV-08). Text is written in both languages; names (organizations,
+# institutions, skills, certificates, awards, issuers) once or in both (INV-09).
 experience:
-  - role: Fullstack AI-Native engineer
+  - role:
+      en-US: Fullstack AI-Native engineer
+      vi-VN: Kỹ sư Fullstack AI-Native
     organization: Est Rouge
     start: 2023-07
-    summary: I build products end to end with AI on the team, from the backend and the data underneath to the prompts that make language models behave.
+    summary:
+      en-US: I build products end to end with AI on the team, from the backend and the data underneath to the prompts that make language models behave.
+      vi-VN: Mình làm sản phẩm từ đầu đến cuối với AI trong nhóm, từ backend và dữ liệu bên dưới đến các prompt giúp mô hình ngôn ngữ làm đúng việc.
     highlights:
-      - REST and WebSocket backends in Python and Node.js, with FastAPI and NestJS.
-      - ETL pipelines that turn big, messy data into something a dashboard can love.
-      - Prompts and integrations for ChatGPT, Llama 2, Midjourney and DALL-E.
-      - Claude Chat, Claude Code and Claude Design as everyday teammates, from planning and coding to design.
-      - Products built for the company itself, not just for clients.
-  - role: Training mentor
+      - en-US: REST and WebSocket backends in Python and Node.js, with FastAPI and NestJS.
+        vi-VN: Backend REST và WebSocket bằng Python và Node.js, với FastAPI và NestJS.
+      - en-US: ETL pipelines that turn big, messy data into something a dashboard can love.
+        vi-VN: Pipeline ETL biến dữ liệu lớn, lộn xộn thành thứ mà dashboard nào cũng mê.
+      - en-US: Prompts and integrations for ChatGPT, Llama 2, Midjourney and DALL-E.
+        vi-VN: Prompt và tích hợp cho ChatGPT, Llama 2, Midjourney và DALL-E.
+      - en-US: Claude Chat, Claude Code and Claude Design as everyday teammates, from planning and coding to design.
+        vi-VN: Claude Chat, Claude Code và Claude Design là đồng đội hằng ngày, từ lên kế hoạch, viết code đến thiết kế.
+      - en-US: Products built for the company itself, not just for clients.
+        vi-VN: Sản phẩm làm cho chính công ty, không chỉ cho khách hàng.
+  - role:
+      en-US: Training mentor
+      vi-VN: Mentor đào tạo
     organization: Rising Stars
     start: 2022-06
-    summary: I mentor bootcamp students and on-the-job trainees in backend development, soft skills and presenting.
+    summary:
+      en-US: I mentor bootcamp students and on-the-job trainees in backend development, soft skills and presenting.
+      vi-VN: Mình hướng dẫn học viên bootcamp và thực tập sinh về phát triển backend, kỹ năng mềm và thuyết trình.
     highlights:
-      - Backend and presentation mentoring for the Rising Stars bootcamps.
-      - Coaching Rising Stars through their on-the-job training at Est Rouge.
-  - role: Technical leader
+      - en-US: Backend and presentation mentoring for the Rising Stars bootcamps.
+        vi-VN: Hướng dẫn backend và thuyết trình cho các khoá bootcamp Rising Stars.
+      - en-US: Coaching Rising Stars through their on-the-job training at Est Rouge.
+        vi-VN: Kèm cặp các bạn Rising Stars trong giai đoạn đào tạo thực tế tại Est Rouge.
+  - role:
+      en-US: Technical leader
+      vi-VN: Trưởng nhóm kỹ thuật
     organization: Em&Ai JSC
     start: 2023-04
     end: 2023-07
-    summary: I led the AI team on a product that put AI and big-data analytics at its core.
+    summary:
+      en-US: I led the AI team on a product that put AI and big-data analytics at its core.
+      vi-VN: Mình dẫn dắt nhóm AI cho một sản phẩm lấy AI và phân tích dữ liệu lớn làm cốt lõi.
     highlights:
-      - Led the AI team and integrated models into the product.
-      - Python and Node.js on MongoDB, PostgreSQL and Redis, shipped with Docker and Kubernetes.
-  - role: Senior developer and technical leader
+      - en-US: Led the AI team and integrated models into the product.
+        vi-VN: Dẫn dắt nhóm AI và tích hợp các mô hình vào sản phẩm.
+      - en-US: Python and Node.js on MongoDB, PostgreSQL and Redis, shipped with Docker and Kubernetes.
+        vi-VN: Python và Node.js trên MongoDB, PostgreSQL và Redis, triển khai bằng Docker và Kubernetes.
+  - role:
+      en-US: Senior developer and technical leader
+      vi-VN: Lập trình viên cấp cao và trưởng nhóm kỹ thuật
     organization: Est Rouge
     start: 2018-08
     end: 2023-04
-    summary: I built and led commerce projects for the Japanese market, and made a lot of data answer a lot of questions.
+    summary:
+      en-US: I built and led commerce projects for the Japanese market, and made a lot of data answer a lot of questions.
+      vi-VN: Mình xây dựng và dẫn dắt các dự án thương mại cho thị trường Nhật, và giúp rất nhiều dữ liệu trả lời rất nhiều câu hỏi.
     highlights:
-      - Led commerce teams as their technical leader.
-      - Big-data analytics on Athena and Redshift, with dashboards built from the data lake.
-      - Recommendations with Neo4j, and gRPC between services.
-      - Reporting tools for sales, inventory and income.
-  - role: Backend developer
+      - en-US: Led commerce teams as their technical leader.
+        vi-VN: Dẫn dắt các nhóm thương mại với vai trò trưởng nhóm kỹ thuật.
+      - en-US: Big-data analytics on Athena and Redshift, with dashboards built from the data lake.
+        vi-VN: Phân tích dữ liệu lớn trên Athena và Redshift, với dashboard dựng từ data lake.
+      - en-US: Recommendations with Neo4j, and gRPC between services.
+        vi-VN: Hệ gợi ý bằng Neo4j, và gRPC giữa các dịch vụ.
+      - en-US: Reporting tools for sales, inventory and income.
+        vi-VN: Công cụ báo cáo bán hàng, tồn kho và doanh thu.
+  - role:
+      en-US: Backend developer
+      vi-VN: Lập trình viên backend
     organization: NAL Solutions
     start: 2018-03
     end: 2018-07
-    summary: I worked on Japanese-market projects on AWS, filtering and enriching large client datasets.
-  - role: Backend developer
+    summary:
+      en-US: I worked on Japanese-market projects on AWS, filtering and enriching large client datasets.
+      vi-VN: Mình làm các dự án cho thị trường Nhật trên AWS, lọc và làm giàu những bộ dữ liệu lớn của khách hàng.
+  - role:
+      en-US: Backend developer
+      vi-VN: Lập trình viên backend
     organization: Green Global
     start: 2014-08
     end: 2018-02
-    summary: I built government and US-market projects, and spent about a year as a vendor developer for Neolab Vietnam.
+    summary:
+      en-US: I built government and US-market projects, and spent about a year as a vendor developer for Neolab Vietnam.
+      vi-VN: Mình làm các dự án cho chính phủ và thị trường Mỹ, và có khoảng một năm làm lập trình viên vendor cho Neolab Vietnam.
     highlights:
-      - Social networks, newsfeeds and geolocation features.
-      - Caching, queue workers, and recommendations with Neo4j.
-      - PHP, JavaScript and Python with Yii, Laravel, Magento, Drupal, React and React Native.
-  - role: Intern Android developer
+      - en-US: Social networks, newsfeeds and geolocation features.
+        vi-VN: Mạng xã hội, newsfeed và tính năng định vị.
+      - en-US: Caching, queue workers, and recommendations with Neo4j.
+        vi-VN: Caching, queue worker, và hệ gợi ý bằng Neo4j.
+      - en-US: PHP, JavaScript and Python with Yii, Laravel, Magento, Drupal, React and React Native.
+        vi-VN: PHP, JavaScript và Python với Yii, Laravel, Magento, Drupal, React và React Native.
+  - role:
+      en-US: Intern Android developer
+      vi-VN: Thực tập sinh lập trình Android
     organization: Enclave
     start: 2013-06
     end: 2013-11
-    summary: I built a real-time chat and room-booking app for Android, with a Ruby on Rails API behind it.
-  - role: Intern web developer
+    summary:
+      en-US: I built a real-time chat and room-booking app for Android, with a Ruby on Rails API behind it.
+      vi-VN: Mình làm một ứng dụng Android chat thời gian thực và đặt phòng, với API Ruby on Rails phía sau.
+  - role:
+      en-US: Intern web developer
+      vi-VN: Thực tập sinh lập trình web
     organization: Danang Digital
     start: 2013-02
     end: 2013-06
-    summary: My first paid code, CMS sites and landing pages for customers. Everyone starts somewhere.
+    summary:
+      en-US: My first paid code, CMS sites and landing pages for customers. Everyone starts somewhere.
+      vi-VN: 'Những dòng code đầu tiên được trả lương: trang CMS và landing page cho khách hàng. Ai cũng phải bắt đầu từ đâu đó.'
 education:
-  - program: Information Technology
-    institution: College of Information Technology, University of Danang
-    level: College
+  - program:
+      en-US: Information Technology
+      vi-VN: Công nghệ Thông tin
+    institution:
+      en-US: College of Information Technology, University of Danang
+      vi-VN: Trường Cao đẳng Công nghệ Thông tin, Đại học Đà Nẵng
+    level:
+      en-US: College
+      vi-VN: Cao đẳng
     start: 2011-09
     end: 2014-09
-    notes: Second prize in the Contest for Good IT Students, in my first year.
+    notes:
+      en-US: Second prize in the Contest for Good IT Students, in my first year.
+      vi-VN: Giải nhì Hội thi Sinh viên Giỏi Tin học, ngay năm nhất.
 skills:
   - name: PHP
-    group: Languages
+    group:
+      en-US: Languages
+      vi-VN: Ngôn ngữ lập trình
     level: 5
   - name: JavaScript
-    group: Languages
+    group:
+      en-US: Languages
+      vi-VN: Ngôn ngữ lập trình
     level: 5
   - name: Python
-    group: Languages
+    group:
+      en-US: Languages
+      vi-VN: Ngôn ngữ lập trình
     level: 5
   - name: SQL
-    group: Languages
+    group:
+      en-US: Languages
+      vi-VN: Ngôn ngữ lập trình
     level: 5
   - name: Laravel
-    group: Frameworks
+    group:
+      en-US: Frameworks
+      vi-VN: Framework
     level: 5
   - name: NestJS
-    group: Frameworks
+    group:
+      en-US: Frameworks
+      vi-VN: Framework
     level: 5
   - name: FastAPI
-    group: Frameworks
+    group:
+      en-US: Frameworks
+      vi-VN: Framework
     level: 5
   - name: Node.js
-    group: Frameworks
+    group:
+      en-US: Frameworks
+      vi-VN: Framework
     level: 5
   - name: ReactJS
-    group: Frameworks
+    group:
+      en-US: Frameworks
+      vi-VN: Framework
     level: 5
   - name: React Native
-    group: Frameworks
+    group:
+      en-US: Frameworks
+      vi-VN: Framework
     level: 5
   - name: MySQL
-    group: Data
+    group:
+      en-US: Data
+      vi-VN: Dữ liệu
     level: 5
   - name: MongoDB
-    group: Data
+    group:
+      en-US: Data
+      vi-VN: Dữ liệu
     level: 5
   - name: DynamoDB
-    group: Data
+    group:
+      en-US: Data
+      vi-VN: Dữ liệu
     level: 5
   - name: Neo4j
-    group: Data
+    group:
+      en-US: Data
+      vi-VN: Dữ liệu
     level: 5
   - name: Redis
-    group: Data
+    group:
+      en-US: Data
+      vi-VN: Dữ liệu
     level: 5
   - name: Claude AI (Chat, Code, Design)
-    group: AI
+    group:
+      en-US: AI
+      vi-VN: AI
     level: 5
   - name: Prompt engineering
-    group: AI
+    group:
+      en-US: AI
+      vi-VN: AI
     level: 5
   - name: Docker
-    group: Practices
+    group:
+      en-US: Practices
+      vi-VN: Thực hành
     level: 5
-  - name: Leadership
-    group: Practices
+  - name:
+      en-US: Leadership
+      vi-VN: Lãnh đạo
+    group:
+      en-US: Practices
+      vi-VN: Thực hành
     level: 5
-  - name: SQL injection prevention
-    group: Practices
+  - name:
+      en-US: SQL injection prevention
+      vi-VN: Phòng chống SQL injection
+    group:
+      en-US: Practices
+      vi-VN: Thực hành
     level: 5
 languages:
-  - name: Vietnamese
-    level: Native
-  - name: English
-    level: Advanced
+  - name:
+      en-US: Vietnamese
+      vi-VN: Tiếng Việt
+    level:
+      en-US: Native
+      vi-VN: Bản ngữ
+  - name:
+      en-US: English
+      vi-VN: Tiếng Anh
+    level:
+      en-US: Advanced
+      vi-VN: Nâng cao
 certificates:
   - name: EQ – Emotional Quotient
     issuer: Est Rouge

@@ -2,7 +2,9 @@
 id: fx-hidden
 kind: tool
 name: Fixture hidden tool
-summary: Fixture tool, hidden.
+summary:
+  en-US: Fixture tool, hidden.
+  vi-VN: Fixture tool, hidden.
 category: developer
 url: https://fx-hidden.example.com/
 origin: own

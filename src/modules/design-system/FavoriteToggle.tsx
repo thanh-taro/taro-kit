@@ -6,23 +6,27 @@
 //   announced politely (again on every refused press) and tied to the button with aria-describedby, until
 //   focus leaves it or Esc.
 // - 44 px target (NFR-09). Before hydration it renders off and disabled, like the other device-data islands.
-// Labels arrive as build-time props (`favoriteToggleText()`), so the island ships no copy catalog. The star
+// Labels arrive in both languages (F-019.R4): the label is a localized attribute, the message is made in the
+// language showing. Labels arrive as build-time props (`favoriteToggleText()`), so the island ships no copy catalog. The star
 // icon is the children: Astro passes it as static slot HTML, so it is not repeated in the island props.
 import type { ComponentChildren } from 'preact';
 import { effect } from '@preact/signals';
 import { useEffect, useId, useState } from 'preact/hooks';
 import { visibleToolIds } from 'virtual:tarokit/visible-tool-ids';
+import { localizedAttrs } from '../language/attrs.ts';
+import { pick, type Loc } from '../language/languages.ts';
+import { useShownLanguage } from '../language/use.ts';
 import { personalData } from '../personal-data/index.ts';
 import { useHydrated } from '../shell/hydrated.ts';
 
 /** Build-time strings for the toggle (see `favoriteToggleText()`). */
 export interface FavoriteToggleLabels {
   /** COPY-fav.add: the label while the tool is not a favorite. */
-  add: string;
+  add: Loc;
   /** COPY-fav.remove: the label while it is. */
-  remove: string;
+  remove: Loc;
   /** COPY-fav.full with {limit} from RULE-02: the refused message. */
-  full: string;
+  full: Loc;
 }
 
 export interface FavoriteToggleProps {
@@ -48,6 +52,7 @@ export default function FavoriteToggle({
   children,
 }: FavoriteToggleProps) {
   const hydrated = useHydrated();
+  const lang = useShownLanguage();
   const [pressed, setPressed] = useState(false);
   const [refused, setRefused] = useState(false);
   const [justPinned, setJustPinned] = useState(false);
@@ -77,7 +82,7 @@ export default function FavoriteToggle({
         type="button"
         class="tk-fav__btn"
         aria-pressed={pressed ? 'true' : 'false'}
-        aria-label={pressed ? labels.remove : labels.add}
+        {...localizedAttrs('aria-label', pressed ? labels.remove : labels.add, lang)}
         aria-describedby={refused ? messageId : undefined}
         data-pop={justPinned && pressed ? '' : undefined}
         disabled={!hydrated}
@@ -89,7 +94,7 @@ export default function FavoriteToggle({
       </button>
       {/* Always in the page, so the refused message is announced when it is filled in. */}
       <span id={messageId} class="tk-fav__full" role="status">
-        {refused ? labels.full : null}
+        {refused ? pick(labels.full, lang) : null}
       </span>
     </span>
   );

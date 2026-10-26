@@ -4,8 +4,8 @@
 import type { Resume } from '../../../generated/domain.ts';
 import { paragraphs } from '../../content/profile.ts';
 import { RESUME_SECTIONS, type ResumeSection } from '../../content/resume.ts';
-import { t } from '../../copy/index.ts';
-import { monthLabel } from '../now/now.ts';
+import { formatMonth, t, tBoth } from '../../copy/index.ts';
+import { both, LANGUAGES, pick, type Lang, type Loc, type Text } from '../../language/languages.ts';
 
 /** One piece of a period as COPY-resume.period lays it out: a month (machine-readable) or the text between. */
 export interface PeriodPart {
@@ -14,47 +14,48 @@ export interface PeriodPart {
   datetime?: string;
 }
 export interface Period {
-  parts: PeriodPart[];
-  /** The whole period as read: "June 2022 – present". */
-  text: string;
+  /** The pieces in each language (F-019.R4): "June 2022 – present", "tháng 6 năm 2022 – nay". */
+  parts: Record<Lang, PeriodPart[]>;
+  /** The whole period as read, in each language. */
+  text: Loc;
   /** No end month: the period runs to the present (COPY-resume.present). */
   current: boolean;
 }
 export interface ExperienceItem {
-  role: string;
-  organization: string;
+  role: Text;
+  organization: Text;
   period: Period;
-  /** The summary, one string per paragraph (F-017 edge case: paragraph breaks are kept). */
-  summary: string[];
-  highlights: string[];
+  /** The summary, one string per paragraph, per language (F-017 edge case: paragraph breaks are kept). */
+  summary: Record<Lang, string[]>;
+  highlights: Text[];
 }
 export interface EducationItem {
-  program: string;
-  institution: string;
-  level?: string;
+  program: Text;
+  institution: Text;
+  level?: Text;
   period: Period;
-  notes: string[];
+  notes: Record<Lang, string[]>;
 }
 export interface SkillItem {
-  name: string;
+  name: Text;
   /** COPY-resume.skillLevelShort, "3/5": only for a level below 5 (RULE-15). */
-  levelShort?: string;
+  levelShort?: Loc;
   /** COPY-resume.skillLevel, "3 out of 5": the same level in words. */
-  levelText?: string;
+  levelText?: Loc;
 }
 export interface SkillGroup {
   /** The Owner's group label; absent for the skills without a group, which come last. */
-  label?: string;
+  label?: Text;
   skills: SkillItem[];
 }
 export interface LanguageItem {
-  name: string;
-  level: string;
+  name: Text;
+  level: Text;
 }
 export interface CreditItem {
   /** A certificate's name or an award's title. */
-  name: string;
-  issuer: string;
+  name: Text;
+  issuer: Text;
   year: number;
 }
 export interface ResumeViewData {
@@ -68,44 +69,70 @@ export interface ResumeViewData {
   awards: CreditItem[];
 }
 
-/** COPY-resume.<section>: each section's heading. */
-export const sectionTitle = (section: ResumeSection): string => t(`COPY-resume.${section}`);
+/** COPY-resume.<section>: each section's heading, in both languages. */
+export const sectionTitle = (section: ResumeSection): Loc => tBoth(`COPY-resume.${section}`);
 
 const START = '\u0001';
 const END = '\u0002';
 
-/** RULE-15: "June 2022 – present", in COPY-resume.period's order, with each month machine-readable. */
+/** The paragraphs of each version of a text (ADR-0005: blank lines separate them). */
+const paragraphsBoth = (text: Text | undefined): Record<Lang, string[]> =>
+  Object.fromEntries(LANGUAGES.map((l) => [l, text === undefined ? [] : paragraphs(pick(text, l))])) as Record<
+    Lang,
+    string[]
+  >;
+
+/**
+ * RULE-15: "June 2022 – present" / "tháng 6 năm 2022 – nay", in COPY-resume.period's order, with each month
+ * machine-readable; months in each language's conventions (RULE-16, F-019.AC7).
+ */
 export function period(start: string, end?: string): Period {
-  const months: Record<string, PeriodPart> = {
-    [START]: { text: monthLabel(start), datetime: start },
-    [END]: end ? { text: monthLabel(end), datetime: end } : { text: t('COPY-resume.present') },
-  };
-  const parts = t('COPY-resume.period', { start: START, end: END })
-    .split(new RegExp(`(${START}|${END})`))
-    .filter(Boolean)
-    .map((piece) => months[piece] ?? { text: piece });
-  return { parts, text: parts.map((p) => p.text).join(''), current: !end };
+  const parts = {} as Record<Lang, PeriodPart[]>;
+  const text = {} as Loc;
+  for (const lang of LANGUAGES) {
+    const months: Record<string, PeriodPart> = {
+      [START]: { text: formatMonth(start, lang), datetime: start },
+      [END]: end
+        ? { text: formatMonth(end, lang), datetime: end }
+        : { text: t('COPY-resume.present', undefined, lang) },
+    };
+    parts[lang] = t('COPY-resume.period', { start: START, end: END }, lang)
+      .split(new RegExp(`(${START}|${END})`))
+      .filter(Boolean)
+      .map((piece) => months[piece] ?? { text: piece });
+    text[lang] = parts[lang].map((p) => p.text).join('');
+  }
+  return { parts, text, current: !end };
 }
 
 /** RULE-15: a level below 5 shows as "3/5" and in words; level 5 or no level shows the name only. */
-export function skillItem(skill: { name: string; level?: number }): SkillItem {
+export function skillItem(skill: { name: Text; level?: number }): SkillItem {
   if (skill.level === undefined || skill.level >= 5) return { name: skill.name };
   return {
     name: skill.name,
-    levelShort: t('COPY-resume.skillLevelShort', { level: skill.level }),
-    levelText: t('COPY-resume.skillLevel', { level: skill.level }),
+    levelShort: tBoth('COPY-resume.skillLevelShort', { level: skill.level }),
+    levelText: tBoth('COPY-resume.skillLevel', { level: skill.level }),
   };
 }
 
-/** RULE-15: groups in the order their first skill appears, skills in written order, ungrouped skills last. */
-export function skillGroups(skills: readonly { name: string; group?: string; level?: number }[]): SkillGroup[] {
-  const groups = new Map<string, SkillItem[]>();
+/**
+ * RULE-15: groups in the order their first skill appears, skills in written order, ungrouped skills last. Two skills
+ * share a group when their group labels are the same in both languages.
+ */
+export function skillGroups(skills: readonly { name: Text; group?: Text; level?: number }[]): SkillGroup[] {
+  const groups = new Map<string, { label: Text; skills: SkillItem[] }>();
   const loose: SkillItem[] = [];
   for (const s of skills) {
-    if (s.group === undefined) loose.push(skillItem(s));
-    else groups.set(s.group, [...(groups.get(s.group) ?? []), skillItem(s)]);
+    if (s.group === undefined) {
+      loose.push(skillItem(s));
+      continue;
+    }
+    const key = JSON.stringify(both(s.group));
+    const group = groups.get(key) ?? { label: s.group, skills: [] };
+    group.skills.push(skillItem(s));
+    groups.set(key, group);
   }
-  const out: SkillGroup[] = [...groups].map(([label, items]) => ({ label, skills: items }));
+  const out: SkillGroup[] = [...groups.values()];
   if (loose.length > 0) out.push({ skills: loose });
   return out;
 }
@@ -117,7 +144,7 @@ export function resumeView(resume: Resume): ResumeViewData {
       role: e.role,
       organization: e.organization,
       period: period(e.start, e.end),
-      summary: paragraphs(e.summary),
+      summary: paragraphsBoth(e.summary),
       highlights: e.highlights ?? [],
     })),
     education: (resume.education ?? []).map((e) => ({
@@ -125,7 +152,7 @@ export function resumeView(resume: Resume): ResumeViewData {
       institution: e.institution,
       level: e.level,
       period: period(e.start, e.end),
-      notes: e.notes ? paragraphs(e.notes) : [],
+      notes: paragraphsBoth(e.notes),
     })),
     skills: skillGroups(resume.skills ?? []),
     languages: (resume.languages ?? []).map((l) => ({ name: l.name, level: l.level })),

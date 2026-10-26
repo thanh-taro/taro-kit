@@ -3,9 +3,11 @@
 id: clip-maker
 kind: tool
 name: Clip Maker
-summary: Fixture tool added today.
+summary:
+  en-US: Fixture tool added today.
+  vi-VN: Fixture tool added today.
 category: media
 url: https://clip.tarokit.app/
 origin: own
-tags: [video]
+tags: [ video ]
 added: 2026-10-14

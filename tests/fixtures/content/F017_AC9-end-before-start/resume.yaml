@@ -2,18 +2,30 @@
 # Test fixture (overlay on tests/fixtures/content/valid), F-017.AC9: the third experience entry ends before it
 # starts (INV-08). The first ends in the month it starts, and the second ends after today, which are both allowed.
 experience:
-  - role: Fixture role one
+  - role:
+      en-US: Fixture role one
+      vi-VN: Fixture role one
     organization: Fixture Org
     start: 2020-03
     end: 2020-03
-    summary: Fixture summary.
-  - role: Fixture role two
+    summary:
+      en-US: Fixture summary.
+      vi-VN: Fixture summary.
+  - role:
+      en-US: Fixture role two
+      vi-VN: Fixture role two
     organization: Fixture Org
     start: 2024-01
     end: 2099-12
-    summary: Fixture summary.
-  - role: Fixture role three
+    summary:
+      en-US: Fixture summary.
+      vi-VN: Fixture summary.
+  - role:
+      en-US: Fixture role three
+      vi-VN: Fixture role three
     organization: Fixture Org
     start: 2021-03
     end: 2020-01
-    summary: Fixture summary.
+    summary:
+      en-US: Fixture summary.
+      vi-VN: Fixture summary.

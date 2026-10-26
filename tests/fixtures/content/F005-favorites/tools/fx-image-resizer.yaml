@@ -2,7 +2,9 @@
 id: fx-image-resizer
 kind: tool
 name: Image Resizer
-summary: Fixture tool for the category tests.
+summary:
+  en-US: Fixture tool for the category tests.
+  vi-VN: Fixture tool for the category tests.
 category: media
 url: https://fx-image-resizer.example.com/
 origin: own

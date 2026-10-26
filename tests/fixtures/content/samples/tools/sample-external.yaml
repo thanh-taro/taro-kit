@@ -4,10 +4,12 @@
 id: sample-external
 kind: tool
 name: Sample external tool
-summary: Sample entry. A third-party tool opens on its own site.
+summary:
+  en-US: Sample entry. A third-party tool opens on its own site.
+  vi-VN: Sample entry. A third-party tool opens on its own site.
 category: productivity
 url: https://example.com/
 origin: external
-tags: [sample]
+tags: [ sample ]
 added: 2026-10-13
 hidden: true

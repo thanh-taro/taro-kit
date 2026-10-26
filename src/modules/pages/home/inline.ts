@@ -5,11 +5,15 @@
 // - The clock script, right after the greeting (F-007.R1): sets the greeting and the local date and time before
 //   first paint, then again at the start of every minute. Its formatters are built anew on each update, so a time
 //   zone change applies on the next minute (F-007 edge case). The clock is not a live region (SCR-Home).
+//   Both languages (F-019.R4, ADR-0012): the greeting, date and time are written into each language's element
+//   (`[data-l]`, marked with its `lang`), each with Intl in that language, so a switch is only CSS, like every <L>.
 // - The reserve script, right after the personal region (F-007.R3, R6): predicts from device storage whether home
 //   is in its empty or default state, and which invitation the device gets, so the islands' first paint matches
 //   what they will show; in the default state it adds invisible placeholders the size of the favorites and recents
-//   sections, so the rows below don't move when the island fills them in.
-import { t } from '../../copy/index.ts';
+//   sections, so the rows below don't move when the island fills them in. Its headings are in the language showing
+//   (the root's `lang`, set by the blocking script before this runs); the placeholders are invisible.
+import { tBoth } from '../../copy/index.ts';
+import type { Loc } from '../../language/languages.ts';
 import { isTimestamp, isToolId } from '../../personal-data/entry-checks.ts';
 
 /** JSON for an inline script: `<` escaped, so content (a tool name) can never close the script element. */
@@ -33,7 +37,8 @@ export const HOME_IDS = {
 
 interface ClockConfig {
   ids: typeof HOME_IDS;
-  greetings: Record<GreetingPeriod, string>;
+  /** Per language: COPY-home.greetingMorning, …Afternoon, …Evening. */
+  greetings: Record<string, Record<GreetingPeriod, string>>;
 }
 
 function homeClockMain(c: ClockConfig, period: typeof greetingPeriod): void {
@@ -44,13 +49,20 @@ function homeClockMain(c: ClockConfig, period: typeof greetingPeriod): void {
   const stamp = d.getElementById(c.ids.clock);
   if (!h || !day || !time || !stamp) return;
   const two = (n: number) => (n < 10 ? '0' : '') + n;
+  const each = (el: Element, text: (lang: string) => string) => {
+    const parts = el.querySelectorAll('[data-l]');
+    for (let i = 0; i < parts.length; i++) {
+      const lang = parts[i]!.getAttribute('lang') || 'en-US';
+      parts[i]!.textContent = text(lang);
+    }
+  };
   function tick() {
     const now = new Date();
-    h!.textContent = c.greetings[period(now.getHours())];
-    day!.textContent = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' }).format(
-      now,
+    each(h!, (lang) => c.greetings[lang]![period(now.getHours())]);
+    each(day!, (lang) =>
+      new Intl.DateTimeFormat(lang, { weekday: 'short', day: 'numeric', month: 'short' }).format(now),
     );
-    time!.textContent = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(now);
+    each(time!, (lang) => new Intl.DateTimeFormat(lang, { hour: 'numeric', minute: '2-digit' }).format(now));
     stamp!.setAttribute(
       'datetime',
       now.getFullYear() +
@@ -70,12 +82,14 @@ function homeClockMain(c: ClockConfig, period: typeof greetingPeriod): void {
 
 /** The clock script's source (build-time copy only). */
 export function homeClockScript(): string {
+  const morning = tBoth('COPY-home.greetingMorning');
+  const afternoon = tBoth('COPY-home.greetingAfternoon');
+  const evening = tBoth('COPY-home.greetingEvening');
   const config: ClockConfig = {
     ids: HOME_IDS,
     greetings: {
-      morning: t('COPY-home.greetingMorning'),
-      afternoon: t('COPY-home.greetingAfternoon'),
-      evening: t('COPY-home.greetingEvening'),
+      'en-US': { morning: morning['en-US'], afternoon: afternoon['en-US'], evening: evening['en-US'] },
+      'vi-VN': { morning: morning['vi-VN'], afternoon: afternoon['vi-VN'], evening: evening['vi-VN'] },
     },
   };
   return `(${homeClockMain})(${json(config)},${greetingPeriod})`.replace(/\s+/g, ' ');
@@ -131,9 +145,9 @@ export type ReserveTool = [name: string, needsInternet: 0 | 1];
 interface ReserveConfig {
   id: string;
   tools: Record<string, ReserveTool>;
-  headings: { favorites: string; recents: string };
+  headings: { favorites: Loc; recents: Loc };
   /** COPY-tool.unavailable */
-  unavailable: string;
+  unavailable: Loc;
 }
 
 // The placeholders use the same markup and classes as the real sections (HomePersonal's favorites, RecentTools)
@@ -152,6 +166,7 @@ function homeReserveMain(c: ReserveConfig, predict: typeof predictHome): void {
   const reserve = root.querySelector('[data-tk-home-reserve]');
   if (!reserve) return;
   const offline = navigator.onLine === false;
+  const lang = (d.documentElement.getAttribute('lang') === 'vi-VN' ? 'vi-VN' : 'en-US') as 'en-US' | 'vi-VN';
   const el = (tag: string, cls: string, text?: string) => {
     const e = d.createElement(tag);
     e.className = cls;
@@ -179,7 +194,7 @@ function homeReserveMain(c: ReserveConfig, predict: typeof predictHome): void {
       text.appendChild(el('span', 'tk-toolcard__link', tool[0]));
       top.appendChild(text);
       card.appendChild(top);
-      if (offline && tool[1]) card.appendChild(el('span', 'tk-toolcard__unavailable', c.unavailable));
+      if (offline && tool[1]) card.appendChild(el('span', 'tk-toolcard__unavailable', c.unavailable[lang]));
       const li = d.createElement('li');
       li.appendChild(card);
       list.appendChild(li);
@@ -187,13 +202,18 @@ function homeReserveMain(c: ReserveConfig, predict: typeof predictHome): void {
     s.appendChild(list);
     reserve.appendChild(s);
   };
-  section(c.headings.favorites, n.favorites, 'tk-favorites', true);
-  section(c.headings.recents, n.recents, 'tk-recents', false);
+  section(c.headings.favorites[lang], n.favorites, 'tk-favorites', true);
+  section(c.headings.recents[lang], n.recents, 'tk-recents', false);
 }
 
 /** The reserve script's source, with this build's visible tools and the section headings (build-time copy). */
 export function homeReserveScript(tools: Record<string, ReserveTool>, headings: ReserveConfig['headings']): string {
-  const config: ReserveConfig = { id: HOME_IDS.personal, tools, headings, unavailable: t('COPY-tool.unavailable') };
+  const config: ReserveConfig = {
+    id: HOME_IDS.personal,
+    tools,
+    headings,
+    unavailable: tBoth('COPY-tool.unavailable'),
+  };
   const predict = `function(ids){return (${predictHome})(ids,${isToolId},${isTimestamp})}`;
   return `(${homeReserveMain})(${json(config)},${predict})`.replace(/\s+/g, ' ');
 }

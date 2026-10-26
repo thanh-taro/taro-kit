@@ -3,7 +3,9 @@
 id: ft-embedded
 kind: tool
 name: Fixture embedded tool
-summary: Fixture tool for the tool view tests.
+summary:
+  en-US: Fixture tool for the tool view tests.
+  vi-VN: Fixture tool for the tool view tests.
 category: developer
 url: https://ft-embedded.tarokit.test/
 origin: own

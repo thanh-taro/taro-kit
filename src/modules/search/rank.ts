@@ -5,34 +5,42 @@
 //   summary contains. An item takes its best tier; an item matching no tier is left out. No fuzzy matching.
 // - Ties within a tier: favorites first, then name alphabetically (MOD-Content `byName`), then input order.
 // - A blank query ranks nothing; callers show their no-query view instead.
+// - Both languages (RULE-05, F-019.R5): the keys hold every distinct version of the name and summary, and an item
+//   takes the best tier any version reaches; tags already list keywords in either language. Name ties sort by the
+//   name in the language showing (`context.lang`, default en-US).
 // Callers decide visibility (inputs are visible-only, RULE-06) and any grouping or caps (the palette's 8).
-// Implements: RULE-05, F-002.R4 (with filterCatalog), F-004.R3 (through searchPalette, built on rank).
-import { byName } from '../content/derive.ts';
+// Implements: RULE-05, F-002.R4 (with filterCatalog), F-004.R3 (through searchPalette, built on rank), F-019.R5.
+import { pick, versions, type Lang, type Text } from '../language/languages.ts';
 import { normalize } from './normalize.ts';
 
 /** RULE-05 match tiers, best first. */
 export const TIERS = ['exact', 'prefix', 'contains', 'tag', 'summary'] as const;
 export type MatchTier = (typeof TIERS)[number];
 
-/** Pre-normalized search keys of one entry (`normalize` of its name, each tag and its summary). */
+/**
+ * Pre-normalized search keys of one entry: `normalize` of each distinct version of its name (en-US, vi-VN), each tag,
+ * and each distinct version of its summary (F-019.R5).
+ */
 export interface SearchKeys {
-  name: string;
+  name: string[];
   tags: string[];
-  summary: string;
+  summary: string[];
 }
 
 /** Anything searchable: tools, pages or actions. `keys`, when present, are used as they are. */
 export interface Searchable {
   id: string;
-  name: string;
+  name: Text;
   tags?: readonly string[];
-  summary?: string;
+  summary?: Text;
   keys?: SearchKeys;
 }
 
 export interface RankContext {
   /** Ids of the user's favorites (MOD-PersonalData), which win ties within a tier. */
   favorites?: Iterable<string>;
+  /** The language showing: names tie-break alphabetically in it (default en-US). */
+  lang?: Lang;
 }
 
 export interface RankedItem<T> {
@@ -42,29 +50,37 @@ export interface RankedItem<T> {
 }
 
 /** The keys the catalog data file carries for each entry (MOD-Content emits them at build). */
-export function searchKeys(entry: { name: string; tags?: readonly string[]; summary?: string }): SearchKeys {
+const distinct = (texts: string[]): string[] => [...new Set(texts.filter(Boolean))];
+
+export function searchKeys(entry: { name: Text; tags?: readonly string[]; summary?: Text }): SearchKeys {
   return {
-    name: normalize(entry.name),
+    name: distinct(versions(entry.name).map(normalize)),
     tags: (entry.tags ?? []).map(normalize),
-    summary: normalize(entry.summary ?? ''),
+    summary: distinct(versions(entry.summary ?? '').map(normalize)),
   };
 }
 
-/** The best RULE-05 tier at which `query` (already normalized) matches `keys`, or undefined. */
+/** The best RULE-05 tier at which `query` (already normalized) matches any version in `keys`, or undefined. */
 export function matchTier(query: string, keys: SearchKeys): MatchTier | undefined {
   if (!query) return undefined;
-  if (keys.name === query) return 'exact';
-  if (keys.name.startsWith(query)) return 'prefix';
-  if (keys.name.includes(query)) return 'contains';
+  if (keys.name.some((n) => n === query)) return 'exact';
+  if (keys.name.some((n) => n.startsWith(query))) return 'prefix';
+  if (keys.name.some((n) => n.includes(query))) return 'contains';
   if (keys.tags.some((tag) => tag.startsWith(query))) return 'tag';
-  if (keys.summary.includes(query)) return 'summary';
+  if (keys.summary.some((s) => s.includes(query))) return 'summary';
   return undefined;
 }
 
-/** RULE-05 order between two ranked items: tier, then favorites first, then name. */
-export function compareRanked<T extends { name: string }>(a: RankedItem<T>, b: RankedItem<T>): number {
+/** RULE-05 order between two ranked items: tier, then favorites first, then name (in `lang`). */
+export function compareRanked<T extends { name: Text }>(
+  a: RankedItem<T>,
+  b: RankedItem<T>,
+  lang: Lang = 'en-US',
+): number {
   return (
-    TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || Number(b.favorite) - Number(a.favorite) || byName(a.item, b.item)
+    TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) ||
+    Number(b.favorite) - Number(a.favorite) ||
+    pick(a.item.name, lang).localeCompare(pick(b.item.name, lang), lang)
   );
 }
 
@@ -83,5 +99,5 @@ export function rank<T extends Searchable>(
     if (tier) ranked.push({ item, tier, favorite: favorites.has(item.id) });
   }
   // Array.prototype.sort is stable, so equal items keep their input order.
-  return ranked.sort(compareRanked);
+  return ranked.sort((a, b) => compareRanked(a, b, context.lang));
 }

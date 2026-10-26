@@ -1,6 +1,7 @@
 // MOD-Palette logic (CMP-CommandPalette), pure and browser-safe; the island (Palette.tsx) only renders it.
 // - Entries: visible tools from the catalog data file, the pages (six, or seven with the Résumé,
-//   F-017.R4) and the three actions.
+//   F-017.R4) and the four actions; pages and actions carry their names in both languages, and every entry is
+//   matched in both (RULE-05, F-019.R5); the island shows the version in the language showing.
 // - Empty query (F-004.R2): Favorites (at most 8, pin order), Recents (RULE-01: at most 8, newest first,
 //   favorites left out), Pages. Hidden or unknown tools never show (RULE-06, INV-04).
 // - A query (F-004.R3): MOD-Search `searchPalette`, groups Tools, Pages, Actions, 8 each.
@@ -10,8 +11,10 @@
 // - `paletteBootstrap`: the inline script (CSP-hashed by BaseLayout) that arms the shortcut and the search
 //   controls before the island has loaded, opens the pre-rendered <dialog> with showModal() and focuses the field
 //   (NFR-02), closes it on a click outside, and returns focus where it was on close (F-004.R1).
-// Implements: F-004.R1 to F-004.R6 (logic), RULE-01 (palette list), RULE-05 (via MOD-Search).
+// Implements: F-004.R1 to F-004.R6 (logic), RULE-01 (palette list), RULE-05 (via MOD-Search), F-019.R2 (the
+// switch-language action), F-019.R5.
 import type { IndexedTool } from '../content/emit-catalog-data.ts';
+import type { Lang, Loc } from '../language/languages.ts';
 import { visibleFavorites, visibleRecents, type PersonalData } from '../personal-data/index.ts';
 import { normalize, searchKeys, searchPalette, type PaletteGroupId, type SearchKeys } from '../search/index.ts';
 import type { OpenableTool } from '../tool-host/index.ts';
@@ -31,15 +34,18 @@ export { PALETTE_HYDRATE_EVENT };
 export const SHORTCUT_LABELS = { apple: '⌘K', other: 'Ctrl K' } as const;
 
 /** F-004.R5, in display order. */
-export const ACTIONS = ['theme', 'export', 'copy'] as const;
+export const ACTIONS = ['theme', 'language', 'export', 'copy'] as const;
 export type ActionId = (typeof ACTIONS)[number];
+
+/** F-004.R5: the switch-language action also matches these words, whatever language is showing. */
+export const LANGUAGE_ACTION_KEYWORDS = ['language', 'ngôn ngữ', 'English', 'Vietnamese', 'Tiếng Việt'] as const;
 
 type ToolData = Pick<IndexedTool, 'id' | 'name' | 'summary' | 'tags' | 'keys' | 'openMode' | 'url'>;
 
 export interface PageItem {
   id: string;
-  /** COPY-nav.* */
-  name: string;
+  /** COPY-nav.*, in both languages. */
+  name: Loc;
   path: string;
 }
 
@@ -48,7 +54,7 @@ export type PageEntry = PageItem & { kind: 'page'; keys: SearchKeys };
 export interface ActionEntry {
   kind: 'action';
   id: ActionId;
-  name: string;
+  name: Loc;
   keys: SearchKeys;
 }
 export type PaletteEntry = ToolEntry | PageEntry | ActionEntry;
@@ -69,7 +75,7 @@ export interface ViewGroup {
 export function paletteIndex(
   data: { tools: readonly ToolData[] } | null,
   pages: readonly PageItem[],
-  actions: Readonly<Record<ActionId, string>>,
+  actions: Readonly<Record<ActionId, Loc>>,
 ): PaletteEntries {
   return {
     tools: (data?.tools ?? []).map(({ id, name, summary, tags, keys, openMode, url }) => ({
@@ -83,7 +89,12 @@ export function paletteIndex(
       url,
     })),
     pages: pages.map((p) => ({ ...p, kind: 'page', keys: searchKeys(p) })),
-    actions: ACTIONS.map((id) => ({ kind: 'action', id, name: actions[id], keys: searchKeys({ name: actions[id] }) })),
+    actions: ACTIONS.map((id) => ({
+      kind: 'action',
+      id,
+      name: actions[id],
+      keys: searchKeys({ name: actions[id], tags: id === 'language' ? LANGUAGE_ACTION_KEYWORDS : [] }),
+    })),
   };
 }
 
@@ -108,9 +119,10 @@ export function paletteView(
   query: string,
   index: PaletteEntries,
   doc: Pick<PersonalData, 'favorites' | 'recents'>,
+  lang: Lang = 'en-US',
 ): ViewGroup[] {
   if (!normalize(query)) return emptyQueryGroups(index, doc);
-  return searchPalette(query, index, { favorites: doc.favorites.map((f) => f.toolId) });
+  return searchPalette(query, index, { favorites: doc.favorites.map((f) => f.toolId), lang });
 }
 
 export interface RunEnvironment {
@@ -122,6 +134,8 @@ export interface RunEnvironment {
   assign(path: string): void;
   /** MOD-Theme quick toggle (RULE-03). */
   toggleTheme(): void;
+  /** MOD-Language: switch to the other language and store it (F-019.R2). */
+  switchLanguage(): void;
   /** MOD-Backup `exportBackup` (F-013.R1), lazy-loaded; rejects when the module can't load or the export fails. */
   exportData(): Promise<void>;
   /** Writes text to the clipboard, within the user's gesture. */
@@ -158,6 +172,7 @@ export async function runEntry(entry: PaletteEntry, env: RunEnvironment): Promis
   env.close();
   if (entry.kind === 'tool') env.openTool(entry);
   else if (entry.kind === 'page') env.assign(entry.path);
+  else if (entry.id === 'language') env.switchLanguage();
   else env.toggleTheme();
   return 'closed';
 }
@@ -197,7 +212,9 @@ interface BootstrapConfig {
   labels: { apple: string; other: string };
 }
 
-// Inlined as source. `back` is where focus returns when the dialog closes, however it closes (Esc, a click
+// Inlined as source. The field's placeholder names the platform's shortcut: it is rendered as the localized
+// placeholder for other platforms (ADR-0012); on Apple platforms the versions in `data-placeholder-apple-<lang>`
+// replace it, and the one for the language showing is set now. `back` is where focus returns when the dialog closes, however it closes (Esc, a click
 // outside, Cancel, or running a result). Opening also asks the island to hydrate now (PALETTE_HYDRATE_EVENT,
 // directive.ts) rather than at idle time. Until the island marks the field `data-live`, an Enter is kept as
 // `data-pending-enter`, which the island runs once its data has loaded, so no early key is lost.
@@ -218,7 +235,11 @@ function paletteMain(
   d.querySelectorAll('[data-tk-palette-open]').forEach(function (e) {
     e.setAttribute('aria-keyshortcuts', apple ? 'Meta+K' : 'Control+K');
   });
-  q.placeholder = q.getAttribute(apple ? 'data-placeholder-apple' : 'data-placeholder-other') || q.placeholder;
+  if (apple)
+    ['en-US', 'vi-VN'].forEach(function (l) {
+      q.setAttribute('data-l-placeholder-' + l, q.getAttribute('data-placeholder-apple-' + l)!);
+    });
+  q.placeholder = q.getAttribute('data-l-placeholder-' + d.documentElement.lang)!;
   function open() {
     if (!dlg!.open) {
       back = d.activeElement;
@@ -266,6 +287,15 @@ const config: BootstrapConfig = {
 /** The palette bootstrap's source (MOD-Palette), inlined at the end of <body> and hashed for the CSP. */
 export const paletteBootstrap =
   `(${paletteMain})(${JSON.stringify(config)},${isApplePlatform},${isPaletteShortcut})`.replace(/\s+/g, ' ');
+
+/**
+ * The polite result-count announcement (COPY-palette.resultCountOne / COPY-palette.resultCount) in `lang`, the
+ * language showing (F-019.R4); empty for no results, which has its own status message (F-004.R6).
+ */
+export function resultCountText(n: number, count: { one: Loc; other: Loc }, lang: Lang): string {
+  if (n <= 0) return '';
+  return n === 1 ? count.one[lang] : count.other[lang].split('{count}').join(String(n));
+}
 
 /** Opens the palette from another island, such as home's search entry (F-007.R2). */
 export function openPalette(doc: Pick<Document, 'dispatchEvent'> = document): void {

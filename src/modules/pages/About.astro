@@ -7,11 +7,16 @@
 // (avatar, nickname, location, links), then the pointers; grid areas place the side column on the left on
 // wide screens, and on narrow ones only the non-focusable avatar row moves up. Focus order is the same in
 // both layouts: profile links, then Now.
+// Languages (F-019.R4): every text is in both (<L>, <Each>, a localized avatar name); the name is one text (INV-09).
 // Implements: F-008.R1, F-008.R2, F-008.R3, F-017.R4 (Résumé pointer).
 import type { Profile } from '../../generated/domain.ts';
 import { initials, paragraphs, profileLinks, RESUME_PATH, type ProfileLink } from '../content/index.ts';
-import { t } from '../copy/index.ts';
+import { tBoth } from '../copy/index.ts';
 import Icon from '../design-system/Icon.astro';
+import Each from '../language/Each.astro';
+import L from '../language/L.astro';
+import { localizedAttrs } from '../language/attrs.ts';
+import { pick, type Lang } from '../language/languages.ts';
 
 interface Props {
   profile: Profile;
@@ -29,18 +34,18 @@ const ICONS: Record<ProfileLink['kind'], string> = {
   website: 'globe',
   other: 'link',
 };
-const portrait = t('COPY-about.avatarAlt', { name: profile.name });
+const portrait = tBoth('COPY-about.avatarAlt', { name: profile.name });
 ---
 
 <div class="about">
   <div class="intro">
     <h1 id="about-name">{profile.name}</h1>
-    <p class="headline">{profile.headline}</p>
-    <div class="bio">
-      {paragraphs(profile.bio).map((p) => (
-        <p>{p}</p>
-      ))}
-    </div>
+    <p class="headline">
+      <L text={profile.headline} />
+    </p>
+    <Each as="div" class="bio">
+      {(lang: Lang) => paragraphs(pick(profile.bio, lang)).map((p) => <p>{p}</p>)}
+    </Each>
   </div>
 
   <div class="side">
@@ -51,24 +56,34 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
           src={avatar.src}
           width={avatar.width}
           height={avatar.height}
-          alt={portrait}
+          {...localizedAttrs('alt', portrait)}
           decoding="async"
         />
       ) : (
-        <span class="avatar" role="img" aria-label={portrait} data-initials>
+        <span class="avatar" role="img" {...localizedAttrs('aria-label', portrait)} data-initials>
           {initials(profile.name)}
         </span>
       )}
       {(profile.nickname || profile.location) && (
         <div class="meta">
-          {profile.nickname && <p class="nickname">{t('COPY-about.nickname', { nickname: profile.nickname })}</p>}
-          {profile.location && <p class="location">{profile.location}</p>}
+          {profile.nickname && (
+            <p class="nickname tk-mono-words">
+              <L text={tBoth('COPY-about.nickname', { nickname: profile.nickname })} />
+            </p>
+          )}
+          {profile.location && (
+            <p class="location">
+              <L text={profile.location} />
+            </p>
+          )}
         </div>
       )}
     </div>
 
     <section class="links" aria-labelledby="about-links">
-      <h2 id="about-links">{t('COPY-about.links')}</h2>
+      <h2 id="about-links">
+        <L text={tBoth('COPY-about.links')} />
+      </h2>
       <ul>
         {links.map((l) => (
           <li>
@@ -81,14 +96,18 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
               <span class="kind" aria-hidden="true">
                 <Icon name={ICONS[l.kind]} size={16} />
               </span>
-              <span class="label">{l.label}</span>
+              <span class="label">
+                <L text={l.label} />
+              </span>
               <span class="detail">{l.detail}</span>
               {l.newTab && (
                 <>
                   <span class="arrow" aria-hidden="true">
                     <Icon name="arrow-up-right" size={16} />
                   </span>
-                  <span class="tk-visually-hidden">{t('COPY-tool.opensNewTab')}</span>
+                  <span class="tk-visually-hidden">
+                    <L text={tBoth('COPY-tool.opensNewTab')} />
+                  </span>
                 </>
               )}
             </a>
@@ -99,15 +118,19 @@ const portrait = t('COPY-about.avatarAlt', { name: profile.name });
   </div>
 
   <div class="more">
-    <p>{t('COPY-about.more')}</p>
+    <p>
+      <L text={tBoth('COPY-about.more')} />
+    </p>
     <div class="more-actions">
       <a class="primary" href="/now/">
-        {t('COPY-nav.now')}
+        <L text={tBoth('COPY-nav.now')} />
       </a>
     </div>
     {resume && (
       <a class="resume" href={RESUME_PATH}>
-        <span>{t('COPY-about.resume')}</span>
+        <span>
+          <L text={tBoth('COPY-about.resume')} />
+        </span>
         <span class="resume-arrow" aria-hidden="true">
           <Icon name="arrow-right" size={16} />
         </span>

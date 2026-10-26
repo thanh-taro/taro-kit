@@ -10,20 +10,24 @@
 // - The slow hint lives in a polite status that is always in the page, so it is announced when filled.
 // - Rendered by the ToolFrame island (embedded tools) and statically by ToolView.astro (linked tools, whose
 //   note carries the open link, design LinkedDesktop, so `openHref` is left out there).
+// - Every text is in both languages (<L>, localized attributes; F-019.R4).
 import type { ComponentChildren } from 'preact';
+import { localizedAttrs } from '../language/attrs.ts';
+import { L } from '../language/L.tsx';
+import type { Loc } from '../language/languages.ts';
 import { monogram } from './tool-card.ts';
 
 export interface ToolHeaderText {
   /** COPY-tool.back */
-  back: string;
+  back: Loc;
   /** COPY-tool.openNewTab */
-  openNewTab: string;
+  openNewTab: Loc;
   /** COPY-tool.toolbarLabel for this tool: the toolbar's label. */
-  label: string;
+  label: Loc;
   /** COPY-tool.slow for this tool. */
-  slow: string;
+  slow: Loc;
   /** COPY-shell.search: the narrow-only search button's label. */
-  search: string;
+  search: Loc;
   /** Build-time SVG markup from the icon set (DEP-15): back chevron, new-tab arrow and search. */
   icons: { back: string; newTab: string; search: string };
 }
@@ -47,19 +51,32 @@ const Svg = ({ markup }: { markup: string }) => (
 
 export default function ToolHeader({ name, openHref, slow = false, text, children }: ToolHeaderProps) {
   return (
-    <div class="tk-toolheader" role="toolbar" aria-label={text.label} tabindex={-1} data-slow={slow ? '' : undefined}>
+    <div
+      class="tk-toolheader"
+      role="toolbar"
+      {...localizedAttrs('aria-label', text.label)}
+      tabindex={-1}
+      data-slow={slow ? '' : undefined}
+    >
       <div class="tk-toolheader__bar">
         {/* The back behavior (history) is a page script; without it, the link goes home. */}
         <a class="tk-toolheader__back" href="/" data-tk-back="">
           <Svg markup={text.icons.back} />
-          <span class="tk-toolheader__label">{text.back}</span>
+          <span class="tk-toolheader__label">
+            <L text={text.back} />
+          </span>
         </a>
         <span class="tk-toolheader__sep" aria-hidden="true" />
         <span class="tk-toolheader__icon" aria-hidden="true">
           {monogram(name)}
         </span>
         <h1 class="tk-toolheader__name">{name}</h1>
-        <button type="button" class="tk-toolheader__search" data-tk-palette-open aria-label={text.search}>
+        <button
+          type="button"
+          class="tk-toolheader__search"
+          data-tk-palette-open
+          {...localizedAttrs('aria-label', text.search)}
+        >
           <Svg markup={text.icons.search} />
         </button>
         <span class="tk-toolheader__fav">{children}</span>
@@ -71,7 +88,9 @@ export default function ToolHeader({ name, openHref, slow = false, text, childre
             rel="noopener noreferrer"
             data-primary={slow ? '' : undefined}
           >
-            <span class="tk-toolheader__label">{text.openNewTab}</span>
+            <span class="tk-toolheader__label">
+              <L text={text.openNewTab} />
+            </span>
             <Svg markup={text.icons.newTab} />
           </a>
         )}
@@ -80,7 +99,9 @@ export default function ToolHeader({ name, openHref, slow = false, text, childre
         {slow && (
           <>
             <span class="tk-spinner" data-size="sm" aria-hidden="true" />
-            <span>{text.slow}</span>
+            <span>
+              <L text={text.slow} />
+            </span>
           </>
         )}
       </div>

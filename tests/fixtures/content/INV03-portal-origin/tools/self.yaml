@@ -2,7 +2,9 @@
 id: self-hosted
 kind: tool
 name: Self hosted
-summary: Fixture embedded tool on the portal origin.
+summary:
+  en-US: Fixture embedded tool on the portal origin.
+  vi-VN: Fixture embedded tool on the portal origin.
 category: developer
 url: https://tarokit.app/self/
 origin: own

@@ -1,11 +1,13 @@
 // MOD-DesignSystem: CMP-ToolCard logic shared by the Astro and Preact versions. Browser-safe, no Node imports.
 import { toolPath } from '../content/derive.ts';
+import type { Text } from '../language/languages.ts';
 
 /** The tool fields a card shows (a MOD-Content `CatalogTool` or `RegTool` fits). */
 export interface ToolCardTool {
   id: string;
   name: string;
-  summary: string;
+  /** In both languages (INV-09); rendered through <L>. */
+  summary: Text;
   openMode: 'embedded' | 'linked';
   /** The tool's own address (used by linked tools). */
   url: string;

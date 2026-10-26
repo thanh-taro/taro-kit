@@ -3,26 +3,42 @@
 # The M-1 categories (ENT-Category, D-027), in display order. Each tint is used once (RULE-14).
 # The intros are SAMPLE text in Taro's voice (PRN-04): replace them before launch.
 - id: developer
-  name: Developer tools
+  name:
+    en-US: Developer tools
+    vi-VN: Developer tools
   order: 1
-  intro: 'Sample intro: the small helpers I reach for while I write code.'
+  intro:
+    en-US: 'Sample intro: the small helpers I reach for while I write code.'
+    vi-VN: 'Sample intro: the small helpers I reach for while I write code.'
   icon: icons/code.svg
   tint: violet
 - id: media
-  name: Media tools
+  name:
+    en-US: Media tools
+    vi-VN: Media tools
   order: 2
-  intro: 'Sample intro: quick fixes for images, audio and video.'
+  intro:
+    en-US: 'Sample intro: quick fixes for images, audio and video.'
+    vi-VN: 'Sample intro: quick fixes for images, audio and video.'
   icon: icons/clapperboard.svg
   tint: mango
 - id: converters
-  name: Converters & calculators
+  name:
+    en-US: Converters & calculators
+    vi-VN: Converters & calculators
   order: 3
-  intro: 'Sample intro: numbers and units, worked out the way I like them.'
+  intro:
+    en-US: 'Sample intro: numbers and units, worked out the way I like them.'
+    vi-VN: 'Sample intro: numbers and units, worked out the way I like them.'
   icon: icons/calculator.svg
   tint: sky
 - id: productivity
-  name: Productivity & relax
+  name:
+    en-US: Productivity & relax
+    vi-VN: Productivity & relax
   order: 4
-  intro: 'Sample intro: tools that keep my day on track, and a few that help me slow down.'
+  intro:
+    en-US: 'Sample intro: tools that keep my day on track, and a few that help me slow down.'
+    vi-VN: 'Sample intro: tools that keep my day on track, and a few that help me slow down.'
   icon: icons/coffee.svg
   tint: mint

@@ -31,11 +31,28 @@ describe('RULE-05 normalization', () => {
   });
   test('RULE-05 search keys are the normalized name, tags and summary', () => {
     expect(searchKeys({ name: 'Ảnh Resizer', summary: 'Resize ÉTÉ images', tags: ['Ảnh', 'IMG'] })).toEqual({
-      name: 'anh resizer',
+      name: ['anh resizer'],
       tags: ['anh', 'img'],
-      summary: 'resize ete images',
+      summary: ['resize ete images'],
     });
-    expect(searchKeys({ name: 'Base64' })).toEqual({ name: 'base64', tags: [], summary: '' });
+    expect(searchKeys({ name: 'Base64' })).toEqual({ name: ['base64'], tags: [], summary: [] });
+  });
+  test('F-019.R5 RULE-05 search keys hold every distinct version of the name and summary', () => {
+    const keys = searchKeys({
+      name: { 'en-US': 'Settings', 'vi-VN': 'Cài đặt' },
+      summary: { 'en-US': 'Format JSON.', 'vi-VN': 'Định dạng JSON.' },
+    });
+    expect(keys).toEqual({ name: ['settings', 'cai dat'], tags: [], summary: ['format json.', 'dinh dang json.'] });
+    expect(searchKeys({ name: { 'en-US': 'JSON', 'vi-VN': 'JSON' } }).name).toEqual(['json']);
+  });
+  test('F-019.R5 RULE-05 the best tier across both languages wins, and ties on name follow the language showing', () => {
+    const list = [
+      { ...entry('a', 'x'), name: { 'en-US': 'Apple', 'vi-VN': 'Táo' } },
+      { ...entry('b', 'x'), name: { 'en-US': 'Tangerine', 'vi-VN': 'Quýt' } },
+    ];
+    // "ta" is a prefix of Táo (Vietnamese) and of Tangerine (English): one tier, so the name decides.
+    expect(rankedIds(rank('ta', list))).toEqual(['a', 'b']); // Apple, Tangerine
+    expect(rankedIds(rank('ta', list, { lang: 'vi-VN' }))).toEqual(['b', 'a']); // Quýt, Táo
   });
 });
 
@@ -112,7 +129,7 @@ describe('RULE-05 rank', () => {
 
   test('RULE-05 uses pre-normalized keys when an item carries them (the catalog data file)', () => {
     // The keys say "alpha", the display name says otherwise: ranking reads the keys only.
-    const withKeys = [{ ...entry('k', 'Display Name'), keys: { name: 'alpha', tags: [], summary: '' } }];
+    const withKeys = [{ ...entry('k', 'Display Name'), keys: { name: ['alpha'], tags: [], summary: [''] } }];
     expect(rankedIds(rank('alpha', withKeys))).toEqual(['k']);
     expect(rankedIds(rank('display', withKeys))).toEqual([]);
   });
