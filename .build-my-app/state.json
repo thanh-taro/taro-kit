@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: F-019 v1.3.0-rc.1 cut locally; blocked by WebKit narrow-menu defect (F019_AC20), needs fix as rc.2",
+      "step": "8 Iterate: F-019 release — cutting v1.3.0-rc.2 (rc.1 had a Safari menu bug)",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1074,14 +1074,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T04:46:21+00:00",
-      "event": "loop category-change-review ended: converged after round 1 fixes"
-    },
-    {
-      "at": "2026-10-13T04:46:53+00:00",
-      "event": "decision D-031 opened: Approve category change"
-    },
-    {
       "at": "2026-10-13T04:46:53+00:00",
       "event": "decision D-031 answered: Approved; features ready"
     },
@@ -1872,9 +1864,17 @@
     {
       "at": "2026-10-26T02:35:18+00:00",
       "event": "iterate step: 8 Iterate: F-019 release — cutting v1.3.0-rc.1"
+    },
+    {
+      "at": "2026-10-26T03:00:43+00:00",
+      "event": "v1.3.0-rc.1 blocked by WebKit narrow-menu defect; fixed in f82a1fc; cutting rc.2"
+    },
+    {
+      "at": "2026-10-26T03:00:43+00:00",
+      "event": "iterate step: 8 Iterate: F-019 release — cutting v1.3.0-rc.2 (rc.1 had a Safari menu bug)"
     }
   ],
-  "updated": "2026-10-26T02:35:18+00:00",
+  "updated": "2026-10-26T03:00:43+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
