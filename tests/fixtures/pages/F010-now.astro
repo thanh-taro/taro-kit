@@ -5,7 +5,7 @@
 //   /__fixtures__/now-empty/    tests/fixtures/content/F010_AC6-no-note-no-tools (no note, no tools; F-010.AC6)
 import { join } from 'node:path';
 import { loadRegistry } from '../../../src/modules/content/index.ts';
-import { t } from '../../../src/modules/copy/index.ts';
+import { t, tBoth } from '../../../src/modules/copy/index.ts';
 import NowView from '../../../src/modules/pages/now/NowView.astro';
 import { nowView } from '../../../src/modules/pages/now/now.ts';
 import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
@@ -16,6 +16,11 @@ const registry = loadRegistry({ contentDir: join(process.cwd(), 'tests/fixtures/
 const view = nowView({ now: registry.now, tools: registry.allTools });
 ---
 
-<BaseLayout title={t('COPY-meta.nowTitle')} description={t('COPY-meta.nowDescription')} path="/now/">
+<BaseLayout
+  title={t('COPY-meta.nowTitle')}
+  titles={tBoth('COPY-meta.nowTitle')}
+  description={t('COPY-meta.nowDescription')}
+  path="/now/"
+>
   <NowView view={view} />
 </BaseLayout>

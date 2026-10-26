@@ -41,9 +41,11 @@ window.toggleTheme = () => {
 const frame = document.createElement('iframe');
 frame.title = 'Test tool';
 const srcTheme = theme.value;
-frame.src = embeddedSrc(toolUrl, srcTheme);
+// F-019.R7: a fixed language (en-US) stands in for MOD-Language's shownLanguage; F-019 covers switching.
+const language = { value: 'en-US', subscribe: (fn) => (fn('en-US'), () => {}) };
+frame.src = embeddedSrc(toolUrl, srcTheme, language.value);
 document.body.append(frame);
-connectThemeHandoff({ frame, toolUrl, srcTheme, theme, host: window });
+connectThemeHandoff({ frame, toolUrl, srcTheme, theme, srcLanguage: language.value, language, host: window });
 
 // A second frame from the same origin as the tool: not this tool's frame, so it must get no answer.
 if (params.has('impostor')) {

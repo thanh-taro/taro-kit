@@ -97,6 +97,8 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
   }, [src, tool.url]);
 
   const waiting = phase === 'loading' || phase === 'slow';
+  // The frame title is a localized attribute (ADR-0012), set in the language showing when the frame is made.
+  const frameTitle = localizedAttrs('title', frame.title, language().shownLanguage.peek());
   return (
     <>
       <ToolHeader name={tool.name} openHref={tool.url} slow={phase === 'slow'} text={header}>
@@ -121,7 +123,8 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
               <iframe
                 ref={frameRef}
                 src={src}
-                {...localizedAttrs('title', frame.title, language().shownLanguage.peek())}
+                title={frameTitle.title}
+                {...frameTitle}
                 sandbox={frame.sandbox}
                 allow={frame.allow}
                 referrerpolicy={frame.referrerpolicy}

@@ -4,7 +4,7 @@
 // tests/fixtures/content/F010_AC6-no-note-no-tools, which has categories but no tools.
 import { join } from 'node:path';
 import { loadRegistry } from '../../../src/modules/content/index.ts';
-import { t } from '../../../src/modules/copy/index.ts';
+import { t, tBoth } from '../../../src/modules/copy/index.ts';
 import { catalogView } from '../../../src/modules/pages/catalog/catalog.ts';
 import CatalogView from '../../../src/modules/pages/catalog/CatalogView.astro';
 import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
@@ -13,6 +13,11 @@ const registry = loadRegistry({ contentDir: join(process.cwd(), 'tests/fixtures/
 const view = catalogView(registry.categories, registry.visibleTools);
 ---
 
-<BaseLayout title={t('COPY-meta.toolsTitle')} description={t('COPY-meta.toolsDescription')} path="/tools/">
+<BaseLayout
+  title={t('COPY-meta.toolsTitle')}
+  titles={tBoth('COPY-meta.toolsTitle')}
+  description={t('COPY-meta.toolsDescription')}
+  path="/tools/"
+>
   <CatalogView view={view} icons={{}} dataUrl="" />
 </BaseLayout>

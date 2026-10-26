@@ -26,27 +26,30 @@ test.beforeEach(async ({ context }) => {
 });
 
 /** Stores personal data before the first load only, as if from an earlier visit. */
-const seed = (page: Page, doc: { favorites?: string[]; theme?: 'system' | 'light' | 'dark' }) =>
+const seed = (
+  page: Page,
+  doc: { favorites?: string[]; theme?: 'system' | 'light' | 'dark'; language?: 'en-US' | 'vi-VN' },
+) =>
   page.addInitScript(
-    ([key, favorites, theme]) => {
+    ([key, favorites, theme, language]) => {
       // Init scripts run in every frame: seed the portal only, never the tool's own storage.
       if (window !== window.top || sessionStorage.getItem('seeded')) return;
       localStorage.setItem(
         key,
         JSON.stringify({
-          schemaVersion: 1,
+          schemaVersion: 2,
           favorites: favorites.map((toolId, i) => ({
             toolId,
             pinnedAt: new Date(Date.UTC(2026, 9, 1, 0, i)).toISOString(),
           })),
           recents: [],
-          preferences: { theme },
+          preferences: language ? { theme, language } : { theme },
           daysUsed: [],
         }),
       );
       sessionStorage.setItem('seeded', '1');
     },
-    [STORAGE_KEY, doc.favorites ?? [], doc.theme ?? 'system'] as const,
+    [STORAGE_KEY, doc.favorites ?? [], doc.theme ?? 'system', doc.language ?? ''] as const,
   );
 
 const header = (page: Page, name = EMBEDDED) => page.getByRole('toolbar', { name: `${name} controls` });
@@ -368,7 +371,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     const tool = await openEmbedded(page);
     expect(new URL(tool.url()).searchParams.get('theme')).toBe('dark');
     expect(await tool.evaluate(() => (window as unknown as { initialTheme: string }).initialTheme)).toBe('dark');
-    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-embedded')}?theme=dark`);
+    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-embedded')}?theme=dark&lang=en-US`);
   });
 
   test('F012_AC5 a stored light choice reaches the tool as light', async ({ page }) => {
@@ -398,7 +401,7 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     const held = sites.holdTools();
     // The held tool may be part of the page's load event (when the island hydrates early), so don't wait for it.
     await page.goto(toolPage('ft-ready'), { waitUntil: 'domcontentloaded' });
-    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark`);
+    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark&lang=en-US`);
     // The user toggles while the tool is still loading: the message can't reach it yet.
     await page.getByRole('button', { name: 'Switch to light theme' }).click();
     // The portal must show the new theme before the tool asks for it (no stale answer under load).
@@ -406,9 +409,14 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     held.release();
     const tool = await toolFrame(page, 'ft-ready');
     const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
-    await expect.poll(received).toEqual([{ type: 'taro:theme', value: 'light' }]);
+    // The ready answer: the theme showing, then the language showing (F-019.R7).
+    const answer = [
+      { type: 'taro:theme', value: 'light' },
+      { type: 'taro:language', value: 'en-US' },
+    ];
+    await expect.poll(received).toEqual(answer);
     await page.waitForTimeout(300);
-    expect(await received()).toEqual([{ type: 'taro:theme', value: 'light' }]);
+    expect(await received()).toEqual(answer);
     expect(await tool.evaluate(() => document.documentElement.dataset.theme)).toBe('light');
   });
 
@@ -419,20 +427,24 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     const held = sites.holdTools();
     // The held tool may be part of the page's load event (when the island hydrates early), so don't wait for it.
     await page.goto(toolPage('ft-ready'), { waitUntil: 'domcontentloaded' });
-    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark`);
+    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-ready')}?theme=dark&lang=en-US`);
     await page.emulateMedia({ colorScheme: 'light' });
     // The media change applies at the next rendering opportunity: wait for it before the tool says ready.
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
     held.release();
     const tool = await toolFrame(page, 'ft-ready');
     const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
-    await expect.poll(received).toEqual([{ type: 'taro:theme', value: 'light' }]);
+    await expect.poll(received).toEqual([
+      { type: 'taro:theme', value: 'light' },
+      { type: 'taro:language', value: 'en-US' },
+    ]);
     // Loaded: a later device switch reaches the tool without reloading it.
     await tool.evaluate(() => ((window as unknown as { marker: number }).marker = 1));
     await prefersScheme(page, 'dark');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect.poll(received).toEqual([
       { type: 'taro:theme', value: 'light' },
+      { type: 'taro:language', value: 'en-US' },
       { type: 'taro:theme', value: 'dark' },
     ]);
     expect(await tool.evaluate(() => (window as unknown as { marker: number }).marker)).toBe(1);
@@ -447,6 +459,66 @@ test.describe('F-012 theme hand-off through the real tool frame', () => {
     await expect(frameEl(page)).toBeVisible();
     await page.waitForTimeout(300);
     expect(await tool.evaluate(() => (window as unknown as { received: unknown[] }).received)).toEqual([]);
+  });
+});
+
+test.describe('F-019 language hand-off through the real tool frame', () => {
+  const lang = 'taro:language';
+
+  test('F019_AC11 with Vietnamese showing, the embedded tool’s address carries vi-VN and the theme showing', async ({
+    page,
+  }) => {
+    await prefersScheme(page, 'dark');
+    await seed(page, { language: 'vi-VN' });
+    const tool = await openEmbedded(page);
+    await expect(frameEl(page)).toHaveAttribute('src', `${toolUrl('ft-embedded')}?theme=dark&lang=vi-VN`);
+    expect(await tool.evaluate(() => (window as unknown as { initialLang: string }).initialLang)).toBe('vi-VN');
+  });
+
+  test('F019_AC12 switching to English reaches the tool without reloading it, and nothing else is sent', async ({
+    page,
+  }) => {
+    await prefersScheme(page, 'dark');
+    await seed(page, { language: 'vi-VN' });
+    const tool = await openEmbedded(page);
+    await tool.evaluate(() => ((window as unknown as { marker: number }).marker = 42));
+    await page.locator('.lang-bar [data-tk-language-switch]').click();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en-US');
+    const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
+    await expect.poll(received).toEqual([{ type: lang, value: 'en-US' }]);
+    expect(await tool.evaluate(() => document.documentElement.lang)).toBe('en-US');
+    expect(await tool.evaluate(() => (window as unknown as { marker: number }).marker)).toBe(42);
+  });
+
+  test('F019_AC13 a ready tool gets the theme showing and the language showing', async ({ page }) => {
+    await prefersScheme(page, 'light');
+    await seed(page, { language: 'vi-VN' });
+    await page.goto(toolPage('ft-ready'));
+    const tool = await toolFrame(page, 'ft-ready');
+    const received = () => tool.evaluate(() => (window as unknown as { received: unknown[] }).received);
+    await expect.poll(received).toEqual([
+      { type: 'taro:theme', value: 'light' },
+      { type: lang, value: 'vi-VN' },
+    ]);
+  });
+
+  test('F019_AC14 with Vietnamese showing, open-in-new-tab and linked tools open addresses with no language', async ({
+    page,
+    context,
+  }) => {
+    await seed(page, { language: 'vi-VN' });
+    await openEmbedded(page);
+    const link = page.locator(`a[target="_blank"][href^="${toolUrl('ft-embedded')}"]`).first();
+    await expect(link).toHaveAttribute('href', toolUrl('ft-embedded'));
+    const [tab] = await Promise.all([context.waitForEvent('page'), link.click()]);
+    await tab.waitForLoadState();
+    expect(new URL(tab.url()).searchParams.has('lang')).toBe(false);
+    await page.goto(`${PORTAL}/__fixtures__/favorites/`);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'vi-VN');
+    await expect(page.getByTestId('catalog').locator(`a[href="${LINKED_URL}"]`).first()).toHaveAttribute(
+      'href',
+      LINKED_URL,
+    );
   });
 });
 

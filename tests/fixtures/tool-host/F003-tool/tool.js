@@ -2,6 +2,9 @@
 const params = new URLSearchParams(location.search);
 window.initialTheme = params.get('theme');
 document.documentElement.dataset.theme = window.initialTheme ?? 'none';
+// F-019.R7: the language showing arrives the same way.
+window.initialLang = params.get('lang');
+document.documentElement.lang = window.initialLang ?? 'none';
 
 // The portal is the embedding page's origin; its referrer policy (strict-origin) sends exactly that.
 const portal = document.referrer ? new URL(document.referrer).origin : null;
@@ -10,6 +13,7 @@ window.addEventListener('message', (event) => {
   if (event.origin !== portal) return;
   window.received.push(event.data);
   if (event.data && event.data.type === 'taro:theme') document.documentElement.dataset.theme = event.data.value;
+  if (event.data && event.data.type === 'taro:language') document.documentElement.lang = event.data.value;
 });
 
 const attempt = (fn) => {

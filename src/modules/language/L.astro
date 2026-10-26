@@ -12,7 +12,7 @@ interface Props {
 }
 const { text, as = 'span', ...rest } = Astro.props;
 // A dynamic tag name: typed loosely, as Astro types it.
-const Tag = as as any;
+const Tag = as as 'span';
 const same = shared(text);
 // Astro's scoping attribute alone does not need an element: a shared text is then plain text.
 const plain = same !== undefined && Tag === 'span' && Object.keys(rest).every((k) => k.startsWith('data-astro-cid'));

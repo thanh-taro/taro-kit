@@ -23,7 +23,12 @@ const tools = registry.visibleTools.map(({ id, name, summary, openMode, url, off
 }));
 ---
 
-<BaseLayout title="F-006 fixture" description="Tests-only page." path="/__fixtures__/recents/">
+<BaseLayout
+  title="F-006 fixture"
+  titles={{ 'en-US': 'F-006 fixture', 'vi-VN': 'F-006 fixture' }}
+  description="Tests-only page."
+  path="/__fixtures__/recents/"
+>
   <div class="fx">
     <h1>{t('COPY-nav.home')}</h1>
     <F006RecentsHost client:load tools={tools} text={toolCardText()} heading={tBoth('COPY-home.recents')} />

@@ -70,7 +70,12 @@ test.describe('MOD-ToolHost theme hand-off helpers in a stand-in portal', () => 
 
   test('F-012.R6 helper: a ready tool gets the theme showing', async ({ page }) => {
     const tool = await openHost(page, { pref: 'dark', tool: 'https://tool.test/tool.html?mode=ready' });
-    await expect.poll(() => received(tool)).toEqual([{ type: 'taro:theme', value: 'dark' }]);
+    await expect
+      .poll(() => received(tool))
+      .toEqual([
+        { type: 'taro:theme', value: 'dark' },
+        { type: 'taro:language', value: 'en-US' },
+      ]);
   });
 
   test('F-012.R6 helper: ready from another origin or another frame of the tool origin gets nothing', async ({

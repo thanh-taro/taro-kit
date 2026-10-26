@@ -14,7 +14,7 @@ import WhatsNew from '../../../src/modules/pages/home/WhatsNew.tsx';
 const tool = (id: string, name: string, added: string, updated?: string) => ({
   id,
   name,
-  summary: `${name} summary.`,
+  summary: { 'en-US': `${name} summary.`, 'vi-VN': `Tóm tắt ${name}.` },
   added,
   ...(updated ? { updated } : {}),
 });
@@ -29,7 +29,12 @@ const sets = {
 };
 ---
 
-<BaseLayout title="F-007 what's new fixture" description="Tests-only page." path="/__fixtures__/whats-new/">
+<BaseLayout
+  title="F-007 what's new fixture"
+  titles={{ 'en-US': "F-007 what's new fixture", 'vi-VN': "F-007 what's new fixture" }}
+  description="Tests-only page."
+  path="/__fixtures__/whats-new/"
+>
   <div class="fx">
     <h1>What's new fixture</h1>
     {Object.entries(sets).map(([id, tools]) => (

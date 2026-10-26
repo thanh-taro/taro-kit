@@ -287,6 +287,7 @@ export default function Palette({ text, dataUrl, catalogPath }: PaletteProps) {
           aria-hidden="true"
           dangerouslySetInnerHTML={{ __html: text.icons.search }}
         />
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control -- its text is <L>, one version per language */}
         <label for={PALETTE_INPUT_ID} class="tk-visually-hidden">
           <L text={placeholder} />
         </label>

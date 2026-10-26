@@ -142,6 +142,7 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
               aria-hidden="true"
               dangerouslySetInnerHTML={{ __html: text.icons.search }}
             />
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control -- its text is <L>, one version per language */}
             <label for={fieldId} class="tk-visually-hidden">
               <L text={text.placeholder} />
             </label>

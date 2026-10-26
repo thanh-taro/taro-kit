@@ -11,7 +11,7 @@ interface Props {
 }
 const { as = 'span', ...rest } = Astro.props;
 // A dynamic tag name: typed loosely, as Astro types it.
-const Tag = as as any;
+const Tag = as as 'span';
 const parts = await Promise.all(LANGUAGES.map((lang) => Astro.slots.render('default', [lang])));
 ---
 

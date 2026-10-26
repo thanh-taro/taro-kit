@@ -5,7 +5,7 @@
 - id: developer
   name:
     en-US: Developer tools
-    vi-VN: Developer tools
+    vi-VN: Công cụ lập trình
   order: 1
   intro:
     en-US: 'Sample intro: the small helpers I reach for while I write code.'
@@ -15,7 +15,7 @@
 - id: media
   name:
     en-US: Media tools
-    vi-VN: Media tools
+    vi-VN: Công cụ đa phương tiện
   order: 2
   intro:
     en-US: 'Sample intro: quick fixes for images, audio and video.'
@@ -25,7 +25,7 @@
 - id: converters
   name:
     en-US: Converters & calculators
-    vi-VN: Converters & calculators
+    vi-VN: Chuyển đổi & tính toán
   order: 3
   intro:
     en-US: 'Sample intro: numbers and units, worked out the way I like them.'
@@ -35,7 +35,7 @@
 - id: productivity
   name:
     en-US: Productivity & relax
-    vi-VN: Productivity & relax
+    vi-VN: Năng suất & thư giãn
   order: 4
   intro:
     en-US: 'Sample intro: tools that keep my day on track, and a few that help me slow down.'
