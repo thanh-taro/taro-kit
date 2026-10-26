@@ -37,6 +37,12 @@ As built (F-004), in `src/modules/palette/`:
 - Export runs MOD-Backup `exportBackup()`, imported lazily on use.
 - If the catalog data file can't load, the island offers pages and actions only and shows COPY-palette.unavailable (F-004 edge case).
 
+## As built (F-019)
+- `ACTIONS` is `theme`, `language`, `export`, `copy`. The switch-language action also matches `LANGUAGE_ACTION_KEYWORDS` ("language", "ngôn ngữ", "English", "Vietnamese", "Tiếng Việt"), searched as tags. Running it calls `RunEnvironment.switchLanguage()` and then closes the palette.
+- Every name (pages, actions) arrives in both languages. `paletteView(query, index, doc, lang)` ranks with the language showing for name ties. Rows show the version in the language showing; the language action marks the other language's name with its `lang`.
+- `resultCountText(n, count, lang)` builds the polite count announcement in the language showing.
+- The bootstrap renders the placeholder as a localized attribute for other platforms. On Apple platforms it copies `data-placeholder-apple-<lang>` into it before first paint (still under the 2 KB budget, NFR-02).
+
 ## Implements
 F-004 (all requirements), F-007.R2 and the palette part of F-017.R4. It is the main owner of NFR-02, and contributes to NFR-04.
 

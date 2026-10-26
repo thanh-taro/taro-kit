@@ -97,8 +97,9 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
   }, [src, tool.url]);
 
   const waiting = phase === 'loading' || phase === 'slow';
-  // The frame title is a localized attribute (ADR-0012), set in the language showing when the frame is made.
-  const frameTitle = localizedAttrs('title', frame.title, language().shownLanguage.peek());
+  // The frame title is a localized attribute (ADR-0012), set in the language showing when the frame is made. The
+  // frame exists only in the browser (its `src` is set after hydration), so the language is read only then.
+  const frameTitle = src ? localizedAttrs('title', frame.title, language().shownLanguage.peek()) : { title: '' };
   return (
     <>
       <ToolHeader name={tool.name} openHref={tool.url} slow={phase === 'slow'} text={header}>

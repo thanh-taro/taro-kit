@@ -14,7 +14,8 @@ MOD-Copy generates a typed message catalog from `specs/30-experience/copy.md` at
 
 ## Public surface
 - `t(id, params?, lang?) → string`, where `id` is a union of the generated COPY keys and `lang` defaults to the language showing.
-- `formatDate`, `formatTime` and `formatMonth`, which wrap `Intl.DateTimeFormat(lang, …)`.
+- `tBoth(id, params?) → Loc`: both versions, for build-time text rendered through MOD-Language's `<L>`. `params` may be a function of the language, for values that are themselves localized. As built, the language showing is the root's `lang` in a browser and en-US at build (`showingLanguage()`).
+- `formatDate(iso, lang, style)`, `formatTime(date, lang)` and `formatMonth(month, lang, capital?)`, which wrap `Intl.DateTimeFormat(lang, …)`. `capital` capitalizes Vietnamese month group labels; résumé periods stay lower case ("tháng 6 năm 2022 – nay").
 - A codegen step, `pnpm copy:gen`. CI fails if its output is stale.
 
 ## Implements

@@ -35,5 +35,10 @@ MOD-Shell is the Astro base layout used by every page (CMP-AppShell).
 - `<BaseLayout title description path noindex variant="full|compact">` with a default slot; pages pass `{...metaFor(route, registry)}` (MOD-Meta).
 - Shell islands: `ShellStatus` (offline indicator and update message), `StorageNotice` and `ThemeToggle`.
 
+## As built (F-019)
+- `LanguageSwitch.tsx` is static markup armed by MOD-Language's delegated listener. In the bar it shows the other language's name (both names share one grid cell, so the width does not change between languages); between 721 and 800 px the logo shows its mark only, so the bar fits in both languages. In the narrow menu it is a full-width row with its whole label visible.
+- `BaseLayout` takes `titles` (both languages) next to `title` (English, for previews) and runs `language()` and `connectLanguageSwitch()`.
+- All shell text (navigation, footer, status, storage notice, theme toggle labels) is rendered through `<L>` or localized attributes.
+
 ## Implements
 CMP-AppShell; F-017.R4 (navigation); F-011.R3 (indicator) and F-011.R4 (message); F-012.R3 (header toggle); F-004.R1 (visible search control); F-006.R6 (recording); F-018.R3 (footer). It contributes to NFR-04.
