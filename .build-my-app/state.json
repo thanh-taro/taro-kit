@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: F-019 release — cutting v1.3.0-rc.2 (rc.1 had a Safari menu bug)",
+      "step": "8 Iterate: v1.3.0 live (F-019 English and Vietnamese); awaiting next change request",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1074,14 +1074,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T04:46:53+00:00",
-      "event": "decision D-031 answered: Approved; features ready"
-    },
-    {
-      "at": "2026-10-13T04:46:53+00:00",
-      "event": "design step: 2.4 category change: adding CMP-CategoryTile (D1) and home category row (D2)"
-    },
-    {
       "at": "2026-10-13T04:48:24+00:00",
       "event": "design step: 2.4 categories in designs (CMP-CategoryTile, home row); next: user review of D2 → D3 (incl. SCR-Category) → D4"
     },
@@ -1872,9 +1864,17 @@
     {
       "at": "2026-10-26T03:00:43+00:00",
       "event": "iterate step: 8 Iterate: F-019 release — cutting v1.3.0-rc.2 (rc.1 had a Safari menu bug)"
+    },
+    {
+      "at": "2026-10-26T03:34:55+00:00",
+      "event": "v1.3.0 live (F-019 languages), Cloudflare version f201fc59; main and tags pushed"
+    },
+    {
+      "at": "2026-10-26T03:34:55+00:00",
+      "event": "iterate step: 8 Iterate: v1.3.0 live (F-019 English and Vietnamese); awaiting next change request"
     }
   ],
-  "updated": "2026-10-26T03:00:43+00:00",
+  "updated": "2026-10-26T03:34:55+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
