@@ -73,7 +73,7 @@ export interface EntryBase {
   };
   icon?: AssetPath;
   /**
-   * @maxItems 12
+   * @maxItems 20
    */
   tags?: string[];
   added: IsoDate;

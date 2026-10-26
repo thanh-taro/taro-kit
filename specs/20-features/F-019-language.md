@@ -1,7 +1,7 @@
 ---
 id: F-019
 title: Choose a language
-status: ready
+status: building
 milestone: M-1
 priority: P1
 personas: [PER-01, PER-02]
@@ -34,7 +34,7 @@ Visitors and the Owner can read the whole portal in English or Vietnamese, and s
 ## Acceptance criteria
 - **AC1** Given no stored language and a device whose preferred languages are vi, then en, when Home opens, then Home is in Vietnamese and declares vi-VN. (R1)
 - **AC2** Given no stored language and a device whose preferred languages are fr, then de, when Home opens, then Home is in English and declares en-US. (R1)
-- **AC3** Given English is showing on the Tools page with "json" typed in the filter and the page scrolled down, when the user picks Tiếng Việt in the header switch, then the page heading, tool summaries, filter placeholder, navigation and footer show in Vietnamese, the filter still holds "json" with the same results, the scroll position is unchanged, focus stays on the switch, and the page did not reload. (R2, R4)
+- **AC3** Given English is showing on the Tools page with "json" typed in the filter and the page scrolled down, when the user picks Tiếng Việt in the header switch, then the page heading, tool summaries, filter placeholder, navigation and footer show in Vietnamese, the filter still holds "json" with the same results, switching does not move the page (the scroll position is what it was when the switch was activated), focus stays on the switch, and the page did not reload. (R2, R4)
 - **AC4** Given Vietnamese was chosen, when the portal reloads on any page, then the first painted screen is already Vietnamese. (R3)
 - **AC5** Given English is showing, when the user picks Tiếng Việt in settings, then settings and the shell show in Vietnamese immediately and the stored choice is vi-VN. (R2)
 - **AC6** Given Vietnamese is showing, when the user runs the switch-language action in the palette, then English is showing and the palette closes. (R2)

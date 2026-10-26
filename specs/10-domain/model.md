@@ -9,7 +9,7 @@ The machine-readable shape is in `10-domain/project.schema.json`. This file hold
 
 ## Content (authored by the Owner, published with the portal)
 
-Every text the Owner writes is **localized text**: it has an English (en-US) and a Vietnamese (vi-VN) version (INV-09). A tool's name, the profile's name and the nickname are always written once and read the same in both languages (lists sorted by name are then in one order for both). **Names** may be written once or once per language: an organization or institution, a skill, a certificate's or an award's name and issuer, the location, and a profile link's label. Ids, addresses, dates, skill levels (1–5), tints and tags are not localized; tags may list keywords in either language. An education level and a language's level are localized text. Length limits apply to each version.
+Every text the Owner writes is **localized text**: it has an English (en-US) and a Vietnamese (vi-VN) version (INV-09). A tool's name, the profile's name and the nickname are always written once and read the same in both languages (lists sorted by name are then in one order for both). **Names** may be written once or once per language: an organization or institution, a skill, a certificate's or an award's name and issuer, the location, and a profile link's label. Ids, addresses, dates, skill levels (1–5), tints and tags are not localized; tags may list keywords in either language (at most 20 per entry). An education level and a language's level are localized text. Length limits apply to each version.
 
 ### ENT-CatalogEntry — Catalog entry
 One item in the catalog. Its `kind` is `tool` (ENT-Tool).

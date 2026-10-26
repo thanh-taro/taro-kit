@@ -132,7 +132,7 @@
             "type": "string",
             "maxLength": 24
           },
-          "maxItems": 12,
+          "maxItems": 20,
           "uniqueItems": true
         },
         "added": {
