@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: iOS narrow-menu tap fix committed locally; ship as v1.4.1 when the Owner asks",
+      "step": "8 Iterate: v1.4.1 live (iOS narrow-menu tap fix); awaiting next change request",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1119,14 +1119,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T08:52:56+00:00",
-      "event": "decision D-035 opened: Cloudflare zone settings for tarokit.app"
-    },
-    {
-      "at": "2026-10-13T08:52:57+00:00",
-      "event": "decision D-035 answered: Applied with user approval: SSL Full (strict), Always Use HTTPS on, Email Address Obfuscation off (Bot Fight Mode, Rocket Loader, Web Analytics already off)"
-    },
-    {
       "at": "2026-10-13T08:52:57+00:00",
       "event": "Cloudflare zone configured (D-035); wrangler logged in to user's personal account"
     },
@@ -1917,9 +1909,17 @@
     {
       "at": "2026-10-27T08:13:30+00:00",
       "event": "decision D-069 answered: Ship (Owner: 'Go ahead', 2026-10-27)"
+    },
+    {
+      "at": "2026-10-27T08:34:38+00:00",
+      "event": "iterate step: 8 Iterate: v1.4.1 live (iOS narrow-menu tap fix); awaiting next change request"
+    },
+    {
+      "at": "2026-10-27T08:34:38+00:00",
+      "event": "v1.4.1 deployed to production (version 7c7ccbab), smoke and menu tap checks passed"
     }
   ],
-  "updated": "2026-10-27T08:13:30+00:00",
+  "updated": "2026-10-27T08:34:38+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
