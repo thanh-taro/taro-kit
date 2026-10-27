@@ -90,8 +90,13 @@ test.describe('F-019 switching (English device)', () => {
     await page.goto(`${PROD}/tools/`);
     await page.waitForLoadState('load');
     await page.evaluate(() => ((window as unknown as { marker: number }).marker = 7));
+    // Type only once the search island has loaded the catalog, as in catalog.spec.ts; before that the count of
+    // visible cards depends on timing (a WebKit flake).
+    await expect(page.getByTestId('catalog')).toHaveAttribute('data-ready', '');
     const filter = page.getByRole('searchbox').or(page.locator('#tk-catalog-q')).first();
     await filter.fill('json');
+    // The filter has run once its result count is announced; only then count the cards shown.
+    await expect(page.getByTestId('catalog-count')).not.toHaveText('');
     const results = await page.locator('.tk-toolcard:visible').count();
     // Scrolled down but short of the bottom, so a shorter Vietnamese page does not clamp the position.
     await page.mouse.wheel(0, 100);

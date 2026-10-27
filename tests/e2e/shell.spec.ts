@@ -1,7 +1,7 @@
 // CMP-AppShell: the narrow-screen menu, the current page marking, no sideways scroll (NFR-07),
 // and the status regions that stay absent until F-011 fills them.
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { devices, expect, test } from '@playwright/test';
 
 const PHONE = { width: 390, height: 844 };
 
@@ -49,6 +49,32 @@ test.describe('CMP-AppShell narrow menu', () => {
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
     await page.keyboard.press(tab);
     await expect(menu).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('a tap on a menu link opens that page (touch, iPhone)', async ({ browser, browserName }) => {
+    // iOS doesn't focus a tapped link: the focused first link blurs with no next target after the touch ends,
+    // and the menu must not close before the tap's click reaches the link (bug 2026-10-27).
+    const context = await browser.newContext({
+      ...(browserName === 'webkit' ? devices['iPhone 15'] : devices['Pixel 7']),
+      baseURL: test.info().project.use.baseURL,
+    });
+    const page = await context.newPage();
+    for (const [name, path] of [
+      ['Tools', '/tools/'],
+      ['About me', '/about/'],
+      ['Settings', '/settings/'],
+    ] as const) {
+      await page.goto('/');
+      await page.waitForLoadState('load');
+      const menu = page.getByRole('button', { name: 'Menu' });
+      await expect(menu).toBeEnabled();
+      await menu.tap();
+      const link = page.getByRole('navigation').getByRole('link', { name, exact: true });
+      await expect(link).toBeVisible();
+      await link.tap();
+      await expect(page).toHaveURL(new RegExp(`${path}$`));
+    }
+    await context.close();
   });
 
   test('NFR-07 neither the header nor the open menu scrolls sideways at 390 px', async ({ page }) => {

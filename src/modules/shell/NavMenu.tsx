@@ -1,7 +1,7 @@
 // MOD-Shell island: the main navigation (CMP-AppShell). On wide screens the links sit in the header;
 // on narrow screens (variant "narrow") they collapse behind the Menu button (COPY-nav.menu), which
 // opens a panel: aria-expanded on the button, focus moves to the first link, Esc closes and returns
-// focus to the button, and leaving the panel (click or focus elsewhere) closes it.
+// focus to the button, and leaving the panel (a press outside it, or focus moving to an element outside it) closes it.
 // The narrow menu also holds the language switch as a full-width row after a divider (CMP-AppShell narrow,
 // F-019.R2); switching from it keeps the menu open with focus on the row (F-019.AC20). Labels render in both
 // languages (<L>, F-019.R4), so a switch needs no render.
@@ -60,35 +60,17 @@ export default function NavMenu({ items, menuLabel, menuIcon, languageSwitch }: 
     };
   }, [open]);
 
-  // Safari doesn't focus a button on click, so pressing one inside the panel blurs the focused link
-  // with a null relatedTarget. A press inside the panel must not close it (F-019.AC20).
-  const pressInside = useRef(false);
-  const onPointerDown = () => {
-    pressInside.current = true;
-    const release = () => {
-      pressInside.current = false;
-      document.removeEventListener('pointerup', release, true);
-      document.removeEventListener('pointercancel', release, true);
-    };
-    document.addEventListener('pointerup', release, true);
-    document.addEventListener('pointercancel', release, true);
-  };
-
+  // Focus leaving for an element outside the panel (Tab past its end) closes it. A blur with no next element
+  // does not: Safari doesn't focus a pressed button or a tapped link (iOS), so pressing the language row
+  // (F-019.AC20) or tapping a link would otherwise close the panel before the click lands, and the link would
+  // never open. Presses outside the panel are handled by the document pointerdown listener above.
   const onFocusOut = (e: FocusEvent) => {
-    if (pressInside.current) return;
-    // relatedTarget is null when focus leaves for the page body or the browser itself.
     const next = e.relatedTarget as Node | null;
-    if (open && !navRef.current?.contains(next)) setOpen(false);
+    if (open && next && !navRef.current?.contains(next)) setOpen(false);
   };
 
   return (
-    <nav
-      class="nav"
-      ref={navRef}
-      data-open={open ? '' : undefined}
-      onFocusOut={onFocusOut}
-      onPointerDown={onPointerDown}
-    >
+    <nav class="nav" ref={navRef} data-open={open ? '' : undefined} onFocusOut={onFocusOut}>
       <button
         type="button"
         class="menu"

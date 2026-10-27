@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: v1.4.0 live (card sizing, headline, CV, avatar; D-067 no Firefox testing); awaiting next change request",
+      "step": "8 Iterate: iOS narrow-menu tap fix committed locally; ship as v1.4.1 when the Owner asks",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1104,14 +1104,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T08:47:50+00:00",
-      "event": "decision D-033 answered: Approved: lab pages only (noindex, temporary); no placeholder on apex"
-    },
-    {
-      "at": "2026-10-13T08:50:14+00:00",
-      "event": "decision D-034 opened: Approve D3 screens"
-    },
-    {
       "at": "2026-10-13T08:50:14+00:00",
       "event": "decision D-034 answered: Approved"
     },
@@ -1902,9 +1894,17 @@
     {
       "at": "2026-10-27T05:29:06+00:00",
       "event": "v1.4.0 deployed to production (version 1e66a70a), smoke passed"
+    },
+    {
+      "at": "2026-10-27T08:12:22+00:00",
+      "event": "iterate step: 8 Iterate: iOS narrow-menu tap fix committed locally; ship as v1.4.1 when the Owner asks"
+    },
+    {
+      "at": "2026-10-27T08:12:22+00:00",
+      "event": "Bug fix: iOS narrow menu links did not navigate (NavMenu focusout); regression test added"
     }
   ],
-  "updated": "2026-10-27T05:29:06+00:00",
+  "updated": "2026-10-27T08:12:22+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
