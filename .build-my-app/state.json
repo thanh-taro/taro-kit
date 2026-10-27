@@ -1010,6 +1010,21 @@
       "answer": "Ship (Owner: 'ship it', 2026-10-27): cut v1.4.0 and deploy to production",
       "asked": "2026-10-27T05:20:04+00:00",
       "answered": "2026-10-27T05:20:04+00:00"
+    },
+    {
+      "id": "D-069",
+      "question": "Ship v1.4.1 (iOS menu tap fix)",
+      "options": [
+        "Ship",
+        "Hold"
+      ],
+      "recommendation": "Ship",
+      "kind": "release",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Ship (Owner: 'Go ahead', 2026-10-27)",
+      "asked": "2026-10-27T08:13:30+00:00",
+      "answered": "2026-10-27T08:13:30+00:00"
     }
   ],
   "loops": {
@@ -1103,14 +1118,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T08:50:14+00:00",
-      "event": "decision D-034 answered: Approved"
-    },
-    {
-      "at": "2026-10-13T08:50:15+00:00",
-      "event": "design step: 2.4 D3 approved; next D4 edge states; doing Cloudflare zone settings via Chrome"
-    },
     {
       "at": "2026-10-13T08:52:56+00:00",
       "event": "decision D-035 opened: Cloudflare zone settings for tarokit.app"
@@ -1902,9 +1909,17 @@
     {
       "at": "2026-10-27T08:12:22+00:00",
       "event": "Bug fix: iOS narrow menu links did not navigate (NavMenu focusout); regression test added"
+    },
+    {
+      "at": "2026-10-27T08:13:30+00:00",
+      "event": "decision D-069 opened: Ship v1.4.1 (iOS menu tap fix)"
+    },
+    {
+      "at": "2026-10-27T08:13:30+00:00",
+      "event": "decision D-069 answered: Ship (Owner: 'Go ahead', 2026-10-27)"
     }
   ],
-  "updated": "2026-10-27T08:12:22+00:00",
+  "updated": "2026-10-27T08:13:30+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
