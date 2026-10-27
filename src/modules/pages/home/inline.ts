@@ -151,7 +151,7 @@ interface ReserveConfig {
 }
 
 // The placeholders use the same markup and classes as the real sections (HomePersonal's favorites, RecentTools)
-// and each tool's name, so each takes the same space, wrapping included; on a device that starts offline, cards of
+// and each tool's name, so each takes the same space (one line, F-007.R8); on a device that starts offline, cards of
 // tools that need the internet also get their unavailable line (F-011.R3).
 function homeReserveMain(c: ReserveConfig, predict: typeof predictHome): void {
   const d = document;

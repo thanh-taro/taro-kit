@@ -114,3 +114,7 @@ status: draft
 
 ## 2026-10-26
 - **Released: v1.3.0 live at https://tarokit.app (2026-10-26).** F-019: the portal in English and Vietnamese, switched without reload, with the language handed to embedded tools (D-060 to D-066). rc.1 was superseded by rc.2 (Safari narrow-menu fix). Deploy report: `.build-my-app/reports/deploy-1.3.0.md`.
+
+## 2026-10-27
+- Change request (user, 2026-10-27): tool names show on one line and regular tool cards have one fixed height. CMP-ToolCard gains a Sizing section (one-line name, summary at most four lines with four lines' space kept; in a what's-new row the summary gives way before the name, full text on hover and for assistive technology). F-002.R7 and AC9 (catalog and category cards) and F-007.R8 and AC12 (home favorites, recents and what's new) added. NFR-07 allows the shortened name or summary when the full text stays available. F-002 and F-007 go back to ready for the rebuild.
+- Content (no spec change): the Owner's headline, the Rising Stars role ("Mentor") and the résumé text rewritten.

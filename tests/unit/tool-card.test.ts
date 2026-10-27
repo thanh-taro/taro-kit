@@ -55,7 +55,10 @@ describe('CMP-ToolCard', () => {
     expect(html).toMatch(/<div class="tk-toolcard" data-variant="regular"/);
     expect(html.match(/<a /g)).toHaveLength(1);
     expect(html).toMatch(/<a class="tk-toolcard__link" href="\/t\/units\/"[^>]*>Unit Converter<\/a>/);
-    expect(html).toContain('<p class="tk-toolcard__summary">Convert units.</p>');
+    // CMP-ToolCard sizing: the summary describes the link, and the title holds name and summary for hover.
+    const summaryId = html.match(/aria-describedby="([^"]+)"/)?.[1];
+    expect(html).toContain(`<p id="${summaryId}" class="tk-toolcard__summary">Convert units.</p>`);
+    expect(html).toContain('title="Unit Converter\nConvert units."');
     expect(html).toContain('<span class="tk-toolcard__category">Converters</span>');
     expect(html).toContain('aria-pressed="false"');
     expect(html).toContain('aria-label="Add to favorites"');
@@ -65,9 +68,10 @@ describe('CMP-ToolCard', () => {
 
   test('CMP-ToolCard regular linked: visible marker that describes the link', async () => {
     const html = await render(ToolCard, { tool: linked, categoryName: 'Calculators' });
-    const describedBy = html.match(/aria-describedby="([^"]+)"/)?.[1];
+    const [summaryId, newTabId] = html.match(/aria-describedby="([^"]+)"/)?.[1].split(' ') ?? [];
     expect(html).toContain('href="https://loan.example/" target="_blank" rel="noopener noreferrer"');
-    expect(html).toMatch(new RegExp(`<span id="${describedBy}" class="tk-toolcard__newtab">Opens in a new tab`));
+    expect(html).toContain(`<p id="${summaryId}" class="tk-toolcard__summary">`);
+    expect(html).toMatch(new RegExp(`<span id="${newTabId}" class="tk-toolcard__newtab">Opens in a new tab`));
   });
 
   test('CMP-ToolCard compact: icon, name and toggle only; the linked marker is screen-reader text', async () => {
@@ -78,14 +82,15 @@ describe('CMP-ToolCard', () => {
     const describedBy = html.match(/aria-describedby="([^"]+)"/)?.[1];
     expect(html).toContain(`<span id="${describedBy}" class="tk-visually-hidden">Opens in a new tab</span>`);
     expect(html).toContain('data-size="sm"');
+    expect(html).toContain('title="Loan Calculator"');
   });
 
   test('CMP-ToolCard unavailable: dimmed, with COPY-tool.unavailable describing the link, toggle kept', async () => {
     const html = await render(ToolCard, { tool: linked, categoryName: 'Calculators', unavailable: true });
     expect(html).toContain('data-unavailable');
     const ids = html.match(/aria-describedby="([^"]+)"/)?.[1].split(' ');
-    expect(ids).toHaveLength(2);
-    expect(html).toMatch(new RegExp(`<span id="${ids?.[1]}" class="tk-toolcard__unavailable">.*Needs the internet`));
+    expect(ids).toHaveLength(3); // summary, new-tab marker, unavailable note
+    expect(html).toMatch(new RegExp(`<span id="${ids?.[2]}" class="tk-toolcard__unavailable">.*Needs the internet`));
     expect(html).toContain('class="tk-fav__btn"');
   });
 
@@ -94,7 +99,7 @@ describe('CMP-ToolCard', () => {
     const ids = [...html.matchAll(/aria-describedby="([^"]+)"/g)].map((m) => m[1]);
     expect(ids).toHaveLength(2);
     expect(new Set(ids).size).toBe(2);
-    for (const id of ids) expect(html).toContain(`id="${id}"`);
+    for (const id of ids.flatMap((i) => i.split(' '))) expect(html).toContain(`id="${id}"`);
   });
 
   test('CMP-ToolCard static cards hydrate only the favorite toggle', async () => {

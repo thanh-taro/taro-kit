@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: v1.3.0 live (F-019 English and Vietnamese); awaiting next change request",
+      "step": "8 Iterate: CR 2026-10-27 built, verified and committed locally (one-line names, fixed card height, headline, CV); ship as v1.4.0 when the Owner asks",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1074,22 +1074,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T04:48:24+00:00",
-      "event": "design step: 2.4 categories in designs (CMP-CategoryTile, home row); next: user review of D2 → D3 (incl. SCR-Category) → D4"
-    },
-    {
-      "at": "2026-10-13T05:22:00+00:00",
-      "event": "loop design-D2 ended: converged; user approved D2"
-    },
-    {
-      "at": "2026-10-13T05:22:01+00:00",
-      "event": "decision D-032 opened: Approve D2 primary flow"
-    },
-    {
-      "at": "2026-10-13T05:22:01+00:00",
-      "event": "decision D-032 answered: Approved"
-    },
-    {
       "at": "2026-10-13T05:22:01+00:00",
       "event": "design step: 2.4 D3 remaining screens: drafting"
     },
@@ -1872,9 +1856,25 @@
     {
       "at": "2026-10-26T03:34:55+00:00",
       "event": "iterate step: 8 Iterate: v1.3.0 live (F-019 English and Vietnamese); awaiting next change request"
+    },
+    {
+      "at": "2026-10-26T04:29:00+00:00",
+      "event": "context compaction (auto) at: build-my-app: phase 8 Iterate [in_progress] — 8 Iterate: v1.3.0 live (F-019 English and Vietnamese); awaiting next change request · 8/9 phases done · autonomy balanced"
+    },
+    {
+      "at": "2026-10-27T05:07:28+00:00",
+      "event": "iterate step: 8 Iterate: CR 2026-10-27 (one-line names, fixed card height, headline, CV) — built and verified locally; awaiting headline choice and CV approval"
+    },
+    {
+      "at": "2026-10-27T05:07:29+00:00",
+      "event": "CR 2026-10-27: CMP-ToolCard sizing, F-002.R7/AC9, F-007.R8/AC12, NFR-07 exception; résumé rewrite drafted; chromium suite green"
+    },
+    {
+      "at": "2026-10-27T05:12:48+00:00",
+      "event": "iterate step: 8 Iterate: CR 2026-10-27 built, verified and committed locally (one-line names, fixed card height, headline, CV); ship as v1.4.0 when the Owner asks"
     }
   ],
-  "updated": "2026-10-26T03:34:55+00:00",
+  "updated": "2026-10-27T05:12:48+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

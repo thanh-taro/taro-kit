@@ -128,12 +128,14 @@
   font-size: var(--tk-font-size-xs);
   font-weight: var(--tk-font-weight-bold);
 }
-/* The stretched link: the whole row opens the tool. It may shrink and wrap, so a long name is never clipped on
-   a narrow screen (NFR-07, QA a11y m4). */
+/* The stretched link: the whole row opens the tool. The name stays on one line (F-007.R8); when it doesn't fit
+   it ends in an ellipsis and its title shows it whole (NFR-07 exception, CMP-ToolCard sizing). */
 .tk-whatsnew__link {
   flex: 0 1 auto;
   min-inline-size: 0;
-  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--tk-color-fg);
   font-size: var(--tk-font-size-base);
   font-weight: var(--tk-font-weight-semibold);
@@ -149,6 +151,8 @@
   outline: none;
 }
 .tk-whatsnew__summary {
+  /* Takes only the room the name leaves, so it gives way first (CMP-ToolCard sizing). */
+  flex: 1 1 0;
   min-inline-size: 0;
   overflow: hidden;
   color: var(--tk-color-muted);
@@ -170,7 +174,7 @@
     gap: calc(var(--tk-space-1) + var(--tk-space-1) / 2) var(--tk-space-2);
     padding: var(--tk-space-3) calc(var(--tk-space-3) + var(--tk-space-1) / 2);
   }
-  /* The name wraps in its column rather than being clipped (NFR-07, QA a11y m4). */
+  /* The name keeps one line in its column (F-007.R8). */
   .tk-whatsnew__link {
     min-inline-size: 0;
   }

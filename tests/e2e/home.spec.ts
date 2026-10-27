@@ -504,3 +504,45 @@ test.describe('F-007 accessibility', () => {
 test('the production build has no tests-only what’s new page', async ({ request }) => {
   expect((await request.get(`${PROD}/__fixtures__/whats-new/`)).status()).toBe(404);
 });
+
+// CMP-ToolCard sizing on home (F-007.R8): the tests-only page /__fixtures__/card-sizing/ renders compact cards in
+// home's recents grid and the real WhatsNew island, each with a name far longer than its space.
+test.describe('F-007 one-line names', () => {
+  const LONG = 'An Extremely Long Tool Name For Testing The One Line Rule';
+  for (const width of [390, 1280]) {
+    test(`F007_AC12 a long name takes one line, ends in an ellipsis and shows whole on hover (${width} px)`, async ({
+      page,
+    }) => {
+      await page.clock.install({ time: new Date('2026-10-04T10:00:00') });
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${FX}/__fixtures__/card-sizing/`);
+      await expect(page.locator('[data-tk-whatsnew-ready]')).toBeAttached();
+      await fontsLoaded(page);
+      const links = [
+        page.getByTestId('recents').locator('.tk-toolcard__link').first(),
+        page.getByTestId('whatsnew').locator('.tk-whatsnew__link'),
+      ];
+      for (const link of links) {
+        await expect(link).toHaveText(LONG);
+        await expect(link).toHaveAccessibleName(LONG);
+        await expect(link).toHaveAttribute('title', LONG);
+        const m = await link.evaluate((el) => {
+          const cs = getComputedStyle(el);
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          return {
+            lines: new Set([...range.getClientRects()].map((r) => Math.round(r.top))).size,
+            clipped: el.scrollWidth > el.clientWidth,
+            ellipsis: cs.textOverflow,
+            nowrap: cs.whiteSpace,
+          };
+        });
+        expect(m.lines).toBe(1);
+        // Shortened wherever it doesn't fit: always on a phone; on a wide screen the what's new row has room.
+        if (width === 390 || link === links[0]) expect(m.clipped).toBe(true);
+        expect(m.ellipsis).toBe('ellipsis');
+        expect(m.nowrap).toBe('nowrap');
+      }
+    });
+  }
+});

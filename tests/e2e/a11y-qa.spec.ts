@@ -90,16 +90,22 @@ test.describe('NFR-07 reflow at 320 px', () => {
     await expectNoSidewaysScroll(page, 'fixture home');
   });
 
-  test('NFR-07 a what’s-new link name is never clipped at 320 px (it wraps)', async ({ page }) => {
+  test('NFR-07 a what’s-new link name keeps one line at 320 px and stays whole on hover and for assistive technology', async ({
+    page,
+  }) => {
     // ft-clipboard ("Fixture clipboard tool", the longest name) was added on 2026-10-01: new on 2026-10-04.
+    // F-007.R8 keeps names on one line; NFR-07's exception allows the ellipsis when the full name stays available.
     await page.clock.setFixedTime(new Date('2026-10-04T10:00:00'));
     await page.goto(`${FX}/`);
     await expect(page.locator('[data-tk-whatsnew-ready]')).toBeAttached();
     const links = page.locator('.tk-whatsnew__link');
     await expect(links.filter({ hasText: 'Fixture clipboard tool' })).toBeVisible();
     for (const link of await links.all()) {
-      const [scroll, client] = await link.evaluate((el) => [el.scrollWidth, el.clientWidth]);
-      expect(scroll, (await link.textContent()) ?? '').toBeLessThanOrEqual(client);
+      const name = (await link.textContent()) ?? '';
+      const style = await link.evaluate((el) => [getComputedStyle(el).whiteSpace, getComputedStyle(el).textOverflow]);
+      expect(style, name).toEqual(['nowrap', 'ellipsis']);
+      await expect(link).toHaveAttribute('title', name);
+      await expect(link).toHaveAccessibleName(name);
     }
   });
 });

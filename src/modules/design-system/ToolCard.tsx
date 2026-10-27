@@ -13,10 +13,16 @@
 //   compact ones; both describe the link (aria-describedby). The link carries `data-tk-visit` so following it
 //   records the visit (F-006.R1, MOD-ToolHost visits.ts); the card itself holds no state.
 // - Every text is in both languages (<L>, F-019.R4); the tool's name is one text (INV-09).
+// - Sizing (CMP-ToolCard, F-002.R7, F-007.R8): the name stays on one line and every regular card has one height,
+//   the summary clamped to four lines (styles/tool-card.css). What a clamp hides stays available: the link's title
+//   holds the name (and, on regular cards, the summary) as a hover tooltip in the language showing, and regular
+//   cards describe the link with the summary, so assistive technology reads it whole.
 import type { ComponentChildren } from 'preact';
 import { useId } from 'preact/hooks';
+import { localizedAttrs } from '../language/attrs.ts';
 import { L } from '../language/L.tsx';
-import type { Loc, Text } from '../language/languages.ts';
+import { LANGUAGES, pick, type Loc, type Text } from '../language/languages.ts';
+import { useShownLanguage } from '../language/use.ts';
 import FavoriteToggle, { type FavoriteToggleLabels } from './FavoriteToggle.tsx';
 import {
   describedBy,
@@ -79,6 +85,7 @@ export default function ToolCard({
   children,
 }: ToolCardProps) {
   const uid = useId();
+  const lang = useShownLanguage();
   const { href, newTab } = toolCardLink(tool);
   const regular = variant === 'regular';
   const newTabId = newTab ? `${uid}-newtab` : undefined;
@@ -86,6 +93,11 @@ export default function ToolCard({
   const noteId = unavailable || live ? `${uid}-unavailable` : undefined;
   // The note describes the link only while it is shown.
   const unavailableId = unavailable ? noteId : undefined;
+  const summaryId = regular ? `${uid}-summary` : undefined;
+  // Hover tooltip (CMP-ToolCard sizing): the full name, and on regular cards the summary under it.
+  const tooltip: Text = regular
+    ? (Object.fromEntries(LANGUAGES.map((l) => [l, `${tool.name}\n${pick(tool.summary, l)}`])) as Loc)
+    : tool.name;
   return (
     <div
       class="tk-toolcard"
@@ -105,12 +117,13 @@ export default function ToolCard({
             rel={newTab ? 'noopener noreferrer' : undefined}
             // F-006.R1: following a linked tool's link records a visit (MOD-ToolHost's listener reads this mark).
             data-tk-visit={newTab ? tool.id : undefined}
-            aria-describedby={describedBy(newTabId, unavailableId)}
+            aria-describedby={describedBy(summaryId, newTabId, unavailableId)}
+            {...localizedAttrs('title', tooltip, lang)}
           >
             {tool.name}
           </a>
           {regular && (
-            <p class="tk-toolcard__summary">
+            <p id={summaryId} class="tk-toolcard__summary">
               <L text={tool.summary} />
             </p>
           )}

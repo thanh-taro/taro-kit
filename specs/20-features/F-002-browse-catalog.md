@@ -1,7 +1,7 @@
 ---
 id: F-002
 title: Browse the catalog
-status: shipped
+status: ready
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
@@ -28,6 +28,7 @@ Visitors and the Owner can see everything that is available, grouped so it can b
 - **R4** While a query is entered, the catalog shows a single list ranked by RULE-05 across all categories, updating as the user types. Each result shows its category.
 - **R5** When nothing matches, the catalog says so and offers to clear the search (COPY-catalog.noResults, COPY-catalog.clear).
 - **R6** When the catalog has no visible tools, an empty state explains that tools are coming (COPY-catalog.empty).
+- **R7** Every listed tool's card has the same height, and its name shows on one line (CMP-ToolCard sizing).
 
 ## Acceptance criteria
 - **AC1** Given tools in two categories, when the catalog opens, then tools appear under their category headings, in category order and alphabetically within each. (R1)
@@ -38,6 +39,7 @@ Visitors and the Owner can see everything that is available, grouped so it can b
 - **AC6** Given tools in two categories match the query, when the user types, then both are listed in one ranked list, each with its category label. (R4)
 - **AC7** Given a search with no matches, when the results update, then the no-results message and the clear-search action are shown. (R5)
 - **AC8** Given no visible tools, when the catalog opens, then the empty state is shown. (R6)
+- **AC9** Given tools whose summaries take one, two and five lines at the card's width, and a name longer than the card is wide, when the catalog opens at 390 px and at 1280 px wide, then every card has the same height, each name takes one line, the five-line summary shows four lines ending in an ellipsis, and the shortened name and summary show in full on hover. (R7)
 
 ## UX notes
 SCR-Catalog uses CMP-ToolCard for each tool and CMP-StateMessage for empty and no-results. Filtering must feel instant (NFR-02).

@@ -1,0 +1,96 @@
+---
+// Tests-only page (built with TAROKIT_FIXTURES=1 into dist-fixtures/, never into dist/; astro.config.ts).
+// CMP-ToolCard sizing (F-002.AC9, F-007.AC12) needs summaries and names of chosen lengths, which the shared fixture
+// content doesn't have, so this page renders the real cards and the real home what's new island over fixed tools:
+//   catalog  two groups of regular cards, in the catalog's grid: summaries of about one, two and five lines at the
+//            card's width, and a name longer than the card is wide;
+//   recents  compact cards in home's recents grid, one with the long name;
+//   whatsnew the WhatsNew island with the long-named tool (added 2026-10-01; tests set the date to 2026-10-04).
+import ToolCard from '../../../src/modules/design-system/ToolCard.astro';
+import { whatsNewProps } from '../../../src/modules/pages/home/home.ts';
+import WhatsNew from '../../../src/modules/pages/home/WhatsNew.tsx';
+import BaseLayout from '../../../src/modules/shell/BaseLayout.astro';
+import '../../../src/modules/pages/home/recent-tools.css';
+
+const LONG_NAME = 'An Extremely Long Tool Name For Testing The One Line Rule';
+const words = (n: number) =>
+  Array.from({ length: n }, (_, i) => ['format', 'convert', 'check', 'view', 'copy'][i % 5]).join(' ');
+const summary = (n: number) => {
+  const text = `${words(n)}.`;
+  return { 'en-US': text[0].toUpperCase() + text.slice(1), 'vi-VN': `Tóm tắt ${text}` };
+};
+const tool = (id: string, name: string, n: number) => ({
+  id,
+  name,
+  summary: summary(n),
+  openMode: 'embedded' as const,
+  url: `https://${id}.tarokit.test/`,
+  offline: true,
+});
+const catalog = [
+  [tool('one-line', 'One line', 3), tool('two-lines', 'Two lines', 9), tool('five-lines', 'Five lines', 60)],
+  [tool('long-name', LONG_NAME, 3)],
+];
+const recents = [tool('long-name', LONG_NAME, 3), tool('one-line', 'One line', 3)];
+const categoryName = { 'en-US': 'Developer tools', 'vi-VN': 'Công cụ lập trình' };
+const fresh = [{ id: 'long-name', name: LONG_NAME, summary: summary(3), added: '2026-10-01' }];
+---
+
+<BaseLayout
+  title="Card sizing fixture"
+  titles={{ 'en-US': 'Card sizing fixture', 'vi-VN': 'Card sizing fixture' }}
+  description="Tests-only page."
+  path="/__fixtures__/card-sizing/"
+>
+  <div class="fx">
+    <h1>Card sizing fixture</h1>
+    <div data-testid="catalog">
+      {catalog.map((group) => (
+        <ul class="fx-grid">
+          {group.map((t) => (
+            <li>
+              <ToolCard tool={t} categoryName={categoryName} />
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+    <ul class="tk-recents__list" data-testid="recents">
+      {recents.map((t) => (
+        <li>
+          <ToolCard tool={t} variant="compact" />
+        </li>
+      ))}
+    </ul>
+    <div data-testid="whatsnew">
+      <WhatsNew client:load {...whatsNewProps(fresh)} />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .fx {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-8);
+  }
+  [data-testid='catalog'] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tk-space-3);
+  }
+  /* The catalog's grid (CatalogView): three columns, one on a narrow screen. */
+  .fx-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--tk-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (max-width: 720px) {
+    .fx-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -11,32 +11,32 @@ experience:
     organization: Est Rouge
     start: 2023-07
     summary:
-      en-US: I build products end to end with AI on the team, from the backend and the data underneath to the prompts that make language models behave.
-      vi-VN: Mình làm sản phẩm từ đầu đến cuối với AI trong nhóm, từ backend và dữ liệu bên dưới đến các prompt giúp mô hình ngôn ngữ làm đúng việc.
+      en-US: I build products end to end with AI as a real teammate, from the backend and the data underneath to the screens people click and the prompts and agents that make language models do useful work.
+      vi-VN: Mình làm sản phẩm từ đầu đến cuối với AI là một đồng đội thực thụ, từ backend và dữ liệu bên dưới đến giao diện người dùng bấm vào, cùng các prompt và agent giúp mô hình ngôn ngữ làm việc có ích.
     highlights:
-      - en-US: REST and WebSocket backends in Python and Node.js, with FastAPI and NestJS.
-        vi-VN: Backend REST và WebSocket bằng Python và Node.js, với FastAPI và NestJS.
-      - en-US: ETL pipelines that turn big, messy data into something a dashboard can love.
-        vi-VN: Pipeline ETL biến dữ liệu lớn, lộn xộn thành thứ mà dashboard nào cũng mê.
-      - en-US: Prompts and integrations for ChatGPT, Llama 2, Midjourney and DALL-E.
-        vi-VN: Prompt và tích hợp cho ChatGPT, Llama 2, Midjourney và DALL-E.
-      - en-US: Claude Chat, Claude Code and Claude Design as everyday teammates, from planning and coding to design.
-        vi-VN: Claude Chat, Claude Code và Claude Design là đồng đội hằng ngày, từ lên kế hoạch, viết code đến thiết kế.
-      - en-US: Products built for the company itself, not just for clients.
-        vi-VN: Sản phẩm làm cho chính công ty, không chỉ cho khách hàng.
+      - en-US: Design and ship REST and WebSocket backends in Python and Node.js, on FastAPI and NestJS.
+        vi-VN: Thiết kế và triển khai backend REST và WebSocket bằng Python và Node.js, trên FastAPI và NestJS.
+      - en-US: Build ETL pipelines that turn big, messy data into numbers a dashboard can trust.
+        vi-VN: Xây pipeline ETL biến dữ liệu lớn, lộn xộn thành những con số mà dashboard có thể tin được.
+      - en-US: Bring language and image models into products, with ChatGPT, Llama 2, Midjourney and DALL-E, and tune the prompts until the results hold up.
+        vi-VN: Đưa mô hình ngôn ngữ và hình ảnh vào sản phẩm với ChatGPT, Llama 2, Midjourney và DALL-E, rồi tinh chỉnh prompt đến khi kết quả thật sự đáng tin.
+      - en-US: Work AI-native every day. Claude Chat, Claude Code and Claude Design help me plan, code, review and design, so a small team ships like a bigger one.
+        vi-VN: Làm việc AI-native mỗi ngày. Claude Chat, Claude Code và Claude Design cùng mình lên kế hoạch, viết code, review và thiết kế, để một nhóm nhỏ làm được việc của nhóm lớn.
+      - en-US: Build in-house products for Est Rouge itself, where I'm both the engineer and one of the users.
+        vi-VN: Làm sản phẩm nội bộ cho chính Est Rouge, nơi mình vừa là kỹ sư vừa là người dùng.
   - role:
-      en-US: Training mentor
-      vi-VN: Mentor đào tạo
+      en-US: Mentor
+      vi-VN: Mentor
     organization: Rising Stars
     start: 2022-06
     summary:
-      en-US: I mentor bootcamp students and on-the-job trainees in backend development, soft skills and presenting.
-      vi-VN: Mình hướng dẫn học viên bootcamp và thực tập sinh về phát triển backend, kỹ năng mềm và thuyết trình.
+      en-US: I help bootcamp students and trainees grow into developers any team would want, with solid backend skills, clear communication and the confidence to present their own work.
+      vi-VN: Mình giúp các bạn học viên bootcamp và thực tập sinh trở thành lập trình viên mà team nào cũng muốn có, vững backend, giao tiếp rõ ràng và tự tin trình bày sản phẩm của chính mình.
     highlights:
-      - en-US: Backend and presentation mentoring for the Rising Stars bootcamps.
-        vi-VN: Hướng dẫn backend và thuyết trình cho các khoá bootcamp Rising Stars.
-      - en-US: Coaching Rising Stars through their on-the-job training at Est Rouge.
-        vi-VN: Kèm cặp các bạn Rising Stars trong giai đoạn đào tạo thực tế tại Est Rouge.
+      - en-US: Teach backend development, soft skills and presenting in the Rising Stars bootcamps.
+        vi-VN: Dạy phát triển backend, kỹ năng mềm và thuyết trình trong các khoá bootcamp Rising Stars.
+      - en-US: Coach trainees through their on-the-job training at Est Rouge, from their first ticket to their first demo.
+        vi-VN: Kèm các bạn trong giai đoạn đào tạo thực tế tại Est Rouge, từ ticket đầu tiên đến buổi demo đầu tiên.
   - role:
       en-US: Technical leader
       vi-VN: Trưởng nhóm kỹ thuật
@@ -44,13 +44,13 @@ experience:
     start: 2023-04
     end: 2023-07
     summary:
-      en-US: I led the AI team on a product that put AI and big-data analytics at its core.
-      vi-VN: Mình dẫn dắt nhóm AI cho một sản phẩm lấy AI và phân tích dữ liệu lớn làm cốt lõi.
+      en-US: I led the AI team on a product built around AI and big-data analytics, taking models from experiments to features people could use.
+      vi-VN: Mình dẫn dắt nhóm AI cho một sản phẩm xoay quanh AI và phân tích dữ liệu lớn, đưa các mô hình từ thử nghiệm thành tính năng người dùng dùng được.
     highlights:
-      - en-US: Led the AI team and integrated models into the product.
-        vi-VN: Dẫn dắt nhóm AI và tích hợp các mô hình vào sản phẩm.
-      - en-US: Python and Node.js on MongoDB, PostgreSQL and Redis, shipped with Docker and Kubernetes.
-        vi-VN: Python và Node.js trên MongoDB, PostgreSQL và Redis, triển khai bằng Docker và Kubernetes.
+      - en-US: Set the technical direction for the AI team and integrated models into the product.
+        vi-VN: Định hướng kỹ thuật cho nhóm AI và tích hợp các mô hình vào sản phẩm.
+      - en-US: Python and Node.js services on MongoDB, PostgreSQL and Redis, shipped with Docker and Kubernetes.
+        vi-VN: Dịch vụ Python và Node.js trên MongoDB, PostgreSQL và Redis, triển khai bằng Docker và Kubernetes.
   - role:
       en-US: Senior developer and technical leader
       vi-VN: Lập trình viên cấp cao và trưởng nhóm kỹ thuật
@@ -58,17 +58,19 @@ experience:
     start: 2018-08
     end: 2023-04
     summary:
-      en-US: I built and led commerce projects for the Japanese market, and made a lot of data answer a lot of questions.
-      vi-VN: Mình xây dựng và dẫn dắt các dự án thương mại cho thị trường Nhật, và giúp rất nhiều dữ liệu trả lời rất nhiều câu hỏi.
+      en-US: I built and led commerce projects for the Japanese market, where the quality bar is high, and taught a lot of data to answer a lot of questions.
+      vi-VN: Mình xây dựng và dẫn dắt các dự án thương mại cho thị trường Nhật, nơi yêu cầu chất lượng rất cao, và giúp rất nhiều dữ liệu trả lời rất nhiều câu hỏi.
     highlights:
-      - en-US: Led commerce teams as their technical leader.
-        vi-VN: Dẫn dắt các nhóm thương mại với vai trò trưởng nhóm kỹ thuật.
-      - en-US: Big-data analytics on Athena and Redshift, with dashboards built from the data lake.
-        vi-VN: Phân tích dữ liệu lớn trên Athena và Redshift, với dashboard dựng từ data lake.
-      - en-US: Recommendations with Neo4j, and gRPC between services.
-        vi-VN: Hệ gợi ý bằng Neo4j, và gRPC giữa các dịch vụ.
-      - en-US: Reporting tools for sales, inventory and income.
-        vi-VN: Công cụ báo cáo bán hàng, tồn kho và doanh thu.
+      - en-US: Led commerce teams as their technical leader, owning the architecture and the quality of the code.
+        vi-VN: Dẫn dắt các nhóm thương mại với vai trò trưởng nhóm kỹ thuật, chịu trách nhiệm về kiến trúc và chất lượng code.
+      - en-US: Big-data analytics on Athena and Redshift, with dashboards built straight from the data lake.
+        vi-VN: Phân tích dữ liệu lớn trên Athena và Redshift, với dashboard dựng thẳng từ data lake.
+      - en-US: A recommendation engine on Neo4j, and services that talk to each other over gRPC.
+        vi-VN: Hệ thống gợi ý trên Neo4j, và các dịch vụ giao tiếp với nhau qua gRPC.
+      - en-US: Reporting tools that turn sales, inventory and income data into clear answers.
+        vi-VN: Công cụ báo cáo biến dữ liệu bán hàng, tồn kho và doanh thu thành câu trả lời rõ ràng.
+      - en-US: Employee of the Year in 2018, my first year there, and Elite Influencer of ERverse in 2021.
+        vi-VN: Employee of the Year năm 2018, ngay năm đầu tiên, và Elite Influencer of ERverse năm 2021.
   - role:
       en-US: Backend developer
       vi-VN: Lập trình viên backend
@@ -76,8 +78,8 @@ experience:
     start: 2018-03
     end: 2018-07
     summary:
-      en-US: I worked on Japanese-market projects on AWS, filtering and enriching large client datasets.
-      vi-VN: Mình làm các dự án cho thị trường Nhật trên AWS, lọc và làm giàu những bộ dữ liệu lớn của khách hàng.
+      en-US: A short, busy stretch on Japanese-market projects on AWS, filtering and enriching large client datasets.
+      vi-VN: Một chặng ngắn nhưng bận rộn với các dự án cho thị trường Nhật trên AWS, lọc và làm giàu những bộ dữ liệu lớn của khách hàng.
   - role:
       en-US: Backend developer
       vi-VN: Lập trình viên backend
@@ -85,15 +87,17 @@ experience:
     start: 2014-08
     end: 2018-02
     summary:
-      en-US: I built government and US-market projects, and spent about a year as a vendor developer for Neolab Vietnam.
-      vi-VN: Mình làm các dự án cho chính phủ và thị trường Mỹ, và có khoảng một năm làm lập trình viên vendor cho Neolab Vietnam.
+      en-US: Where I grew into a backend engineer, on government and US-market projects, plus about a year as a vendor developer for Neolab Vietnam.
+      vi-VN: Nơi mình trưởng thành thành một kỹ sư backend, qua các dự án cho chính phủ và thị trường Mỹ, cùng khoảng một năm làm lập trình viên vendor cho Neolab Vietnam.
     highlights:
-      - en-US: Social networks, newsfeeds and geolocation features.
-        vi-VN: Mạng xã hội, newsfeed và tính năng định vị.
-      - en-US: Caching, queue workers, and recommendations with Neo4j.
-        vi-VN: Caching, queue worker, và hệ gợi ý bằng Neo4j.
+      - en-US: Built social networks, newsfeeds and location-based features.
+        vi-VN: Xây dựng mạng xã hội, newsfeed và các tính năng dựa trên vị trí.
+      - en-US: Kept them fast with caching and queue workers, and added recommendations with Neo4j.
+        vi-VN: Giữ chúng chạy nhanh với caching và queue worker, và thêm hệ gợi ý bằng Neo4j.
       - en-US: PHP, JavaScript and Python with Yii, Laravel, Magento, Drupal, React and React Native.
         vi-VN: PHP, JavaScript và Python với Yii, Laravel, Magento, Drupal, React và React Native.
+      - en-US: Employee of the Year in 2017.
+        vi-VN: Employee of the Year năm 2017.
   - role:
       en-US: Intern Android developer
       vi-VN: Thực tập sinh lập trình Android
@@ -101,8 +105,8 @@ experience:
     start: 2013-06
     end: 2013-11
     summary:
-      en-US: I built a real-time chat and room-booking app for Android, with a Ruby on Rails API behind it.
-      vi-VN: Mình làm một ứng dụng Android chat thời gian thực và đặt phòng, với API Ruby on Rails phía sau.
+      en-US: My first real product, a real-time chat and room-booking app for Android, backed by a Ruby on Rails API.
+      vi-VN: Sản phẩm thật đầu tiên của mình, một ứng dụng Android chat thời gian thực và đặt phòng, chạy trên API Ruby on Rails.
   - role:
       en-US: Intern web developer
       vi-VN: Thực tập sinh lập trình web

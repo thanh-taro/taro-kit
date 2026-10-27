@@ -62,7 +62,8 @@ test.describe('F-002 catalog', () => {
     const link = card.getByRole('link', { name: linked.name, exact: true });
     await expect(link).toHaveAttribute('href', linked.url);
     await expect(link).toHaveAttribute('target', '_blank');
-    await expect(link).toHaveAccessibleDescription('Opens in a new tab');
+    // The summary describes the link too (CMP-ToolCard sizing), then the marker.
+    await expect(link).toHaveAccessibleDescription(`${pick(linked.summary, 'en-US')} Opens in a new tab`);
     await expect(card.getByText('Opens in a new tab')).toBeVisible();
     // F-002.R2: name, summary, icon, category and favorite state on every card.
     await expect(card.getByText(pick(linked.summary, 'en-US'))).toBeVisible();
@@ -303,4 +304,56 @@ test.describe('F-002 production build (samples)', () => {
     await expect(page.getByRole('button', { name: 'Clear search' })).toBeVisible();
     expect(violations).toEqual([]);
   });
+});
+
+// CMP-ToolCard sizing (F-002.R7) on the tests-only page /__fixtures__/card-sizing/ (tests/fixtures/pages), whose
+// regular cards have summaries of about one, two and five lines and a name longer than the card is wide.
+test.describe('F-002 card sizing', () => {
+  for (const width of [390, 1280]) {
+    test(`F002_AC9 every card has one height, names take one line, a long summary shows four (${width} px)`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${FX}/__fixtures__/card-sizing/`);
+      await page.evaluate(() => document.fonts.ready);
+      const cards = page.getByTestId('catalog').locator('.tk-toolcard');
+      await expect(cards).toHaveCount(4);
+      const boxes = await cards.evaluateAll((els) =>
+        els.map((el) => {
+          const link = el.querySelector<HTMLElement>('.tk-toolcard__link')!;
+          const summary = el.querySelector<HTMLElement>('.tk-toolcard__summary')!;
+          const lineHeight = parseFloat(getComputedStyle(summary).lineHeight);
+          return {
+            height: Math.round(el.getBoundingClientRect().height),
+            nameLines: Math.round(link.getBoundingClientRect().height / parseFloat(getComputedStyle(link).lineHeight)),
+            nameClipped: link.scrollWidth > link.clientWidth,
+            summaryLines: Math.round(summary.clientHeight / lineHeight),
+            summaryClipped: summary.scrollHeight > summary.clientHeight + 1,
+            ellipsis: getComputedStyle(link).textOverflow,
+            clamp: getComputedStyle(summary).webkitLineClamp,
+          };
+        }),
+      );
+      // Same height on every card, in both groups (separate grids).
+      expect(new Set(boxes.map((b) => b.height)).size).toBe(1);
+      for (const b of boxes) {
+        expect(b.nameLines).toBe(1);
+        expect(b.summaryLines).toBe(4); // four lines' space, kept on short summaries too
+        expect(b.ellipsis).toBe('ellipsis');
+        expect(b.clamp).toBe('4');
+      }
+      // The five-line summary is cut at four lines; the long name is shortened.
+      expect(boxes[2].summaryClipped).toBe(true);
+      expect(boxes[0].summaryClipped).toBe(false);
+      expect(boxes[3].nameClipped).toBe(true);
+      // Both show whole on hover (title), and the link's name and description stay whole.
+      const long = cards.nth(3).locator('.tk-toolcard__link');
+      const fiveLines = cards.nth(2).locator('.tk-toolcard__link');
+      const fullSummary = await cards.nth(2).locator('.tk-toolcard__summary [lang="en-US"]').textContent();
+      await expect(long).toHaveAttribute('title', /^An Extremely Long Tool Name For Testing The One Line Rule\n/);
+      await expect(fiveLines).toHaveAttribute('title', `Five lines\n${fullSummary}`);
+      await expect(long).toHaveAccessibleName('An Extremely Long Tool Name For Testing The One Line Rule');
+      await expect(fiveLines).toHaveAccessibleDescription(fullSummary!);
+    });
+  }
 });

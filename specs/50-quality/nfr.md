@@ -13,7 +13,7 @@ status: draft
 | **NFR-04** | Keyboard-complete. | Every feature works with the keyboard alone; focus is always visible; no keyboard traps outside the embedded tool area. |
 | **NFR-05** | Private. | The portal makes zero requests to third parties of its own (all fonts, icons and images are bundled); no cookies; no analytics or fingerprinting; personal data never leaves the device, except the theme and language showing passed to an embedded tool (INV-05). |
 | **NFR-06** | Works offline. | After one online visit, every portal page and all catalog content load with no network. |
-| **NFR-07** | Responsive. | Layouts work from 320 px to 2560 px wide with no horizontal scrolling; text zooms to 200 % without loss. |
+| **NFR-07** | Responsive. | Layouts work from 320 px to 2560 px wide with no horizontal scrolling; text zooms to 200 % without loss. Exception: a tool card or what's-new row may shorten a long name or summary with an ellipsis, when the full text stays available on hover and to assistive technology (CMP-ToolCard sizing). |
 | **NFR-08** | Isolated tools. | Embedded tools run isolated from the portal with only their declared permissions (RULE-10); the portal restricts which sites may be embedded to catalog addresses. |
 | **NFR-09** | Touch-friendly. | Interactive targets are at least 44 × 44 CSS px on touch devices. |
 | **NFR-10** | Supported browsers. | The two latest major versions of each browser engine listed in 40-technical, on desktop and mobile. |

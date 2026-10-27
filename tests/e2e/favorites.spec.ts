@@ -281,7 +281,8 @@ test.describe('CMP-ToolCard and CMP-FavoriteToggle', () => {
     await expect(link).toHaveAttribute('href', 'https://fx-linked.example.com/');
     await expect(link).toHaveAttribute('target', '_blank');
     await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-    await expect(link).toHaveAccessibleDescription('Opens in a new tab');
+    // Regular cards: the summary describes the link too (CMP-ToolCard sizing), then the marker.
+    await expect(link).toHaveAccessibleDescription(/ Opens in a new tab$/);
     await expect(page.getByTestId('catalog').getByText('Opens in a new tab')).toBeVisible();
     // Compact: the marker is screen-reader text only.
     const compact = page.getByTestId('compact-linked').getByRole('link');
@@ -292,7 +293,7 @@ test.describe('CMP-ToolCard and CMP-FavoriteToggle', () => {
   test('CMP-ToolCard unavailable cards are dimmed, say they need the internet and stay focusable', async ({ page }) => {
     await open(page);
     const regular = page.getByTestId('unavailable-regular').getByRole('link');
-    await expect(regular).toHaveAccessibleDescription('Opens in a new tab Needs the internet');
+    await expect(regular).toHaveAccessibleDescription(/ Opens in a new tab Needs the internet$/);
     const compact = page.getByTestId('unavailable-compact').getByRole('link');
     await expect(compact).toHaveAccessibleDescription('Needs the internet');
     await compact.focus();

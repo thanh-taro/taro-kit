@@ -55,7 +55,8 @@ export default function WhatsNew({ tools, dates, labels, heading }: WhatsNewProp
               <span class="tk-whatsnew__kind">
                 <L text={item.type === 'updated' ? labels.updated : labels.added} />
               </span>
-              <a class="tk-whatsnew__link" href={toolPath(item.id)}>
+              {/* F-007.R8: the name stays on one line; the title shows a shortened one whole. */}
+              <a class="tk-whatsnew__link" href={toolPath(item.id)} title={item.name}>
                 {item.name}
               </a>
               <span class="tk-whatsnew__summary">

@@ -54,6 +54,11 @@ const fixturePages: AstroIntegration = {
         pattern: '/__fixtures__/whats-new',
         entrypoint: new URL('./tests/fixtures/pages/F007-whats-new.astro', import.meta.url),
       });
+      // CMP-ToolCard sizing over names and summaries of chosen lengths (F-002.AC9, F-007.AC12).
+      injectRoute({
+        pattern: '/__fixtures__/card-sizing',
+        entrypoint: new URL('./tests/fixtures/pages/F002-F007-card-sizing.astro', import.meta.url),
+      });
       // F-002 SCR-Catalog's empty state (tests/fixtures/content/F010_AC6-no-note-no-tools).
       injectRoute({
         pattern: '/__fixtures__/catalog-empty',
