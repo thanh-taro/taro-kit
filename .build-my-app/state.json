@@ -995,6 +995,21 @@
       "answer": "Drop Firefox from testing (automated and manual); Firefox stays supported (NFR-10)",
       "asked": "2026-10-27T05:13:46+00:00",
       "answered": "2026-10-27T05:13:49+00:00"
+    },
+    {
+      "id": "D-068",
+      "question": "Ship v1.4.0 to production",
+      "options": [
+        "Ship",
+        "Hold"
+      ],
+      "recommendation": "Ship",
+      "kind": "release",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Ship (Owner: 'ship it', 2026-10-27): cut v1.4.0 and deploy to production",
+      "asked": "2026-10-27T05:20:04+00:00",
+      "answered": "2026-10-27T05:20:04+00:00"
     }
   ],
   "loops": {
@@ -1088,14 +1103,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T08:30:56+00:00",
-      "event": "loop design-D3 round 2"
-    },
-    {
-      "at": "2026-10-13T08:32:25+00:00",
-      "event": "loop design-D3 ended: converged"
-    },
     {
       "at": "2026-10-13T08:32:26+00:00",
       "event": "design step: 2.4 D3 converged (canvas v37); awaiting user D3 review → then D4"
@@ -1887,9 +1894,17 @@
     {
       "at": "2026-10-27T05:18:15+00:00",
       "event": "CR 2026-10-27: profile avatar added (content only, square crop excluding a bystander; original photo left untracked)"
+    },
+    {
+      "at": "2026-10-27T05:20:04+00:00",
+      "event": "decision D-068 opened: Ship v1.4.0 to production"
+    },
+    {
+      "at": "2026-10-27T05:20:04+00:00",
+      "event": "decision D-068 answered: Ship (Owner: 'ship it', 2026-10-27): cut v1.4.0 and deploy to production"
     }
   ],
-  "updated": "2026-10-27T05:18:15+00:00",
+  "updated": "2026-10-27T05:20:04+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
