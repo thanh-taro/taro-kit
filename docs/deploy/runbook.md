@@ -74,9 +74,6 @@ name, delete that record in DNS first.
 1. Deploy staging (Option A or B), attach `staging.tarokit.app`, then `scripts/smoke-test.sh staging.tarokit.app`.
 2. **[Owner]** manual checks on staging, recorded in `.build-my-app/reports/release-1.0.0.md`:
    - screen reader (VoiceOver, NVDA): the ten steps in `.build-my-app/reports/a11y-qa.md`;
-   - Firefox: home, catalog, palette (⌘K / Ctrl K), Résumé, settings export and import; offline after one visit,
-     and an embedded tool's view while offline (its offline state, then it loads when back online; F-003.AC9, R6,
-     F-006.R1), which the automated Firefox run can't load offline;
    - Safari (macOS and iOS): offline after one visit, the clipboard restriction (F-003.AC3), embedded storage
      (F-003.AC11, D-038), no layout jumps;
    - a real phone on 4G: first load, touch targets, install to the home screen and open offline (F-011.AC1);

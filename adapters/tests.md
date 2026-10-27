@@ -6,7 +6,7 @@ How tests consume the specs. The stack and tools are decided in ADR-0006; this f
 | Kind | Runner | Folder | Runs against |
 |---|---|---|---|
 | Unit / integration (pure logic: content validation, codegen, search, rules, CSP derivation, catalog-check classifier) | Vitest, Node environment | `tests/unit/**/*.test.ts` | source modules directly |
-| End-to-end, accessibility, privacy | Playwright (`chromium`, `firefox`, `webkit` projects) + `@axe-core/playwright` | `tests/e2e/**/*.spec.ts` | `astro preview` serving production builds of test content: `dist-samples/` (`pnpm build:samples`, the sample content in `tests/fixtures/content/samples/`, with the service worker) and `dist-fixtures/` (`pnpm build:fixtures`). Playwright builds both. |
+| End-to-end, accessibility, privacy | Playwright (`chromium` and `webkit` projects; Firefox is supported but not tested, D-067) + `@axe-core/playwright` | `tests/e2e/**/*.spec.ts` | `astro preview` serving production builds of test content: `dist-samples/` (`pnpm build:samples`, the sample content in `tests/fixtures/content/samples/`, with the service worker) and `dist-fixtures/` (`pnpm build:fixtures`). Playwright builds both. |
 | Fixtures | — | `tests/fixtures/<area>/<fixture-name>/` | — |
 
 **No test reads `content/`.** It is the Owner's to replace; tests that need catalog content use fixtures. The unit suite checks only that whatever `content/` holds validates (`$TAROKIT_CONTENT_DIR` stands in for it when set). The production `pnpm build` and `dist/` are checked by the build guards (`check-dist-fonts`, `check-dist-clean`), not by e2e.

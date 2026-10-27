@@ -56,7 +56,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | ID | Package or asset | Range | Purpose | Scope | License | Status | Decided by |
 |---|---|---|---|---|---|---|---|
 | **DEP-18** | vitest | ^5.0 | Unit and integration tests | dev | MIT | approved | ADR-0006 |
-| **DEP-19** | @playwright/test | ^1.64 | E2E on Chromium, Gecko and WebKit; perf marks | dev | Apache-2.0 | approved | ADR-0006 |
+| **DEP-19** | @playwright/test | ^1.64 | E2E on Chromium and WebKit; perf marks | dev | Apache-2.0 | approved | ADR-0006 |
 | **DEP-20** | @axe-core/playwright (pulls axe-core) | ^4.13 | Automated accessibility audit | dev | MPL-2.0 (dev-only exception) | approved | ADR-0006, ADR-0008 |
 | **DEP-21** | @lhci/cli | ^0.15 | Lighthouse budgets for NFR-01 and NFR-11 | dev | Apache-2.0 | removed | ADR-0006 (D-049: never installed; its tree's parse-cache-control declares only "BSD") |
 | **DEP-22** | eslint | ^10 | Linting | dev | MIT | approved | ADR-0006 |
@@ -99,7 +99,7 @@ The npm versions listed were checked on 2026-10-13. **Scope** values:
 | **DEP-35** | @fontsource-variable/jetbrains-mono | ^5 | Mono face, self-hosted | runtime (asset) | OFL-1.1 (text in notices) | approved | D-019 |
 | **DEP-36** | @preact/signals-core | transitive of DEP-04 | Signals runtime | runtime | MIT (notice) | approved | ADR-0002 |
 | **DEP-37** | fast-uri | transitive of DEP-08 | URI parsing in Ajv (build only, unless Ajv ships) | build | BSD-3-Clause | approved | ADR-0005 |
-| **DEP-38** | Playwright browser binaries (Chromium, Firefox, WebKit) | via DEP-19 | E2E engines | dev | Chromium BSD; Firefox MPL-2.0; WebKit LGPL-2.1 (test-only, D-023) | approved | ADR-0006 |
+| **DEP-38** | Playwright browser binaries (Chromium, WebKit) | via DEP-19 | E2E engines | dev | Chromium BSD; WebKit LGPL-2.1 (test-only, D-023) | approved | ADR-0006 |
 | **DEP-39** | workerd | via DEP-45 | Local Workers runtime for preview (its install script stays blocked in `pnpm-workspace.yaml`; `wrangler deploy` of static assets does not run it) | dev | Apache-2.0 | approved | ADR-0007 |
 | **DEP-40** | pnpm | 11.x | Package manager | dev | MIT | approved | ADR-0002 |
 

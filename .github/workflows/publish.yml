@@ -40,16 +40,14 @@ jobs:
       contents: read
     uses: ./.github/workflows/ci.yml
 
-  # NFR-10: the other engines. WebKit blocks the deploy; Firefox reports only until it has been green once on
-  # GitHub (D-044: Firefox is also a manual check on staging).
+  # NFR-10: the other tested engine. WebKit blocks the deploy. Firefox is supported but not tested (D-067).
   e2e-engines:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        project: [webkit, firefox]
-    continue-on-error: ${{ matrix.project == 'firefox' }}
+        project: [webkit]
     steps:
       # Actions are pinned by commit SHA (DEP-29).
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

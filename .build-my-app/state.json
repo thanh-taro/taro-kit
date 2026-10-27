@@ -980,6 +980,21 @@
       "answer": "A: cut v1.3.0-rc.1 and deploy to production, then push main and tags (Owner, 2026-10-26)",
       "asked": "2026-10-26T02:30:49+00:00",
       "answered": "2026-10-26T02:35:18+00:00"
+    },
+    {
+      "id": "D-067",
+      "question": "Keep testing Firefox?",
+      "options": [
+        "Keep",
+        "Drop testing, keep support"
+      ],
+      "recommendation": "Drop testing, keep support",
+      "kind": "technical",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Drop Firefox from testing (automated and manual); Firefox stays supported (NFR-10)",
+      "asked": "2026-10-27T05:13:46+00:00",
+      "answered": "2026-10-27T05:13:49+00:00"
     }
   ],
   "loops": {
@@ -1073,14 +1088,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T05:22:01+00:00",
-      "event": "design step: 2.4 D3 remaining screens: drafting"
-    },
-    {
-      "at": "2026-10-13T05:30:24+00:00",
-      "event": "loop design-D3 started (max 3)"
-    },
     {
       "at": "2026-10-13T05:30:24+00:00",
       "event": "design step: 2.4 D3 drafted (14 artboards); audit round 1"
@@ -1872,9 +1879,17 @@
     {
       "at": "2026-10-27T05:12:48+00:00",
       "event": "iterate step: 8 Iterate: CR 2026-10-27 built, verified and committed locally (one-line names, fixed card height, headline, CV); ship as v1.4.0 when the Owner asks"
+    },
+    {
+      "at": "2026-10-27T05:13:46+00:00",
+      "event": "decision D-067 opened: Keep testing Firefox?"
+    },
+    {
+      "at": "2026-10-27T05:13:49+00:00",
+      "event": "decision D-067 answered: Drop Firefox from testing (automated and manual); Firefox stays supported (NFR-10)"
     }
   ],
-  "updated": "2026-10-27T05:12:48+00:00",
+  "updated": "2026-10-27T05:13:49+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

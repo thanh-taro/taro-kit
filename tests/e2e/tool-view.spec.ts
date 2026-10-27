@@ -11,10 +11,6 @@ import { permissionsPolicy } from '../../src/modules/security-policy/index.ts';
 import { SLOW_LOAD_MS } from '../../src/modules/tool-host/phase.ts';
 import { PORTAL, prefersScheme, serveSites, toolPage, toolUrl, type Sites } from './support/sites.ts';
 
-// Firefox refuses any navigation while the context is offline (NS_ERROR_OFFLINE), even one these tests route, so the
-// offline tool view is a Firefox manual check (docs/deploy/runbook.md); Chromium and WebKit run it here.
-const OFFLINE_FIREFOX = 'Firefox blocks routed navigations while offline; manual check in the runbook';
-
 const STORAGE_KEY = 'tarokit.personal';
 const EMBEDDED = 'Fixture embedded tool';
 const LINKED = 'Fixture linked tool';
@@ -265,9 +261,7 @@ test.describe('F-003 tool view: embedded tools', () => {
   test('F003_AC9 offline, a tool that is not offline-capable shows the offline state, then loads when back online', async ({
     page,
     context,
-    browserName,
   }) => {
-    test.skip(browserName === 'firefox', OFFLINE_FIREFOX);
     await page.goto(toolPage('ft-embedded'));
     await toolFrame(page);
     // Opened while the device is offline (the portal page itself comes from the proxy, like a cached shell).
@@ -286,8 +280,7 @@ test.describe('F-003 tool view: embedded tools', () => {
     expect(await page.evaluate(() => (window as unknown as { marker: number }).marker)).toBe(7);
   });
 
-  test('F-003.R6 an offline-capable tool is loaded even while offline', async ({ page, context, browserName }) => {
-    test.skip(browserName === 'firefox', OFFLINE_FIREFOX);
+  test('F-003.R6 an offline-capable tool is loaded even while offline', async ({ page, context }) => {
     await page.goto(toolPage('ft-offline'));
     await toolFrame(page, 'ft-offline');
     await context.setOffline(true);

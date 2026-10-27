@@ -6,8 +6,8 @@
 //   same-site layout of ADR-0001 (support/partitioning.ts) (portal https://tarokit.test, tool https://ft-embedded.tarokit.test).
 // - WebKit/Safari partition embedded local storage even on the same site (real-Safari check, D-038): the known,
 //   documented limitation of F-003.R8, so the AC's precondition does not hold there and the test is skipped.
-// - Firefox is a manual check (docs/deploy/runbook.md, staging).
-// The launch options below are Chromium switches, which WebKit and Firefox refuse at launch, so the file is skipped
+// - Firefox is not tested (D-067).
+// The launch options below are Chromium switches, which WebKit refuses at launch, so the file is skipped
 // for them before any browser starts (it failed at launch in CI's Linux WebKit, not at the skip inside the test).
 import { expect, test, type Page } from '@playwright/test';
 import { partitionedChromium } from './support/partitioning.ts';
@@ -15,7 +15,7 @@ import { OTHER_PORTAL, serveSites, toolPage, toolUrl } from './support/sites.ts'
 
 test.skip(
   ({ browserName }) => browserName !== 'chromium',
-  'Chromium only: WebKit/Safari partition embedded local storage (F-003.R8, D-038); Firefox is a manual check',
+  'Chromium only: WebKit/Safari partition embedded local storage (F-003.R8, D-038)',
 );
 test.use({ launchOptions: partitionedChromium() });
 

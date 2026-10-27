@@ -16,7 +16,7 @@ supersedes: []
 
 ## Decision
 - **Unit and integration: Vitest 5** (MIT), Node environment, for pure logic: search ranking, personal-data rules, backup validation and migration, content invariants, the CSP and permission derivation, and the catalog-check classifier. Tests are named with AC IDs, such as `F005_AC6 drops the hidden favorite when pinning`.
-- **End-to-end: Playwright** (Apache-2.0) on the `chromium`, `firefox` and `webkit` projects, plus mobile-emulation projects (412 × 915, touch).
+- **End-to-end: Playwright** (Apache-2.0) on the `chromium` and `webkit` projects (Firefox dropped, see the D-067 note), plus mobile-emulation projects (412 × 915, touch).
   - There is one spec per flow (FLOW-01, FLOW-02, FLOW-03), and per-feature specs for the remaining ACs.
   - Tests run against `astro preview` serving the real build, with the service worker on.
   - **Fixture tools** are served by a second local server on a different origin, so isolation can be tested. Same-site storage is tested with `*.localhost` host names where the engine supports them, and otherwise by the manual SP-1 matrix.
@@ -52,3 +52,6 @@ supersedes: []
 
 ## Note from release (2026-10-20, D-049)
 - Lighthouse CI is not used. Its dependency tree includes a package whose declared license ("BSD") fails the ADR-0008 check, and the user chose not to register an exception. The performance gates are the build-time size check (NFR-11) and the Playwright perf rig (NFR-01, NFR-02), which SP-6 already made the gating measures.
+
+## Note from iterate (2026-10-27, D-067)
+- Firefox is removed from testing, automated and manual: no `firefox` Playwright project, no Firefox job in `publish.yml`, no Firefox step in the release checklist. The Owner's call: Firefox stays supported (NFR-10, reference environment), but is not tested. Chromium and WebKit e2e remain; the risk is that a Gecko-only regression ships unnoticed.

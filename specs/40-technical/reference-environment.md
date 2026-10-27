@@ -17,4 +17,4 @@ Used by NFR-01, NFR-02 and NFR-10. This is a technical decision; phase 3 may ref
 - Gecko (Firefox)
 - WebKit (Safari on macOS and iOS)
 
-The two latest major versions of each are supported, on desktop and mobile.
+The two latest major versions of each are supported, on desktop and mobile. Chromium and WebKit are tested automatically; Gecko is supported but not tested (D-067, ADR-0006 note).

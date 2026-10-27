@@ -2,7 +2,7 @@
 // - "One previous online visit" = load a page, then wait for `navigator.serviceWorker.ready` (the worker is active,
 //   so its precache is complete). Never a timed wait.
 // - Offline = `context.setOffline(true)`. Chromium only: Playwright's WebKit offline emulation fails requests before
-//   the service worker sees them, and Firefox does not run here (adapters/tests.md, SP-4); the full-matrix runs
+//   the service worker sees them, and Firefox is not tested (D-067; adapters/tests.md, SP-4); the full-matrix runs
 //   cover WebKit by stopping the server.
 // - Production content (PROD) for pages and states; the fixture build (FX) for a linked and an offline-capable tool;
 //   a versioned copy of dist-samples/ (support/versioned-server.ts) for publishing a new version mid-test.

@@ -216,8 +216,7 @@ test.describe('F-007 first visit', () => {
     expect(order.slice(1, 4)).toEqual(['search', 'invite', CATEGORIES]);
   });
 
-  test('F007_AC10 on a touch-only device: the touch invitation, with no shortcut', async ({ browser, browserName }) => {
-    test.skip(browserName === 'firefox', 'Firefox has no mobile emulation');
+  test('F007_AC10 on a touch-only device: the touch invitation, with no shortcut', async ({ browser }) => {
     const context = await browser.newContext({ ...devices['Pixel 7'] });
     const page = await context.newPage();
     expect(await page.evaluate(() => matchMedia('(any-hover: none) and (any-pointer: coarse)').matches)).toBeTruthy();

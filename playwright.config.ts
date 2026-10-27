@@ -44,7 +44,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    // No Firefox project: Firefox is supported (NFR-10) but not tested (D-067, ADR-0006 note).
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
     // Chromium for CDP throttling; one test at a time, so runs never share the CPU (SP-6: bimodal timings).
     ...(perf
