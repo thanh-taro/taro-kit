@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: CRs 2026-10-27 committed locally (card sizing, headline, CV, D-067 no Firefox testing, avatar); ship as v1.4.0 when the Owner asks",
+      "step": "8 Iterate: v1.4.0 live (card sizing, headline, CV, avatar; D-067 no Firefox testing); awaiting next change request",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1104,14 +1104,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T08:32:26+00:00",
-      "event": "design step: 2.4 D3 converged (canvas v37); awaiting user D3 review → then D4"
-    },
-    {
-      "at": "2026-10-13T08:47:49+00:00",
-      "event": "decision D-033 opened: Deploy spike lab pages to lab./labtool.tarokit.app"
-    },
-    {
       "at": "2026-10-13T08:47:50+00:00",
       "event": "decision D-033 answered: Approved: lab pages only (noindex, temporary); no placeholder on apex"
     },
@@ -1902,9 +1894,17 @@
     {
       "at": "2026-10-27T05:20:04+00:00",
       "event": "decision D-068 answered: Ship (Owner: 'ship it', 2026-10-27): cut v1.4.0 and deploy to production"
+    },
+    {
+      "at": "2026-10-27T05:29:06+00:00",
+      "event": "iterate step: 8 Iterate: v1.4.0 live (card sizing, headline, CV, avatar; D-067 no Firefox testing); awaiting next change request"
+    },
+    {
+      "at": "2026-10-27T05:29:06+00:00",
+      "event": "v1.4.0 deployed to production (version 1e66a70a), smoke passed"
     }
   ],
-  "updated": "2026-10-27T05:20:04+00:00",
+  "updated": "2026-10-27T05:29:06+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
