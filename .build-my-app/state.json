@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: CR 2026-10-27 built, verified and committed locally (one-line names, fixed card height, headline, CV); ship as v1.4.0 when the Owner asks",
+      "step": "8 Iterate: CRs 2026-10-27 committed locally (card sizing, headline, CV, D-067 no Firefox testing, avatar); ship as v1.4.0 when the Owner asks",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1089,14 +1089,6 @@
   },
   "log": [
     {
-      "at": "2026-10-13T05:30:24+00:00",
-      "event": "design step: 2.4 D3 drafted (14 artboards); audit round 1"
-    },
-    {
-      "at": "2026-10-13T05:36:04+00:00",
-      "event": "design step: 2.4 D3 round-1 fixes published (canvas v36); NEXT: re-audit D3 round 2 (verify), user D3 review, then D4 edge states; open user items: SP-2 Firefox local run, Cloudflare setup for tarokit.app"
-    },
-    {
       "at": "2026-10-13T08:30:56+00:00",
       "event": "loop design-D3 round 2"
     },
@@ -1887,9 +1879,17 @@
     {
       "at": "2026-10-27T05:13:49+00:00",
       "event": "decision D-067 answered: Drop Firefox from testing (automated and manual); Firefox stays supported (NFR-10)"
+    },
+    {
+      "at": "2026-10-27T05:18:15+00:00",
+      "event": "iterate step: 8 Iterate: CRs 2026-10-27 committed locally (card sizing, headline, CV, D-067 no Firefox testing, avatar); ship as v1.4.0 when the Owner asks"
+    },
+    {
+      "at": "2026-10-27T05:18:15+00:00",
+      "event": "CR 2026-10-27: profile avatar added (content only, square crop excluding a bystander; original photo left untracked)"
     }
   ],
-  "updated": "2026-10-27T05:13:49+00:00",
+  "updated": "2026-10-27T05:18:15+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
