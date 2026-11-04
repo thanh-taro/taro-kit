@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: v1.4.1 live (iOS narrow-menu tap fix); awaiting next change request",
+      "step": "8 Iterate: D-072 share permission built and verified (unit 550, e2e 662); clip-maker catalog entry wired visible — catalog check blocks publish until the tool is live; uncommitted with D-070/D-071",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1025,6 +1025,52 @@
       "answer": "Ship (Owner: 'Go ahead', 2026-10-27)",
       "asked": "2026-10-27T08:13:30+00:00",
       "answered": "2026-10-27T08:13:30+00:00"
+    },
+    {
+      "id": "D-070",
+      "question": "Leave-page warning from embedded tools",
+      "options": [
+        "New opt-in dialogs permission",
+        "Don't allow"
+      ],
+      "recommendation": "New opt-in dialogs permission",
+      "kind": "technical",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "New opt-in 'dialogs' permission (sandbox allow-modals) a tool declares; amends ADR-0009",
+      "asked": "2026-10-27T13:02:06+00:00",
+      "answered": "2026-10-27T13:02:06+00:00"
+    },
+    {
+      "id": "D-071",
+      "question": "Focus into the tool frame after ready",
+      "options": [
+        "Every embedded tool",
+        "Only tools that ask",
+        "Not at all"
+      ],
+      "recommendation": "Every embedded tool",
+      "kind": "design",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Every embedded tool: focus moves into the frame on ready unless the user moved focus since entry",
+      "asked": "2026-10-27T13:02:06+00:00",
+      "answered": "2026-10-27T13:02:06+00:00"
+    },
+    {
+      "id": "D-072",
+      "question": "Share permission for embedded tools (Clip Maker CR)",
+      "options": [
+        "Add opt-in share permission",
+        "Don't allow"
+      ],
+      "recommendation": "Add opt-in share permission",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Add opt-in share permission (allow=web-share, no sandbox token); privacy policy and terms unchanged (user picks the share target). Catalog entry: Owner said wire it now, not hidden (2026-11-04)",
+      "asked": "2026-11-04T08:02:13+00:00",
+      "answered": "2026-11-04T08:04:42+00:00"
     }
   ],
   "loops": {
@@ -1118,42 +1164,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T08:52:57+00:00",
-      "event": "Cloudflare zone configured (D-035); wrangler logged in to user's personal account"
-    },
-    {
-      "at": "2026-10-13T13:36:33+00:00",
-      "event": "loop design-D4 started (max 3)"
-    },
-    {
-      "at": "2026-10-13T13:36:33+00:00",
-      "event": "design step: 2.4 D4 drafted (8 boards, state tweaks); audit round 1"
-    },
-    {
-      "at": "2026-10-13T13:40:27+00:00",
-      "event": "loop design-D4 round 2"
-    },
-    {
-      "at": "2026-10-13T13:41:47+00:00",
-      "event": "loop design-D4 ended: converged"
-    },
-    {
-      "at": "2026-10-13T13:41:57+00:00",
-      "event": "phase design -> gate"
-    },
-    {
-      "at": "2026-10-13T13:43:09+00:00",
-      "event": "gate design passed: 38 boards D1-D4 approved; Night Market; canvas v49; design/canvas snapshot"
-    },
-    {
-      "at": "2026-10-13T13:43:09+00:00",
-      "event": "architecture step: 3 architecture: waiting on SP-1/SP-3 (live lab), then accept ADRs, scaffold, CI → G3"
-    },
-    {
-      "at": "2026-10-13T13:52:29+00:00",
-      "event": "decision D-036 opened: Narrow F-003.R8/AC3/AC11 to browser reality"
-    },
     {
       "at": "2026-10-13T13:52:29+00:00",
       "event": "decision D-036 answered: Narrow both"
@@ -1917,9 +1927,45 @@
     {
       "at": "2026-10-27T08:34:38+00:00",
       "event": "v1.4.1 deployed to production (version 7c7ccbab), smoke and menu tap checks passed"
+    },
+    {
+      "at": "2026-10-27T13:02:06+00:00",
+      "event": "decision D-070 opened: Leave-page warning from embedded tools"
+    },
+    {
+      "at": "2026-10-27T13:02:06+00:00",
+      "event": "decision D-070 answered: New opt-in 'dialogs' permission (sandbox allow-modals) a tool declares; amends ADR-0009"
+    },
+    {
+      "at": "2026-10-27T13:02:06+00:00",
+      "event": "decision D-071 opened: Focus into the tool frame after ready"
+    },
+    {
+      "at": "2026-10-27T13:02:06+00:00",
+      "event": "decision D-071 answered: Every embedded tool: focus moves into the frame on ready unless the user moved focus since entry"
+    },
+    {
+      "at": "2026-11-04T08:02:13+00:00",
+      "event": "decision D-072 opened: Share permission for embedded tools (Clip Maker CR)"
+    },
+    {
+      "at": "2026-11-04T08:02:14+00:00",
+      "event": "iterate step: 8 Iterate: CR Clip Maker share permission (D-072) — spec drafted, spec review round 1"
+    },
+    {
+      "at": "2026-11-04T08:04:42+00:00",
+      "event": "decision D-072 answered: Add opt-in share permission (allow=web-share, no sandbox token); privacy policy and terms unchanged (user picks the share target). Catalog entry: Owner said wire it now, not hidden (2026-11-04)"
+    },
+    {
+      "at": "2026-11-04T08:32:37+00:00",
+      "event": "iterate step: 8 Iterate: D-072 share permission built and verified (unit 550, e2e 662); clip-maker catalog entry wired visible — catalog check blocks publish until the tool is live; uncommitted with D-070/D-071"
+    },
+    {
+      "at": "2026-11-04T08:32:37+00:00",
+      "event": "D-072 share permission implemented; F-003.AC17 passes in WebKit; WebKit refuses data: downloads under portal frame-src (contract: use blob:)"
     }
   ],
-  "updated": "2026-10-27T08:34:38+00:00",
+  "updated": "2026-11-04T08:32:37+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

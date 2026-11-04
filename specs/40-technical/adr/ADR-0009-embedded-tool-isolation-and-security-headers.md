@@ -21,7 +21,7 @@ The portal must also make no third-party requests (NFR-05). Browser enforcement 
 ## Decision
 - **Frame:** each embedded tool is an `<iframe src="<tool url>" title="<name> tool">`, built by MOD-ToolHost (the `src` also carries `?theme=`, ADR-0011).
   - The base sandbox is `sandbox="allow-scripts allow-same-origin allow-forms"`.
-  - The frame **never** gets `allow-top-navigation`, `allow-top-navigation-by-user-activation`, `allow-modals` or `allow-storage-access-by-user-activation`.
+  - The frame **never** gets `allow-top-navigation`, `allow-top-navigation-by-user-activation` or `allow-storage-access-by-user-activation`. `allow-modals` is granted only through the `dialogs` permission (D-070 note).
   - `credentialless` is never set, because it would partition the tool's storage.
   - The frame has `referrerpolicy="strict-origin"`.
 - **Permission mapping (RULE-10 to the platform):**
@@ -36,6 +36,8 @@ The portal must also make no third-party requests (NFR-05). Browser enforcement 
 | fullscreen | `allow="fullscreen"` |
 | camera | `allow="camera"` |
 | microphone | `allow="microphone"` |
+| dialogs | sandbox token `allow-modals` (D-070) |
+| share | `allow="web-share"` (D-072) |
 
 - **Content-Security-Policy (meta, emitted per page by Astro `security.csp`):**
   - `default-src 'self'`, with `script-src` and `style-src` as `'self'` plus per-page hashes;
@@ -78,3 +80,14 @@ The portal must also make no third-party requests (NFR-05). Browser enforcement 
 
 ## Amendment (F-004 build, 2026-10-14)
 - The portal page uses `clipboard-write` itself, for the palette's copy-address action (F-004.R5). With `clipboard-write=()` Chromium refused that write on the portal, so the feature now keeps `self` whether or not a tool declares it: `clipboard-write=(self)`, or `(self "https://tool…")` with declaring tools. Frames still receive it only through their own `allow="clipboard-write"`, so the baseline frame keeps refusing clipboard writes (F-003.AC3). Every other undeclared feature stays `()`.
+
+## Note from iterate (2026-10-27, D-070)
+- A tool may declare the `dialogs` permission (RULE-10). It adds `allow-modals` to that tool's frame only, so the browser can show its warning before a page with unsaved work is left; without it the warning is suppressed in a sandboxed frame. The same token lets the tool show alerts, confirmations, prompts and the print dialog. It adds no Permissions-Policy entry.
+- It never allows navigating the portal page. A tool's dialogs block the whole tab while shown, so a misbehaving tool can disrupt the portal; this is accepted because only tools that justify it in their catalog entry review declare it, as for `popups`. Requested by the Image Annotator.
+- Measured 2026-10-27 (Playwright, a cross-origin sandboxed frame after a click inside it): Chromium shows the frame's leave-page warning with `allow-modals` and suppresses it without. WebKit shows no leave-page warning from any embedded frame, sandboxed or not, same-origin or not, while it shows one for a top-level page; on WebKit an embedded tool can't warn about unsaved work (F-003.AC12 is conditioned on it). Real Safari is a manual check.
+
+## Note from iterate (2026-11-04, D-072)
+- A tool may declare the `share` permission (RULE-10). It adds the Permissions-Policy feature `web-share` to that tool's frame (`allow="web-share"`) and to the portal's site-wide `Permissions-Policy`, listing only the declaring tools' origins (`web-share=(self "https://tool…")`; `web-share=()` when no visible embedded tool declares it). Other tools' frames don't get it, because they have no `allow="web-share"`. It adds no sandbox token. Requested by Clip Maker, to share or save a finished export to Photos.
+- Evidence: Clip Maker's own spike (its SP-ios, not one of this project's SP-1 to SP-5) measured `navigator.canShare()` as false in WebKit and Chromium for a frame without `allow="web-share"`, and true with it, where sharing then worked. The share sheet opens only after a user gesture inside the tool (the Web Share API requires one), and the shared data goes only where the user sends it. Browsers without the Web Share API (for example Firefox on desktop) offer no sharing either way, so tools must detect it and offer download instead. Sharing availability depends on the operating system too (desktop Chromium on Linux has no `navigator.share`), so F-003.AC17's test is skipped where the top-level portal page itself has no `navigator.canShare`, and checks `canShare` with a concrete link and title (`canShare()` with no data is false even when granted).
+- Measured while building it (2026-11-04, Playwright WebKit): a download the embedded tool starts from a `data:` link is checked against the portal page's `frame-src` and refused ("does not appear in the frame-src directive"); a `blob:` download is not refused. Chromium allows both. The tool contract tells tools to use `blob:`. Playwright's WebKit reports no download from inside any frame, so F-003.AC13 is checked in Chromium, and real Safari is a manual check.
+- Not changed by this request: no cross-origin isolation (COOP stays `same-origin`, no COEP) and no new sandbox tokens.

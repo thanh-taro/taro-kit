@@ -28,4 +28,4 @@ Use one tool inside the portal, or get to it.
 - Exits to: the tool's own address in a new tab; back.
 
 ## Accessibility
-The embedded tool region has an accessible name of "<tool name> tool". Focus moves to the tool header on entry. A skip link jumps into the tool. Both targets show the focus ring when focused from the keyboard or on entry (NFR-04). The tool name in the header wraps on narrow screens rather than being cut off (NFR-07).
+The embedded tool region has an accessible name of "<tool name> tool". Focus moves to the tool header on entry, then into the tool area when the tool says it is ready, unless focus has moved meanwhile (F-003.R9). When focus moves into the tool area this way, the area shows the focus ring until focus leaves it. A skip link jumps into the tool. Both targets show the focus ring when focused from the keyboard or on entry (NFR-04). The tool name in the header wraps on narrow screens rather than being cut off (NFR-07).

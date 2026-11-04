@@ -86,6 +86,11 @@ const header: ToolHeaderText = {
   :global(.tk-toolarea:focus-visible) {
     outline-offset: calc(-1 * var(--tk-border-width-focus));
   }
+  /* F-003.R9: focus moved into the tool on ready; the ring shows where typing goes until focus leaves it (NFR-04). */
+  :global(.tk-toolarea[data-focus-ring]) {
+    outline: var(--tk-border-width-focus) solid var(--tk-color-accent);
+    outline-offset: calc(-1 * var(--tk-border-width-focus));
+  }
   :global(.tk-toolarea[data-phase='offline']),
   :global(.tk-toolarea[data-linked]) {
     align-items: center;

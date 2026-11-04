@@ -9,6 +9,9 @@ document.documentElement.lang = window.initialLang ?? 'none';
 // The portal is the embedding page's origin; its referrer policy (strict-origin) sends exactly that.
 const portal = document.referrer ? new URL(document.referrer).origin : null;
 window.received = [];
+// F-003.AC14: the keys that reached the tool's document.
+window.keys = [];
+window.addEventListener('keydown', (event) => window.keys.push(event.key));
 window.addEventListener('message', (event) => {
   if (event.origin !== portal) return;
   window.received.push(event.data);
@@ -42,6 +45,8 @@ window.probe = {
   navigateArea: (url) => {
     location.href = url;
   },
+  // F-003.AC17: whether the share menu is available here, for a link with a title (canShare() with no data is false).
+  canShare: () => attempt(() => (navigator.canShare ? navigator.canShare({ title: 'Fixture', url: location.href }) : 'unsupported')),
 };
 
 // The flag: on the ft-ready host the tool asks the portal for the theme once loaded (F-012.R6, ADR-0011).
@@ -56,6 +61,27 @@ window.addEventListener('DOMContentLoaded', () => {
       () => (result.textContent = 'ok'),
       (e) => (result.textContent = e.name),
     );
+  });
+  // F-003.AC13: save a file through a download link (refused without the downloads permission).
+  document.getElementById('download').addEventListener('click', () => {
+    const link = document.createElement('a');
+    // A blob: link, as the tool contract asks (a data: link is refused by the portal's frame-src in WebKit).
+    link.href = URL.createObjectURL(new Blob(['made by the tool'], { type: 'text/plain' }));
+    link.download = 'fixture.txt';
+    document.body.append(link);
+    link.click();
+    link.remove();
+  });
+  // F-003.AC12: unsaved work asks to be warned about before the page is left (shown only with dialogs).
+  let dirty = false;
+  document.getElementById('dirty').addEventListener('click', () => {
+    dirty = true;
+    document.getElementById('dirty-state').textContent = 'unsaved';
+  });
+  window.addEventListener('beforeunload', (event) => {
+    if (!dirty) return;
+    event.preventDefault();
+    event.returnValue = '';
   });
   // A user gesture inside the frame, trying to navigate the portal page itself (RULE-10).
   document.getElementById('top-nav').addEventListener('click', () => {

@@ -87,7 +87,16 @@ export interface Tool {
   origin: "own" | "external";
   openMode?: "embedded" | "linked";
   permissions?: (
-    "clipboard-read" | "clipboard-write" | "downloads" | "file-pick" | "popups" | "fullscreen" | "camera" | "microphone"
+    | "clipboard-read"
+    | "clipboard-write"
+    | "downloads"
+    | "file-pick"
+    | "popups"
+    | "fullscreen"
+    | "camera"
+    | "microphone"
+    | "dialogs"
+    | "share"
   )[];
   offline?: boolean;
   sourceUrl?: SecureUrl;

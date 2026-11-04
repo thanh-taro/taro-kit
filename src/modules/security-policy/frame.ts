@@ -2,7 +2,8 @@
 // Pure and import-free; MOD-ToolHost renders the result on the frame it creates (F-003.R3, NFR-08).
 // - Base sandbox: the tool can run its own code, keep its own origin (its storage, F-003.R8) and submit
 //   its own forms (RULE-10; without allow-forms Chromium never fires `submit`, SP-3).
-// - Never: top navigation (the portal page), modals, storage-access prompts. `credentialless` is never set.
+// - Never: top navigation (the portal page) or storage-access prompts. Modals only through `dialogs` (D-070).
+//   `credentialless` is never set.
 // - Each declared permission adds exactly its sandbox token or `allow` feature; file-pick has no platform
 //   switch (file inputs work in any frame that runs scripts), so it is declarative only.
 
@@ -15,6 +16,8 @@ export const PERMISSIONS = [
   'fullscreen',
   'camera',
   'microphone',
+  'dialogs',
+  'share',
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
@@ -24,7 +27,6 @@ export const FORBIDDEN_SANDBOX = [
   'allow-top-navigation',
   'allow-top-navigation-by-user-activation',
   'allow-top-navigation-to-custom-protocols',
-  'allow-modals',
   'allow-storage-access-by-user-activation',
 ] as const;
 
@@ -34,6 +36,9 @@ const SANDBOX_FOR: Partial<Record<Permission, readonly string[]>> = {
   // Granted only through the `popups` permission, never by default, and each tool declaring it must justify it in
   // its catalog entry review (RULE-10, ADR-0009).
   popups: ['allow-popups', 'allow-popups-to-escape-sandbox'],
+  // The browser's own dialogs, mainly the warning before leaving with unsaved work (D-070, ADR-0009 note). Like
+  // popups, declared only by tools that justify it in review; it adds no Permissions-Policy feature.
+  dialogs: ['allow-modals'],
 };
 /** Permissions Policy features delegated with `allow` (and listed in the portal's Permissions-Policy). */
 export const POLICY_FEATURE_FOR: Partial<Record<Permission, string>> = {
@@ -42,6 +47,8 @@ export const POLICY_FEATURE_FOR: Partial<Record<Permission, string>> = {
   fullscreen: 'fullscreen',
   camera: 'camera',
   microphone: 'microphone',
+  // The device's share menu (navigator.share), for example to save an export to Photos (D-072, ADR-0009 note).
+  share: 'web-share',
 };
 export const POLICY_FEATURES = Object.values(POLICY_FEATURE_FOR);
 

@@ -1,7 +1,7 @@
 ---
 id: F-003
 title: Open a tool
-status: shipped
+status: ready
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
@@ -9,7 +9,7 @@ entities: [ENT-Tool]
 rules: [RULE-06, RULE-10, RULE-11]
 screens: [SCR-ToolView, SCR-NotFound]
 components: [CMP-ToolHeader, CMP-StateMessage]
-nfr: [NFR-08]
+nfr: [NFR-08, NFR-04]
 events: []
 depends_on: [F-001]
 ---
@@ -30,6 +30,7 @@ Every tool has a stable address in the portal. Opening it either shows the tool 
 - **R6** When the device is offline and the tool is not offline-capable, the tool view shows an offline state instead of the tool (COPY-tool.offline). When the connection returns, the tool loads with no manual reload.
 - **R7** An unknown or hidden tool id shows the not-found state with a link back to the catalog (RULE-06).
 - **R8** In browsers that do not partition an embedded page's storage by the top-level page, an own embedded tool sees the same locally stored data (its local key-value storage) whether it is opened inside the portal or at its own address (ADR-0001). Browsers that partition it keep separate data for the two (a known limitation; cookies stay shared). Other storage kinds, such as databases and the tool's own offline worker, may differ by browser, so tools keep user data in local key-value storage. The installed portal on platforms that keep the installed app's storage separate is exempt.
+- **R9** When an embedded tool says it is ready (F-012.R6; ready messages from any other address or window are ignored), and focus has not moved since entry put it on the tool header, focus moves into the tool area, so typing and pasting reach the tool without a click first, and the tool area shows the focus ring until focus leaves it (NFR-04). Once focus has moved, by the user or by this rule, later ready messages leave focus where it is.
 
 ## Acceptance criteria
 - **AC1** Given an embedded tool "json", when the user visits its portal address, then the tool is shown inside the tool view under its header. (R1, R2)
@@ -43,6 +44,12 @@ Every tool has a stable address in the portal. Opening it either shows the tool 
 - **AC9** Given the device is offline and the tool is not offline-capable, when the user opens it, then the offline state is shown; when the connection returns, the tool loads without a manual reload. (R6)
 - **AC10** Given the id "does-not-exist", when the user visits its portal address, then the not-found state is shown with a link to the catalog. (R7)
 - **AC11** Given a browser that does not partition embedded storage, and an own embedded tool that saved a value in its local key-value storage while open at its own address, when the user opens the same tool inside the portal, then the tool shows that value. (R8)
+- **AC12** Given an embedded tool with the `dialogs` permission, in a browser that shows leave-page warnings for embedded pages (RULE-10), after the user has used the tool and the tool asks to be warned before leaving, when the user leaves the page, then the browser asks whether to leave; given the same tool without the permission, the browser does not ask. (R3)
+- **AC13** Given an embedded tool with the `downloads` permission, when it saves a file, then the file is downloaded; given the same tool without the permission, the download is refused and the portal is unaffected. (R3)
+- **AC14** Given the tool view of an embedded tool has just opened and focus is still on the tool header, when the tool says it is ready, then focus is in the tool area, the focus ring is visible, and the next key pressed reaches the tool. (R9)
+- **AC15** Given the user pressed Tab from the tool header to the open-in-new-tab action, when the tool then says it is ready, then focus stays on that action. (R9)
+- **AC16** Given an embedded tool whose ready moved focus into the tool area, when the user moves focus back to the tool header and the tool says it is ready again, then focus stays on the header. (R9)
+- **AC17** Given an embedded tool with the `share` permission, in a browser where the portal page itself can share (RULE-10), when the tool checks whether it can share a link with a title, then sharing is available; given the same tool without the permission, in the same browser, sharing is unavailable and the portal is unaffected. (R3)
 
 ## UX notes
 SCR-ToolView with CMP-ToolHeader. States use CMP-StateMessage. Not-found is SCR-NotFound (COPY-notFound.title, COPY-notFound.body, COPY-notFound.toCatalog). Isolation is a security requirement (NFR-08).

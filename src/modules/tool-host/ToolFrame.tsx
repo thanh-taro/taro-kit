@@ -6,6 +6,10 @@
 //   is the tool's address plus the theme showing at that moment (F-012.R5, ADR-0011). The loading state shows
 //   until the frame's `load` (F-003.R5); after RULE-11's threshold the header switches to its slow variant and
 //   the same frame keeps loading.
+// - Focus on ready (F-003.R9, D-071): the first valid ready moves focus into the frame, but only while focus is still
+//   on the tool header where entry put it (entry.ts); once focus has moved, by the user or by this rule, later ready
+//   messages (a reloaded tool, F-003.R6) leave it alone. The area then carries `data-focus-ring` until focus leaves
+//   the frame, so the ring shows where typing goes (NFR-04).
 // - Theme and language hand-off: connected for as long as the frame exists (F-012.R5/R6, F-019.R7); the `src`
 //   carries both values showing when the frame is made (a frame made again on reconnect gets the current ones).
 // - Open-in-new-tab uses the catalog address as is: no theme, no language (F-012.R5, F-019.R7).
@@ -83,6 +87,28 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
   // F-012.R5, R6: connected in a layout effect, right after the frame is in the DOM and before its tool can load
   // and say ready. A change sent now reaches only the frame's initial blank page (another origin) and is dropped,
   // so the tool gets exactly one answer, to its ready, instead of a change plus the same value again.
+  // F-003.R9: becomes false the first time focus leaves the tool header (entry.ts focuses it, possibly after this
+  // island starts), or once this rule has moved focus. Until then focus counts as untouched while it is on the header.
+  const focusIntact = useRef(true);
+  useEffect(() => {
+    const header = document.querySelector<HTMLElement>('.tk-toolheader');
+    if (!header) return;
+    const moved = () => (focusIntact.current = false);
+    header.addEventListener('focusout', moved);
+    return () => header.removeEventListener('focusout', moved);
+  }, []);
+  const focusOnReady = () => {
+    const frameEl = frameRef.current;
+    const header = document.querySelector('.tk-toolheader');
+    if (!frameEl || !focusIntact.current || document.activeElement !== header) return;
+    focusIntact.current = false;
+    frameEl.focus({ preventScroll: true });
+    const area = areaRef.current;
+    if (!area || document.activeElement !== frameEl) return;
+    area.setAttribute('data-focus-ring', '');
+    frameEl.addEventListener('blur', () => area.removeAttribute('data-focus-ring'), { once: true });
+  };
+
   useLayoutEffect(() => {
     if (!src || !frameRef.current) return;
     return connectThemeHandoff({
@@ -93,6 +119,7 @@ export default function ToolFrame({ tool, frame, header, favorite, loading, chil
       srcLanguage: srcLanguage.current,
       language: language().shownLanguage,
       host: window,
+      onReady: focusOnReady,
     });
   }, [src, tool.url]);
 

@@ -230,7 +230,9 @@
               "popups",
               "fullscreen",
               "camera",
-              "microphone"
+              "microphone",
+              "dialogs",
+              "share"
             ]
           },
           "default": []

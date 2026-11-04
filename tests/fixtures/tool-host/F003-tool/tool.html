@@ -2,7 +2,7 @@
 <!-- The F-003 e2e fixture tool, served for every https://ft-*.tarokit.test/ address (tests/e2e/support/sites.ts).
      It follows the tool author contract (specs/40-technical/tool-contract.md): theme from ?theme= before first
      paint, and messages accepted only from the portal that embeds it. It also exposes probes for the isolation
-     tests (F-003.AC3–AC5) and keeps a value in its local key-value storage (F-003.AC11). -->
+     tests (F-003.AC3–AC5, AC12, AC13, AC17) and keeps a value in its local key-value storage (F-003.AC11). -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -33,6 +33,8 @@
       <p>Stored value: <output id="stored">none</output></p>
       <p><button type="button" id="copy">Copy to clipboard</button> <output id="copy-result"></output></p>
       <p><button type="button" id="top-nav">Navigate the portal</button></p>
+      <p><button type="button" id="download">Download a file</button></p>
+      <p><button type="button" id="dirty">Make unsaved changes</button> <output id="dirty-state">saved</output></p>
     </main>
   </body>
 </html>

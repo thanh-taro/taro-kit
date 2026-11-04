@@ -37,6 +37,8 @@ describe('RULE-10 frame attributes (ADR-0009)', () => {
       fullscreen: { sandbox: [], allow: 'fullscreen' },
       camera: { sandbox: [], allow: 'camera' },
       microphone: { sandbox: [], allow: 'microphone' },
+      dialogs: { sandbox: ['allow-modals'] },
+      share: { sandbox: [], allow: 'web-share' },
     };
     expect(Object.keys(map).sort()).toEqual([...PERMISSIONS].sort());
     for (const [permission, expected] of Object.entries(map)) {
@@ -46,11 +48,18 @@ describe('RULE-10 frame attributes (ADR-0009)', () => {
     }
   });
 
-  it('NFR-08 no permission set ever grants top navigation, modals or storage-access prompts', () => {
+  it('NFR-08 no permission set ever grants top navigation or storage-access prompts', () => {
     const all = frameAttributesFor({ permissions: [...PERMISSIONS] });
     for (const token of FORBIDDEN_SANDBOX) expect(all.sandbox.split(' ')).not.toContain(token);
-    expect(all.allow).toBe('clipboard-read; clipboard-write; fullscreen; camera; microphone');
+    expect(FORBIDDEN_SANDBOX.filter((t) => t.startsWith('allow-top-navigation'))).toHaveLength(3);
+    expect(all.allow).toBe('clipboard-read; clipboard-write; fullscreen; camera; microphone; web-share');
     expect(() => frameAttributesFor({ permissions: ['geolocation'] })).toThrow(/unknown permission/);
+  });
+
+  it('RULE-10 modals come only from the dialogs permission (D-070)', () => {
+    const others = PERMISSIONS.filter((p) => p !== 'dialogs');
+    expect(frameAttributesFor({ permissions: [...others] }).sandbox).not.toContain('allow-modals');
+    expect(frameAttributesFor({ permissions: ['dialogs'] }).sandbox.split(' ')).toContain('allow-modals');
   });
 });
 
@@ -65,13 +74,28 @@ describe('ADR-0009 response headers', () => {
     ]);
     expect(policy).toBe(
       'clipboard-read=(), clipboard-write=(self "https://a.tarokit.app" "https://b.tarokit.app"), fullscreen=(), ' +
-        'camera=(self "https://b.tarokit.app"), microphone=()',
+        'camera=(self "https://b.tarokit.app"), microphone=(), web-share=()',
     );
+  });
+
+  it('RULE-10 web-share is delegated only to visible embedded tools that declare share (D-072)', () => {
+    const policy = permissionsPolicy([
+      tool('https://clip.tarokit.app/', ['downloads', 'share']),
+      tool('https://plain.tarokit.app/', ['downloads']),
+      tool('https://hidden.tarokit.app/', ['share'], { hidden: true }),
+    ]);
+    expect(policy).toContain('web-share=(self "https://clip.tarokit.app")');
+    expect(frameAttributesFor({ permissions: ['share'] })).toEqual({
+      sandbox: 'allow-scripts allow-same-origin allow-forms',
+      allow: 'web-share',
+      referrerpolicy: 'strict-origin',
+    });
+    expect(frameAttributesFor({ permissions: ['downloads'] }).allow).toBeUndefined();
   });
 
   it('F-004.R5 the portal keeps clipboard-write for itself (copy-address), delegated to no frame by default', () => {
     expect(permissionsPolicy([tool('https://plain.tarokit.app/')])).toBe(
-      'clipboard-read=(), clipboard-write=(self), fullscreen=(), camera=(), microphone=()',
+      'clipboard-read=(), clipboard-write=(self), fullscreen=(), camera=(), microphone=(), web-share=()',
     );
   });
 

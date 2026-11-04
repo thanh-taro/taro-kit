@@ -9,7 +9,7 @@ status: draft
 |---|---|---|---|---|
 | F-001 | Maintain the catalog | M-1 | P0 | shipped |
 | F-002 | Browse the catalog | M-1 | P0 | shipped |
-| F-003 | Open a tool | M-1 | P0 | shipped |
+| F-003 | Open a tool | M-1 | P0 | ready |
 | F-004 | Search with the command palette | M-1 | P0 | shipped |
 | F-005 | Pin favorite tools | M-1 | P0 | shipped |
 | F-006 | Track recent tools | M-1 | P0 | shipped |

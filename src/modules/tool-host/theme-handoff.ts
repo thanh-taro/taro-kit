@@ -90,6 +90,8 @@ export interface HandoffOptions {
   language: LanguageSource;
   /** The portal window that receives the tool's messages. */
   host: Pick<Window, 'addEventListener' | 'removeEventListener'>;
+  /** Called after each valid ready has been answered (F-003.R9 moves focus on the first one). */
+  onReady?: () => void;
 }
 
 /** Wires the hand-off for one embedded frame; returns a function that stops it. */
@@ -101,6 +103,7 @@ export function connectThemeHandoff({
   srcLanguage,
   language,
   host,
+  onReady,
 }: HandoffOptions): () => void {
   const toolOrigin = secureOrigin(toolUrl, 'embedded tool');
   let told = assertHandoffTheme(srcTheme);
@@ -122,6 +125,7 @@ export function connectThemeHandoff({
     if (typeof data === 'object' && data !== null && (data as { type?: unknown }).type === READY_MESSAGE) {
       send(theme.value);
       sendLanguage(language.value);
+      onReady?.();
     }
   };
   host.addEventListener('message', onMessage as EventListener);

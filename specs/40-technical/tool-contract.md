@@ -21,8 +21,8 @@ How a separate tool project (for example the JSON Formatter) must behave to be l
 
 ## Your users' data (F-018, D-058)
 The portal's privacy policy and terms promise these for every tool the Owner builds (origin `own`), so each such tool must keep them:
-- **Processed on the device**: files and text the user gives the tool are processed in the browser and never uploaded or sent anywhere. Prefer enforcing it with `Content-Security-Policy: connect-src 'none'` (or only the tool's own origin for its own static files).
-- **Originals never change**: the tool never modifies a file the user opened in it. Anything it saves is a new file the user chooses to download or save.
+- **Processed on the device**: files and text the user gives the tool are processed in the browser and never uploaded or sent anywhere by the tool itself; a file the user chooses to share (`share` permission) goes only to the app the user picks. Prefer enforcing it with `Content-Security-Policy: connect-src 'none'` (or only the tool's own origin for its own static files).
+- **Originals never change**: the tool never modifies a file the user opened in it. Anything it saves is a new file the user chooses to download, save or share.
 - **Says how it handles data**: the tool states its own data handling inside the tool (F-018 scope, COPY-settings.privacyTools).
 - A tool that can't keep these is not listed until the policies are changed first.
 
@@ -32,6 +32,7 @@ The portal's privacy policy and terms promise these for every tool the Owner bui
 - Treat every `taro:theme` message as "apply this value": the same value can arrive more than once (for example, a theme change just before `taro:ready`).
 - When the tool is opened directly (linked, or through open-in-new-tab), no theme is passed; use your own default or the device setting.
 - If the tool has a service worker, ignore the `theme` query parameter when matching cached pages (`ignoreSearch`).
+- Sending `taro:ready` also lets the portal move keyboard focus into the tool's frame (F-003.R9): the first time, and only when focus is still on the tool header where opening the tool put it. The tool then receives typing and paste events at once. A tool that wants a specific control focused does so on the first `focus` event of its window, and only if nothing in the tool is focused yet (`document.activeElement === document.body`). Don't rely on `autofocus`: browsers ignore it in cross-origin frames.
 - Nothing else is exchanged with the portal besides the language below (D-039, F-019.R7).
 
 ## Language hand-off (F-019.R7, ADR-0012)
@@ -44,4 +45,8 @@ The portal's privacy policy and terms promise these for every tool the Owner bui
 - If the tool has a service worker, ignore the `lang` query parameter when matching cached pages (`ignoreSearch`), as for `theme`.
 
 ## Catalog entry
+- Declare only the permissions the tool needs (RULE-10).
+- `dialogs` is needed for the browser's warning before leaving with unsaved work (`beforeunload`), which is suppressed otherwise (and not shown at all from embedded pages in Safari); it also allows alerts, confirmations and print, so justify it in the entry review (D-070).
+- Create downloads from `blob:` URLs (`URL.createObjectURL`), not `data:` URLs: Safari checks a frame's `data:` download against the portal's `frame-src` and refuses it (measured in WebKit, 2026-11-04).
+- `share` lets the tool open the device's share menu (`navigator.share`, for example Save to Photos) from inside the portal's frame (D-072). Only after a user gesture, and the tool must check `navigator.canShare` with its real data and fall back to download when it is false (declare `downloads` too): the permission is missing, or the browser can't share.
 - Add one YAML file under `content/tools/` in the TaroKit repo, matching the schema (F-001). Keep `hidden: true` until the tool is deployed and passes the catalog check (D-012, F-014).

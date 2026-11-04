@@ -355,10 +355,142 @@ test.describe('F-003 tool view: linked, unknown and hidden tools', () => {
     expect(await csp('/')).toContain("frame-src 'none'");
     const frame = frameEl(page);
     await page.goto(toolPage('ft-clipboard'));
-    await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
-    await expect(frame).toHaveAttribute('allow', 'clipboard-write');
+    // ft-clipboard declares clipboard-write, downloads, dialogs and share (RULE-10, D-070, D-072).
+    await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-downloads allow-modals');
+    await expect(frame).toHaveAttribute('allow', 'clipboard-write; web-share');
     await expect(frame).toHaveAttribute('referrerpolicy', 'strict-origin');
     expect(sites.headers['permissions-policy']).toContain('clipboard-write=(self "https://ft-clipboard.tarokit.test")');
+    // F003_AC17: web-share goes only to declaring tools, and a tool without share gets no allow at all.
+    expect(sites.headers['permissions-policy']).toContain('web-share=(self "https://ft-clipboard.tarokit.test")');
+    expect(sites.headers['permissions-policy']).not.toContain('ft-embedded.tarokit.test');
+    await page.goto(toolPage('ft-embedded'));
+    await expect(frame).not.toHaveAttribute('allow', /web-share/);
+  });
+});
+
+test.describe('F-003 permissions: downloads and dialogs (RULE-10, D-070)', () => {
+  // ft-clipboard is granted downloads and dialogs; ft-embedded has no permissions.
+  test('F003_AC13 a tool with downloads saves a file; without it the download is refused', async ({
+    page,
+    browserName,
+  }) => {
+    // Playwright's WebKit reports no download started from inside any frame (blob:, sandboxed or not, measured
+    // 2026-11-04), so the grant can't be observed there; real Safari is a manual check (ADR-0009 D-072 note).
+    test.skip(browserName === 'webkit', "Playwright's WebKit reports no downloads from frames");
+    const granted = await openEmbedded(page, 'ft-clipboard');
+    const [download] = await Promise.all([page.waitForEvent('download'), granted.click('#download')]);
+    expect(download.suggestedFilename()).toBe('fixture.txt');
+
+    const refused = await openEmbedded(page, 'ft-embedded');
+    let downloads = 0;
+    page.on('download', () => downloads++);
+    await refused.click('#download');
+    await page.waitForTimeout(1000);
+    expect(downloads).toBe(0);
+    await expect(header(page).getByRole('heading', { level: 1, name: EMBEDDED })).toBeVisible();
+  });
+
+  test('F003_AC12 with dialogs, leaving the page with unsaved work asks first; without it, no warning', async ({
+    page,
+    browserName,
+  }) => {
+    // WebKit shows no leave-page warning from any embedded page (ADR-0009 note, measured 2026-10-27).
+    test.skip(browserName === 'webkit', 'WebKit shows no leave-page warning from embedded pages');
+    const leave = async (id: string) => {
+      const tool = await openEmbedded(page, id);
+      await tool.click('#dirty');
+      await expect(tool.locator('#dirty-state')).toHaveText('unsaved');
+      const asked: string[] = [];
+      const onDialog = (d: import('@playwright/test').Dialog) => {
+        asked.push(d.type());
+        void d.dismiss(); // stay on the page
+      };
+      page.on('dialog', onDialog);
+      await page.goto(toolPage('ft-embedded'), { timeout: 3000 }).catch(() => undefined);
+      await page.waitForTimeout(500);
+      page.off('dialog', onDialog);
+      return asked;
+    };
+    expect(await leave('ft-clipboard')).toEqual(['beforeunload']);
+    await page.goto('about:blank');
+    expect(await leave('ft-embedded')).toEqual([]);
+  });
+});
+
+test.describe('F-003 permissions: share (RULE-10, D-072)', () => {
+  // ft-clipboard is granted share; ft-embedded has no permissions.
+  test('F003_AC17 a tool with share can share a link; without it sharing is unavailable', async ({ page }) => {
+    await page.goto(toolPage('ft-embedded'));
+    const portalCanShare = await page.evaluate(() =>
+      navigator.canShare ? navigator.canShare({ title: 'Fixture', url: location.href }) : false,
+    );
+    // Sharing depends on the browser and the operating system (ADR-0009 D-072 note): only where the portal can share.
+    test.skip(!portalCanShare, 'this browser cannot share from the top-level page');
+    const canShare = (tool: Frame) =>
+      tool.evaluate(() => (window as unknown as { probe: { canShare: () => unknown } }).probe.canShare());
+
+    const granted = await openEmbedded(page, 'ft-clipboard');
+    expect(await canShare(granted)).toBe(true);
+
+    const refused = await openEmbedded(page, 'ft-embedded');
+    expect(await canShare(refused)).not.toBe(true);
+    await expect(header(page).getByRole('heading', { level: 1, name: EMBEDDED })).toBeVisible();
+  });
+});
+
+test.describe('F-003 focus moves into the tool when it says it is ready (R9, D-071)', () => {
+  const area = (page: Page) => page.locator('#tool');
+  const sayReady = (tool: Frame) =>
+    tool.evaluate(() => window.parent.postMessage({ type: 'taro:ready' }, new URL(document.referrer).origin));
+
+  test('F003_AC14 with focus still on the header, ready moves it into the tool area with a visible ring', async ({
+    page,
+  }) => {
+    const tool = await openEmbedded(page, 'ft-ready');
+    await expect(frameEl(page)).toBeFocused();
+    await expect(area(page)).toHaveAttribute('data-focus-ring', '');
+    const outline = await area(page).evaluate((el) => getComputedStyle(el).outlineStyle);
+    expect(outline).toBe('solid');
+    await page.keyboard.press('KeyQ');
+    await expect.poll(() => tool.evaluate(() => (window as unknown as { keys: string[] }).keys)).toContain('q');
+  });
+
+  test('F003_AC15 when the user has moved on to open-in-new-tab, a later ready leaves focus there', async ({
+    page,
+    browserName,
+  }) => {
+    const held = sites.holdTools();
+    await page.goto(toolPage('ft-ready'), { waitUntil: 'domcontentloaded' });
+    await expect(header(page, 'Fixture ready tool')).toBeFocused();
+    const open = header(page, 'Fixture ready tool').getByRole('link', { name: /open in new tab/i });
+    // WebKit's default Tab skips links; Option+Tab reaches them (adapters/tests.md).
+    const tab = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
+    for (let i = 0; i < 6 && !(await open.evaluate((el) => el === document.activeElement)); i++)
+      await page.keyboard.press(tab);
+    await expect(open).toBeFocused();
+    held.release();
+    await toolFrame(page, 'ft-ready');
+    await page.waitForTimeout(500);
+    await expect(open).toBeFocused();
+    await expect(area(page)).not.toHaveAttribute('data-focus-ring', '');
+  });
+
+  test('F003_AC16 after ready moved focus, focus back on the header stays there when the tool says ready again', async ({
+    page,
+  }) => {
+    const tool = await openEmbedded(page, 'ft-ready');
+    await expect(frameEl(page)).toBeFocused();
+    await header(page, 'Fixture ready tool').focus();
+    await expect(area(page)).not.toHaveAttribute('data-focus-ring', '');
+    await sayReady(tool);
+    await page.waitForTimeout(500);
+    await expect(header(page, 'Fixture ready tool')).toBeFocused();
+  });
+
+  test('F003_AC14 a tool that never says it is ready leaves focus on the header', async ({ page }) => {
+    await openEmbedded(page, 'ft-embedded');
+    await page.waitForTimeout(500);
+    await expect(header(page)).toBeFocused();
   });
 });
 
