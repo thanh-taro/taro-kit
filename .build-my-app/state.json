@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: CR card shows every category (D-076) built on cr/card-categories; to release as v1.5.1 on the Owner's go. Clip Maker still waiting to go live",
+      "step": "8 Iterate: cutting v1.5.1-rc.1 (D-076), verify, deploy, push",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1133,6 +1133,21 @@
       "answer": "One pill per category, main first on every page, on one line; pills that don't fit fold into a +N pill; full list on hover and for assistive technology (Owner, 2026-11-10; supersedes D-074)",
       "asked": "2026-11-10T16:30:49+00:00",
       "answered": "2026-11-10T16:30:49+00:00"
+    },
+    {
+      "id": "D-077",
+      "question": "Release v1.5.1 (card categories) and push main and tags?",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "recommendation": "yes",
+      "kind": "release",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Yes: release, deploy and push (Owner, 2026-11-10)",
+      "asked": "2026-11-10T16:50:35+00:00",
+      "answered": "2026-11-10T16:50:35+00:00"
     }
   ],
   "loops": {
@@ -1234,18 +1249,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-19T05:49:34+00:00",
-      "event": "context compaction (auto) at: build-my-app: phase 4 Implementation [in_progress] — 4 wave 5: F-014, F-015 shipped (13/16); F-011 building · 4/8 phases done · autonomy balanced"
-    },
-    {
-      "at": "2026-10-19T06:30:22+00:00",
-      "event": "build step: 4 wave 5 merged (F-011, F-014, F-015 shipped; 14/16). Next: wave 6 F-007, F-013 (after user check-in)"
-    },
-    {
-      "at": "2026-10-19T06:33:12+00:00",
-      "event": "build step: 4 wave 6 building: F-007, F-013 in parallel (then Gate G4)"
-    },
     {
       "at": "2026-10-19T07:16:36+00:00",
       "event": "build step: 4 wave 6: F-013 shipped (15/16); F-007 building"
@@ -2033,9 +2036,21 @@
     {
       "at": "2026-11-10T16:48:57+00:00",
       "event": "D-076 card category labels built and reviewed (cr/card-categories)"
+    },
+    {
+      "at": "2026-11-10T16:50:35+00:00",
+      "event": "decision D-077 opened: Release v1.5.1 (card categories) and push main and tags?"
+    },
+    {
+      "at": "2026-11-10T16:50:35+00:00",
+      "event": "decision D-077 answered: Yes: release, deploy and push (Owner, 2026-11-10)"
+    },
+    {
+      "at": "2026-11-10T16:50:36+00:00",
+      "event": "iterate step: 8 Iterate: cutting v1.5.1-rc.1 (D-076), verify, deploy, push"
     }
   ],
-  "updated": "2026-11-10T16:48:57+00:00",
+  "updated": "2026-11-10T16:50:36+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
