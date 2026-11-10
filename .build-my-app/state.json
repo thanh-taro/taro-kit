@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: CR multi-category built on cr/multi-category (stacked on cr/tool-permissions-dialogs-share); ships with v1.5.0. Paused: Clip Maker go-live, then catalog check, clip-maker added date, merge both branches, cut v1.5.0-rc.1",
+      "step": "8 Iterate: waiting for Clip Maker and Image Annotator to go live. Then: catalog check, set clip-maker and image-annotator added dates, unhide image-annotator, merge cr/tool-permissions-dialogs-share then cr/multi-category, cut v1.5.0-rc.1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1204,10 +1204,6 @@
   },
   "log": [
     {
-      "at": "2026-10-14T04:58:17+00:00",
-      "event": "build step: 4 wave 2: F-005 shipped; next F-016 + F-003 in parallel"
-    },
-    {
       "at": "2026-10-14T05:35:20+00:00",
       "event": "F-016 review round 1: no blockers; 1 major (AC4 vacuous), 6 minor sent to builder. F-002 carry-over recorded."
     },
@@ -2002,9 +1998,13 @@
     {
       "at": "2026-11-10T00:42:00+00:00",
       "event": "CR multi-category (Image Annotator D-042; D-073, D-074) built and reviewed; F-001/F-002/F-007/F-016 building"
+    },
+    {
+      "at": "2026-11-10T01:02:29+00:00",
+      "event": "iterate step: 8 Iterate: waiting for Clip Maker and Image Annotator to go live. Then: catalog check, set clip-maker and image-annotator added dates, unhide image-annotator, merge cr/tool-permissions-dialogs-share then cr/multi-category, cut v1.5.0-rc.1"
     }
   ],
-  "updated": "2026-11-10T00:42:00+00:00",
+  "updated": "2026-11-10T01:02:29+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
