@@ -143,3 +143,4 @@ status: draft
 - D-076 build: CMP-ToolCard `categoryNames` (MOD-DesignSystem, new `category-labels.ts`, COPY-tool.moreCategories); MOD-Content `categoryNamesOf`; catalog, category pages and catalog search pass every category, main first. The card-sizing fixture page gains a linked three-category card (F-002.AC13). F-002 and F-016 set to building.
 - D-076 code review converged in one round (`.build-my-app/reports/code-review-card-categories-round-1.md`): labels refit on a language switch and a late font load; island cards tested.
 - Release candidate v1.5.1-rc.1 (2026-11-10, Owner go): tool cards show every category, main first, folding extras into "+N" (D-076). Candidate report: `.build-my-app/reports/release-1.5.1.md`.
+- **Released: v1.5.1 live at https://tarokit.app (2026-11-10).** Tool cards show every category, main first, extras folded into "+N" (D-076). F-002 and F-016 shipped. Deploy report: `.build-my-app/reports/deploy-1.5.1.md`.

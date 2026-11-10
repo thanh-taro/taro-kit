@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: cutting v1.5.1-rc.1 (D-076), verify, deploy, push",
+      "step": "8 Iterate: v1.5.1 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.2",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1250,14 +1250,6 @@
   },
   "log": [
     {
-      "at": "2026-10-19T07:16:36+00:00",
-      "event": "build step: 4 wave 6: F-013 shipped (15/16); F-007 building"
-    },
-    {
-      "at": "2026-10-19T07:31:47+00:00",
-      "event": "build step: 4 all 16 features shipped; Gate G4 pending"
-    },
-    {
       "at": "2026-10-19T07:31:51+00:00",
       "event": "phase build -> gate"
     },
@@ -2048,9 +2040,17 @@
     {
       "at": "2026-11-10T16:50:36+00:00",
       "event": "iterate step: 8 Iterate: cutting v1.5.1-rc.1 (D-076), verify, deploy, push"
+    },
+    {
+      "at": "2026-11-10T16:57:33+00:00",
+      "event": "Released v1.5.1 (Cloudflare 4bd12afe): card category labels"
+    },
+    {
+      "at": "2026-11-10T16:57:33+00:00",
+      "event": "iterate step: 8 Iterate: v1.5.1 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.2"
     }
   ],
-  "updated": "2026-11-10T16:50:36+00:00",
+  "updated": "2026-11-10T16:57:33+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

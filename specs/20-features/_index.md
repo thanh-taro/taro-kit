@@ -8,7 +8,7 @@ status: draft
 | ID | Title | Milestone | Priority | Status |
 |---|---|---|---|---|
 | F-001 | Maintain the catalog | M-1 | P0 | shipped |
-| F-002 | Browse the catalog | M-1 | P0 | building |
+| F-002 | Browse the catalog | M-1 | P0 | shipped |
 | F-003 | Open a tool | M-1 | P0 | shipped |
 | F-004 | Search with the command palette | M-1 | P0 | shipped |
 | F-005 | Pin favorite tools | M-1 | P0 | shipped |
@@ -22,7 +22,7 @@ status: draft
 | F-013 | Export and import personal data | M-1 | P1 | shipped |
 | F-014 | Check the catalog before publishing | M-1 | P1 | shipped |
 | F-015 | Share rich link previews | M-1 | P2 | shipped |
-| F-016 | Browse a category | M-1 | P0 | building |
+| F-016 | Browse a category | M-1 | P0 | shipped |
 | F-017 | Read the Owner's résumé | M-1 | P1 | shipped |
 | F-018 | Read the privacy policy and terms | M-1 | P1 | shipped |
 | F-019 | Choose a language | M-1 | P1 | shipped |
