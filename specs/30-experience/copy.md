@@ -45,6 +45,7 @@ Every string has an English (en-US) and a Vietnamese (vi-VN) version (F-019, RUL
 | **COPY-catalog.searchUnavailable** | I couldn't load my search just now. Every tool is still listed below; reload the page to try again. | Mình chưa tải được phần tìm kiếm. Mọi công cụ vẫn có ở bên dưới; tải lại trang để thử lại. | search field description when the catalog data can't load |
 | **COPY-tool.opensNewTab** | Opens in a new tab | Mở trong thẻ mới | linked marker |
 | **COPY-tool.unavailable** | Needs the internet | Cần internet | card state |
+| **COPY-tool.moreCategories** | +{count} | +{count} | tool card: category labels that don't fit (CMP-ToolCard sizing) |
 | **COPY-tool.back** | Back | Quay lại | tool header |
 | **COPY-tool.openNewTab** | Open in new tab | Mở trong thẻ mới | tool header action |
 | **COPY-tool.loading** | Getting {tool} ready… | Đang chuẩn bị {tool}… | tool view |

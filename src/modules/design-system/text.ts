@@ -22,6 +22,7 @@ export const toolCardText = (): ToolCardText => ({
   favorite: favoriteToggleLabels(),
   opensNewTab: tBoth('COPY-tool.opensNewTab'),
   unavailable: tBoth('COPY-tool.unavailable'),
+  moreCategories: tBoth('COPY-tool.moreCategories', { count: '{count}' }),
   icons: {
     star: favoriteStar(20),
     starSmall: favoriteStar(16),

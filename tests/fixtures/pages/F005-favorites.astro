@@ -63,7 +63,7 @@ const categoryName = (id: string) => registry.categories.find((c) => c.id === id
         )}
         {linked && (
           <li data-testid="unavailable-regular">
-            <ToolCard tool={linked} categoryName={categoryName(linked.category)} unavailable />
+            <ToolCard tool={linked} categoryNames={[categoryName(linked.category)!]} unavailable />
           </li>
         )}
         <li data-testid="unavailable-compact">
@@ -82,7 +82,7 @@ const categoryName = (id: string) => registry.categories.find((c) => c.id === id
           <ul class="fx-grid">
             {c.tools.map((tool) => (
               <li>
-                <ToolCard tool={tool} categoryName={c.name} />
+                <ToolCard tool={tool} categoryNames={[c.name]} />
               </li>
             ))}
           </ul>

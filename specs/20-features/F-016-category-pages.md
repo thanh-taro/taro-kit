@@ -1,7 +1,7 @@
 ---
 id: F-016
 title: Browse a category
-status: shipped
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
@@ -35,7 +35,7 @@ Every tool lives in one or more categories, and each category is a place of its 
 - **AC4** Given the Media tools page, when the user chooses Developer tools in the category navigation, then the Developer tools page opens; when the user chooses all tools, then the catalog opens. (R4)
 - **AC5** Given the category "does-not-exist", when the user visits its address, then the not-found state is shown. (R5)
 - **AC6** Given a category whose tools are all hidden, when the user visits its address, then the not-found state is shown. (R5)
-- **AC7** Given a visible tool whose categories are `developer` then `media`, when the Developer tools page and the Media tools page are shown, then the tool is listed once on each, its card labelled Developer tools on both, and each page's tool count includes it. (R2, R3)
+- **AC7** Given a visible tool whose categories are `developer` then `media`, when the Developer tools page and the Media tools page are shown, then the tool is listed once on each, its card labelled Developer tools then Media tools on both, and each page's tool count includes it. (R2, R3)
 - **AC8** Given a visible tool whose categories are `developer` then `media`, and no other visible Media tool, when the user visits the Media tools address, then the Media tools page shows "1 tool" and that tool. (R3, R5)
 
 ## UX notes

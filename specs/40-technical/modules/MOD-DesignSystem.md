@@ -32,8 +32,8 @@ MOD-DesignSystem owns the visual foundation and the shared presentational compon
 In `src/modules/design-system/`. Markup and CSS are shared by the Astro and Preact versions through the class contracts `.tk-toolcard*` (`styles/tool-card.css`) and `.tk-fav*` (`styles/favorite-toggle.css`).
 - **`ToolCard.astro`** (static pages: catalog, category pages). Props:
   - `tool`: `{ id, name, summary, openMode, url }` (a `CatalogTool` or `RegTool` fits);
-  - `variant`: `regular` (default; icon, name, summary, category label, linked marker) or `compact` (icon, name, toggle);
-  - `categoryName`: the category label on regular cards: the tool's main category, wherever the card is shown (D-074);
+  - `variant`: `regular` (default; icon, name, summary, category labels, linked marker) or `compact` (icon, name, toggle);
+  - `categoryNames`: the tool's category names, main first, one label each on regular cards (D-076; MOD-Content `categoryNamesOf`). The labels sit in `.tk-toolcard__cats`, one line whose title lists every name; `category-labels.ts` (`connectCategoryLabels` for static cards from ToolCard.astro's script, `watchCategoryLabels` inside islands, refitting on resize and language switch) folds the labels that don't fit: they become visually hidden, still read by assistive technology, and a decorative `.tk-toolcard__more` shows COPY-tool.moreCategories; the box then stops wrapping, so labels still showing shrink with an ellipsis;
   - `unavailable`: dimmed, with COPY-tool.unavailable describing the link (F-011 sets it);
   - `iconSrc`: a bundled icon's address; without it the tool's monogram shows (style.md);
   - `hydrate`: `load`, `idle` (default) or `visible`, for the toggle island.

@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: v1.5.0 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.1",
+      "step": "8 Iterate: CR card shows every category (D-076) built on cr/card-categories; to release as v1.5.1 on the Owner's go. Clip Maker still waiting to go live",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1117,6 +1117,22 @@
       "answer": "Release now with Clip Maker hidden; Image Annotator source repo 404 accepted (Owner, 2026-11-10)",
       "asked": "2026-11-10T05:23:25+00:00",
       "answered": "2026-11-10T05:23:32+00:00"
+    },
+    {
+      "id": "D-076",
+      "question": "Tool card labels for a multi-category tool (supersedes D-074)",
+      "options": [
+        "pills, +N overflow",
+        "pills wrap",
+        "one joined label"
+      ],
+      "recommendation": "pills, +N overflow",
+      "kind": "design",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "One pill per category, main first on every page, on one line; pills that don't fit fold into a +N pill; full list on hover and for assistive technology (Owner, 2026-11-10; supersedes D-074)",
+      "asked": "2026-11-10T16:30:49+00:00",
+      "answered": "2026-11-10T16:30:49+00:00"
     }
   ],
   "loops": {
@@ -1218,26 +1234,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-14T16:11:30+00:00",
-      "event": "build step: 4 wave 4 merged (F-002, F-004, F-006 shipped; 11/16). Next: wave 5 F-011, F-015, F-014 (after user check-in; open question: multi-token search)"
-    },
-    {
-      "at": "2026-10-14T16:37:03+00:00",
-      "event": "decision D-040 opened: Search: phrase matching vs multi-token"
-    },
-    {
-      "at": "2026-10-14T16:37:06+00:00",
-      "event": "decision D-040 answered: phrase"
-    },
-    {
-      "at": "2026-10-14T16:37:48+00:00",
-      "event": "build step: 4 wave 5 building: F-011, F-014, F-015 in parallel"
-    },
-    {
-      "at": "2026-10-19T01:40:58+00:00",
-      "event": "build step: 4 wave 5: F-014, F-015 shipped (13/16); F-011 building"
-    },
     {
       "at": "2026-10-19T05:49:34+00:00",
       "event": "context compaction (auto) at: build-my-app: phase 4 Implementation [in_progress] — 4 wave 5: F-014, F-015 shipped (13/16); F-011 building · 4/8 phases done · autonomy balanced"
@@ -2017,9 +2013,29 @@
     {
       "at": "2026-11-10T06:38:52+00:00",
       "event": "iterate step: 8 Iterate: v1.5.0 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.1"
+    },
+    {
+      "at": "2026-11-10T16:30:49+00:00",
+      "event": "decision D-076 opened: Tool card labels for a multi-category tool (supersedes D-074)"
+    },
+    {
+      "at": "2026-11-10T16:30:49+00:00",
+      "event": "decision D-076 answered: One pill per category, main first on every page, on one line; pills that don't fit fold into a +N pill; full list on hover and for assistive technology (Owner, 2026-11-10; supersedes D-074)"
+    },
+    {
+      "at": "2026-11-10T16:30:49+00:00",
+      "event": "iterate step: 8 Iterate: CR card shows every category (D-076) — spec change"
+    },
+    {
+      "at": "2026-11-10T16:48:57+00:00",
+      "event": "iterate step: 8 Iterate: CR card shows every category (D-076) built on cr/card-categories; to release as v1.5.1 on the Owner's go. Clip Maker still waiting to go live"
+    },
+    {
+      "at": "2026-11-10T16:48:57+00:00",
+      "event": "D-076 card category labels built and reviewed (cr/card-categories)"
     }
   ],
-  "updated": "2026-11-10T06:38:52+00:00",
+  "updated": "2026-11-10T16:48:57+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

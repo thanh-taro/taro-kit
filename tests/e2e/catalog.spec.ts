@@ -154,7 +154,12 @@ test.describe('F-002 catalog', () => {
     await expect(cards).toHaveCount(2);
     // RULE-05: Image Resizer matches by name prefix, Base64 only in its summary.
     expect(await cardNames(results(page))).toEqual(['Image Resizer', 'Base64']);
-    expect(await cards.locator('.tk-toolcard__category').allInnerTexts()).toEqual(['Media tools', 'Developer tools']);
+    // Image Resizer lists media then developer; Base64 is in Developer tools only (D-076).
+    expect(await cards.nth(0).locator('.tk-toolcard__category').allInnerTexts()).toEqual([
+      'Media tools',
+      'Developer tools',
+    ]);
+    expect(await cards.nth(1).locator('.tk-toolcard__category').allInnerTexts()).toEqual(['Developer tools']);
     // The count is announced politely after filtering (SCR-Catalog accessibility).
     await expect(announcer(page)).toHaveAttribute('aria-live', 'polite');
     await expect(announcer(page)).toHaveText('2 tools', { useInnerText: true });
@@ -164,20 +169,47 @@ test.describe('F-002 catalog', () => {
   });
 
   // Image Resizer's categories are media then developer: its main category is Media tools (INV-07).
-  test('F002_AC11 a tool in two categories is listed once in the results, labelled with its first category, and counted once', async ({
+  test('F002_AC11 a tool in two categories is listed once in the results, labelled with its categories, main first, and counted once', async ({
     page,
   }) => {
     await openCatalog(page);
     await expect(groups(page).getByRole('link', { name: 'Image Resizer' })).toHaveCount(2);
     await search(page).fill('resizer');
     await expect(results(page).locator('.tk-toolcard')).toHaveCount(1);
-    expect(await results(page).locator('.tk-toolcard__category').allInnerTexts()).toEqual(['Media tools']);
+    expect(await results(page).locator('.tk-toolcard__category').allInnerTexts()).toEqual([
+      'Media tools',
+      'Developer tools',
+    ]);
     await expect(announcer(page)).toHaveText('1 tool', { useInnerText: true });
     await search(page).fill('');
     await expect(announcer(page)).toHaveText(countText(registry.visibleTools.length), { useInnerText: true });
   });
 
-  test('F002_AC10 F002_AC12 the tool is under both headings, labelled with its main category, and its cards share one favorite state', async ({
+  test('F002_AC13 search result cards (island) fold labels that stop fitting into +N, and keep the title', async ({
+    page,
+  }) => {
+    await openCatalog(page);
+    await search(page).fill('resizer');
+    const card = results(page).locator('.tk-toolcard');
+    await expect(card).toHaveCount(1);
+    const box = card.locator('.tk-toolcard__cats');
+    await expect(box).toHaveAttribute('title', 'Media tools, Developer tools');
+    await expect(card.locator('.tk-toolcard__more')).toBeHidden();
+    // Narrow the card: the island's watcher refits on resize.
+    await card.evaluate((el) => ((el as HTMLElement).style.inlineSize = '150px'));
+    await expect(card.locator('.tk-toolcard__more')).toHaveText('+1');
+    const inside = await box.evaluate((b) => {
+      const r = b.getBoundingClientRect();
+      const m = b.querySelector('.tk-toolcard__more')!.getBoundingClientRect();
+      return m.width > 2 && m.right <= r.right + 1 && m.top >= r.top - 1;
+    });
+    expect(inside).toBe(true);
+    const snapshot = await box.ariaSnapshot();
+    expect(snapshot).toContain('Media tools');
+    expect(snapshot).toContain('Developer tools');
+  });
+
+  test('F002_AC10 F002_AC12 the tool is under both headings, labelled with its categories main first, and its cards share one favorite state', async ({
     page,
   }) => {
     await openCatalog(page);
@@ -187,7 +219,11 @@ test.describe('F-002 catalog', () => {
       groups(page)
         .locator('section')
         .filter({ has: page.getByRole('heading', { name }) });
-    expect(await cards.locator('.tk-toolcard__category').allInnerTexts()).toEqual(['Media tools', 'Media tools']);
+    for (const i of [0, 1])
+      expect(await cards.nth(i).locator('.tk-toolcard__category').allInnerTexts()).toEqual([
+        'Media tools',
+        'Developer tools',
+      ]);
     const toggles = cards.getByRole('button', { name: 'Add to favorites' });
     await expect(toggles).toHaveCount(2);
     await section('Media tools')
@@ -400,4 +436,55 @@ test.describe('F-002 card sizing', () => {
       await expect(fiveLines).toHaveAccessibleDescription(fullSummary!);
     });
   }
+
+  test('F002_AC13 a linked tool in three categories keeps the card height, shows its main label then +N and the marker, and keeps every name for assistive technology and hover', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto(`${FX}/__fixtures__/card-sizing/`);
+    await page.evaluate(() => document.fonts.ready);
+    const cards = page.getByTestId('multi').locator('.tk-toolcard');
+    await expect(cards).toHaveCount(3);
+    const three = cards.nth(0);
+    const more = three.locator('.tk-toolcard__more');
+    await expect(more).toBeVisible();
+    // What the eye sees: labels and "+N" inside the box's visible area (folded labels are 1 px, clipped).
+    const seen = await three.locator('.tk-toolcard__cats').evaluate((box) => {
+      const b = box.getBoundingClientRect();
+      const inside = (el: Element) => {
+        const r = el.getBoundingClientRect();
+        return (
+          r.width > 2 &&
+          r.left >= b.left - 1 &&
+          r.right <= b.right + 1 &&
+          r.top >= b.top - 1 &&
+          r.bottom <= b.bottom + 1
+        );
+      };
+      return {
+        labels: [...box.querySelectorAll('.tk-toolcard__category')]
+          .filter(inside)
+          .map((el) => (el as HTMLElement).innerText),
+        more: inside(box.querySelector('.tk-toolcard__more')!),
+      };
+    });
+    expect(seen.labels[0]).toBe('Converters & calculators');
+    expect(seen.labels.length).toBeLessThan(3);
+    expect(seen.more).toBe(true);
+    await expect(more).toHaveText(`+${3 - seen.labels.length}`);
+    await expect(more).toHaveAttribute('aria-hidden', 'true');
+    await expect(three.getByText('Opens in a new tab')).toBeVisible();
+    // Same height as the one-category cards (F-002.R7).
+    const heights = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().height)));
+    expect(new Set(heights).size).toBe(1);
+    // Every name stays in the accessibility tree, and the hover title lists all three.
+    const snapshot = await three.locator('.tk-toolcard__cats').ariaSnapshot();
+    for (const name of ['Converters & calculators', 'Productivity & relax', 'Developer tools'])
+      expect(snapshot).toContain(name);
+    expect(snapshot).not.toContain('+');
+    await expect(three.locator('.tk-toolcard__cats')).toHaveAttribute(
+      'title',
+      'Converters & calculators, Productivity & relax, Developer tools',
+    );
+  });
 });

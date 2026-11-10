@@ -155,6 +155,7 @@ export const COPY = {
   "COPY-tool.frameLabel": { "en-US": "{tool} tool", "vi-VN": "Công cụ {tool}" },
   "COPY-tool.linkedNote": { "en-US": "{tool} lives on its own site. Open it there.", "vi-VN": "{tool} nằm ở trang riêng. Bạn mở ở đó nhé." },
   "COPY-tool.loading": { "en-US": "Getting {tool} ready…", "vi-VN": "Đang chuẩn bị {tool}…" },
+  "COPY-tool.moreCategories": { "en-US": "+{count}", "vi-VN": "+{count}" },
   "COPY-tool.offline": { "en-US": "{tool} needs the internet. I'll load it as soon as you're back online.", "vi-VN": "{tool} cần internet. Mình sẽ tải ngay khi bạn có mạng trở lại." },
   "COPY-tool.openNewTab": { "en-US": "Open in new tab", "vi-VN": "Mở trong thẻ mới" },
   "COPY-tool.opensNewTab": { "en-US": "Opens in a new tab", "vi-VN": "Mở trong thẻ mới" },
@@ -195,6 +196,7 @@ export interface CopyParams {
   "COPY-tool.frameLabel": { tool: string | number };
   "COPY-tool.linkedNote": { tool: string | number };
   "COPY-tool.loading": { tool: string | number };
+  "COPY-tool.moreCategories": { count: string | number };
   "COPY-tool.offline": { tool: string | number };
   "COPY-tool.slow": { tool: string | number };
   "COPY-tool.toolbarLabel": { tool: string | number };

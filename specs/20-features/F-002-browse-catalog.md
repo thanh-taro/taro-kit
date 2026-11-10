@@ -1,7 +1,7 @@
 ---
 id: F-002
 title: Browse the catalog
-status: shipped
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
@@ -23,9 +23,9 @@ Visitors and the Owner can see everything that is available, grouped so it can b
 
 ## Requirements
 - **R1** With no query, the catalog lists every visible tool grouped by category, in category order, and alphabetically within a category. A tool with several categories is listed under each of their headings (D-073).
-- **R2** Each listed tool shows its name, summary, icon, main category, whether it opens in a new tab, and whether it is a favorite.
+- **R2** Each listed tool shows its name, summary, icon, categories (the main category first, CMP-ToolCard), whether it opens in a new tab, and whether it is a favorite.
 - **R3** The catalog offers a way to jump to each visible category's page (F-016), and every category heading links to that page.
-- **R4** While a query is entered, the catalog shows a single list ranked by RULE-05 across all categories, updating as the user types. Each tool is listed once and shows its main category.
+- **R4** While a query is entered, the catalog shows a single list ranked by RULE-05 across all categories, updating as the user types. Each tool is listed once and shows its categories, as in R2.
 - **R5** When nothing matches, the catalog says so and offers to clear the search (COPY-catalog.noResults, COPY-catalog.clear).
 - **R6** When the catalog has no visible tools, an empty state explains that tools are coming (COPY-catalog.empty).
 - **R7** Every listed tool's card has the same height, and its name shows on one line (CMP-ToolCard sizing).
@@ -36,13 +36,14 @@ Visitors and the Owner can see everything that is available, grouped so it can b
 - **AC3** Given the catalog, when the user chooses "Converters & calculators" in the category navigation, then that category's page opens. (R3)
 - **AC4** Given the catalog, when the user activates the "Media tools" heading, then the Media tools category page opens. (R3)
 - **AC5** Given tools named "JSON Formatter" and "Base64", when the user types "json", then "JSON Formatter" is listed and "Base64" is not. (R4)
-- **AC6** Given tools in two categories match the query, when the user types, then both are listed in one ranked list, each with its category label. (R4)
+- **AC6** Given tools in two categories match the query, when the user types, then both are listed in one ranked list, each with its category labels. (R4)
 - **AC7** Given a search with no matches, when the results update, then the no-results message and the clear-search action are shown. (R5)
 - **AC8** Given no visible tools, when the catalog opens, then the empty state is shown. (R6)
 - **AC9** Given tools whose summaries take one, two and five lines at the card's width, and a name longer than the card is wide, when the catalog opens at 390 px and at 1280 px wide, then every card has the same height, each name takes one line, the five-line summary shows four lines ending in an ellipsis, and the shortened name and summary show in full on hover. (R7)
-- **AC10** Given a visible tool whose categories are `developer` then `media`, when the catalog opens with no query, then the tool is listed under the Developer tools heading and under the Media tools heading, its card labelled Developer tools under both. (R1, R2)
-- **AC11** Given that tool, when the user types a query that finds it, then it is listed once in the results, labelled Developer tools, and the announced result count counts it once. (R4)
+- **AC10** Given a visible tool whose categories are `developer` then `media`, when the catalog opens with no query, then the tool is listed under the Developer tools heading and under the Media tools heading, its card labelled Developer tools then Media tools under both. (R1, R2)
+- **AC11** Given that tool, when the user types a query that finds it, then it is listed once in the results, labelled Developer tools then Media tools, and the announced result count counts it once. (R4)
 - **AC12** Given that tool listed under the Developer tools and Media tools headings, when the user favorites it from the card under Media tools, then both cards show it as a favorite and the favorites hold its id once. (R1, R2)
+- **AC13** Given a linked tool whose categories are `converters`, `productivity` then `developer`, listed among tools with one category each, when the catalog opens at 390 px wide, then its card has the same height as the others, shows the Converters & calculators label first and then a "+N" label where N is the number of its category labels not shown, and the open-mode marker; assistive technology reads all three category names, and hovering the labels shows all three. (R2, R7)
 
 ## UX notes
 SCR-Catalog uses CMP-ToolCard for each tool and CMP-StateMessage for empty and no-results. Filtering must feel instant (NFR-02).

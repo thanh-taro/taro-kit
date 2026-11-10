@@ -12,8 +12,8 @@ interface Props {
   tool: ToolCardTool;
   /** `regular` (catalog, category pages) or `compact` (home favorites and recents). Default `regular`. */
   variant?: 'regular' | 'compact';
-  /** The category's name, shown as a label on regular cards (F-002.R2). */
-  categoryName?: Text;
+  /** The tool's category names, main first, shown as labels on regular cards (F-002.R2, D-076). */
+  categoryNames?: readonly Text[];
   /**
    * Force the unavailable state. Default: decided live in the browser, offline and the tool needs the internet
    * (F-011.R3, tool-card-availability.ts).
@@ -31,3 +31,9 @@ const { tool, variant = 'regular' } = props;
 <ToolCardView {...props} liveAvailability text={toolCardText()}>
   <FavoriteToggle toolId={tool.id} appearance="plain" size={variant === 'regular' ? 'md' : 'sm'} hydrate={hydrate} />
 </ToolCardView>
+
+<script>
+  // Static cards: fold the category labels that don't fit into "+N" (CMP-ToolCard sizing, D-076).
+  import { connectCategoryLabels } from './category-labels.ts';
+  connectCategoryLabels();
+</script>

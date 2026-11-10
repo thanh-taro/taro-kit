@@ -20,6 +20,13 @@ interface InCategory extends Listed {
 
 /** The tool's categories, the main one first (INV-07). */
 export const categoriesOf = (t: InCategory): readonly string[] => t.categories ?? [t.category];
+
+/** The names of the tool's categories, main first, for its card's labels (D-076); unknown ids are skipped. */
+export const categoryNamesOf = <N>(t: InCategory, names: ReadonlyMap<string, N>): N[] =>
+  categoriesOf(t).flatMap((id) => {
+    const name = names.get(id);
+    return name === undefined ? [] : [name];
+  });
 export interface Dated extends Listed {
   added: string;
   updated?: string;

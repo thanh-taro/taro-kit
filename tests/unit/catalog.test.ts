@@ -134,7 +134,7 @@ describe('F-002 SCR-Catalog page body (static HTML)', () => {
     expect(headings).toEqual(fixture.categories.map((c) => `/tools/${c.id}/`));
   });
 
-  test('F002_AC10 D-074 a tool in Developer tools then Media tools is under both headings, labelled Developer tools on both', async () => {
+  test('F002_AC10 D-076 a tool in Developer tools then Media tools is under both headings, labelled Developer tools then Media tools on both', async () => {
     const multi = fixture.visibleTools.map((t) =>
       t.id === 'fx-image-resizer' ? { ...t, category: 'developer', categories: ['developer', 'media'] } : t,
     );
@@ -145,9 +145,14 @@ describe('F-002 SCR-Catalog page body (static HTML)', () => {
         .split('<li')
         .filter((li) => li.includes('/t/fx-image-resizer/'));
       expect(cards).toHaveLength(1);
-      const label = /class="tk-toolcard__category"[^>]*>([\s\S]*?)<\/div>/.exec(cards[0])?.[1] ?? '';
-      expect(label).toContain('Developer tools');
-      expect(label).not.toContain('Media tools');
+      const labels = [
+        ...cards[0].matchAll(
+          /class="tk-toolcard__category">([\s\S]*?)(?=<span class="tk-toolcard__(?:category|more)")/g,
+        ),
+      ].map((m) => m[1]);
+      expect(labels).toHaveLength(2);
+      expect(labels[0]).toContain('Developer tools');
+      expect(labels[1]).toContain('Media tools');
     }
   });
 

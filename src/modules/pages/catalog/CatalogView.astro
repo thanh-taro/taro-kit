@@ -17,19 +17,23 @@ import ToolCard from '../../design-system/ToolCard.astro';
 import type { ToolCardTool } from '../../design-system/tool-card.ts';
 import type { CatalogView } from './catalog.ts';
 import CatalogSearch from './CatalogSearch.tsx';
+import { categoryNamesOf } from '../../content/derive.ts';
 import { catalogSearchText } from './text.ts';
 
 interface Props {
-  view: CatalogView<Pick<Category, 'id' | 'name' | 'tint'>, ToolCardTool & { category: string }>;
+  view: CatalogView<
+    Pick<Category, 'id' | 'name' | 'tint'>,
+    ToolCardTool & { category: string; categories?: readonly string[] }
+  >;
   /** Build-time inline SVG per category id (`svgFromFile`). */
   icons: Record<string, string>;
   /** The catalog data file's address (MOD-Content `catalogDataFile`). */
   dataUrl: string;
 }
 const { view, icons, dataUrl } = Astro.props;
-// A tool under several headings is labelled with its main category under each (D-074); every visible tool's main
-// category is a visible category, so it is among the groups.
-const mainName = new Map(view.groups.map((g) => [g.category.id, g.category.name]));
+// Every card lists the tool's categories, main first, under every heading (D-076); every visible tool's categories
+// are visible categories, so they are among the groups.
+const names = new Map(view.groups.map((g) => [g.category.id, g.category.name]));
 ---
 
 <CatalogSearch client:idle text={catalogSearchText()} dataUrl={view.empty ? undefined : dataUrl}>
@@ -60,7 +64,7 @@ const mainName = new Map(view.groups.map((g) => [g.category.id, g.category.name]
           <ul class="tk-catalog__grid">
             {tools.map((tool) => (
               <li>
-                <ToolCard tool={tool} categoryName={mainName.get(tool.category) ?? category.name} />
+                <ToolCard tool={tool} categoryNames={categoryNamesOf(tool, names)} />
               </li>
             ))}
           </ul>

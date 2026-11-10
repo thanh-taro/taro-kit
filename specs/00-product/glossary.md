@@ -12,7 +12,7 @@ status: draft
 | Catalog | The set of all tool entries the portal knows about, maintained by the Owner. |
 | Catalog entry | One record in the catalog describing a tool. |
 | Category | A group of tools: Developer tools, Media tools, Converters & calculators, or Productivity & relax. A tool belongs to one or more. |
-| Main category | The first of a tool's categories. Lists that show a tool once label it with its main category. |
+| Main category | The first of a tool's categories. Its label comes first on the tool's card, on every page. |
 | Category page | The portal page for one category, with Taro's intro and the category's tools. |
 | Open mode | How a tool opens: **embedded** inside the portal, or **linked** in a new browser tab. |
 | Embedded | A tool shown inside the portal's tool view, isolated from the portal. |

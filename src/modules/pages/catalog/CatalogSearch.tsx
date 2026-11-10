@@ -20,6 +20,7 @@ import type { ComponentChildren } from 'preact';
 import { useEffect, useId, useMemo, useRef, useState } from 'preact/hooks';
 import type { CatalogDataFileContent, IndexedTool } from '../../content/emit-catalog-data.ts';
 import ToolCard, { type ToolCardText } from '../../design-system/ToolCard.tsx';
+import { categoryNamesOf } from '../../content/derive.ts';
 import { needsInternet } from '../../design-system/tool-card.ts';
 import { online } from '../../offline/index.ts';
 import StateMessage from '../../design-system/StateMessage.tsx';
@@ -103,7 +104,7 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
       .map((f) => f.toolId);
     return filterCatalog(query, data.tools, { favorites });
   }, [searching, data, query]);
-  const categoryName = useMemo(() => new Map((data ?? NO_DATA).categories.map((c) => [c.id, c.name])), [data]);
+  const categoryNames = useMemo(() => new Map((data ?? NO_DATA).categories.map((c) => [c.id, c.name])), [data]);
 
   const countText = (n: number) =>
     n === 1 ? text.count.one[langRef.current] : fill(text.count.other[langRef.current], 'count', n);
@@ -176,7 +177,7 @@ export default function CatalogSearch({ text, dataUrl, nav, children }: CatalogS
               <li key={tool.id}>
                 <ToolCard
                   tool={tool}
-                  categoryName={categoryName.get(tool.category)}
+                  categoryNames={categoryNamesOf(tool, categoryNames)}
                   // F-011.R3: offline, tools that need the internet are marked unavailable (MOD-Offline signal).
                   unavailable={!online.value && needsInternet(tool)}
                   text={text.card}

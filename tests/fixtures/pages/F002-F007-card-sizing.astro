@@ -5,7 +5,8 @@
 //   catalog  two groups of regular cards, in the catalog's grid: summaries of about one, two and five lines at the
 //            card's width, and a name longer than the card is wide;
 //   recents  compact cards in home's recents grid, one with the long name;
-//   whatsnew the WhatsNew island with the long-named tool (added 2026-10-01; tests set the date to 2026-10-04).
+//   whatsnew the WhatsNew island with the long-named tool (added 2026-10-01; tests set the date to 2026-10-04);
+//   multi    a linked tool in three categories beside one-category tools (F-002.AC13, D-076).
 import ToolCard from '../../../src/modules/design-system/ToolCard.astro';
 import { whatsNewProps } from '../../../src/modules/pages/home/home.ts';
 import WhatsNew from '../../../src/modules/pages/home/WhatsNew.tsx';
@@ -33,6 +34,16 @@ const catalog = [
 ];
 const recents = [tool('long-name', LONG_NAME, 3), tool('one-line', 'One line', 3)];
 const categoryName = { 'en-US': 'Developer tools', 'vi-VN': 'Công cụ lập trình' };
+const converters = { 'en-US': 'Converters & calculators', 'vi-VN': 'Chuyển đổi & tính toán' };
+const productivity = { 'en-US': 'Productivity & relax', 'vi-VN': 'Năng suất & thư giãn' };
+const multi = [
+  {
+    tool: { ...tool('three-cats', 'Three categories', 3), openMode: 'linked' as const },
+    names: [converters, productivity, categoryName],
+  },
+  { tool: tool('one-cat', 'One category', 3), names: [categoryName] },
+  { tool: tool('one-more', 'One more', 9), names: [converters] },
+];
 const fresh = [{ id: 'long-name', name: LONG_NAME, summary: summary(3), added: '2026-10-01' }];
 ---
 
@@ -49,12 +60,19 @@ const fresh = [{ id: 'long-name', name: LONG_NAME, summary: summary(3), added: '
         <ul class="fx-grid">
           {group.map((t) => (
             <li>
-              <ToolCard tool={t} categoryName={categoryName} />
+              <ToolCard tool={t} categoryNames={[categoryName]} />
             </li>
           ))}
         </ul>
       ))}
     </div>
+    <ul class="fx-grid" data-testid="multi">
+      {multi.map(({ tool: t, names }) => (
+        <li>
+          <ToolCard tool={t} categoryNames={names} />
+        </li>
+      ))}
+    </ul>
     <ul class="tk-recents__list" data-testid="recents">
       {recents.map((t) => (
         <li>
