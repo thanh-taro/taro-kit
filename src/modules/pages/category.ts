@@ -12,6 +12,7 @@ interface ToolLike {
   id: string;
   name: string;
   category: string;
+  categories?: readonly string[];
   hidden?: boolean;
 }
 

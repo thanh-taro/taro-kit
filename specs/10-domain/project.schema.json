@@ -188,10 +188,24 @@
               }
             }
           }
+        },
+        {
+          "$comment": "INV-07: a tool names its categories as exactly one of category (one) or categories (a list).",
+          "oneOf": [
+            {
+              "required": [
+                "category"
+              ]
+            },
+            {
+              "required": [
+                "categories"
+              ]
+            }
+          ]
         }
       ],
       "required": [
-        "category",
         "url",
         "origin"
       ],
@@ -200,8 +214,17 @@
           "const": "tool"
         },
         "category": {
-          "$comment": "INV-07: every tool belongs to one existing category.",
+          "$comment": "INV-07: the tool's one category, which exists.",
           "$ref": "#/$defs/slug"
+        },
+        "categories": {
+          "$comment": "INV-07: the tool's categories, each existing, none repeated; the first is its main category.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/slug"
+          }
         },
         "url": {
           "$ref": "#/$defs/secureUrl"

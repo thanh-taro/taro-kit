@@ -1,0 +1,12 @@
+# F-001.AC10: categories lists the same category twice (INV-07).
+id: units
+kind: tool
+name: Units
+summary:
+  en-US: Fixture tool with a repeated category.
+  vi-VN: Fixture tool with a repeated category.
+categories: [converters, developer, converters]
+url: https://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02

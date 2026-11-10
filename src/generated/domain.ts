@@ -82,7 +82,11 @@ export interface EntryBase {
 }
 export interface Tool {
   kind?: "tool";
-  category: string;
+  category?: string;
+  /**
+   * @minItems 1
+   */
+  categories?: [Slug, ...Slug[]];
   url: SecureUrl;
   origin: "own" | "external";
   openMode?: "embedded" | "linked";

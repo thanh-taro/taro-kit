@@ -71,6 +71,31 @@ describe('F-016 category pages (derivations)', () => {
   });
 });
 
+describe('F-016 a tool in several categories (INV-07)', () => {
+  // Image Annotator lists developer then media; JSON Formatter is the only other visible tool.
+  const multi = [
+    tool('json', 'JSON Formatter', 'developer'),
+    { id: 'annotator', name: 'Image Annotator', category: 'developer', categories: ['developer', 'media'] },
+  ];
+  const multiPages = categoryPages(categories, multi);
+  const at = (id: string) => multiPages.find((p) => p.category.id === id);
+
+  test('F016_AC7 the tool is listed once on the Developer tools page and once on the Media tools page, and counted on both', () => {
+    expect(at('developer')?.tools.map((t) => t.id)).toEqual(['annotator', 'json']);
+    expect(at('media')?.tools.map((t) => t.id)).toEqual(['annotator']);
+    expect(at('developer')?.count['en-US']).toBe('2 tools');
+    expect(at('media')?.nav.map((c) => [c.id, c.count['en-US']])).toEqual([
+      ['developer', '2 tools'],
+      ['media', '1 tool'],
+    ]);
+  });
+
+  test('F016_AC8 a category whose only visible tool has another main category still has its page, with "1 tool"', () => {
+    expect(multiPages.map((p) => p.path)).toEqual(['/tools/developer/', '/tools/media/']);
+    expect(at('media')?.count['en-US']).toBe('1 tool');
+  });
+});
+
 describe('CMP-CategoryTile (compact)', () => {
   async function render(props: Record<string, unknown>) {
     const container = await AstroContainer.create();

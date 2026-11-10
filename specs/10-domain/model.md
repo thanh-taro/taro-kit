@@ -23,7 +23,7 @@ Common fields:
 
 ### ENT-Tool — Tool
 A catalog entry of kind `tool`. Additional fields:
-- **category** (ENT-Category).
+- **categories**: one or more categories (ENT-Category), with no repeats, in the Owner's order. The first is the tool's **main category**. The Owner writes a single category as `category: <id>` and several as `categories: [<id>, …]`; an entry has exactly one of the two.
 - **address**: a secure web address (INV-02).
 - **origin**: `own` (built by the Owner) or `external` (third party, always linked).
 - **open mode**: `embedded` or `linked` (RULE-07, INV-03).
@@ -39,7 +39,7 @@ A catalog entry of kind `tool`. Additional fields:
 - **year**.
 
 ### ENT-Category — Category
-A named group of tools. Every tool belongs to exactly one category (INV-07). Fields:
+A named group of tools. Every tool belongs to one or more categories (INV-07). Fields:
 - **id** (slug), **name**, **display order**;
 - **intro**: one or two sentences in Taro's first-person voice (PRN-04), shown on the category page;
 - **icon**: a bundled icon;
@@ -97,6 +97,6 @@ The theme: `system`, `light` or `dark` (RULE-03). The language: `en-US` or `vi-V
 - **INV-04** Favorites and recents may hold ids of tools that are unknown or hidden. Such entries are never shown to the user. They stay in storage until the RULE-01 or RULE-02 limits remove them, and while stored they reappear if the tool becomes visible again.
 - **INV-05** Personal data is stored only on the user's device. The portal sends none of it over the network, with one exception: the theme showing (light or dark) and the language showing (en-US or vi-VN) are passed to an embedded tool's own address (F-012.R5, F-019.R7, D-039).
 - **INV-06** Every catalog entry has an `added` date. If it has an `updated` date, that date is on or after `added`.
-- **INV-07** Every tool belongs to exactly one category, and that category exists. Category ids are unique, stable slugs, like entry ids (INV-01).
+- **INV-07** Every tool belongs to one or more categories, with no category listed twice, and each of them exists. Category ids are unique, stable slugs, like entry ids (INV-01).
 - **INV-08** In the résumé, an experience or education end month, when present, is on or after its start month.
 - **INV-09** Every localized text in the Owner's content has a non-empty en-US and vi-VN version; names may have one version for both; a tool's name, the profile's name and the nickname have exactly one version (see Content).

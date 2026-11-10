@@ -140,6 +140,9 @@ export function relevantErrors(errors: readonly ErrorObject[], data: unknown): E
   const pathOf = (e: ErrorObject) => e.instancePath.split('/').slice(1);
   return errors.filter((e) => {
     const branch = /\/oneOf\/(\d+)\//.exec(e.schemaPath);
+    // The only oneOf on a whole entry is a tool's category or categories (INV-07): its own error says which case.
+    if (branch && e.instancePath === '') return false;
+    if (e.keyword === 'oneOf' && e.instancePath === '') return true;
     if (e.keyword === 'oneOf')
       return !errors.some((o) => o !== e && o.schemaPath.startsWith(e.schemaPath + '/') && keepBranch(o));
     return !branch || keepBranch(e);
@@ -221,6 +224,15 @@ export function mapAjvError(
     };
   if (rule === 'INV-02' && (err.keyword === 'pattern' || err.keyword === 'format'))
     return { rule, message: `${field} ${value} is not a secure https address`, path };
+  // INV-07 (F-001.AC10): a tool writes exactly one of category and categories, with no category twice.
+  if (rule === 'INV-07' && err.keyword === 'oneOf' && path.length === 0)
+    return err.params.passingSchemas
+      ? { rule, message: 'write the categories as either category or categories, not both', path: ['categories'] }
+      : { rule, message: 'a tool needs a category (category: <id>) or categories (categories: [<id>, …])', path };
+  if (rule === 'INV-07' && err.keyword === 'uniqueItems') {
+    const repeated = String(at(data, [...path, Number(err.params.j)]));
+    return { rule, message: `category "${repeated}" is listed more than once in categories`, path };
+  }
   if ((rule === 'INV-01' || rule === 'INV-07') && err.keyword === 'pattern')
     return { rule, message: `${field} ${value} is not a lowercase slug`, path };
   if (rule === 'RULE-14' && err.keyword === 'enum') {

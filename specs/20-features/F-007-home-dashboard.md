@@ -1,7 +1,7 @@
 ---
 id: F-007
 title: Home dashboard
-status: shipped
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
@@ -44,6 +44,7 @@ Home is the launch pad for the Owner and the front door for visitors. It is lean
 - **AC10** Given no favorites and no recents on a device with a keyboard, when home opens, then the invitation with the shortcut is shown; on a touch-only device, the touch invitation is shown. (R6)
 - **AC11** Given visible tools in Developer tools (3) and Media tools (1) and none in the other categories, when home opens, then the category row shows two tiles, \"Developer tools · 3 tools\" then \"Media tools · 1 tool\", each with its icon and tint, and activating one opens its category page. (R7)
 - **AC12** Given a recent tool and a new tool each named "An Extremely Long Tool Name For Testing", when home opens at 390 px and at 1280 px wide, then each name takes one line, ends in an ellipsis where it does not fit, and the card or row shows the full name on hover; the link's accessible name is the full name. (R8)
+- **AC13** Given visible tools A in Developer tools and B whose categories are `developer` then `media`, and none in the other categories, when home opens, then the category row shows "Developer tools · 2 tools" then "Media tools · 1 tool". (R7)
 
 ## UX notes
 SCR-Home. Tool lists use CMP-ToolCard. The search entry opens CMP-CommandPalette. Load speed and weight: NFR-01, NFR-11.

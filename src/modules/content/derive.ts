@@ -12,8 +12,14 @@ export interface Listed {
   hidden?: boolean;
 }
 interface InCategory extends Listed {
+  /** The main category (INV-07). */
   category: string;
+  /** Every category, the main one first; a tool written with one `category` may leave it out. */
+  categories?: readonly string[];
 }
+
+/** The tool's categories, the main one first (INV-07). */
+export const categoriesOf = (t: InCategory): readonly string[] => t.categories ?? [t.category];
 export interface Dated extends Listed {
   added: string;
   updated?: string;
@@ -58,14 +64,14 @@ export function visibleTools<T extends Listed>(tools: readonly T[]): T[] {
   return tools.filter((t) => !t.hidden).sort(byName);
 }
 
-/** Visible tools of one category, alphabetically (F-016.R3). */
+/** Visible tools of one category, alphabetically, including tools whose main category is another (F-016.R3). */
 export function toolsByCategory<T extends InCategory>(tools: readonly T[], categoryId: string): T[] {
-  return visibleTools(tools).filter((t) => t.category === categoryId);
+  return visibleTools(tools).filter((t) => categoriesOf(t).includes(categoryId));
 }
 
 /** Categories with at least one visible tool, in display order (RULE-06, D-027). */
 export function visibleCategories<C extends Ordered>(categories: readonly C[], tools: readonly InCategory[]): C[] {
-  const used = new Set(visibleTools(tools).map((t) => t.category));
+  const used = new Set(visibleTools(tools).flatMap(categoriesOf));
   return categories.filter((c) => used.has(c.id)).sort((a, b) => a.order - b.order);
 }
 

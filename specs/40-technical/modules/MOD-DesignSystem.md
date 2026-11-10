@@ -33,7 +33,7 @@ In `src/modules/design-system/`. Markup and CSS are shared by the Astro and Prea
 - **`ToolCard.astro`** (static pages: catalog, category pages). Props:
   - `tool`: `{ id, name, summary, openMode, url }` (a `CatalogTool` or `RegTool` fits);
   - `variant`: `regular` (default; icon, name, summary, category label, linked marker) or `compact` (icon, name, toggle);
-  - `categoryName`: the category label on regular cards;
+  - `categoryName`: the category label on regular cards: the tool's main category, wherever the card is shown (D-074);
   - `unavailable`: dimmed, with COPY-tool.unavailable describing the link (F-011 sets it);
   - `iconSrc`: a bundled icon's address; without it the tool's monogram shows (style.md);
   - `hydrate`: `load`, `idle` (default) or `visible`, for the toggle island.

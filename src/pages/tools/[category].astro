@@ -34,6 +34,8 @@ export const getStaticPaths = (() => {
 const { page, icons } = Astro.props;
 const registry = getRegistry();
 const { category, tools, count, nav } = page;
+// A card is labelled with the tool's main category, even on another category's page (D-074, CMP-ToolCard).
+const mainName = new Map(registry.categories.map((c) => [c.id, c.name]));
 ---
 
 <BaseLayout {...metaFor({ page: 'category', id: category.id }, registry)}>
@@ -67,7 +69,7 @@ const { category, tools, count, nav } = page;
       {
         tools.map((tool) => (
           <li>
-            <ToolCard tool={tool} categoryName={category.name} />
+            <ToolCard tool={tool} categoryName={mainName.get(tool.category) ?? category.name} />
           </li>
         ))
       }

@@ -89,6 +89,24 @@ test.describe('F-016 category page', () => {
     await expect(hero(page).getByText('1 tool', { exact: true })).toBeVisible();
   });
 
+  // Image Resizer's categories are media then developer (INV-07): its main category is Media tools.
+  test('F016_AC7 a tool in two categories is listed once on each page, labelled with its main category, and counted on both', async ({
+    page,
+  }) => {
+    for (const id of ['media', 'developer']) {
+      await page.goto(`${FX}/tools/${id}/`);
+      const card = toolList(page).locator('.tk-toolcard', { hasText: 'Image Resizer' });
+      await expect(card).toHaveCount(1);
+      await expect(card.locator('.tk-toolcard__category')).toHaveText('Media tools', { useInnerText: true });
+      const n = visibleIn(id);
+      await expect(hero(page).getByText(n === 1 ? '1 tool' : `${n} tools`, { exact: true })).toBeVisible();
+      await expect(toolList(page).locator('.tk-toolcard')).toHaveCount(n);
+    }
+    expect(fixtureRegistry.categories.find((c) => c.id === 'developer')?.tools.map((t) => t.id)).toContain(
+      'fx-image-resizer',
+    );
+  });
+
   test('F016_AC3 "Audio Trimmer" is listed before "Clip Maker", each as a tool card', async ({ page }) => {
     await page.goto(`${FX}/tools/media/`);
     const cards = toolList(page).locator('.tk-toolcard');

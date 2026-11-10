@@ -1,0 +1,12 @@
+# INV-07: a valid tool in two categories; the first is its main category.
+id: units
+kind: tool
+name: Units
+summary:
+  en-US: Fixture tool in two categories.
+  vi-VN: Fixture tool in two categories.
+categories: [converters, developer]
+url: https://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02

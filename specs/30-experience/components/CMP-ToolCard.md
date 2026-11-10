@@ -9,7 +9,7 @@ tokens: [color.dark.surface, color.dark.tint, color.dark.accent, color.dark.acce
 Represent one tool in lists and let the user open or favorite it.
 
 ## Anatomy
-Icon; name; summary; category label; open-mode marker for linked tools (COPY-tool.opensNewTab); favorite toggle (CMP-FavoriteToggle).
+Icon; name; summary; category label (the tool's main category, wherever the card is shown; D-074); open-mode marker for linked tools (COPY-tool.opensNewTab); favorite toggle (CMP-FavoriteToggle).
 
 ## Variants & states
 | Variant / state | Description |

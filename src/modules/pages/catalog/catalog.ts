@@ -11,6 +11,7 @@ interface ToolLike {
   id: string;
   name: string;
   category: string;
+  categories?: readonly string[];
   hidden?: boolean;
 }
 
@@ -27,7 +28,7 @@ export interface CatalogView<C, T> {
   groups: CatalogGroup<C, T>[];
   /** The category navigation: a compact tile per visible category (F-002.R3). */
   nav: CategoryNavItem[];
-  /** The number of visible tools. */
+  /** The number of visible tools, each counted once however many headings it is under (D-073). */
   total: number;
   /** No visible tools: the empty state (F-002.R6). */
   empty: boolean;
@@ -39,6 +40,7 @@ export function catalogView<C extends CategoryLike, T extends ToolLike>(
 ): CatalogView<C, T> {
   const pages = categoryPages(categories, tools);
   const groups = pages.map(({ category, path, tools: list }) => ({ category, path, tools: list }));
-  const total = groups.reduce((n, g) => n + g.tools.length, 0);
+  // A tool under several headings is one tool (D-073).
+  const total = new Set(groups.flatMap((g) => g.tools.map((t) => t.id))).size;
   return { groups, nav: pages[0]?.nav ?? [], total, empty: total === 0 };
 }

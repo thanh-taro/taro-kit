@@ -1,0 +1,12 @@
+# INV-07: a repeated unknown category is reported once per mistake (F-001.R2).
+id: units
+kind: tool
+name: Units
+summary:
+  en-US: Fixture tool whose second category is missing.
+  vi-VN: Fixture tool whose second category is missing.
+categories: [nope, nope]
+url: https://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02

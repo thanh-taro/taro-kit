@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: D-072 share permission built and verified (unit 550, e2e 662); clip-maker catalog entry wired visible — catalog check blocks publish until the tool is live; uncommitted with D-070/D-071",
+      "step": "8 Iterate: CR multi-category built on cr/multi-category (stacked on cr/tool-permissions-dialogs-share); ships with v1.5.0. Paused: Clip Maker go-live, then catalog check, clip-maker added date, merge both branches, cut v1.5.0-rc.1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1071,6 +1071,37 @@
       "answer": "Add opt-in share permission (allow=web-share, no sandbox token); privacy policy and terms unchanged (user picks the share target). Catalog entry: Owner said wire it now, not hidden (2026-11-04)",
       "asked": "2026-11-04T08:02:13+00:00",
       "answered": "2026-11-04T08:04:42+00:00"
+    },
+    {
+      "id": "D-073",
+      "question": "Multi-category tool in the grouped catalog (F-002.R1)",
+      "options": [
+        "under each heading",
+        "once under main"
+      ],
+      "recommendation": "under each heading",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Under each heading it lists; the catalog's tool total counts it once",
+      "asked": "2026-11-10T00:12:05+00:00",
+      "answered": "2026-11-10T00:12:11+00:00"
+    },
+    {
+      "id": "D-074",
+      "question": "Tool card category label for a multi-category tool",
+      "options": [
+        "always main",
+        "page's category",
+        "all"
+      ],
+      "recommendation": "always main",
+      "kind": "product",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Always the main (first) category, on every card",
+      "asked": "2026-11-10T00:12:05+00:00",
+      "answered": "2026-11-10T00:12:12+00:00"
     }
   ],
   "loops": {
@@ -1161,69 +1192,17 @@
       "started": "2026-10-26T02:09:52+00:00",
       "outcome": "converged round 2: 0 blocker, 0 major; N1 lint-rule scope deferred",
       "ended": "2026-10-26T02:30:49+00:00"
+    },
+    "spec-review-multi-category": {
+      "round": 1,
+      "max": 3,
+      "active": false,
+      "started": "2026-11-10T00:13:37+00:00",
+      "outcome": "converged",
+      "ended": "2026-11-10T00:16:07+00:00"
     }
   },
   "log": [
-    {
-      "at": "2026-10-13T13:52:29+00:00",
-      "event": "decision D-036 answered: Narrow both"
-    },
-    {
-      "at": "2026-10-13T13:55:05+00:00",
-      "event": "decision D-037 opened: Disable Cloudflare RUM / Web Analytics beacon on tarokit.app"
-    },
-    {
-      "at": "2026-10-13T13:55:05+00:00",
-      "event": "decision D-037 answered: Disabled with user approval (RUM 'Disable completely'); verified Bot Fight Mode off and Rocket Loader off visually. Correction: earlier claim that these were already off was unverified."
-    },
-    {
-      "at": "2026-10-13T13:55:06+00:00",
-      "event": "Cloudflare: RUM disabled (D-037); Bot Fight Mode and Rocket Loader verified off"
-    },
-    {
-      "at": "2026-10-13T14:06:55+00:00",
-      "event": "decision D-038 opened: Safari partitions embedded tool storage"
-    },
-    {
-      "at": "2026-10-13T14:06:55+00:00",
-      "event": "decision D-038 answered: Accept and document; ADR-0001 accepted"
-    },
-    {
-      "at": "2026-10-14T00:32:02+00:00",
-      "event": "decision D-039 opened: Theme hand-off to embedded tools (JSON Formatter change request; amends D-008)"
-    },
-    {
-      "at": "2026-10-14T00:32:02+00:00",
-      "event": "decision D-039 answered: Keep F-012.R5/R6 + ADR-0011 after spec review; D-008 now: nothing shared except the current theme"
-    },
-    {
-      "at": "2026-10-14T00:33:59+00:00",
-      "event": "phase architecture -> gate"
-    },
-    {
-      "at": "2026-10-14T00:41:23+00:00",
-      "event": "gate architecture passed: Stack accepted (ADR-0001..0011); scaffold merged; all CI steps green locally; spikes closed"
-    },
-    {
-      "at": "2026-10-14T01:36:38+00:00",
-      "event": "phase build -> in_progress"
-    },
-    {
-      "at": "2026-10-14T01:36:38+00:00",
-      "event": "build step: 4 wave 1: F-001 + F-012/shell building"
-    },
-    {
-      "at": "2026-10-14T02:10:14+00:00",
-      "event": "build step: 4 wave 1 merged (F-001 shipped; F-012 merged, AC5/9/10 pending F-003). Next: wave 2 F-016, F-003, F-005"
-    },
-    {
-      "at": "2026-10-14T02:10:14+00:00",
-      "event": "wave 1 merged: 100 unit + 28 e2e passing"
-    },
-    {
-      "at": "2026-10-14T02:29:15+00:00",
-      "event": "context compaction (auto) at: build-my-app: phase 4 Implementation [in_progress] — 4 wave 1 merged (F-001 shipped; F-012 merged, AC5/9/10 pending F-003). Next: wave 2 F-016, F-003, F-005 · 4/8 phases done · autonomy balanced"
-    },
     {
       "at": "2026-10-14T04:58:17+00:00",
       "event": "build step: 4 wave 2: F-005 shipped; next F-016 + F-003 in parallel"
@@ -1963,9 +1942,69 @@
     {
       "at": "2026-11-04T08:32:37+00:00",
       "event": "D-072 share permission implemented; F-003.AC17 passes in WebKit; WebKit refuses data: downloads under portal frame-src (contract: use blob:)"
+    },
+    {
+      "at": "2026-11-04T08:34:46+00:00",
+      "event": "D-070/D-071/D-072 committed on branch cr/tool-permissions-dialogs-share (4c4ae94); RC waits on Clip Maker going live"
+    },
+    {
+      "at": "2026-11-04T08:35:33+00:00",
+      "event": "iterate step: 8 Iterate: waiting for Clip Maker to go live (Owner, 2026-11-04). Then: catalog check, set clip-maker added date, merge cr/tool-permissions-dialogs-share, cut v1.5.0-rc.1"
+    },
+    {
+      "at": "2026-11-10T00:12:05+00:00",
+      "event": "decision D-073 opened: Multi-category tool in the grouped catalog (F-002.R1)"
+    },
+    {
+      "at": "2026-11-10T00:12:05+00:00",
+      "event": "decision D-074 opened: Tool card category label for a multi-category tool"
+    },
+    {
+      "at": "2026-11-10T00:12:11+00:00",
+      "event": "decision D-073 answered: Under each heading it lists; the catalog's tool total counts it once"
+    },
+    {
+      "at": "2026-11-10T00:12:12+00:00",
+      "event": "decision D-074 answered: Always the main (first) category, on every card"
+    },
+    {
+      "at": "2026-11-10T00:12:12+00:00",
+      "event": "iterate step: 8 Iterate: CR multi-category tools (Image Annotator D-042) — spec change. Paused: Clip Maker go-live, then catalog check, clip-maker added date, merge cr/tool-permissions-dialogs-share, cut v1.5.0-rc.1"
+    },
+    {
+      "at": "2026-11-10T00:13:37+00:00",
+      "event": "loop spec-review-multi-category started (max 3)"
+    },
+    {
+      "at": "2026-11-10T00:13:37+00:00",
+      "event": "iterate step: 8 Iterate: CR multi-category — spec review round 1"
+    },
+    {
+      "at": "2026-11-10T00:16:07+00:00",
+      "event": "loop spec-review-multi-category ended: converged"
+    },
+    {
+      "at": "2026-11-10T00:16:07+00:00",
+      "event": "iterate step: 8 Iterate: CR multi-category — spec reviewed, awaiting Owner approval"
+    },
+    {
+      "at": "2026-11-10T00:32:43+00:00",
+      "event": "Owner approved multi-category CR spec (2026-11-10); F-001, F-002, F-007, F-016 set to ready"
+    },
+    {
+      "at": "2026-11-10T00:40:07+00:00",
+      "event": "iterate step: 8 Iterate: CR multi-category — built and tested; code review"
+    },
+    {
+      "at": "2026-11-10T00:42:00+00:00",
+      "event": "iterate step: 8 Iterate: CR multi-category built on cr/multi-category (stacked on cr/tool-permissions-dialogs-share); ships with v1.5.0. Paused: Clip Maker go-live, then catalog check, clip-maker added date, merge both branches, cut v1.5.0-rc.1"
+    },
+    {
+      "at": "2026-11-10T00:42:00+00:00",
+      "event": "CR multi-category (Image Annotator D-042; D-073, D-074) built and reviewed; F-001/F-002/F-007/F-016 building"
     }
   ],
-  "updated": "2026-11-04T08:32:37+00:00",
+  "updated": "2026-11-10T00:42:00+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

@@ -1,7 +1,7 @@
 ---
 id: F-002
 title: Browse the catalog
-status: shipped
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01, PER-02]
@@ -22,10 +22,10 @@ Visitors and the Owner can see everything that is available, grouped so it can b
 - Out: category pages themselves (F-016); the global command palette (F-004); opening a tool (F-003); per-tool detail pages (M-2).
 
 ## Requirements
-- **R1** With no query, the catalog lists every visible tool grouped by category, in category order, and alphabetically within a category.
-- **R2** Each listed tool shows its name, summary, icon, category, whether it opens in a new tab, and whether it is a favorite.
+- **R1** With no query, the catalog lists every visible tool grouped by category, in category order, and alphabetically within a category. A tool with several categories is listed under each of their headings (D-073).
+- **R2** Each listed tool shows its name, summary, icon, main category, whether it opens in a new tab, and whether it is a favorite.
 - **R3** The catalog offers a way to jump to each visible category's page (F-016), and every category heading links to that page.
-- **R4** While a query is entered, the catalog shows a single list ranked by RULE-05 across all categories, updating as the user types. Each result shows its category.
+- **R4** While a query is entered, the catalog shows a single list ranked by RULE-05 across all categories, updating as the user types. Each tool is listed once and shows its main category.
 - **R5** When nothing matches, the catalog says so and offers to clear the search (COPY-catalog.noResults, COPY-catalog.clear).
 - **R6** When the catalog has no visible tools, an empty state explains that tools are coming (COPY-catalog.empty).
 - **R7** Every listed tool's card has the same height, and its name shows on one line (CMP-ToolCard sizing).
@@ -40,6 +40,9 @@ Visitors and the Owner can see everything that is available, grouped so it can b
 - **AC7** Given a search with no matches, when the results update, then the no-results message and the clear-search action are shown. (R5)
 - **AC8** Given no visible tools, when the catalog opens, then the empty state is shown. (R6)
 - **AC9** Given tools whose summaries take one, two and five lines at the card's width, and a name longer than the card is wide, when the catalog opens at 390 px and at 1280 px wide, then every card has the same height, each name takes one line, the five-line summary shows four lines ending in an ellipsis, and the shortened name and summary show in full on hover. (R7)
+- **AC10** Given a visible tool whose categories are `developer` then `media`, when the catalog opens with no query, then the tool is listed under the Developer tools heading and under the Media tools heading, its card labelled Developer tools under both. (R1, R2)
+- **AC11** Given that tool, when the user types a query that finds it, then it is listed once in the results, labelled Developer tools, and the announced result count counts it once. (R4)
+- **AC12** Given that tool listed under the Developer tools and Media tools headings, when the user favorites it from the card under Media tools, then both cards show it as a favorite and the favorites hold its id once. (R1, R2)
 
 ## UX notes
 SCR-Catalog uses CMP-ToolCard for each tool and CMP-StateMessage for empty and no-results. Filtering must feel instant (NFR-02).
@@ -47,4 +50,5 @@ SCR-Catalog uses CMP-ToolCard for each tool and CMP-StateMessage for empty and n
 ## Edge cases
 - The search data can't be loaded (for example, the network fails). The search field is disabled with the reason (COPY-catalog.searchUnavailable) and every tool stays listed by category; search never silently does nothing.
 - With no visible tools there is nothing to search, so only the empty state shows (R6).
+- A tool listed under several headings is still one tool: the result count announced after filtering, including when the query is cleared, counts it once, and its cards share one favorite state (D-073).
 - A very long name or summary is truncated, with the full text still available to assistive technology.

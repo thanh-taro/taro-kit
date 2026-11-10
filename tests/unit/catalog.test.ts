@@ -88,6 +88,25 @@ describe('F-002 catalog view (derivations)', () => {
   });
 });
 
+describe('F-002 a tool in several categories (INV-07, D-073)', () => {
+  const multi = [
+    ...tools,
+    { id: 'annotator', name: 'Image Annotator', category: 'developer', categories: ['developer', 'media'] },
+  ];
+  const view = catalogView(categories, multi);
+
+  test('F002_AC10 with no query the tool is under the Developer tools and the Media tools headings', () => {
+    expect(view.groups.map((g) => [g.category.id, g.tools.map((t) => t.id)])).toEqual([
+      ['developer', ['base64', 'annotator', 'json', 'regex']],
+      ['media', ['audio', 'clip', 'annotator']],
+    ]);
+  });
+
+  test('D-073 the catalog view counts the tool once', () => {
+    expect(view.total).toBe(6);
+  });
+});
+
 describe('F-002 catalog data file (MOD-Content emit, MOD-Search keys)', () => {
   const file = catalogDataFile(fixture);
   const data = JSON.parse(file.json) as { tools: { id: string; keys: unknown }[]; categories: { id: string }[] };
@@ -113,6 +132,23 @@ describe('F-002 SCR-Catalog page body (static HTML)', () => {
     expect(html).toContain('My tools');
     const headings = [...html.matchAll(/<h2[^>]*>[\s\S]*?<a[^>]*href="(\/tools\/[^"]+\/)"/g)].map((m) => m[1]);
     expect(headings).toEqual(fixture.categories.map((c) => `/tools/${c.id}/`));
+  });
+
+  test('F002_AC10 D-074 a tool in Developer tools then Media tools is under both headings, labelled Developer tools on both', async () => {
+    const multi = fixture.visibleTools.map((t) =>
+      t.id === 'fx-image-resizer' ? { ...t, category: 'developer', categories: ['developer', 'media'] } : t,
+    );
+    const html = await renderView({ ...viewProps(fixture), view: catalogView(fixture.categories, multi) });
+    const section = (id: string) => html.split('<section').find((s) => s.includes(`id="group-${id}"`)) ?? '';
+    for (const id of ['developer', 'media']) {
+      const cards = section(id)
+        .split('<li')
+        .filter((li) => li.includes('/t/fx-image-resizer/'));
+      expect(cards).toHaveLength(1);
+      const label = /class="tk-toolcard__category"[^>]*>([\s\S]*?)<\/div>/.exec(cards[0])?.[1] ?? '';
+      expect(label).toContain('Developer tools');
+      expect(label).not.toContain('Media tools');
+    }
   });
 
   test('F002_AC2 a linked tool is marked as opening in a new tab', async () => {

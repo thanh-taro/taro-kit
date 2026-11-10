@@ -8,6 +8,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { loadRegistry } from '../../src/modules/content/index.ts';
+import { STORAGE_KEY } from '../../src/modules/personal-data/index.ts';
 import { FX, PROD } from './ports.ts';
 
 const root = join(import.meta.dirname, '../..');
@@ -162,6 +163,47 @@ test.describe('F-002 catalog', () => {
     expect(await cardNames(results(page))).toEqual(['Image Resizer', 'Base64']);
   });
 
+  // Image Resizer's categories are media then developer: its main category is Media tools (INV-07).
+  test('F002_AC11 a tool in two categories is listed once in the results, labelled with its first category, and counted once', async ({
+    page,
+  }) => {
+    await openCatalog(page);
+    await expect(groups(page).getByRole('link', { name: 'Image Resizer' })).toHaveCount(2);
+    await search(page).fill('resizer');
+    await expect(results(page).locator('.tk-toolcard')).toHaveCount(1);
+    expect(await results(page).locator('.tk-toolcard__category').allInnerTexts()).toEqual(['Media tools']);
+    await expect(announcer(page)).toHaveText('1 tool', { useInnerText: true });
+    await search(page).fill('');
+    await expect(announcer(page)).toHaveText(countText(registry.visibleTools.length), { useInnerText: true });
+  });
+
+  test('F002_AC10 F002_AC12 the tool is under both headings, labelled with its main category, and its cards share one favorite state', async ({
+    page,
+  }) => {
+    await openCatalog(page);
+    const cards = groups(page).locator('.tk-toolcard').filter({ hasText: 'Image Resizer' });
+    await expect(cards).toHaveCount(2);
+    const section = (name: string) =>
+      groups(page)
+        .locator('section')
+        .filter({ has: page.getByRole('heading', { name }) });
+    expect(await cards.locator('.tk-toolcard__category').allInnerTexts()).toEqual(['Media tools', 'Media tools']);
+    const toggles = cards.getByRole('button', { name: 'Add to favorites' });
+    await expect(toggles).toHaveCount(2);
+    await section('Media tools')
+      .locator('.tk-toolcard', { hasText: 'Image Resizer' })
+      .getByRole('button', { name: 'Add to favorites' })
+      .click();
+    await expect(cards.getByRole('button', { name: 'Remove from favorites' })).toHaveCount(2);
+    await expect(cards.getByRole('button', { pressed: true })).toHaveCount(2);
+    const favorites = await page.evaluate(
+      (key) =>
+        (JSON.parse(localStorage.getItem(key) ?? 'null')?.favorites ?? []).map((f: { toolId: string }) => f.toolId),
+      STORAGE_KEY,
+    );
+    expect(favorites).toEqual(['fx-image-resizer']);
+  });
+
   test('F002_AC6 a favorite comes first among equally good matches, from the next keystroke', async ({ page }) => {
     await openCatalog(page);
     await search(page).fill('fixture tool 0');
@@ -230,7 +272,9 @@ test.describe('F-002 catalog', () => {
     await expect(search(page)).toHaveAccessibleDescription(reason);
     await expect(page.getByRole('status').filter({ hasText: reason })).toBeVisible();
     await expect(groups(page)).toBeVisible();
-    await expect(groups(page).locator('.tk-toolcard')).toHaveCount(registry.visibleTools.length);
+    // A tool in several categories is listed under each heading (F-002.R1, D-073).
+    const listed = registry.categories.reduce((n, c) => n + c.tools.length, 0);
+    await expect(groups(page).locator('.tk-toolcard')).toHaveCount(listed);
   });
 
   test('NFR-09 search field, category pills and heading links are 44 px targets at 390 px, with no sideways scroll', async ({

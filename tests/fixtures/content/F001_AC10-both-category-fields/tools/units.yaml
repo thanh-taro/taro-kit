@@ -1,0 +1,13 @@
+# F-001.AC10: an entry writes both category and categories (INV-07).
+id: units
+kind: tool
+name: Units
+summary:
+  en-US: Fixture tool with both category fields.
+  vi-VN: Fixture tool with both category fields.
+category: converters
+categories: [converters, developer]
+url: https://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02

@@ -1,11 +1,12 @@
 # Test fixture for F-016 (category pages): one of three visible Media tools (F016_AC2).
+# Also in Developer tools, its second category (INV-07; F002_AC11, F002_AC12).
 id: fx-image-resizer
 kind: tool
 name: Image Resizer
 summary:
   en-US: Fixture tool for the category tests.
   vi-VN: Fixture tool for the category tests.
-category: media
+categories: [media, developer]
 url: https://fx-image-resizer.example.com/
 origin: own
 added: 2026-10-01

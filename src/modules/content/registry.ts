@@ -40,7 +40,14 @@ type Permission = NonNullable<Tool['permissions']>[number];
 /** json-schema-to-typescript drops `allOf` beside sibling keywords, so the entry base is composed here. */
 export type RawTool = EntryBase & Tool;
 
-export interface RegTool extends Omit<RawTool, 'openMode' | 'permissions' | 'offline' | 'hidden' | 'tags'> {
+export interface RegTool extends Omit<
+  RawTool,
+  'category' | 'categories' | 'openMode' | 'permissions' | 'offline' | 'hidden' | 'tags'
+> {
+  /** The main category: the first of `categories` (INV-07). Lists that show a tool once label it with this. */
+  category: string;
+  /** Every category of the tool, in the Owner's order, at least one, none repeated (INV-07). */
+  categories: string[];
   openMode: 'embedded' | 'linked';
   permissions: Permission[];
   offline: boolean;
@@ -327,20 +334,29 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
   for (const l of toolFiles) {
     if (!isObj(l.data)) continue;
     const d = l.data;
-    // INV-07 / F-001.R5: the tool's category exists (F-001.AC7).
-    if (
-      typeof d.category === 'string' &&
-      !schemaFailed.has(fieldKey(l.file, ['category'])) &&
-      catFile.data !== undefined &&
-      !catIds.has(d.category)
-    )
-      errors.push({
-        file: l.file,
-        line: l.lineOf(['category']),
-        entryId: idOf(d),
-        rule: 'INV-07',
-        message: `category "${d.category}" does not exist in content/categories.yaml`,
-      });
+    // INV-07 / F-001.R5: each of the tool's categories exists (F-001.AC7, F-001.AC11).
+    const listed: [string, (string | number)[]][] =
+      typeof d.category === 'string'
+        ? [[d.category, ['category']]]
+        : Array.isArray(d.categories)
+          ? d.categories.flatMap((c, i): [string, (string | number)[]][] =>
+              typeof c === 'string' ? [[c, ['categories', i]]] : [],
+            )
+          : [];
+    // One error per mistake: a repeated id is reported once (its repeat is the schema's uniqueItems error).
+    const checked = new Set<string>();
+    for (const [cat, at] of listed) {
+      if (checked.has(cat)) continue;
+      checked.add(cat);
+      if (!schemaFailed.has(fieldKey(l.file, at)) && catFile.data !== undefined && !catIds.has(cat))
+        errors.push({
+          file: l.file,
+          line: l.lineOf(at),
+          entryId: idOf(d),
+          rule: 'INV-07',
+          message: `category "${cat}" does not exist in content/categories.yaml`,
+        });
+    }
     // INV-03: no tool is served from the portal's own origin: an embedded one could not be isolated (ADR-0009 build
     // guard), and a linked one would be a portal page under the portal's service worker (F-011). The production
     // origin is always refused too, whatever origin this build is configured with.
@@ -426,11 +442,15 @@ export function loadRegistry(opts: LoadOptions = {}): Registry {
 
   if (errors.length) throw new ContentErrors(errors);
 
-  // 3. Normalize: RULE-07 open-mode defaults, INV-03 permission and offline defaults.
+  // 3. Normalize: RULE-07 open-mode defaults, INV-03 permission and offline defaults, and INV-07 categories (the
+  // list in the Owner's order, and `category`, the main one).
   const allTools: RegTool[] = toolFiles.map((l) => {
     const d = l.data as RawTool;
+    const categories = d.categories ? [...d.categories] : [d.category as string];
     return {
       ...d,
+      category: categories[0],
+      categories,
       openMode: d.origin === 'external' ? 'linked' : (d.openMode ?? 'embedded'),
       permissions: d.permissions ?? [],
       offline: d.offline ?? false,

@@ -1,7 +1,7 @@
 ---
 id: F-001
 title: Maintain the catalog
-status: shipped
+status: building
 milestone: M-1
 priority: P0
 personas: [PER-01]
@@ -26,7 +26,7 @@ The Owner adds a new tool by writing one catalog entry, and every part of the po
 - **R2** Building the portal fails, naming the file, the entry and the broken rule, when any content breaks the data schema or INV-01, INV-02, INV-03, INV-06, INV-07, INV-09 or RULE-14.
 - **R3** An own tool with no open mode opens embedded. An external tool declared as embedded is a build error (RULE-07).
 - **R4** Hidden entries are left out of the catalog, category pages, search, palette, home, changelog and site index (RULE-06).
-- **R5** A tool whose category does not exist is a build error.
+- **R5** A tool any of whose categories does not exist is a build error.
 
 ## Acceptance criteria
 - **AC1** Given a valid new tool entry with today's date as `added`, when the portal is built, then the tool appears in the catalog, its category page, search, palette, home "what's new", changelog and site index, and has a tool view, with no other edits. (R1)
@@ -38,6 +38,8 @@ The Owner adds a new tool by writing one catalog entry, and every part of the po
 - **AC7** Given a tool whose category id does not exist, when the portal is built, then the build fails and names the entry and the category. (R5)
 - **AC8** Given an entry whose updated date is before its added date, when the portal is built, then the build fails and names the entry. (R2)
 - **AC9** Given two categories with the tint `mango`, when the portal is built, then the build fails and names both categories. (R2)
+- **AC10** Given a tool entry that writes both `category` and `categories`, or lists the same category twice in `categories`, when the portal is built, then the build fails and names the file, the entry and INV-07. (R2)
+- **AC11** Given a tool whose `categories` are `developer` then `does-not-exist`, when the portal is built, then the build fails and names the entry and `does-not-exist`. (R5)
 
 ## UX notes
 No user interface. The Owner works with content files.
@@ -46,3 +48,4 @@ No user interface. The Owner works with content files.
 - Changing an entry's id breaks favorites and links (INV-01). The build cannot detect this, so the authoring guide warns against it.
 - An empty catalog builds successfully; home and catalog show their empty states.
 - A category with no visible tools disappears (RULE-06).
+- A tool may list several categories; an entry that writes one keeps `category: <id>` and needs no change (INV-07).

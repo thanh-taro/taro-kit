@@ -78,6 +78,45 @@ describe('MOD-Content validation', () => {
     ]);
   });
 
+  it('F001_AC10 fails on an entry with both category and categories and names the file, the entry and INV-07', () => {
+    expect(failures('F001_AC10-both-category-fields')).toEqual([
+      'content/tools/units.yaml:9 › units › INV-07: write the categories as either category or categories, not both',
+    ]);
+  });
+
+  it('F001_AC10 fails on a category listed twice and names the file, the entry and INV-07', () => {
+    expect(failures('F001_AC10-repeated-category')).toEqual([
+      'content/tools/units.yaml:8 › units › INV-07: category "converters" is listed more than once in categories',
+    ]);
+  });
+
+  it('F001_AC11 fails when any listed category is missing and names the entry and the category', () => {
+    expect(failures('F001_AC11-unknown-listed-category')).toEqual([
+      'content/tools/units.yaml:8 › units › INV-07: category "does-not-exist" does not exist in content/categories.yaml',
+    ]);
+  });
+
+  it('INV-07 fails on a tool with neither category nor categories and names the rule', () => {
+    expect(failures('INV07-no-category')).toEqual([
+      'content/tools/units.yaml:2 › units › INV-07: a tool needs a category (category: <id>) or categories (categories: [<id>, …])',
+    ]);
+  });
+
+  it('INV-07 reports a repeated unknown category once as missing and once as repeated', () => {
+    expect(failures('INV07-repeated-unknown-category')).toEqual([
+      'content/tools/units.yaml:8 › units › INV-07: category "nope" is listed more than once in categories',
+      'content/tools/units.yaml:8 › units › INV-07: category "nope" does not exist in content/categories.yaml',
+    ]);
+  });
+
+  it('INV-07 accepts a tool in two categories; the first is its main category', () => {
+    const units = load('INV07-two-categories').allTools.find((t) => t.id === 'units');
+    expect(units?.categories).toEqual(['converters', 'developer']);
+    expect(units?.category).toBe('converters');
+    const single = load().allTools.find((t) => t.id === 'json');
+    expect(single?.categories).toEqual([single?.category]);
+  });
+
   it('F001_AC8 fails when updated is before added and names the entry', () => {
     expect(failures('F001_AC8-updated-before-added')).toEqual([
       'content/tools/json.yaml:12 › json › INV-06: updated 2026-01-02 is before added 2026-02-01',
@@ -163,8 +202,9 @@ describe('MOD-Content validation', () => {
     expect(tagOf(d.secureUrl)).toBe('INV-02');
     expect(tagOf(d.link.properties.url)).toBe('INV-02');
     expect(tagOf(d.entryBase.properties.id)).toBe('INV-01');
-    expect(d.tool.allOf.slice(1).map(tagOf)).toEqual(['RULE-07', 'RULE-07']);
+    expect(d.tool.allOf.slice(1).map(tagOf)).toEqual(['RULE-07', 'RULE-07', 'INV-07']);
     expect(tagOf(d.tool.properties.category)).toBe('INV-07');
+    expect(tagOf(d.tool.properties.categories)).toBe('INV-07');
     expect(tagOf(d.category.properties.id)).toBe('INV-07');
     expect(tagOf(d.category.properties.tint)).toBe('RULE-14');
   });

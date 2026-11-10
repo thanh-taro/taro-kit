@@ -154,6 +154,15 @@ describe('F-007.R7 browse by category', () => {
     ]);
   });
 
+  it('F007_AC13 a tool in Developer tools and Media tools counts in both tiles', () => {
+    const categories = [cat('media', 'Media tools', 2, 'mango'), cat('developer', 'Developer tools', 1, 'violet')];
+    const tools = [tool('a', 'developer'), { ...tool('b', 'developer'), categories: ['developer', 'media'] }];
+    expect(categoryRow(categories, tools).map((c) => [pick(c.name, 'en-US'), c.count['en-US']])).toEqual([
+      ['Developer tools', '2 tools'],
+      ['Media tools', '1 tool'],
+    ]);
+  });
+
   it('F007_AC11 the home view row matches the registry’s visible categories and counts', () => {
     const view = homeView(fixture, fixtureDir);
     const expected = fixture.categories

@@ -1,0 +1,11 @@
+# INV-07: a tool with neither category nor categories.
+id: units
+kind: tool
+name: Units
+summary:
+  en-US: Fixture tool in a missing category.
+  vi-VN: Fixture tool in a missing category.
+url: https://units.tarokit.app/
+origin: own
+openMode: linked
+added: 2026-02-02

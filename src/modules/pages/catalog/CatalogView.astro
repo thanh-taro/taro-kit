@@ -20,13 +20,16 @@ import CatalogSearch from './CatalogSearch.tsx';
 import { catalogSearchText } from './text.ts';
 
 interface Props {
-  view: CatalogView<Pick<Category, 'id' | 'name' | 'tint'>, ToolCardTool>;
+  view: CatalogView<Pick<Category, 'id' | 'name' | 'tint'>, ToolCardTool & { category: string }>;
   /** Build-time inline SVG per category id (`svgFromFile`). */
   icons: Record<string, string>;
   /** The catalog data file's address (MOD-Content `catalogDataFile`). */
   dataUrl: string;
 }
 const { view, icons, dataUrl } = Astro.props;
+// A tool under several headings is labelled with its main category under each (D-074); every visible tool's main
+// category is a visible category, so it is among the groups.
+const mainName = new Map(view.groups.map((g) => [g.category.id, g.category.name]));
 ---
 
 <CatalogSearch client:idle text={catalogSearchText()} dataUrl={view.empty ? undefined : dataUrl}>
@@ -57,7 +60,7 @@ const { view, icons, dataUrl } = Astro.props;
           <ul class="tk-catalog__grid">
             {tools.map((tool) => (
               <li>
-                <ToolCard tool={tool} categoryName={category.name} />
+                <ToolCard tool={tool} categoryName={mainName.get(tool.category) ?? category.name} />
               </li>
             ))}
           </ul>
