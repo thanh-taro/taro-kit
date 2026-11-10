@@ -15,3 +15,4 @@ offline: true
 sourceUrl: https://github.com/thanh-taro/clip-maker
 tags: [video, editor, trim, cut, join, music, text, captions, filters, mp4, gif, tiktok, reels, shorts, cắt video, ghép video, chỉnh video, chèn nhạc, chèn chữ, bộ lọc màu]
 added: 2026-11-04   # set to the real launch date
+hidden: true # until clip-maker.tarokit.app answers (Owner, 2026-11-10: release v1.5.0 without it)
