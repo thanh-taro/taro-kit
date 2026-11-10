@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: cutting v1.5.0-rc.1 (Clip Maker hidden), release build and verification",
+      "step": "8 Iterate: v1.5.0 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1219,14 +1219,6 @@
   },
   "log": [
     {
-      "at": "2026-10-14T12:21:09+00:00",
-      "event": "build step: 4 wave 4: F-002 + F-006 building in parallel; F-004 after both (needs MOD-Search + recents)"
-    },
-    {
-      "at": "2026-10-14T15:24:14+00:00",
-      "event": "build step: 4 wave 4: F-002, F-006 shipped (10/16); F-004 palette building"
-    },
-    {
       "at": "2026-10-14T16:11:30+00:00",
       "event": "build step: 4 wave 4 merged (F-002, F-004, F-006 shipped; 11/16). Next: wave 5 F-011, F-015, F-014 (after user check-in; open question: multi-token search)"
     },
@@ -2017,9 +2009,17 @@
     {
       "at": "2026-11-10T05:23:34+00:00",
       "event": "iterate step: 8 Iterate: cutting v1.5.0-rc.1 (Clip Maker hidden), release build and verification"
+    },
+    {
+      "at": "2026-11-10T06:38:52+00:00",
+      "event": "Released v1.5.0 to production (Cloudflare version 094d633a), Clip Maker hidden"
+    },
+    {
+      "at": "2026-11-10T06:38:52+00:00",
+      "event": "iterate step: 8 Iterate: v1.5.0 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.1"
     }
   ],
-  "updated": "2026-11-10T05:23:34+00:00",
+  "updated": "2026-11-10T06:38:52+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
