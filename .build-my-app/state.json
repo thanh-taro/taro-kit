@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: Image Annotator live and listed (cr/multi-category). Waiting for Clip Maker to go live. Then: catalog check, set clip-maker added date, merge cr/tool-permissions-dialogs-share then cr/multi-category, cut v1.5.0-rc.1",
+      "step": "8 Iterate: cutting v1.5.0-rc.1 (Clip Maker hidden), release build and verification",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1102,6 +1102,21 @@
       "answer": "Always the main (first) category, on every card",
       "asked": "2026-11-10T00:12:05+00:00",
       "answered": "2026-11-10T00:12:12+00:00"
+    },
+    {
+      "id": "D-075",
+      "question": "Release v1.5.0 without Clip Maker?",
+      "options": [
+        "release now, Clip Maker hidden",
+        "wait for Clip Maker"
+      ],
+      "recommendation": "release now, Clip Maker hidden",
+      "kind": "release",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Release now with Clip Maker hidden; Image Annotator source repo 404 accepted (Owner, 2026-11-10)",
+      "asked": "2026-11-10T05:23:25+00:00",
+      "answered": "2026-11-10T05:23:32+00:00"
     }
   ],
   "loops": {
@@ -1203,18 +1218,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-14T05:52:57+00:00",
-      "event": "build step: 4 wave 2 merged (F-003, F-005, F-012, F-016 shipped). Next: wave 3 F-008, F-009, F-010 (after user check-in)"
-    },
-    {
-      "at": "2026-10-14T06:01:40+00:00",
-      "event": "build step: 4 wave 3 building: F-008, F-009, F-010 in parallel"
-    },
-    {
-      "at": "2026-10-14T10:57:17+00:00",
-      "event": "build step: 4 wave 3 merged (F-008, F-009, F-010 shipped; 8/16). Next: wave 4 F-002, F-006, F-004 (after user check-in)"
-    },
     {
       "at": "2026-10-14T12:21:09+00:00",
       "event": "build step: 4 wave 4: F-002 + F-006 building in parallel; F-004 after both (needs MOD-Search + recents)"
@@ -2002,9 +2005,21 @@
     {
       "at": "2026-11-10T05:19:32+00:00",
       "event": "Image Annotator 1.0.0 live (2026-11-10); portal entry unhidden, added 2026-11-10"
+    },
+    {
+      "at": "2026-11-10T05:23:25+00:00",
+      "event": "decision D-075 opened: Release v1.5.0 without Clip Maker?"
+    },
+    {
+      "at": "2026-11-10T05:23:32+00:00",
+      "event": "decision D-075 answered: Release now with Clip Maker hidden; Image Annotator source repo 404 accepted (Owner, 2026-11-10)"
+    },
+    {
+      "at": "2026-11-10T05:23:34+00:00",
+      "event": "iterate step: 8 Iterate: cutting v1.5.0-rc.1 (Clip Maker hidden), release build and verification"
     }
   ],
-  "updated": "2026-11-10T05:19:32+00:00",
+  "updated": "2026-11-10T05:23:34+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
