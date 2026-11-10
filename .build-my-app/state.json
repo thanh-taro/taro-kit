@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: waiting for Clip Maker and Image Annotator to go live. Then: catalog check, set clip-maker and image-annotator added dates, unhide image-annotator, merge cr/tool-permissions-dialogs-share then cr/multi-category, cut v1.5.0-rc.1",
+      "step": "8 Iterate: Image Annotator live and listed (cr/multi-category). Waiting for Clip Maker to go live. Then: catalog check, set clip-maker added date, merge cr/tool-permissions-dialogs-share then cr/multi-category, cut v1.5.0-rc.1",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1204,14 +1204,6 @@
   },
   "log": [
     {
-      "at": "2026-10-14T05:35:20+00:00",
-      "event": "F-016 review round 1: no blockers; 1 major (AC4 vacuous), 6 minor sent to builder. F-002 carry-over recorded."
-    },
-    {
-      "at": "2026-10-14T05:39:47+00:00",
-      "event": "build step: 4 wave 2: F-005, F-016 shipped; F-003 building (rebase onto 15fd495)"
-    },
-    {
       "at": "2026-10-14T05:52:57+00:00",
       "event": "build step: 4 wave 2 merged (F-003, F-005, F-012, F-016 shipped). Next: wave 3 F-008, F-009, F-010 (after user check-in)"
     },
@@ -2002,9 +1994,17 @@
     {
       "at": "2026-11-10T01:02:29+00:00",
       "event": "iterate step: 8 Iterate: waiting for Clip Maker and Image Annotator to go live. Then: catalog check, set clip-maker and image-annotator added dates, unhide image-annotator, merge cr/tool-permissions-dialogs-share then cr/multi-category, cut v1.5.0-rc.1"
+    },
+    {
+      "at": "2026-11-10T05:19:30+00:00",
+      "event": "iterate step: 8 Iterate: Image Annotator live and listed (cr/multi-category). Waiting for Clip Maker to go live. Then: catalog check, set clip-maker added date, merge cr/tool-permissions-dialogs-share then cr/multi-category, cut v1.5.0-rc.1"
+    },
+    {
+      "at": "2026-11-10T05:19:32+00:00",
+      "event": "Image Annotator 1.0.0 live (2026-11-10); portal entry unhidden, added 2026-11-10"
     }
   ],
-  "updated": "2026-11-10T01:02:29+00:00",
+  "updated": "2026-11-10T05:19:32+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",

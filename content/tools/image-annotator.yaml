@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=../schemas/tool.json
 # Image Annotator (taro-kit-tools/developer-tools/image-annotator), from its docs/deploy/catalog-entry.yaml.
-# Hidden until the tool answers at its address (its runbook step P1); then remove `hidden` and set `added`.
+# Live at its own address since 2026-11-10 (release 1.0.0).
 id: image-annotator
 kind: tool
 name: Image Annotator
@@ -36,5 +36,4 @@ tags:
     che thông tin,
     chụp màn hình,
   ]
-added: 2026-11-09 # set to the real launch date
-hidden: true
+added: 2026-11-10
