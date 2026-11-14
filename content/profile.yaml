@@ -15,7 +15,7 @@ bio:
   en-US: |
     Hi, I'm Thanh, though most people call me Taro. I've been writing software for more than ten years, mostly on the backend: APIs, data pipelines and, lately, a lot of prompts for AI models. Yes, talking politely to machines is part of my job now.
 
-    These days I'm a Fullstack AI-Native engineer at Est Rouge. I build products end to end with AI as part of the team: REST and WebSocket backends, big-data pipelines, the frontends people actually click, and the prompts and agents that get language models doing useful work. Before that I led commerce teams on projects for the Japanese market, ran an AI team as a technical leader, and built social networks, newsfeeds and geolocation features. My usual toolbox is Python, Node.js and PHP with FastAPI, NestJS and Laravel, on MySQL, MongoDB, DynamoDB, Redis and Neo4j. All of it in Docker, naturally.
+    These days I'm a technical leader and the AI Application Planned Delivery Unit leader at Est Rouge. I build products end to end with AI as part of the team: REST and WebSocket backends, big-data pipelines, the frontends people actually click, and the prompts and agents that get language models doing useful work. Before that I led commerce teams on projects for the Japanese market, ran an AI team as a technical leader, and built social networks, newsfeeds and geolocation features. My usual toolbox is Python, Node.js and PHP with FastAPI, NestJS and Laravel, on MySQL, MongoDB, DynamoDB, Redis and Neo4j. All of it in Docker, naturally.
 
     Since 2022 I've also mentored Rising Stars bootcamp students in backend, soft skills and presenting. Watching a mentee's first demo go right is still my favorite kind of deploy.
 
@@ -25,7 +25,7 @@ bio:
   vi-VN: |
     Chào bạn, mình là Thành, nhưng hầu hết mọi người gọi mình là Taro. Mình viết phần mềm hơn mười năm rồi, chủ yếu ở mảng backend: API, pipeline dữ liệu, và dạo gần đây là rất nhiều prompt cho các mô hình AI. Đúng vậy, nói chuyện lịch sự với máy giờ cũng là việc của mình.
 
-    Hiện tại mình là kỹ sư Fullstack AI-Native ở Est Rouge. Mình làm sản phẩm từ đầu đến cuối, với AI là một thành viên trong nhóm: backend REST và WebSocket, pipeline dữ liệu lớn, phần giao diện mà người dùng thật sự bấm vào, cùng các prompt và agent giúp mô hình ngôn ngữ làm việc có ích. Trước đó mình dẫn dắt các nhóm làm dự án thương mại cho thị trường Nhật, phụ trách một nhóm AI với vai trò trưởng nhóm kỹ thuật, và xây dựng mạng xã hội, newsfeed và các tính năng định vị. Bộ đồ nghề quen thuộc của mình là Python, Node.js và PHP với FastAPI, NestJS và Laravel, trên MySQL, MongoDB, DynamoDB, Redis và Neo4j.
+    Hiện tại mình là trưởng nhóm kỹ thuật và trưởng đơn vị AI Application Planned Delivery ở Est Rouge. Mình làm sản phẩm từ đầu đến cuối cùng AI trong nhóm: backend REST và WebSocket, pipeline dữ liệu lớn, giao diện người dùng bấm vào, cùng các prompt và agent giúp mô hình ngôn ngữ làm việc có ích. Trước đó mình dẫn dắt các nhóm làm dự án thương mại cho thị trường Nhật, phụ trách một nhóm AI với vai trò trưởng nhóm kỹ thuật, và xây dựng mạng xã hội, newsfeed và các tính năng định vị. Bộ đồ nghề quen thuộc của mình là Python, Node.js và PHP với FastAPI, NestJS và Laravel, trên MySQL, MongoDB, DynamoDB, Redis và Neo4j.
 
     Từ năm 2022, mình còn hướng dẫn các bạn học viên bootcamp Rising Stars về backend, kỹ năng mềm và thuyết trình. Nhìn buổi demo đầu tiên của một bạn học viên chạy trơn tru vẫn là kiểu "deploy" mình thích nhất.
 

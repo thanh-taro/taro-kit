@@ -144,3 +144,6 @@ status: draft
 - D-076 code review converged in one round (`.build-my-app/reports/code-review-card-categories-round-1.md`): labels refit on a language switch and a late font load; island cards tested.
 - Release candidate v1.5.1-rc.1 (2026-11-10, Owner go): tool cards show every category, main first, folding extras into "+N" (D-076). Candidate report: `.build-my-app/reports/release-1.5.1.md`.
 - **Released: v1.5.1 live at https://tarokit.app (2026-11-10).** Tool cards show every category, main first, extras folded into "+N" (D-076). F-002 and F-016 shipped. Deploy report: `.build-my-app/reports/deploy-1.5.1.md`.
+
+## 2026-11-14
+- Content (no spec change, Owner 2026-11-14): the résumé's Est Rouge "Fullstack AI-Native engineer" role becomes "Fullstack AI-Native engineer and technical leader" and ends 2026-11. A new current Est Rouge role, "Technical leader and AI Application Planned Delivery Unit leader", starts 2026-11 (summary and highlights drafted, then reworded and approved by the Owner: "plans, develops and delivers applications using AI"). The About bio and the Now note name the new role. Now's `updated` date moves to 2026-11-14. To stay within the 1500-character bio limit, the Vietnamese bio's second paragraph is slightly shorter.

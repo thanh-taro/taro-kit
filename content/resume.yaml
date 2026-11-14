@@ -6,10 +6,26 @@
 # institutions, skills, certificates, awards, issuers) once or in both (INV-09).
 experience:
   - role:
-      en-US: Fullstack AI-Native engineer
-      vi-VN: Kỹ sư Fullstack AI-Native
+      en-US: Technical leader and AI Application Planned Delivery Unit leader
+      vi-VN: Trưởng nhóm kỹ thuật, trưởng đơn vị AI Application Planned Delivery
+    organization: Est Rouge
+    start: 2026-11
+    summary:
+      en-US: I lead the unit that plans, develops and delivers applications using AI at Est Rouge, turning ideas into scoped plans and shipped products, and I set the technical direction for the teams building them.
+      vi-VN: Mình dẫn dắt đơn vị lên kế hoạch, phát triển và bàn giao các ứng dụng sử dụng AI tại Est Rouge, biến ý tưởng thành kế hoạch rõ phạm vi và sản phẩm ra mắt thật, đồng thời định hướng kỹ thuật cho các nhóm xây dựng chúng.
+    highlights:
+      - en-US: Plan, develop and deliver applications using AI, from first idea to release, with clear scope, milestones and delivery dates.
+        vi-VN: Lên kế hoạch, phát triển và bàn giao các ứng dụng sử dụng AI, từ ý tưởng đầu tiên đến lúc phát hành, với phạm vi, cột mốc và ngày bàn giao rõ ràng.
+      - en-US: Own the architecture and code quality of the unit's products as their technical leader.
+        vi-VN: Chịu trách nhiệm về kiến trúc và chất lượng code của các sản phẩm trong đơn vị với vai trò trưởng nhóm kỹ thuật.
+      - en-US: Grow AI-native ways of working across the teams, so every engineer ships with AI as a teammate.
+        vi-VN: Lan toả cách làm việc AI-native trong các nhóm, để kỹ sư nào cũng làm sản phẩm cùng AI như một đồng đội.
+  - role:
+      en-US: Fullstack AI-Native engineer and technical leader
+      vi-VN: Kỹ sư Fullstack AI-Native và trưởng nhóm kỹ thuật
     organization: Est Rouge
     start: 2023-07
+    end: 2026-11
     summary:
       en-US: I build products end to end with AI as a real teammate, from the backend and the data underneath to the screens people click and the prompts and agents that make language models do useful work.
       vi-VN: Mình làm sản phẩm từ đầu đến cuối với AI là một đồng đội thực thụ, từ backend và dữ liệu bên dưới đến giao diện người dùng bấm vào, cùng các prompt và agent giúp mô hình ngôn ngữ làm việc có ích.
