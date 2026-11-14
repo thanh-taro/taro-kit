@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: v1.5.1 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.2",
+      "step": "8 Iterate: cutting v1.5.2-rc.1 (résumé roles, D-078), verify, deploy, push",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1148,6 +1148,20 @@
       "answer": "Yes: release, deploy and push (Owner, 2026-11-10)",
       "asked": "2026-11-10T16:50:35+00:00",
       "answered": "2026-11-10T16:50:35+00:00"
+    },
+    {
+      "id": "D-078",
+      "question": "Release v1.5.2 (résumé role content) and push main and tags?",
+      "options": [
+        "yes,no"
+      ],
+      "recommendation": "yes",
+      "kind": "release",
+      "phase": "iterate",
+      "status": "answered",
+      "answer": "Yes: deploy all, Clip Maker stays hidden until its address answers (Owner, 2026-11-14)",
+      "asked": "2026-11-14T05:46:51+00:00",
+      "answered": "2026-11-14T05:46:58+00:00"
     }
   ],
   "loops": {
@@ -1249,26 +1263,6 @@
     }
   },
   "log": [
-    {
-      "at": "2026-10-19T07:31:51+00:00",
-      "event": "phase build -> gate"
-    },
-    {
-      "at": "2026-10-19T07:32:47+00:00",
-      "event": "gate build passed: 16/16 features shipped; AC coverage 100%; 445 unit + 290 e2e green; CI steps run locally (no repo yet); user approved 2026-10-19"
-    },
-    {
-      "at": "2026-10-19T07:32:54+00:00",
-      "event": "phase qa -> in_progress"
-    },
-    {
-      "at": "2026-10-19T07:32:54+00:00",
-      "event": "qa step: 5 QA: 5 audits in parallel (flows+visual+traceability, a11y, security, perf/NFR, licenses)"
-    },
-    {
-      "at": "2026-10-19T07:34:02+00:00",
-      "event": "context compaction (auto) at: build-my-app: phase 5 QA & hardening [in_progress] — 5 QA: 5 audits in parallel (flows+visual+traceability, a11y, security, perf/NFR, licenses) · 5/8 phases done · autonomy balanced"
-    },
     {
       "at": "2026-10-19T10:41:48+00:00",
       "event": "QA audits resumed after session limit reset"
@@ -2048,9 +2042,29 @@
     {
       "at": "2026-11-10T16:57:33+00:00",
       "event": "iterate step: 8 Iterate: v1.5.1 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.2"
+    },
+    {
+      "at": "2026-11-14T05:38:51+00:00",
+      "event": "Content change (résumé roles at Est Rouge, About, Now) made locally; waiting for the Owner's text review"
+    },
+    {
+      "at": "2026-11-14T05:42:48+00:00",
+      "event": "iterate step: 8 Iterate: v1.5.1 live. Résumé role content committed (unreleased). Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.2"
+    },
+    {
+      "at": "2026-11-14T05:46:51+00:00",
+      "event": "decision D-078 opened: Release v1.5.2 (résumé role content) and push main and tags?"
+    },
+    {
+      "at": "2026-11-14T05:46:58+00:00",
+      "event": "decision D-078 answered: Yes: deploy all, Clip Maker stays hidden until its address answers (Owner, 2026-11-14)"
+    },
+    {
+      "at": "2026-11-14T05:46:58+00:00",
+      "event": "iterate step: 8 Iterate: cutting v1.5.2-rc.1 (résumé roles, D-078), verify, deploy, push"
     }
   ],
-  "updated": "2026-11-10T16:57:33+00:00",
+  "updated": "2026-11-14T05:46:58+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
