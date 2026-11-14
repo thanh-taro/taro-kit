@@ -93,7 +93,7 @@
     "iterate": {
       "title": "8 Iterate",
       "status": "in_progress",
-      "step": "8 Iterate: cutting v1.5.2-rc.1 (résumé roles, D-078), verify, deploy, push",
+      "step": "8 Iterate: v1.5.2 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.3",
       "gate": {
         "status": "pending",
         "at": null,
@@ -1264,14 +1264,6 @@
   },
   "log": [
     {
-      "at": "2026-10-19T10:41:48+00:00",
-      "event": "QA audits resumed after session limit reset"
-    },
-    {
-      "at": "2026-10-19T11:35:48+00:00",
-      "event": "qa step: 5 QA: audits done (0 blockers); fix bundle (a11y M1/M2+minors, perf palette prefetch, CI, HSTS, WebKit tests, favicon) building; then G5"
-    },
-    {
       "at": "2026-10-20T01:51:49+00:00",
       "event": "qa step: 5 QA: fixes merged, checks green; Gate G5 awaiting user (privacy copy, toolbar copy, narrow header, manual checks)"
     },
@@ -2062,9 +2054,17 @@
     {
       "at": "2026-11-14T05:46:58+00:00",
       "event": "iterate step: 8 Iterate: cutting v1.5.2-rc.1 (résumé roles, D-078), verify, deploy, push"
+    },
+    {
+      "at": "2026-11-14T05:57:40+00:00",
+      "event": "iterate step: 8 Iterate: v1.5.2 live. Waiting for Clip Maker to go live; then unhide its entry, set its added date, catalog check, cut v1.5.3"
+    },
+    {
+      "at": "2026-11-14T05:57:40+00:00",
+      "event": "v1.5.2 deployed to production (Cloudflare e0938d3b), smoke passed"
     }
   ],
-  "updated": "2026-11-14T05:46:58+00:00",
+  "updated": "2026-11-14T05:57:40+00:00",
   "environment": {
     "git": "2.54.0",
     "node": "24.19.0",
